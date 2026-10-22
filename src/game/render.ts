@@ -105,13 +105,41 @@ export class Renderer {
     }
     // horizon glitter under the sun: short horizontal dashes in a column that widens towards the viewer,
     // drifting slowly (not a speckle of single pixels)
-    const tt = Math.floor(this.time * 2.5);
-    for (let y = HORIZON; y < HORIZON + 26; y++) {
-      const half = 4 + (y - HORIZON) * 1.6;
-      this.glints(y, sunScreenX, half, th.sunGlow * 0.8, th.glitter, th.glitter2, tt, y - HORIZON, 0);
+    const tt = Math.floor(this.time * 6);
+    for (let y = HORIZON; !land && y < HORIZON + 26; y++) {
+      const half = 8 + (y - HORIZON) * 2.1;
+      this.glints(fb, y, sunScreenX, half, th.sunGlow, th.glitter, th.glitter2, tt, y - HORIZON, 0);
     }
-    const far = this.bank.get(th.far);
-    if (far) fb.layer(far, farOff, HORIZON - far.h, false);
+    if (th.id === 'coral-bluffs') this.bluffsBackdrop(fb, farOff);
+    else {
+      const far = this.bank.get(th.far);
+      if (far) fb.layer(far, farOff, HORIZON - far.h, false);
+    }
+  }
+
+  /** Separate, hazed sandstone headlands with sky and sea between them.
+   * Draw into the supplied buffer so stage cross-fades use the same scenery. */
+  private bluffsBackdrop(fb: FB, offset: number): void {
+    const period=640, shift=((offset%period)+period)%period;
+    const massive=(x:number,w:number,h:number,back:boolean) => {
+      const y=HORIZON, body=rgb(back?0xc1aaa0:0xb49a87), shade=rgb(back?0xb4a1a0:0xa08b80), lit=rgb(back?0xd1b8a7:0xcab091);
+      fb.poly([x,y,x+w*.06,y-h*.18,x+w*.1,y-h*.2,x+w*.16,y-h*.44,x+w*.22,y-h*.46,x+w*.26,y-h*.82,x+w*.29,y-h*.93,x+w*.34,y-h*.93,x+w*.36,y-h,x+w*.43,y-h,x+w*.46,y-h*.96,x+w*.5,y-h*.96,x+w*.57,y-h*.79,x+w*.64,y-h*.76,x+w*.67,y-h*.7,x+w*.74,y-h*.7,x+w*.78,y-h*.54,x+w*.84,y-h*.5,x+w*.88,y-h*.23,x+w*.92,y-h*.2,x+w,y],body);
+      fb.poly([x+w*.2,y-h*.43,x+w*.29,y-h*.93,x+w*.36,y-h*.95,x+w*.31,y-h*.3,x+w*.58,y,x+w*.13,y],shade);
+      fb.poly([x+w*.36,y-h*.95,x+w*.5,y-h,x+w*.62,y-h*.76,x+w*.74,y-h*.7,x+w*.67,y-h*.65,x+w*.48,y-h*.88],lit);
+      fb.poly([x+w*.62,y-h*.76,x+w*.67,y-h*.65,x+w*.6,y-h*.2,x+w*.83,y,x+w*.54,y],shade);
+      // Broken strata and vertical erosion, large enough to read at one pixel.
+      fb.poly([x+w*.22,y-h*.44,x+w*.49,y-h*.46,x+w*.55,y-h*.38,x+w*.25,y-h*.37],lit);
+      fb.poly([x+w*.46,y-h*.94,x+w*.5,y-h*.94,x+w*.48,y-h*.62,x+w*.44,y-h*.48],shade);
+      fb.poly([x+w*.68,y-h*.57,x+w*.78,y-h*.51,x+w*.82,y-h*.38,x+w*.69,y-h*.44],lit);
+      fb.poly([x+w*.34,y-h*.18,x+w*.58,y-h*.22,x+w*.63,y-h*.12,x+w*.39,y-h*.1],mix(body,lit,.35));
+    };
+    for(let repeat=-1;repeat<=1;repeat++) {
+      const x=repeat*period-shift;
+      massive(x+25,170,25,true);
+      massive(x+290,125,18,true);
+      massive(x-40,210,31,false);
+      massive(x+465,125,21,false);
+    }
   }
 
   /**
@@ -119,19 +147,24 @@ export class Renderer {
    * around `sunX`. Dashes grow with the depth below the horizon, fade towards the column's edges and
    * keep their place for a few frames, so the water reads as ripples catching the light and not as noise.
    */
-  private glints(y: number, sunX: number, half: number, k: number, colA: Col, colB: Col, tt: number, depth: number, minX: number): void {
-    if (k <= 0.02) return;
-    const d = this.fb.data, o = y * W;
-    const n = depth < 5 ? 1 : depth < 16 ? 2 : 3;
+  private glints(fb: FB, y: number, sunX: number, half: number, k: number, colA: Col, colB: Col, tt: number, depth: number, minX: number): void {
+    if (k <= 0.02 || y < HORIZON || y >= H) return;
+    const d = fb.data, o = y * W;
+    const n = depth < 5 ? 3 : depth < 14 ? 5 : 9;
     for (let j = 0; j < n; j++) {
-      const h1 = hash(y * 3 + j, 17, tt), h2 = hash(y, j + 5, tt + 7);
-      if (h1 > 0.55 * k + 0.12) continue;
-      const len = 2 + Math.floor(h2 * (2 + depth * 0.22));
-      const cx = sunX + (h1 * 2.2 - 0.55 * k * 2 + (h2 - 0.5) * 0.6) * half * 0.55;
+      const h1 = hash(y * 3 + j, 17, 31), h2 = hash(y, j + 5, 47);
+      const phase = (tt + Math.floor(h2 * 11)) % 11;
+      if (h1 > .3 + .65 * k || phase < 2) continue;
+      // Fixed ripple positions, changing light: avoid resampling the entire
+      // reflection into noise on each frame. Independent lanes cover both sides.
+      const len = 2 + Math.floor(h2 * (2 + Math.min(depth,40) * .18));
+      const cx = sunX + ((j + .18 + h2 * .64) / n * 2 - 1) * half;
       const edge = Math.abs(cx - sunX) / half;
-      if (edge > 0.95) continue;
-      const x0 = Math.max(minX, Math.floor(cx - len / 2)), x1 = Math.min(W, x0 + len);
-      for (let x = x0; x < x1; x++) d[o + x] = edge < 0.35 && h2 > 0.35 ? colA : colB;
+      const left = Math.floor(cx - len / 2);
+      // Clip, never move a hidden glint onto the shoreline or the screen edge.
+      const x0 = Math.max(0, minX, left), x1 = Math.min(W, left + len);
+      const color = edge < .65 && phase >= 3 && phase <= 7 ? colA : colB;
+      for (let x = x0; x < x1; x++) d[o + x] = color;
     }
   }
 
@@ -143,7 +176,7 @@ export class Renderer {
     if (r0 < 0) r0 = 0;
     if (r1 > H) r1 = H;
     const inv = 1 / (yB - yT);
-    const tt = Math.floor(this.time * 8);
+    const tt = Math.floor(this.time * 6);
     const gl = glow * (1 - fogT * 0.5);
     for (let r = r0; r < r1; r++) {
       const t = (r + 0.5 - yT) * inv;
@@ -154,8 +187,8 @@ export class Renderer {
       d.fill(c, o + x0, o + W);
       if (gl <= 0) continue;
       const depth = r - HORIZON;
-      const half = 6 + depth * 1.25;
-      this.glints(r, sunX, half, gl * 0.62, glA, glB, tt >> 2, depth, x0);
+      const half = 8 + depth * 2.1;
+      this.glints(fb, r, sunX, half, gl, glA, glB, tt, depth, x0);
     }
   }
 
@@ -770,7 +803,7 @@ export class Renderer {
     // sea-side guardrail (beside the right road)
     if (!land && s.rail && n.rail) this.rail(s, s.oR1 + ROAD_W * RAIL_X, s.oR2 + ROAD_W * RAIL_X, th, fogT, haze, camX, camY);
     // land-side wall (cliff / hill / forest / sea wall / sound wall / towers), beside the left road
-    if (s.cove) this.coveLand(s, n, th, f, camX, camY);
+    if (s.cove || s.bluffs) this.coveLand(s, n, th, f, camX, camY);
     else if (th.wall === "city") this.cityWall(s, n, th, false, fogT, haze, camX, camY);
     else if (s.wallH > 0 && n.wallH > 0) this.wall(s, n, th, th.wall, s.oL1 - s.wallOff * ROAD_W, s.oL2 - s.wallOff * ROAD_W, f, camX, camY, false);
     // right-hand wall of an inland road
@@ -991,7 +1024,8 @@ export class Renderer {
   /** Closed land cross-sections: bank, level shelf, distant rolling hills and
    * their back slope. Buildings use the very same shelf coordinates. */
   private coveLand(s: Seg, n: Seg, th: Theme, f: (c: Col) => Col, camX: number, camY: number): void {
-    const a = s.cove!, b = n.cove ?? a, st = th.terrain!;
+    const a = (s.cove ?? s.bluffs)!, b = (s.cove ? n.cove : n.bluffs) ?? a, st = th.terrain!;
+    const dry = !!s.bluffs, spurA=s.bluffs?.spur ?? 0, spurB=n.bluffs?.spur ?? spurA;
     const fb = this.fb, q = this.q8;
     const point = (p: CovePoint, far: boolean): [number, number] => {
       const scale = far ? s.S2 : s.S1;
@@ -1010,7 +1044,18 @@ export class Renderer {
     const band = (k: number, u0: number, u1: number, v0: number, v1: number, col: Col) =>
       strip(between(a.points[k],a.points[k+1],u0), between(a.points[k],a.points[k+1],u1),
         between(b.points[k],b.points[k+1],v0), between(b.points[k],b.points[k+1],v1),col);
-    const colors = [st.low, st.mid, st.light, st.high, st.shade, st.low];
+    // A short patch may start/end inside a slice. Clip its longitudinal extent
+    // instead of stretching a small inclusion into a pointed full-slice ribbon.
+    const fleck = (t0:number,t1:number,lo:number,hi:number,fa:number,fb_:number,col:Col) => {
+      const at=(t:number,u:number) => {
+        const p0=point(between(a.points[0],a.points[1],u*fa),false);
+        const p1=point(between(b.points[0],b.points[1],u*fb_),true);
+        const q=t*s.S1/((1-t)*s.S2+t*s.S1);
+        return [p0[0]+(p1[0]-p0[0])*q,p0[1]+(p1[1]-p0[1])*q];
+      };
+      fb.poly([...at(t0,lo),...at(t1,lo),...at(t1,hi),...at(t0,hi)],f(col));
+    };
+    const colors = [dry ? mix(st.low,st.rock[1],spurA) : st.low, st.mid, st.light, st.high, st.shade, st.low];
     // Far side first. Rendering the back and top is what prevents the open
     // cardboard edge that used to be visible beside the starting grid.
     for (let k=a.points.length-2;k>=0;k--) {
@@ -1028,38 +1073,89 @@ export class Renderer {
         // One broad olive patch; no screen-space noise or alternating stripes.
         band(k,.15,.15+(a.meadow-.5)*1.3,.15,.15+(b.meadow-.5)*1.3,mix(st.mid,st.high,.4));
       }
-      if ((k===1 || k===2) && !a.plot && !b.plot) {
-        // Small overlapping grass patches, with irregular edges. A patch spans
-        // several segments instead of drawing an isolated pixel on each slice.
-        const cell=Math.floor(s.i/32), at=s.i-cell*32, seed=350+k*7;
-        const center=9+cellRand(cell,seed)*12, radius=5+cellRand(cell,seed+1)*5;
-        const size=(i:number)=>Math.max(0,1-Math.pow((i-center)/radius,2));
-        const wa=size(at)*.11, wb=size(at+1)*.11;
-        const u=.18+cellRand(cell,seed+2)*.6;
-        if (cellRand(cell,seed+3)<.65 && Math.max(wa,wb)*(a.points[k+1].x-a.points[k].x)*s.S1>2) {
-          band(k,u-wa,u+wa,u-wb,u+wb,mix(colors[k],st.shade,.16));
-          band(k,u-wa*.45,u+wa*.25,u-wb*.45,u+wb*.25,mix(colors[k],st.light2,.2));
+      if (k===1 || k===2) {
+        // Broad angular grass clusters, with a cool base and a warm lit edge.
+        // World-space patches span several slices and taper at both ends;
+        // they never continue as a stripe along the whole roadside.
+        const cell=Math.floor(s.i/32), at=s.i-cell*32;
+        for (let patch=0;patch<2;patch++) {
+          const seed=350+k*13+patch*5;
+          const center=8+cellRand(cell,seed)*15, radius=4+cellRand(cell,seed+1)*7;
+          const size=(i:number)=>Math.max(0,Math.min(1,(1-Math.abs(i-center)/radius)*1.6));
+          const width=.09+cellRand(cell,seed+2)*.08;
+          const wa=size(at)*width, wb=size(at+1)*width;
+          const u=.21+cellRand(cell,seed+3)*.58;
+          if (Math.max(wa,wb)*(a.points[k+1].x-a.points[k].x)*s.S1>3) {
+            band(k,u-wa,u+wa,u-wb,u+wb,mix(colors[k],st.shade,.42));
+            band(k,u-wa*.55,u+wa*.65,u-wb*.55,u+wb*.65,mix(colors[k],st.light2,.38));
+            // A single darker notch reads as a tuft, without fine speckling.
+            if (wa*(a.points[k+1].x-a.points[k].x)*s.S1>7)
+              band(k,u-wa*.8,u-wa*.4,u-wb*.8,u-wb*.4,mix(colors[k],st.shade2,.3));
+          }
         }
       }
       if (k===0) {
-        const plot = a.plot && a.plot===b.plot;
-        if (plot) {
-          band(0,.18,.87,.18,.87,st.stone[1]);
-          band(0,.18,.34,.18,.34,st.stone[0]);
-          band(0,.87,1,.87,1,st.stone[2]);
-        } else {
-          // Short exposed limestone pockets, with grass continuing across them.
-          const u=Math.max(0,(a.rock-.65)*2), v=Math.max(0,(b.rock-.65)*2);
-          if (u>0 || v>0) band(0,.25,.25+u,.25,.25+v,st.rock[2]);
-          band(0,.82,1,.82,1,st.mid);
+        // Gardens meet a grassy bank, not a continuous cream retaining wall.
+        // Only short natural limestone pockets show through away from houses.
+        const u=Math.max(0,(a.rock-.65)*2), v=Math.max(0,(b.rock-.65)*2);
+        if (!a.plot && !b.plot && (!dry || Math.max(spurA,spurB)<.04) && (u>0 || v>0)) band(0,.25,.25+u,.25,.25+v,st.rock[2]);
+        const lipA=.76+vnoise(s.i/9,389)*.13, lipB=.76+vnoise((s.i+1)/9,389)*.13;
+        band(0,lipA,1,lipB,1,st.mid);
+        if (dry && (spurA>.04 || spurB>.04)) {
+          // Broad sandstone facets follow the cutting's height. Short seams
+          // have staggered ends; no continuous cream stripe or surface noise.
+          const faceA=Math.min(1,spurA*2), faceB=Math.min(1,spurB*2);
+          band(0,.04*faceA,.88*faceA,.04*faceB,.88*faceB,st.rock[1]);
+          const cell=Math.floor(s.i/58), u=s.i-cell*58;
+          const swell=(t:number)=>Math.max(0,Math.min(1,(1-Math.abs(t-29)/27)*1.4));
+          const wa=swell(u), wb=swell(u+1), center=.4+cellRand(cell,530)*.2;
+          const chipA=(vnoise(s.i/3,548)-.5)*.1, chipB=(vnoise((s.i+1)/3,548)-.5)*.1;
+          band(0,(center-wa*(.3+chipA))*faceA,(center+wa*(.25+chipA))*faceA,(center-wb*(.3+chipB))*faceB,(center+wb*(.25+chipB))*faceB,st.rock[2]);
+          band(0,(center+wa*(.14+chipA))*faceA,(center+wa*(.22+chipA))*faceA,(center+wb*(.14+chipB))*faceB,(center+wb*(.22+chipB))*faceB,mix(st.rock[2],st.rock[3],.3));
+          const seam=(t:number)=>Math.max(0,1-Math.abs(t-12)/9)*.12;
+          band(0,.17*faceA,(.17+seam(u))*faceA,.17*faceB,(.17+seam(u+1))*faceB,mix(st.rock[0],st.rock[1],.4));
+          const height=Math.max(a.points[1].h*s.S1,b.points[1].h*s.S2);
+          if(height>8) {
+            // Independent drifts of chunky mineral inclusions. Their
+            // outlines occupy several world slices; they never resample with
+            // time or camera position. Quiet rock remains between the drifts.
+            const cell=Math.floor(s.i/7), at=s.i-cell*7;
+            for(let vein=0;vein<6;vein++) {
+              const seed=560+vein*11;
+              if(cellRand(cell,seed)<.19) continue;
+              const middle=1.5+cellRand(cell,seed+1)*4, radius=.35+cellRand(cell,seed+2)*.55;
+              const t0=Math.max(0,middle-radius-at), t1=Math.min(1,middle+radius-at);
+              const center=.12+vein*.12+cellRand(cell,seed+3)*.09;
+              const size=.023+cellRand(cell,seed+4)*.026;
+              if(t1<=t0 || size*height<.7) continue;
+              const light=cellRand(cell,seed+5)>.32;
+              const col=light?mix(st.rock[2],st.rock[3],.7):mix(st.rock[0],st.rock[1],.42);
+              fleck(t0,t1,center-size*.45,center+size,faceA,faceB,col);
+              if(light && size*height>2.2)
+                fleck(t0,t1,center-size*.7,center-size*.3,faceA,faceB,st.rock[1]);
+            }
+            // Occasional narrow, kinked vertical fissures interrupt the broad
+            // facets. They stop inside the rock, clear of the grass and verge.
+            const crackCell=Math.floor(s.i/37), atCrack=s.i-crackCell*37;
+            const start=8+Math.floor(cellRand(crackCell,601)*18);
+            if(atCrack===start && cellRand(crackCell,602)>.3 && height>25) {
+              const base=.22+cellRand(crackCell,603)*.19;
+              band(0,base*faceA,(base+.23)*faceA,(base+.035)*faceB,(base+.25)*faceB,mix(st.rock[0],st.rock[1],.5));
+            }
+          }
         }
       }
     }
     if (a.plot && a.plot===b.plot) {
-      // The yard is a flat surface, behind the low retaining edge and beneath
-      // the house's entire footprint. Its elevation is constant in world space.
-      band(1,.08,.78,.08,.78,mix(st.stone[1],st.mid,.28));
-      band(1,.06,.1,.06,.1,st.stone[2]);
+      // A compact worn patch at the house, with tapered, irregular edges.
+      // The rest of the level plot stays grassy and joins the surrounding meadow.
+      const m=a.plot.houseSegment;
+      const width=(i:number)=>Math.max(0,1-Math.abs(i-m)/6)*(.26+vnoise(i/3,390)*.04);
+      const wa=width(s.i), wb=width(s.i+1);
+      if (wa>0 || wb>0) {
+        band(1,.5-wa,.5+wa,.5-wb,.5+wb,mix(st.mid,st.high,.55));
+        band(1,.5-wa*.8,.5+wa*.82,.5-wb*.8,.5+wb*.82,mix(st.mid,st.stone[1],.55));
+      }
     }
     // Restrained clumps at the foot: broad marks at close range only, anchored
     // to the world, and close in value to the surrounding grass.

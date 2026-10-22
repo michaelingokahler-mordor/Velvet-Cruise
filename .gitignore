@@ -2,6 +2,9 @@
 web-export/
 desktop-export/
 node_modules/
+dist/
+output/
+public/decoders/
 .vite/
 .qa/
 android-export/

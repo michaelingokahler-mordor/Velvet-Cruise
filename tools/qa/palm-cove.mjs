@@ -55,6 +55,22 @@ for (const pos of shots) {
 for (const pos of [6, 40, 160]) for (const side of [-1, 1]) {
   race.position = pos * 300; race.playerX = side * 1.5; race.playerY = race.roadY(race.playerZ); renderer.render(race); save(`stage1-${pos}-edge${side}`);
 }
+// Freeze the camera and animate only the water, to inspect the sparkle cycle.
+// Compare against the same final frame with glints disabled: terrain, beach,
+// rocks and the guardrail still occlude the reflection through normal drawing.
+const water=[];
+const drawGlints=renderer.glints;
+for (const pos of [2600,4000]) for(let frame=0;frame<12;frame++) {
+  race.position=pos*300; race.playerX=-.25; race.playerY=race.roadY(race.playerZ);
+  renderer.time=frame/6; renderer.render(race);
+  const lit=fb.data.slice(); save(`water-${pos}-${frame}`);
+  renderer.glints=()=>{};
+  try { renderer.render(race); } finally { renderer.glints=drawGlints; }
+  let pixels=0;
+  for(let i=0;i<lit.length;i++) if(lit[i]!==fb.data[i]) pixels++;
+  water.push({pos,frame,visibleReflectionPixels:pixels});
+}
+writeFileSync(resolve(dest,'water-reflections.json'),JSON.stringify(water,null,2));
 const hash = value => createHash('sha256').update(JSON.stringify(value)).digest('hex');
 const contracts = tr.stages.map(st => ({ node: st.node,
   road: hash(tr.segs.slice(st.startSeg,st.endSeg+1).map(s => [s.i,s.y1,s.y2,s.curve,s.fo,s.fork,s.wallH,s.wallOff,s.wallRH,s.wallROff,s.soft,s.rail,s.beach,s.gate,s.ice])),
@@ -66,4 +82,14 @@ const bot = new Race(new Track(COAST_PATH)); bot.aiPlan = [0,1,1,1,1];
 for (let i=0; i<60*600 && bot.state!=='goal' && bot.state!=='over'; i++) bot.update(1/60, bot.autopilot(1/60,.97));
 const result = {state:bot.state,stage:bot.stage,stageTimes:bot.stageTimes,runTime:bot.runTime,score:bot.score,path:bot.track.path};
 writeFileSync(resolve(dest,'autopilot.json'),JSON.stringify(result,null,2));
-console.log(JSON.stringify({screenshots:shots.length+6,plots:pl
+console.log(JSON.stringify({screenshots:shots.length+6,waterFrames:water.length,plots:plots.length,autopilot:result},null,2));
+const timings=[];
+for(let i=0;i<160;i++) {
+  race.position=(160+i*9)*300; race.playerY=race.roadY(race.playerZ);
+  const t=performance.now(); renderer.render(race); const ms=performance.now()-t;
+  if(i>=30) timings.push(ms);
+}
+timings.sort((a,b)=>a-b);
+const timing={environment:'Node software renderer, no browser presentation',frames:timings.length,medianMs:timings[Math.floor(timings.length*.5)],p95Ms:timings[Math.floor(timings.length*.95)]};
+writeFileSync(resolve(dest,'timing.json'),JSON.stringify(timing,null,2));
+console.log(JSON.stringify(timing,null,2));

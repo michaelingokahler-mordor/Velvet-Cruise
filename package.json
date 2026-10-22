@@ -7,6 +7,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "check": "tsc --noEmit",
+    "qa:palm-cove": "node tools/qa/palm-cove.mjs . output/palm-cove/after && node tools/qa/check-palm-cove.mjs && node tools/qa/check-water.mjs",
+    "qa:coral-bluffs": "node tools/qa/coral-bluffs.mjs . output/coral-bluffs/after && node tools/qa/check-coral-bluffs.mjs",
     "build:desktop": "npm run build && node tools/build-desktop.mjs"
   },
   "dependencies": {

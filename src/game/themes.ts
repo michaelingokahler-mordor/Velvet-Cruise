@@ -123,7 +123,7 @@ export const THEMES: Theme[] = [
     haze: c(0xf6c08a), seaH: c(0x8fb0d0), seaN: c(0x27559a), seaA: c(0x2f62a8), seaB: c(0x2b5ca2), foam: c(0xfff4e0),
     glitter: c(0xfff2c0), glitter2: c(0xffd890), sunX: 225, sunGlow: 0.7,
     asphaltA: c(0x7a7680), asphaltB: c(0x74707a), lane: c(0xfaf0e0), rumbleA: c(0xd8382c), rumbleB: c(0xf6eee0),
-    sandA: c(0xe6c48e), sandB: c(0xdcb880), groundA: c(0xc9a068), groundB: c(0xbf965f),
+    sandA: c(0xe6c48e), sandB: c(0xdcb880), groundA: c(0xb5a16b), groundB: c(0xb5a16b),
     wall: "cliff",
     wallBands: [[c(0xa86c3c), c(0x9c6236)], [c(0xc38650), c(0xb67c48)], [c(0xd9a066), c(0xcd955e)], [c(0xe6b47a), c(0xdaa86e)]],
     wallTop: [c(0x6b9a3a), c(0x5f8e34)],
@@ -134,8 +134,8 @@ export const THEMES: Theme[] = [
     seaProps: [["rock_a", 2], ["rock_b", 3], ["grass_a", 3], ["bush_a", 1]],
     traffic: 2.2, carSpeed: [0.4, 0.66], lanesChange: 0.06,
     terrain: {
-      low: c(0x9a6036), mid: c(0xbc7c48), high: c(0xd6a064), light: c(0xe8bc82), light2: c(0xf8d49c),
-      shade: c(0x8a5232), shade2: c(0x6a3c2c),
+      low: c(0x948357), mid: c(0xb5a16b), high: c(0xc2ab79), light: c(0xc8b47b), light2: c(0xdfc78d),
+      shade: c(0x8c8a62), shade2: c(0x646d50),
       rock: [c(0x5a3030), c(0xa4724e), c(0xcf9a6c), c(0xf2c994)], stone: [c(0xa97a58), c(0xd8aa78), c(0xf8dcae)],
       rim: c(0x7ea63e), meadows: 0.3, hollows: 0.8, outcrops: 1, terraces: 1,
       scene: {

@@ -9,6 +9,7 @@ import { THEMES, PROP_INFO, Theme, themeShape } from "./themes";
 import { vnoise, cellRand, slopeForms, leanOf, plotSpan, ZONE, NF, F_L0, F_L1, F_H0, F_H1, F_R0, F_R1 } from "./terrain";
 import { COLS, NEXT, COAST_PATH, completePath, forks as nodeForks } from "./routes";
 import { dressCove, type CoveSection } from "./cove";
+import { dressBluffs, type BluffSection } from "./bluffs";
 
 export interface SprInst {
   name: string;
@@ -49,6 +50,8 @@ export interface Seg {
   tf?: Float32Array; tfR?: Float32Array;
   /** Palm Cove's visual land volume; independent of collision wall geometry. */
   cove?: CoveSection;
+  /** Coral Bluffs' cosmetic hills and inside-bend rock cuttings. */
+  bluffs?: BluffSection;
   wallH: number;     // land-side (left) wall height at the near edge
   wallOff: number;   // land-side wall distance (road half-widths)
   wallRH: number;    // right-hand wall (land stages), 0 = none
@@ -391,6 +394,7 @@ export class Track {
     else if (!this.goalSeg) this.goalSeg = segs.length + 99999;
     this.decorate(firstSeg, c0 === 0);
     dressCove(segs, c0 === 0 ? 0 : firstSeg);
+    dressBluffs(segs, firstSeg);
     // the previous stage's end gate was waiting for this stage: dress it now (unless it already is)
     if (c0 > 0) this.dressGate(segs[st[c0 - 1].endSeg], firstSeg);
     this.version++;

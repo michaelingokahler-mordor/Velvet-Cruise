@@ -7,21 +7,46 @@ const require = createRequire(import.meta.url);
 const before = resolve(process.argv[2] || 'output/palm-cove/before');
 const after = resolve(process.argv[3] || 'output/palm-cove/after');
 const old = require(resolve(before,'renderer.cjs')), now = require(resolve(after,'renderer.cjs'));
+const openLand = require(resolve(process.argv[4] || 'output/palm-cove/vegetation-before','renderer.cjs'));
+const frames = JSON.parse(readFileSync('assets/sprites/atlas.json')).frames;
 const hash = x => createHash('sha256').update(JSON.stringify(x)).digest('hex');
 const routes=[];
 function visit(p) { const ns=now.NEXT[p.at(-1)]; if(!ns.length) routes.push(p); else for(const n of ns) visit([...p,n]); }
 visit([0]);
 const road = tr => tr.segs.map(s=>[s.i,s.y1,s.y2,s.curve,s.theme,s.fo,s.fork,s.wallH,s.wallOff,s.wallRH,s.wallROff,s.soft,s.rail,s.beach,s.gate,s.ice,s.iceL,s.iceR]);
-const solid = tr => tr.segs.flatMap(s=>s.sprites.filter(p=>p.hit>0).map(p=>[s.i,p]));
-let plots=0;
+// Match the simulation: props raised above y=50 are decorative.
+const solid = tr => tr.segs.flatMap(s=>s.sprites.filter(p=>p.hit>0 && p.y<=50).map(p=>[s.i,p]));
+let plots=0, details=0, minClearance=Infinity;
 for(const path of routes) {
   const a=new old.Track(path), b=new now.Track(path);
+  const open=new openLand.Track(path);
   assert.equal(hash(road(a)),hash(road(b)),`road changed: ${path}`);
   assert.equal(hash(solid(a)),hash(solid(b)),`collision props changed: ${path}`);
-  assert.equal(hash(a.segs.filter(s=>s.theme!==0).map(s=>s.sprites)),hash(b.segs.filter(s=>s.theme!==0).map(s=>s.sprites)),`other scenery changed: ${path}`);
+  // Coral Bluffs has its own before/after and geometry checks now.
+  assert.equal(hash(a.segs.filter(s=>s.theme!==0 && s.theme!==1).map(s=>s.sprites)),hash(b.segs.filter(s=>s.theme!==0 && s.theme!==1).map(s=>s.sprites)),`other scenery changed: ${path}`);
   assert.deepEqual(a.stages,b.stages); assert.equal(a.startTime,b.startTime);
+  assert.equal(hash(open.segs.map(s=>s.cove)),hash(b.segs.map(s=>s.cove)),`open land geometry changed: ${path}`);
   assert.ok(b.segs.slice(0,260).every(s=>s.cove),'start lead-in must also have closed land');
   for(const s of b.segs) if(s.cove) {
+    const previous=open.segs[s.i].sprites;
+    assert.deepEqual(s.sprites.slice(0,previous.length),previous,'existing scenery must stay intact');
+    for(const prop of s.sprites.slice(previous.length)) {
+      const frame=frames[prop.name];
+      assert.ok(frame,`missing new sprite: ${prop.name}`);
+      assert.equal(prop.hit,0,'new scenery must not introduce a collision');
+      const x=-prop.x*2900, half=frame.w*prop.scale*(1522/140)*.5;
+      const clearance=x-half-s.wallOff*2900;
+      assert.ok(clearance>=550-.001,`sprite overlaps clear verge: ${s.i}, ${prop.name}`);
+      minClearance=Math.min(minClearance,clearance);
+      assert.ok(!s.cove.plot && s.fork<0 && !s.gate,'keep plots and gates open');
+      const points=s.cove.points;
+      const j=points.findIndex(p=>p.x>=x);
+      assert.ok(j>0,'sprite must stand on the land mesh');
+      const left=points[j-1], right=points[j];
+      const surface=left.h+(right.h-left.h)*(x-left.x)/(right.x-left.x);
+      assert.ok(Math.abs(prop.y-surface)<.001,'sprite must meet the ground');
+      if(path===routes[0]) details++;
+    }
     const points=s.cove.points;
     assert.ok(points.every((p,i)=>Number.isFinite(p.x)&&Number.isFinite(p.h)&&p.h>=0&&(!i||p.x>points[i-1].x)),`bad mesh: ${s.i}`);
     assert.equal(points.at(-1).h,0,'land must close behind the ridge');
@@ -47,6 +72,7 @@ assert.deepEqual(current,baseline,'full coast run must have identical results');
 const tr=new now.Track(); const stable=hash(tr.segs.filter(s=>s.theme===0).map(s=>[s.cove,s.sprites]));
 tr.choose(1,5); for(let i=0;i<5;i++) tr.step();
 assert.equal(hash(tr.segs.filter(s=>s.theme===0).map(s=>[s.cove,s.sprites])),stable);
-const result={status:'PASS',routes:routes.length,plotsChecked:plots,startLeadIn:'closed',roadAndCollisions:'unchanged',otherStageScenery:'unchanged',coastAutopilot:'identical, five stages, goal',forkRebuild:'stable'};
+assert.ok(details>0,'new scenery must be present');
+const result={status:'PASS',routes:routes.length,plotsChecked:plots,startLeadIn:'closed',openLandGeometry:'unchanged',newSceneryPerPalmCove:details,minimumSpriteClearanceBeyondRunoff:Math.round(minClearance),roadAndCollisions:'unchanged',otherStageScenery:'unchanged',coastAutopilot:'identical, five stages, goal',forkRebuild:'stable'};
 writeFileSync(resolve(after,'validation.json'),JSON.stringify(result,null,2));
 console.log(JSON.stringify(result,null,2));
