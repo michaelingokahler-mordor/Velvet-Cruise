@@ -1,0 +1,112 @@
+[
+  {
+    "name": "player_straight_0",
+    "w": 88,
+    "h": 48
+  },
+  {
+    "name": "player_straight_1",
+    "w": 88,
+    "h": 48
+  },
+  {
+    "name": "player_left_0",
+    "w": 88,
+    "h": 48
+  },
+  {
+    "name": "player_left_1",
+    "w": 88,
+    "h": 48
+  },
+  {
+    "name": "player_right_0",
+    "w": 88,
+    "h": 48
+  },
+  {
+    "name": "player_right_1",
+    "w": 88,
+    "h": 48
+  },
+  {
+    "name": "player_brake_straight",
+    "w": 88,
+    "h": 48
+  },
+  {
+    "name": "player_brake_left",
+    "w": 88,
+    "h": 48
+  },
+  {
+    "name": "player_brake_right",
+    "w": 88,
+    "h": 48
+  },
+  {
+    "name": "coupe_blue",
+    "w": 72,
+    "h": 38
+  },
+  {
+    "name": "coupe_green",
+    "w": 72,
+    "h": 38
+  },
+  {
+    "name": "coupe_white",
+    "w": 72,
+    "h": 38
+  },
+  {
+    "name": "coupe_yellow",
+    "w": 72,
+    "h": 38
+  },
+  {
+    "name": "sports_black",
+    "w": 72,
+    "h": 38
+  },
+  {
+    "name": "sports_silver",
+    "w": 72,
+    "h": 38
+  },
+  {
+    "name": "beetle_yellow",
+    "w": 60,
+    "h": 44
+  },
+  {
+    "name": "beetle_teal",
+    "w": 60,
+    "h": 44
+  },
+  {
+    "name": "pickup_white",
+    "w": 76,
+    "h": 48
+  },
+  {
+    "name": "pickup_brown",
+    "w": 76,
+    "h": 48
+  },
+  {
+    "name": "van_orange",
+    "w": 74,
+    "h": 72
+  },
+  {
+    "name": "van_blue",
+    "w": 74,
+    "h": 72
+  },
+  {
+    "name": "truck_white",
+    "w": 96,
+    "h": 120
+  }
+]

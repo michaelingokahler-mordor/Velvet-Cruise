@@ -1,0 +1,100 @@
+{
+  "status": "complete",
+  "started_at": "2026-10-09T09:46:22Z",
+  "poster": {
+    "frames": [
+      "t=2.1s",
+      "t=4.2s",
+      "t=6.3s"
+    ],
+    "errors": [],
+    "raf_per_second": 379,
+    "viewport": "1280x720",
+    "picked": {
+      "frame": "t=6.3s",
+      "detail": 41.9
+    },
+    "files": {
+      "title_poster.webp": "/var/games/game-20261009-93986676/assets/ui/title_poster.webp",
+      "title_poster_sm.webp": "/var/games/game-20261009-93986676/assets/ui/title_poster_sm.webp"
+    }
+  },
+  "metadata": {
+    "tagline": "Cruise a red convertible down a pixel-art coastal highway as the sun sinks into the sea.",
+    "description": "**Velvet Cruise** is a retro arcade driving game in pixel art. You take the wheel of a red convertible carrying two passengers along a seaside highway, with rocky cliffs on one side and the ocean, sea stacks, and a lone sailboat on the other. A big orange sun hangs low on the horizon.\n\nThe goal is right there on the title screen: *chase the sunset down the coast!* Hit **DRIVE!** to start your run, or check the **RANKINGS** to see how your times compare.\n\nControls are simple and keyboard-based: use the left and right arrow keys to steer, the up arrow for gas, and the down arrow to brake. Press Enter to start.",
+    "color_theme": "sunset",
+    "font_family": "retro",
+    "border_radius": "none",
+    "category_slug": "racing",
+    "tag_slugs": [
+      "arcade",
+      "pixel-art",
+      "driving",
+      "retro",
+      "browser"
+    ],
+    "kit": {
+      "theme": "sunset coastal highway",
+      "genre": "arcade racing",
+      "style": "pixel",
+      "mood": "breezy nostalgia",
+      "elements": [
+        "red convertible",
+        "two passengers",
+        "seaside highway",
+        "setting sun",
+        "sailboat on the ocean"
+      ]
+    },
+    "title": "Velvet Cruise",
+    "from_model": true
+  },
+  "model": {
+    "model": "@preset/tesana-opus-5-5",
+    "url": "http://127.0.0.1:8790/model/openrouter~claude-opus-5.5/v1/messages",
+    "ok": true,
+    "status": 200,
+    "seconds": 8.1,
+    "input_tokens": 1638,
+    "output_tokens": 540
+  },
+  "kit": {
+    "status": "complete",
+    "pid": 135928,
+    "items": [
+      "cover",
+      "banner",
+      "app_icon"
+    ],
+    "waited_out": false,
+    "results": [
+      {
+        "type": "cover",
+        "success": true,
+        "path": "/var/games/game-20261009-93986676/assets/ui/cover.webp",
+        "smallPath": "/var/games/game-20261009-93986676/assets/ui/cover_sm.webp"
+      },
+      {
+        "type": "banner",
+        "success": true,
+        "path": "/var/games/game-20261009-93986676/assets/ui/banner.webp"
+      },
+      {
+        "type": "app_icon",
+        "success": true,
+        "path": "/var/games/game-20261009-93986676/assets/ui/app_icon.webp"
+      }
+    ],
+    "files": [
+      "app_icon.webp",
+      "banner.webp",
+      "cover.webp",
+      "cover_sm.webp",
+      "explore_frame.webp",
+      "explore_frame_sm.webp",
+      "title_poster.webp",
+      "title_poster_sm.webp"
+    ]
+  },
+  "seconds": 40.7
+}

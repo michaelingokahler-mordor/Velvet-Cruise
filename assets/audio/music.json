@@ -1,0 +1,52 @@
+{
+  "songs": [
+    {
+      "file": "assets/audio/music_coastline.mp3",
+      "title": "Coastline Cruise",
+      "bpm": 156,
+      "loopStart": 3.077234,
+      "loopEnd": 64.621723
+    },
+    {
+      "file": "assets/audio/music_golden.mp3",
+      "title": "Golden Hour",
+      "bpm": 120,
+      "loopStart": 4.0,
+      "loopEnd": 68.0
+    },
+    {
+      "file": "assets/audio/music_wave.mp3",
+      "title": "Wave Rider",
+      "bpm": 170,
+      "loopStart": 2.823832,
+      "loopEnd": 59.300567
+    },
+    {
+      "file": "assets/audio/music_twist.mp3",
+      "title": "Pacific Twist",
+      "bpm": 146,
+      "loopStart": 3.288163,
+      "loopEnd": 55.898776
+    },
+    {
+      "file": "assets/audio/music_highway.mp3",
+      "title": "Highway One",
+      "bpm": 112,
+      "loopStart": 4.285714,
+      "loopEnd": 72.857143
+    },
+    {
+      "file": "assets/audio/music_riptide.mp3",
+      "title": "Riptide",
+      "bpm": 172,
+      "loopStart": 2.791179,
+      "loopEnd": 58.614853
+    }
+  ],
+  "jingles": {
+    "checkpoint": "assets/audio/jingle_checkpoint.mp3",
+    "stage": "assets/audio/jingle_stage.mp3",
+    "gameover": "assets/audio/jingle_gameover.mp3",
+    "goal": "assets/audio/jingle_goal.mp3"
+  }
+}

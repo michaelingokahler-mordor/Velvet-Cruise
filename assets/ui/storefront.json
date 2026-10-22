@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "generated_at": "2026-10-09T09:46:39Z",
+  "tagline": "Cruise a red convertible down a pixel-art coastal highway as the sun sinks into the sea.",
+  "description": "**Velvet Cruise** is a retro arcade driving game in pixel art. You take the wheel of a red convertible carrying two passengers along a seaside highway, with rocky cliffs on one side and the ocean, sea stacks, and a lone sailboat on the other. A big orange sun hangs low on the horizon.\n\nThe goal is right there on the title screen: *chase the sunset down the coast!* Hit **DRIVE!** to start your run, or check the **RANKINGS** to see how your times compare.\n\nControls are simple and keyboard-based: use the left and right arrow keys to steer, the up arrow for gas, and the down arrow to brake. Press Enter to start.",
+  "theme": {
+    "color_theme": "sunset",
+    "font_family": "retro",
+    "border_radius": "none"
+  },
+  "category_slug": "racing",
+  "tag_slugs": [
+    "arcade",
+    "pixel-art",
+    "driving",
+    "retro",
+    "browser"
+  ]
+}

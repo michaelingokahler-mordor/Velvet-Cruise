@@ -1,0 +1,1145 @@
+{
+ "version": 1,
+ "source": "en",
+ "targets": [
+  "es",
+  "fr",
+  "de",
+  "it",
+  "pt-BR",
+  "ru",
+  "zh",
+  "ja",
+  "ko"
+ ],
+ "strings": [
+  {
+   "id": "game.title",
+   "text": "Velvet Cruise"
+  },
+  {
+   "id": "title.start_key",
+   "text": "Press Enter to start"
+  },
+  {
+   "id": "title.start_tap",
+   "text": "Tap to start"
+  },
+  {
+   "id": "title.rankings",
+   "text": "Rankings"
+  },
+  {
+   "id": "title.garage",
+   "text": "Garage"
+  },
+  {
+   "id": "title.tagline",
+   "text": "Chase the sunset down the coast!"
+  },
+  {
+   "id": "ctl.steer",
+   "text": "Steer"
+  },
+  {
+   "id": "ctl.gas",
+   "text": "Gas"
+  },
+  {
+   "id": "ctl.brake",
+   "text": "Brake"
+  },
+  {
+   "id": "ctl.pause",
+   "text": "Pause"
+  },
+  {
+   "id": "ctl.space",
+   "text": "Space"
+  },
+  {
+   "id": "ctl.title",
+   "text": "Choose your controls"
+  },
+  {
+   "id": "ctl.auto",
+   "text": "Auto-detect"
+  },
+  {
+   "id": "ctl.keyboard",
+   "text": "Keyboard"
+  },
+  {
+   "id": "ctl.touch",
+   "text": "Touch screen"
+  },
+  {
+   "id": "ctl.auto_desc",
+   "text": "Phones and tablets get the touch pads, computers use the keyboard."
+  },
+  {
+   "id": "ctl.keyboard_desc",
+   "text": "Arrows or WASD to steer. Up or Space for gas, Down to brake, P to pause."
+  },
+  {
+   "id": "ctl.touch_desc",
+   "text": "Big on-screen pads to steer, brake and hit the gas. Tilt steering can be switched on before you drive."
+  },
+  {
+   "id": "ctl.detected",
+   "text": "This device: {d}"
+  },
+  {
+   "id": "radio.title",
+   "text": "Pick your radio station"
+  },
+  {
+   "id": "radio.hint",
+   "text": "Arrows to tune, Enter to drive"
+  },
+  {
+   "id": "radio.hint_tap",
+   "text": "Tap a station, then Drive!"
+  },
+  {
+   "id": "radio.drive",
+   "text": "Drive!"
+  },
+  {
+   "id": "radio.loading",
+   "text": "Tuning in..."
+  },
+  {
+   "id": "hud.time",
+   "text": "Time"
+  },
+  {
+   "id": "hud.score",
+   "text": "Score"
+  },
+  {
+   "id": "hud.lap",
+   "text": "Lap"
+  },
+  {
+   "id": "hud.kmh",
+   "text": "km/h"
+  },
+  {
+   "id": "hud.stage",
+   "text": "Stage {n}"
+  },
+  {
+   "id": "hud.low",
+   "text": "Low"
+  },
+  {
+   "id": "hud.high",
+   "text": "High"
+  },
+  {
+   "id": "msg.ready",
+   "text": "Get ready"
+  },
+  {
+   "id": "msg.go",
+   "text": "Go!"
+  },
+  {
+   "id": "msg.checkpoint",
+   "text": "Checkpoint!"
+  },
+  {
+   "id": "msg.extended",
+   "text": "Extended time +{n}"
+  },
+  {
+   "id": "msg.stageclear",
+   "text": "Stage {n} clear!"
+  },
+  {
+   "id": "msg.stagetime",
+   "text": "Stage time {t}"
+  },
+  {
+   "id": "msg.closepass",
+   "text": "Close pass +{n}"
+  },
+  {
+   "id": "msg.hurry",
+   "text": "Hurry up!"
+  },
+  {
+   "id": "msg.timeup",
+   "text": "Time up"
+  },
+  {
+   "id": "msg.goal",
+   "text": "Goal!"
+  },
+  {
+   "id": "gate.start",
+   "text": "Start"
+  },
+  {
+   "id": "gate.checkpoint",
+   "text": "Checkpoint"
+  },
+  {
+   "id": "gate.goal",
+   "text": "Goal"
+  },
+  {
+   "id": "stage.1",
+   "text": "Palm Cove"
+  },
+  {
+   "id": "stage.2",
+   "text": "Coral Bluffs"
+  },
+  {
+   "id": "stage.3",
+   "text": "Surfside"
+  },
+  {
+   "id": "stage.4",
+   "text": "Cypress Point"
+  },
+  {
+   "id": "stage.5",
+   "text": "Twilight Bay"
+  },
+  {
+   "id": "stage.6",
+   "text": "Thunder Highway"
+  },
+  {
+   "id": "stage.7",
+   "text": "Vineyard Valley"
+  },
+  {
+   "id": "stage.8",
+   "text": "Redwood Pass"
+  },
+  {
+   "id": "stage.9",
+   "text": "Painted Desert"
+  },
+  {
+   "id": "stage.10",
+   "text": "Death Valley"
+  },
+  {
+   "id": "stage.11",
+   "text": "Neon City"
+  },
+  {
+   "id": "stage.12",
+   "text": "Snowcap Pass"
+  },
+  {
+   "id": "stage.13",
+   "text": "Gold Rush Town"
+  },
+  {
+   "id": "stage.14",
+   "text": "Crystal Lake"
+  },
+  {
+   "id": "stage.15",
+   "text": "Starlight Summit"
+  },
+  {
+   "id": "map.goal_letter",
+   "text": "Goal {letter}"
+  },
+  {
+   "id": "fork.choose",
+   "text": "Choose your road!"
+  },
+  {
+   "id": "title.map",
+   "text": "Course Map"
+  },
+  {
+   "id": "map.title",
+   "text": "Course Map"
+  },
+  {
+   "id": "map.goal",
+   "text": "Goal!"
+  },
+  {
+   "id": "map.timeup",
+   "text": "Time up"
+  },
+  {
+   "id": "wx.clear",
+   "text": "Clear skies"
+  },
+  {
+   "id": "wx.rain",
+   "text": "Thunderstorm"
+  },
+  {
+   "id": "wx.fog",
+   "text": "Thick fog"
+  },
+  {
+   "id": "wx.sand",
+   "text": "Sandstorm"
+  },
+  {
+   "id": "wx.heat",
+   "text": "Heat haze"
+  },
+  {
+   "id": "wx.night",
+   "text": "Clear night"
+  },
+  {
+   "id": "wx.snow",
+   "text": "Snowfall"
+  },
+  {
+   "id": "pass.weather",
+   "text": "Are you sure about this road?"
+  },
+  {
+   "id": "pass.newroad",
+   "text": "Ooh, a new road!"
+  },
+  {
+   "id": "pass.tunnel1",
+   "text": "Woo! Listen to that echo!"
+  },
+  {
+   "id": "pass.tunnel2",
+   "text": "I love the city lights!"
+  },
+  {
+   "id": "res.gameover",
+   "text": "Game over"
+  },
+  {
+   "id": "res.complete",
+   "text": "Coast complete!"
+  },
+  {
+   "id": "res.score",
+   "text": "Score {n}"
+  },
+  {
+   "id": "res.reached",
+   "text": "Reached {name}"
+  },
+  {
+   "id": "res.timebonus",
+   "text": "Time bonus +{n}"
+  },
+  {
+   "id": "res.newbest",
+   "text": "New best!"
+  },
+  {
+   "id": "res.fullrun",
+   "text": "Full run {t}"
+  },
+  {
+   "id": "res.continue_key",
+   "text": "Press Enter to continue"
+  },
+  {
+   "id": "res.continue_tap",
+   "text": "Tap to continue"
+  },
+  {
+   "id": "res.top",
+   "text": "Top drivers"
+  },
+  {
+   "id": "res.top_on",
+   "text": "Top drivers on {d}"
+  },
+  {
+   "id": "name.title",
+   "text": "Enter your name"
+  },
+  {
+   "id": "name.rank",
+   "text": "Rank {n}"
+  },
+  {
+   "id": "name.space",
+   "text": "Space"
+  },
+  {
+   "id": "name.del",
+   "text": "Delete"
+  },
+  {
+   "id": "name.ok",
+   "text": "OK"
+  },
+  {
+   "id": "name.hint_key",
+   "text": "Type your name or pick letters with the arrows."
+  },
+  {
+   "id": "name.hint_tap",
+   "text": "Tap the letters, then OK."
+  },
+  {
+   "id": "name.local",
+   "text": "It goes into the arcade top 10 on this device."
+  },
+  {
+   "id": "name.table",
+   "text": "Arcade top 10"
+  },
+  {
+   "id": "name.default",
+   "text": "DRIVER"
+  },
+  {
+   "id": "end.title",
+   "text": "Congratulations!"
+  },
+  {
+   "id": "end.sub",
+   "text": "You caught the sunset at the end of the coast!"
+  },
+  {
+   "id": "end.line0",
+   "text": "Never again... but we made it!"
+  },
+  {
+   "id": "end.line1",
+   "text": "Phew! We made it!"
+  },
+  {
+   "id": "end.line2",
+   "text": "We made it! What a ride!"
+  },
+  {
+   "id": "end.line3",
+   "text": "My hero! Best road trip ever!"
+  },
+  {
+   "id": "rank.title",
+   "text": "Rankings"
+  },
+  {
+   "id": "rank.board_score",
+   "text": "Online high score"
+  },
+  {
+   "id": "rank.board_run",
+   "text": "Fastest full run"
+  },
+  {
+   "id": "rank.board_stages",
+   "text": "Your stage bests"
+  },
+  {
+   "id": "rank.board_arcade",
+   "text": "Arcade top 10 (this device)"
+  },
+  {
+   "id": "rank.arcade_empty",
+   "text": "No names yet. Finish a run and enter yours!"
+  },
+  {
+   "id": "rank.account",
+   "text": "Online names come from your account."
+  },
+  {
+   "id": "rank.device",
+   "text": "Saved on this device"
+  },
+  {
+   "id": "rank.empty",
+   "text": "No entries yet. Be the first!"
+  },
+  {
+   "id": "rank.offline",
+   "text": "Online rankings aren't available here. Your arcade top 10 and stage bests are kept on this computer."
+  },
+  {
+   "id": "rank.loading",
+   "text": "Loading..."
+  },
+  {
+   "id": "rank.back",
+   "text": "Back"
+  },
+  {
+   "id": "rank.hint",
+   "text": "Up / Down: difficulty   Left / Right: board"
+  },
+  {
+   "id": "rank.you",
+   "text": "You"
+  },
+  {
+   "id": "pause.title",
+   "text": "Paused"
+  },
+  {
+   "id": "pause.resume",
+   "text": "Resume"
+  },
+  {
+   "id": "pause.quit",
+   "text": "Quit to title"
+  },
+  {
+   "id": "title.best",
+   "text": "Best on {d}: {n}"
+  },
+  {
+   "id": "song.coastline",
+   "text": "Coastline Cruise"
+  },
+  {
+   "id": "song.golden",
+   "text": "Golden Hour"
+  },
+  {
+   "id": "song.wave",
+   "text": "Wave Rider"
+  },
+  {
+   "id": "song.twist",
+   "text": "Pacific Twist"
+  },
+  {
+   "id": "song.highway",
+   "text": "Highway One"
+  },
+  {
+   "id": "song.riptide",
+   "text": "Riptide"
+  },
+  {
+   "id": "ctl.tilt_on",
+   "text": "Tilt steering: On"
+  },
+  {
+   "id": "ctl.tilt_off",
+   "text": "Tilt steering: Off"
+  },
+  {
+   "id": "ctl.tilt_hint",
+   "text": "Tilt your device like a steering wheel"
+  },
+  {
+   "id": "ctl.tilt_blocked",
+   "text": "Motion access was blocked"
+  },
+  {
+   "id": "pass.love1",
+   "text": "I love you!"
+  },
+  {
+   "id": "pass.love2",
+   "text": "You're amazing!"
+  },
+  {
+   "id": "pass.love3",
+   "text": "Woo-hoo!"
+  },
+  {
+   "id": "pass.love4",
+   "text": "My hero!"
+  },
+  {
+   "id": "pass.love5",
+   "text": "Faster, faster!"
+  },
+  {
+   "id": "pass.love6",
+   "text": "What a driver!"
+  },
+  {
+   "id": "pass.scared1",
+   "text": "I'm scared!"
+  },
+  {
+   "id": "pass.scared2",
+   "text": "Watch out!"
+  },
+  {
+   "id": "pass.scared3",
+   "text": "Careful, honey!"
+  },
+  {
+   "id": "pass.scared4",
+   "text": "Eek!"
+  },
+  {
+   "id": "pass.scared5",
+   "text": "Slow down!"
+  },
+  {
+   "id": "pass.hurry",
+   "text": "Hurry, hurry!"
+  },
+  {
+   "id": "pass.sad",
+   "text": "Oh no..."
+  },
+  {
+   "id": "rival.hit1",
+   "text": "Stop racing!"
+  },
+  {
+   "id": "rival.hit2",
+   "text": "Stupid idiot!"
+  },
+  {
+   "id": "rival.hit3",
+   "text": "Hey! Watch it!"
+  },
+  {
+   "id": "rival.hit4",
+   "text": "Learn to drive!"
+  },
+  {
+   "id": "rival.hit5",
+   "text": "Are you crazy?!"
+  },
+  {
+   "id": "rival.hit6",
+   "text": "My bumper!"
+  },
+  {
+   "id": "rival.pass1",
+   "text": "Show-off!"
+  },
+  {
+   "id": "rival.pass2",
+   "text": "Slow down, maniac!"
+  },
+  {
+   "id": "rival.pass3",
+   "text": "Stop racing!"
+  },
+  {
+   "id": "rival.pass4",
+   "text": "Whoa, crazy!"
+  },
+  {
+   "id": "rival.pass5",
+   "text": "Road hog!"
+  },
+  {
+   "id": "rival.pass6",
+   "text": "Nice car... jerk!"
+  },
+  {
+   "id": "diff.title",
+   "text": "Choose your run"
+  },
+  {
+   "id": "diff.easy",
+   "text": "Easy"
+  },
+  {
+   "id": "diff.normal",
+   "text": "Normal"
+  },
+  {
+   "id": "diff.hard",
+   "text": "Hard"
+  },
+  {
+   "id": "diff.easy_desc",
+   "text": "A generous clock and light traffic. Great for seeing the whole coast."
+  },
+  {
+   "id": "diff.normal_desc",
+   "text": "The classic arcade clock and traffic."
+  },
+  {
+   "id": "diff.hard_desc",
+   "text": "A tight clock and heavy, swerving traffic."
+  },
+  {
+   "id": "diff.score",
+   "text": "Points x{n}"
+  },
+  {
+   "id": "diff.own",
+   "text": "Each difficulty has its own rankings and badges."
+  },
+  {
+   "id": "diff.next",
+   "text": "Next"
+  },
+  {
+   "id": "diff.hint",
+   "text": "Up / Down to choose, Enter to continue"
+  },
+  {
+   "id": "mood.terrified",
+   "text": "Terrified"
+  },
+  {
+   "id": "mood.nervous",
+   "text": "Nervous"
+  },
+  {
+   "id": "mood.happy",
+   "text": "Happy"
+  },
+  {
+   "id": "mood.love",
+   "text": "In love"
+  },
+  {
+   "id": "msg.passbonus",
+   "text": "Passenger bonus +{n}"
+  },
+  {
+   "id": "pass.terrified",
+   "text": "Let me out of this car!"
+  },
+  {
+   "id": "pass.relief",
+   "text": "We made it... phew!"
+  },
+  {
+   "id": "pass.never",
+   "text": "Never again!"
+  },
+  {
+   "id": "pass.tumble1",
+   "text": "My hair is full of sand!"
+  },
+  {
+   "id": "pass.tumble2",
+   "text": "Are you crazy?!"
+  },
+  {
+   "id": "pass.tumble3",
+   "text": "Ow... my head!"
+  },
+  {
+   "id": "pass.tumble4",
+   "text": "You call that driving?!"
+  },
+  {
+   "id": "pass.tumble5",
+   "text": "I'm walking home!"
+  },
+  {
+   "id": "title.badges",
+   "text": "Badges"
+  },
+  {
+   "id": "title.credits",
+   "text": "Credits"
+  },
+  {
+   "id": "title.copyright",
+   "text": "(C) 2026 by Sabnock Works"
+  },
+  {
+   "id": "badge.title",
+   "text": "Road-Trip Badges"
+  },
+  {
+   "id": "badge.count",
+   "text": "{n} of {total} earned"
+  },
+  {
+   "id": "badge.tier_count",
+   "text": "{d} {n}/{total}"
+  },
+  {
+   "id": "badge.earned",
+   "text": "Badge earned!"
+  },
+  {
+   "id": "badge.got",
+   "text": "Earned"
+  },
+  {
+   "id": "badge.locked",
+   "text": "Not earned yet"
+  },
+  {
+   "id": "badge.progress",
+   "text": "{n} / {total}"
+  },
+  {
+   "id": "badge.offline",
+   "text": "Your badges couldn't be loaded right now."
+  },
+  {
+   "id": "badge.hint",
+   "text": "Arrows to choose a badge"
+  },
+  {
+   "id": "garage.title",
+   "text": "Garage"
+  },
+  {
+   "id": "garage.choose",
+   "text": "Choose this car"
+  },
+  {
+   "id": "garage.hint",
+   "text": "Left / Right to look around, Enter to choose"
+  },
+  {
+   "id": "garage.same",
+   "text": "Every car drives the same."
+  },
+  {
+   "id": "car.rosso",
+   "text": "Rosso Spider"
+  },
+  {
+   "id": "car.rosso_desc",
+   "text": "The classic red convertible with side strakes."
+  },
+  {
+   "id": "car.toro",
+   "text": "Giallo Toro"
+  },
+  {
+   "id": "car.toro_desc",
+   "text": "An Italian wedge supercar with a giant wing."
+  },
+  {
+   "id": "car.speedster",
+   "text": "Emerald Speedster"
+  },
+  {
+   "id": "car.speedster_desc",
+   "text": "A curvy German sports car with a whale tail."
+  },
+  {
+   "id": "car.stallion",
+   "text": "Blue Stallion"
+  },
+  {
+   "id": "car.stallion_desc",
+   "text": "American muscle with white racing stripes."
+  },
+  {
+   "id": "badge.stage_clear",
+   "text": "Hit the Road"
+  },
+  {
+   "id": "badge.stage_clear_desc",
+   "text": "Clear your first stage."
+  },
+  {
+   "id": "badge.clean_stage",
+   "text": "Not a Scratch"
+  },
+  {
+   "id": "badge.clean_stage_desc",
+   "text": "Clear a stage without crashing or bumping into another car."
+  },
+  {
+   "id": "badge.clean_stages_10",
+   "text": "Smooth Operator"
+  },
+  {
+   "id": "badge.clean_stages_10_desc",
+   "text": "Clear 10 stages without crashing or bumping into another car."
+  },
+  {
+   "id": "badge.clean_coast",
+   "text": "Spotless Coast"
+  },
+  {
+   "id": "badge.clean_coast_desc",
+   "text": "Finish the whole coast without a single crash or bump."
+  },
+  {
+   "id": "badge.near_miss_1",
+   "text": "Close Shave"
+  },
+  {
+   "id": "badge.near_miss_1_desc",
+   "text": "Slip past a car at speed for a near miss."
+  },
+  {
+   "id": "badge.near_miss_50",
+   "text": "Thread the Needle"
+  },
+  {
+   "id": "badge.near_miss_50_desc",
+   "text": "Pull off 50 near misses."
+  },
+  {
+   "id": "badge.near_miss_250",
+   "text": "Ghost Rider"
+  },
+  {
+   "id": "badge.near_miss_250_desc",
+   "text": "Pull off 250 near misses."
+  },
+  {
+   "id": "badge.near_miss_run",
+   "text": "Slipstream Show"
+  },
+  {
+   "id": "badge.near_miss_run_desc",
+   "text": "Pull off 20 near misses in a single run."
+  },
+  {
+   "id": "badge.reach_twilight",
+   "text": "Into the Twilight"
+  },
+  {
+   "id": "badge.reach_twilight_desc",
+   "text": "Reach one of the five goal stages."
+  },
+  {
+   "id": "badge.coast_complete",
+   "text": "Coast to Coast"
+  },
+  {
+   "id": "badge.coast_complete_desc",
+   "text": "Finish the whole coast."
+  },
+  {
+   "id": "badge.coast_finishes_5",
+   "text": "Road Tripper"
+  },
+  {
+   "id": "badge.coast_finishes_5_desc",
+   "text": "Finish the whole coast 5 times."
+  },
+  {
+   "id": "badge.coast_love",
+   "text": "Sweethearts"
+  },
+  {
+   "id": "badge.coast_love_desc",
+   "text": "Finish the whole coast with your passenger in love."
+  },
+  {
+   "id": "badge.photo_finish",
+   "text": "Photo Finish"
+  },
+  {
+   "id": "badge.photo_finish_desc",
+   "text": "Reach the goal with 5 seconds or less on the clock."
+  },
+  {
+   "id": "badge.every_road",
+   "text": "Every Road"
+  },
+  {
+   "id": "badge.every_road_desc",
+   "text": "Clear all fifteen stages. Take a different fork next time!"
+  },
+  {
+   "id": "credits.title",
+   "text": "Credits for Velvet Cruise"
+  },
+  {
+   "id": "credits.copyright",
+   "text": "(C) 2026 Sabnock Works Independent Game Studio by Michael Kahler"
+  },
+  {
+   "id": "credits.idea",
+   "text": "Original Idea for Out Run"
+  },
+  {
+   "id": "credits.idea_by",
+   "text": "Yū Suzuki, SEGA"
+  },
+  {
+   "id": "credits.studio",
+   "text": "Game Studio"
+  },
+  {
+   "id": "credits.studio_name",
+   "text": "Sabnock Works Independent Game Studio"
+  },
+  {
+   "id": "credits.producer",
+   "text": "Executive Producer and Developer"
+  },
+  {
+   "id": "credits.producer_name",
+   "text": "Michael Kahler"
+  },
+  {
+   "id": "credits.made",
+   "text": "Programming, Asset & Music"
+  },
+  {
+   "id": "credits.back",
+   "text": "Back"
+  },
+  {
+   "id": "boot.loading",
+   "text": "Loading..."
+  },
+  {
+   "id": "msg.ice",
+   "text": "Icy patch!"
+  },
+  {
+   "id": "pass.ice",
+   "text": "Eek, it is slippery!"
+  },
+  {
+   "id": "badge.tier_goal",
+   "text": "Goals"
+  },
+  {
+   "id": "badge.goal_a",
+   "text": "Neon Nights"
+  },
+  {
+   "id": "badge.goal_a_desc",
+   "text": "Reach the goal in Neon City."
+  },
+  {
+   "id": "badge.goal_b",
+   "text": "Gold Rush Glory"
+  },
+  {
+   "id": "badge.goal_b_desc",
+   "text": "Reach the goal in Gold Rush Town."
+  },
+  {
+   "id": "badge.goal_c",
+   "text": "Lakeside Glow"
+  },
+  {
+   "id": "badge.goal_c_desc",
+   "text": "Reach the goal at Crystal Lake."
+  },
+  {
+   "id": "badge.goal_d",
+   "text": "Starlight Finish"
+  },
+  {
+   "id": "badge.goal_d_desc",
+   "text": "Reach the goal at Starlight Summit."
+  },
+  {
+   "id": "badge.goal_e",
+   "text": "Chasing the Sunset"
+  },
+  {
+   "id": "badge.goal_e_desc",
+   "text": "Reach the goal at Twilight Bay."
+  },
+  {
+   "id": "badge.goal_all",
+   "text": "Five Finish Lines"
+  },
+  {
+   "id": "badge.goal_all_desc",
+   "text": "Reach all five goals, on any difficulty."
+  },
+  {
+   "id": "end.a_title",
+   "text": "Neon Nights!"
+  },
+  {
+   "id": "end.a_sub",
+   "text": "You lit up the whole city at the end of the road!"
+  },
+  {
+   "id": "end.a_line0",
+   "text": "Never again... but the lights were pretty!"
+  },
+  {
+   "id": "end.a_line1",
+   "text": "Phew! Look at all those lights!"
+  },
+  {
+   "id": "end.a_line2",
+   "text": "The whole city is cheering for us!"
+  },
+  {
+   "id": "end.a_line3",
+   "text": "My hero! The city shines just for you!"
+  },
+  {
+   "id": "end.b_title",
+   "text": "Gold Rush Champion!"
+  },
+  {
+   "id": "end.b_sub",
+   "text": "You rode into Gold Rush Town like a legend!"
+  },
+  {
+   "id": "end.b_line0",
+   "text": "Never again... but that town is cute."
+  },
+  {
+   "id": "end.b_line1",
+   "text": "Phew! I need a cold lemonade!"
+  },
+  {
+   "id": "end.b_line2",
+   "text": "Yeehaw! What a ride!"
+  },
+  {
+   "id": "end.b_line3",
+   "text": "Yeehaw, my hero! Best gold rush ever!"
+  },
+  {
+   "id": "end.c_title",
+   "text": "Lakeside Glow!"
+  },
+  {
+   "id": "end.c_sub",
+   "text": "You made it to the moonlit lake!"
+  },
+  {
+   "id": "end.c_line0",
+   "text": "Never again... but the lake is beautiful."
+  },
+  {
+   "id": "end.c_line1",
+   "text": "Phew! It is so peaceful here."
+  },
+  {
+   "id": "end.c_line2",
+   "text": "Look at the lanterns! So pretty!"
+  },
+  {
+   "id": "end.c_line3",
+   "text": "My hero! Let us stay here all night!"
+  },
+  {
+   "id": "end.d_title",
+   "text": "Starlight Finish!"
+  },
+  {
+   "id": "end.d_sub",
+   "text": "You reached the top, right among the stars!"
+  },
+  {
+   "id": "end.d_line0",
+   "text": "Never again... but the stars are amazing."
+  },
+  {
+   "id": "end.d_line1",
+   "text": "Phew! I can see forever up here."
+  },
+  {
+   "id": "end.d_line2",
+   "text": "Make a wish! A shooting star!"
+  },
+  {
+   "id": "end.d_line3",
+   "text": "My hero! I wished for another ride!"
+  }
+ ]
+}

@@ -1,0 +1,49 @@
+# Build output (reproducible via build_tool) and caches
+web-export/
+desktop-export/
+node_modules/
+.vite/
+.qa/
+android-export/
+ios-export/
+.local-builds/
+.exports/
+.build_result.json
+
+# Self-QA rig artifacts (screenshots/logs per run) + transient probe scene
+.qa/
+_qa_probe/
+
+# Dream loop working directory (target frames, notes, verdicts, scores) —
+# the run's, not the game's; never versioned or shipped
+.dream-loop/
+
+# Per-version session transcripts (v2 offset index + canonical sessions
+# bucket replace the old in-git copies; keeping them in git ballooned .git
+# and made commits time out — the root cause of the data-loss incident).
+.versions/*.jsonl
+
+# OS junk
+.DS_Store
+Thumbs.db
+.tesana_dirty
+*.log
+
+# Build artifacts (added by engine migration)
+.canvas/
+.tesana/asset-jobs/
+
+# Local build output and QA exports
+/dist/
+/output/
+/tools/audio/build/
+
+# Export metadata and local player storage
+/.engine_turns.json
+/.storefront_kit_status.json
+/.tesana_storage_state.json
+
+# Local credentials and environment overrides
+.env
+.env.*
+!.env.example

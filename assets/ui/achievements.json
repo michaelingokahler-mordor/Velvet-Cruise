@@ -1,0 +1,323 @@
+{
+ "version": 1,
+ "achievements": [
+  {
+   "id": "stage-clear-easy",
+   "name": "Hit the Road (Easy)",
+   "description": "Clear your first stage on Easy.",
+   "icon": "road"
+  },
+  {
+   "id": "clean-stage-easy",
+   "name": "Not a Scratch (Easy)",
+   "description": "Clear a stage on Easy without crashing or bumping into another car.",
+   "icon": "shield-check"
+  },
+  {
+   "id": "clean-stages-10-easy",
+   "name": "Smooth Operator (Easy)",
+   "description": "Clear 10 stages on Easy without crashing or bumping into another car.",
+   "stat": "clean-stages-easy",
+   "target": 10,
+   "icon": "steering-wheel"
+  },
+  {
+   "id": "clean-coast-easy",
+   "name": "Spotless Coast (Easy)",
+   "description": "Finish the whole coast on Easy without a single crash or bump.",
+   "icon": "sparkles"
+  },
+  {
+   "id": "near-miss-1-easy",
+   "name": "Close Shave (Easy)",
+   "description": "Slip past a car at speed for a near miss on Easy.",
+   "stat": "near-misses-easy",
+   "target": 1,
+   "icon": "wind"
+  },
+  {
+   "id": "near-miss-50-easy",
+   "name": "Thread the Needle (Easy)",
+   "description": "Pull off 50 near misses on Easy.",
+   "stat": "near-misses-easy",
+   "target": 50,
+   "icon": "bolt"
+  },
+  {
+   "id": "near-miss-250-easy",
+   "name": "Ghost Rider (Easy)",
+   "description": "Pull off 250 near misses on Easy.",
+   "stat": "near-misses-easy",
+   "target": 250,
+   "icon": "ghost"
+  },
+  {
+   "id": "near-miss-run-easy",
+   "name": "Slipstream Show (Easy)",
+   "description": "Pull off 20 near misses in a single run on Easy.",
+   "icon": "forward-fast"
+  },
+  {
+   "id": "reach-twilight-easy",
+   "name": "Into the Twilight (Easy)",
+   "description": "Reach one of the five goal stages on Easy.",
+   "icon": "moon-stars"
+  },
+  {
+   "id": "coast-complete-easy",
+   "name": "Coast to Coast (Easy)",
+   "description": "Finish the whole coast on Easy.",
+   "icon": "flag-checkered"
+  },
+  {
+   "id": "coast-finishes-5-easy",
+   "name": "Road Tripper (Easy)",
+   "description": "Finish the whole coast 5 times on Easy.",
+   "stat": "coast-finishes-easy",
+   "target": 5,
+   "icon": "tree-palm"
+  },
+  {
+   "id": "coast-love-easy",
+   "name": "Sweethearts (Easy)",
+   "description": "Finish the whole coast on Easy with your passenger in love.",
+   "icon": "heart"
+  },
+  {
+   "id": "photo-finish-easy",
+   "name": "Photo Finish (Easy)",
+   "description": "Reach the goal on Easy with 5 seconds or less on the clock.",
+   "icon": "stopwatch"
+  },
+  {
+   "id": "every-road-easy",
+   "name": "Every Road (Easy)",
+   "description": "Clear all fifteen stages on Easy, whichever route each run takes.",
+   "icon": "route"
+  },
+  {
+   "id": "stage-clear",
+   "name": "Hit the Road (Normal)",
+   "description": "Clear your first stage on Normal.",
+   "icon": "road"
+  },
+  {
+   "id": "clean-stage",
+   "name": "Not a Scratch (Normal)",
+   "description": "Clear a stage on Normal without crashing or bumping into another car.",
+   "icon": "shield-check"
+  },
+  {
+   "id": "clean-stages-10",
+   "name": "Smooth Operator (Normal)",
+   "description": "Clear 10 stages on Normal without crashing or bumping into another car.",
+   "stat": "clean-stages",
+   "target": 10,
+   "icon": "steering-wheel"
+  },
+  {
+   "id": "clean-coast",
+   "name": "Spotless Coast (Normal)",
+   "description": "Finish the whole coast on Normal without a single crash or bump.",
+   "icon": "sparkles"
+  },
+  {
+   "id": "near-miss-1",
+   "name": "Close Shave (Normal)",
+   "description": "Slip past a car at speed for a near miss on Normal.",
+   "stat": "near-misses",
+   "target": 1,
+   "icon": "wind"
+  },
+  {
+   "id": "near-miss-50",
+   "name": "Thread the Needle (Normal)",
+   "description": "Pull off 50 near misses on Normal.",
+   "stat": "near-misses",
+   "target": 50,
+   "icon": "bolt"
+  },
+  {
+   "id": "near-miss-250",
+   "name": "Ghost Rider (Normal)",
+   "description": "Pull off 250 near misses on Normal.",
+   "stat": "near-misses",
+   "target": 250,
+   "icon": "ghost"
+  },
+  {
+   "id": "near-miss-run",
+   "name": "Slipstream Show (Normal)",
+   "description": "Pull off 20 near misses in a single run on Normal.",
+   "icon": "forward-fast"
+  },
+  {
+   "id": "reach-twilight",
+   "name": "Into the Twilight (Normal)",
+   "description": "Reach one of the five goal stages on Normal.",
+   "icon": "moon-stars"
+  },
+  {
+   "id": "coast-complete",
+   "name": "Coast to Coast (Normal)",
+   "description": "Finish the whole coast on Normal.",
+   "icon": "flag-checkered"
+  },
+  {
+   "id": "coast-finishes-5",
+   "name": "Road Tripper (Normal)",
+   "description": "Finish the whole coast 5 times on Normal.",
+   "stat": "coast-finishes",
+   "target": 5,
+   "icon": "tree-palm"
+  },
+  {
+   "id": "coast-love",
+   "name": "Sweethearts (Normal)",
+   "description": "Finish the whole coast on Normal with your passenger in love.",
+   "icon": "heart"
+  },
+  {
+   "id": "photo-finish",
+   "name": "Photo Finish (Normal)",
+   "description": "Reach the goal on Normal with 5 seconds or less on the clock.",
+   "icon": "stopwatch"
+  },
+  {
+   "id": "every-road",
+   "name": "Every Road",
+   "description": "Clear all fifteen stages on Normal, whichever route each run takes.",
+   "icon": "route"
+  },
+  {
+   "id": "stage-clear-hard",
+   "name": "Hit the Road (Hard)",
+   "description": "Clear your first stage on Hard.",
+   "icon": "road"
+  },
+  {
+   "id": "clean-stage-hard",
+   "name": "Not a Scratch (Hard)",
+   "description": "Clear a stage on Hard without crashing or bumping into another car.",
+   "icon": "shield-check"
+  },
+  {
+   "id": "clean-stages-10-hard",
+   "name": "Smooth Operator (Hard)",
+   "description": "Clear 10 stages on Hard without crashing or bumping into another car.",
+   "stat": "clean-stages-hard",
+   "target": 10,
+   "icon": "steering-wheel"
+  },
+  {
+   "id": "clean-coast-hard",
+   "name": "Spotless Coast (Hard)",
+   "description": "Finish the whole coast on Hard without a single crash or bump.",
+   "icon": "sparkles"
+  },
+  {
+   "id": "near-miss-1-hard",
+   "name": "Close Shave (Hard)",
+   "description": "Slip past a car at speed for a near miss on Hard.",
+   "stat": "near-misses-hard",
+   "target": 1,
+   "icon": "wind"
+  },
+  {
+   "id": "near-miss-50-hard",
+   "name": "Thread the Needle (Hard)",
+   "description": "Pull off 50 near misses on Hard.",
+   "stat": "near-misses-hard",
+   "target": 50,
+   "icon": "bolt"
+  },
+  {
+   "id": "near-miss-250-hard",
+   "name": "Ghost Rider (Hard)",
+   "description": "Pull off 250 near misses on Hard.",
+   "stat": "near-misses-hard",
+   "target": 250,
+   "icon": "ghost"
+  },
+  {
+   "id": "near-miss-run-hard",
+   "name": "Slipstream Show (Hard)",
+   "description": "Pull off 20 near misses in a single run on Hard.",
+   "icon": "forward-fast"
+  },
+  {
+   "id": "reach-twilight-hard",
+   "name": "Into the Twilight (Hard)",
+   "description": "Reach one of the five goal stages on Hard.",
+   "icon": "moon-stars"
+  },
+  {
+   "id": "coast-hard",
+   "name": "Coast to Coast (Hard)",
+   "description": "Finish the whole coast on Hard.",
+   "icon": "fire"
+  },
+  {
+   "id": "coast-finishes-5-hard",
+   "name": "Road Tripper (Hard)",
+   "description": "Finish the whole coast 5 times on Hard.",
+   "stat": "coast-finishes-hard",
+   "target": 5,
+   "icon": "tree-palm"
+  },
+  {
+   "id": "coast-love-hard",
+   "name": "Sweethearts (Hard)",
+   "description": "Finish the whole coast on Hard with your passenger in love.",
+   "icon": "heart"
+  },
+  {
+   "id": "photo-finish-hard",
+   "name": "Photo Finish (Hard)",
+   "description": "Reach the goal on Hard with 5 seconds or less on the clock.",
+   "icon": "stopwatch"
+  },
+  {
+   "id": "every-road-hard",
+   "name": "Every Road (Hard)",
+   "description": "Clear all fifteen stages on Hard, whichever route each run takes.",
+   "icon": "route"
+  },
+  {
+   "id": "goal-a",
+   "name": "Neon Nights",
+   "description": "Reach the goal in Neon City.",
+   "icon": "stars"
+  },
+  {
+   "id": "goal-b",
+   "name": "Gold Rush Glory",
+   "description": "Reach the goal in Gold Rush Town.",
+   "icon": "pickaxe"
+  },
+  {
+   "id": "goal-c",
+   "name": "Lakeside Glow",
+   "description": "Reach the goal at Crystal Lake.",
+   "icon": "mountain-sun"
+  },
+  {
+   "id": "goal-d",
+   "name": "Starlight Finish",
+   "description": "Reach the goal at Starlight Summit.",
+   "icon": "telescope"
+  },
+  {
+   "id": "goal-e",
+   "name": "Chasing the Sunset",
+   "description": "Reach the goal at Twilight Bay.",
+   "icon": "sun"
+  },
+  {
+   "id": "goal-all",
+   "name": "Five Finish Lines",
+   "description": "Reach all five goals, on any difficulty.",
+   "icon": "trophy-star"
+  }
+ ]
+}

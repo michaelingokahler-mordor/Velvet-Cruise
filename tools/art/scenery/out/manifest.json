@@ -1,0 +1,137 @@
+[
+ {
+  "name": "palm_a",
+  "w": 72,
+  "h": 160
+ },
+ {
+  "name": "palm_b",
+  "w": 64,
+  "h": 136
+ },
+ {
+  "name": "palm_c",
+  "w": 56,
+  "h": 112
+ },
+ {
+  "name": "bush_a",
+  "w": 48,
+  "h": 28
+ },
+ {
+  "name": "bush_b",
+  "w": 48,
+  "h": 30
+ },
+ {
+  "name": "grass_a",
+  "w": 28,
+  "h": 16
+ },
+ {
+  "name": "rock_a",
+  "w": 56,
+  "h": 36
+ },
+ {
+  "name": "rock_b",
+  "w": 40,
+  "h": 26
+ },
+ {
+  "name": "sea_stack",
+  "w": 96,
+  "h": 84
+ },
+ {
+  "name": "cypress",
+  "w": 112,
+  "h": 96
+ },
+ {
+  "name": "umbrella_a",
+  "w": 40,
+  "h": 52
+ },
+ {
+  "name": "umbrella_b",
+  "w": 40,
+  "h": 52
+ },
+ {
+  "name": "surfboards",
+  "w": 40,
+  "h": 48
+ },
+ {
+  "name": "lifeguard",
+  "w": 64,
+  "h": 76
+ },
+ {
+  "name": "shack",
+  "w": 104,
+  "h": 64
+ },
+ {
+  "name": "house",
+  "w": 96,
+  "h": 80
+ },
+ {
+  "name": "house_lit",
+  "w": 96,
+  "h": 80
+ },
+ {
+  "name": "lamp",
+  "w": 16,
+  "h": 96
+ },
+ {
+  "name": "lamp_lit",
+  "w": 16,
+  "h": 96
+ },
+ {
+  "name": "lighthouse",
+  "w": 48,
+  "h": 144
+ },
+ {
+  "name": "billboard_a",
+  "w": 96,
+  "h": 64
+ },
+ {
+  "name": "billboard_b",
+  "w": 96,
+  "h": 64
+ },
+ {
+  "name": "sign_left",
+  "w": 32,
+  "h": 40
+ },
+ {
+  "name": "sign_right",
+  "w": 32,
+  "h": 40
+ },
+ {
+  "name": "crowd",
+  "w": 72,
+  "h": 40
+ },
+ {
+  "name": "gate",
+  "w": 256,
+  "h": 112
+ },
+ {
+  "name": "gate_goal",
+  "w": 256,
+  "h": 112
+ }
+]
