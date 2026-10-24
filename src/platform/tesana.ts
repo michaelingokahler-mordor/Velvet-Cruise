@@ -116,11 +116,16 @@ export function isDesktopBuild(): boolean {
   return false;
 }
 
+/** Self-hosted web and desktop builds keep scores and badges on this device. */
+export function usesLocalServices(): boolean {
+  return import.meta.env.VITE_LOCAL_SERVICES === "true" || isDesktopBuild();
+}
+
 /** Whether online leaderboards and account badges can be asked for at all. */
 export function servicesOnline(): boolean {
   if (!sdk) return false;
   if (sdk.__testFake) return true;
-  if (isDesktopBuild()) return false;
+  if (usesLocalServices()) return false;
   try {
     // a page with no service address answers reads empty, but would still send writes nowhere
     if (typeof sdk._canReach === "function" && !sdk._canReach()) return false;
@@ -163,7 +168,7 @@ function localBadges(): LocalBadges {
 export interface BoardEntry { rank: number; score: number; displayName: string; you?: boolean }
 
 export async function submitScore(board: string, score: number): Promise<{ improved: boolean; best: number } | null> {
-  if (isDesktopBuild()) return localSubmit(board, Math.round(score));
+  if (usesLocalServices()) return localSubmit(board, Math.round(score));
   try {
     if (!servicesOnline() || !sdk?.scores?.submit) return null;
     const r = await sdk.scores.submit(board, Math.round(score));
@@ -185,7 +190,7 @@ export async function topScores(board: string, limit = 8): Promise<BoardEntry[]>
 }
 
 export async function myBest(board: string): Promise<number | null> {
-  if (isDesktopBuild()) {
+  if (usesLocalServices()) {
     const v = loadJson<Record<string, number>>(LOCAL_BESTS, {})[board];
     return typeof v === "number" ? v : null;
   }
@@ -206,7 +211,7 @@ export function isTestSdk(): boolean { return !!sdk?.__testFake; }
 
 /** Every declared badge with this player's state, or null when badges can't be reached. */
 export async function listBadges(): Promise<BadgeItem[] | null> {
-  if (isDesktopBuild()) {
+  if (usesLocalServices()) {
     const b = localBadges(), got = new Set(b.earned);
     return ACH.map((a) => ({ id: a.id, name: a.name, target: a.target, unlocked: got.has(a.id), progress: a.stat ? b.counts[a.stat] ?? 0 : undefined }));
   }
@@ -222,7 +227,7 @@ export async function listBadges(): Promise<BadgeItem[] | null> {
 
 /** Unlock a plain badge: "new" the first time, "had" if already earned, null on failure. */
 export async function unlockBadge(id: string): Promise<"new" | "had" | null> {
-  if (isDesktopBuild()) {
+  if (usesLocalServices()) {
     if (!ACH.some((a) => a.id === id)) return null;
     const b = localBadges();
     if (b.earned.includes(id)) return "had";
@@ -244,7 +249,7 @@ export async function unlockBadge(id: string): Promise<"new" | "had" | null> {
 
 /** Add to a badge counter; returns the new total and any badges it unlocked, or null on failure. */
 export async function badgeProgress(stat: string, n: number): Promise<{ value: number | null; unlocked: string[] } | null> {
-  if (isDesktopBuild()) {
+  if (usesLocalServices()) {
     const b = localBadges();
     const value = Math.max(0, (Number(b.counts[stat]) || 0) + Math.max(0, n));
     b.counts[stat] = value;

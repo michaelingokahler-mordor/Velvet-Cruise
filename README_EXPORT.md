@@ -43,6 +43,33 @@ leaderboards, achievements and shop keep working when you run it yourself.
 
 Offline is a supported state, not an error: with no network the game plays.
 
+## Self-hosted web edition
+
+Run `npm ci`, then `npm run build:web`. Serve `dist/` from a static web server.
+This build uses relative asset paths and includes all game assets.
+It does not load the Tesana SDK or contact player services.
+Personal bests, arcade scores, preferences, and badges stay in browser storage.
+Clearing site data removes these local records. Shared online rankings are unavailable.
+
+Run `npm run check` and `npm run qa:local-services` before exporting this edition.
+The regular `npm run build` command keeps the Tesana export behavior.
+
+The Sabnock Works website stores this edition at
+`games/more-projects/velvet-cruise/`. Its `tools/update-velvet-cruise.mjs` script
+builds and copies this checkout. See the website README for the full procedure.
+
+To capture current website images, install Playwright in your tooling environment
+and make it available to Node. Start the website's local HTTP server, then run:
+
+```bash
+node tools/art/capture-web.cjs http://127.0.0.1:8080/games/more-projects/velvet-cruise/ ../sabnockworks/assets/media
+```
+
+The script uses `/usr/bin/chromium`, or the executable at `CHROMIUM_PATH`.
+It captures the title, garage, course map, and all fifteen stages at 1280 × 720.
+It checks stage identities, asset responses, and JavaScript errors.
+Capture records are saved under `output/website-capture/`.
+
 ## Not included
 
 - Tesana's session history, snapshots, internal metadata, and the

@@ -31,4 +31,25 @@ function gameAssets() {
   };
 }
 
-export default defineConfig({ base: "./", plugins: [decoders(), gameAssets()], build: { target: "es2022", sourcemap: false, assetsDir: "_app" } });
+// The self-hosted edition loads only local files and uses device-local saves.
+function standalone() {
+  return {
+    name: "velvet-standalone",
+    transformIndexHtml(html: string) {
+      return {
+        html: html.replace(/<script\b[^>]*\bdata-tesana-bootstrap\b[^>]*>[\s\S]*?<\/script>\s*/g, ""),
+        tags: [
+          { tag: "meta", attrs: { name: "description", content: "Play Velvet Cruise, a pixel-art arcade driving game. Free to play while in development. Feedback appreciated." }, injectTo: "head" as const },
+          { tag: "link", attrs: { rel: "canonical", href: "https://sabnockworks.com/games/more-projects/velvet-cruise/" }, injectTo: "head" as const },
+        ],
+      };
+    },
+  };
+}
+
+export default defineConfig(({ mode }) => ({
+  base: "./",
+  plugins: [decoders(), gameAssets(), ...(mode === "standalone" ? [standalone()] : [])],
+  define: { "import.meta.env.VITE_LOCAL_SERVICES": JSON.stringify(mode === "standalone" ? "true" : "false") },
+  build: { target: "es2022", sourcemap: false, assetsDir: "_app" },
+}));
