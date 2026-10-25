@@ -57,7 +57,11 @@ def material_edges(source):
 
 def vehicle(name,source):
     base=material_edges(source)
-    if 'roof_mask' in name or '_brake_' in name:return base
+    if 'roof_mask' in name:return base
+    if '_brake_' in name:
+        layer=Image.new('RGBA',base.size);d=ImageDraw.Draw(layer)
+        for y in range(1,base.height,3):d.line((0,y,base.width-1,y),fill='#ffe5af')
+        return clip_layer(base,layer)
     a=np.array(base);w,h=base.size
     layer=Image.new('RGBA',base.size);d=ImageDraw.Draw(layer)
     # Rear deck, trim, vents, tail-lamp prisms and tyre tread share one body
@@ -191,6 +195,60 @@ def scenery(name,source):
     return base
 
 
+def people(name,source):
+    base=material_edges(source);w,h=base.size
+    layer=Image.new('RGBA',base.size);d=ImageDraw.Draw(layer)
+    # Seams follow existing cloth and hair colours; keep the established poses.
+    a=np.array(base);r,g,b=a[:,:,0].astype(int),a[:,:,1].astype(int),a[:,:,2].astype(int)
+    cloth=(b>r*1.3)&(b>g*1.1)&(a[:,:,3]>0)
+    for x in range(5,w,9):d.line((x,h*.28,x+2,h*.7),fill='#6595ca')
+    base=clip_layer(base,layer,cloth)
+    layer=Image.new('RGBA',base.size);d=ImageDraw.Draw(layer)
+    hair=(r>g)&(g>b*1.4)&(a[:,:,3]>0)
+    for x in range(3,w,7):d.line((x,0,x+2,h*.42),fill='#e8bd69')
+    return clip_layer(base,layer,hair)
+
+
+def background(name,source):
+    """Keep each stage's composition, redraw material accents on its native grid."""
+    base=material_edges(source);w,h=base.size
+    layer=Image.new('RGBA',base.size);d=ImageDraw.Draw(layer)
+    a=np.array(base);r,g,b=a[:,:,0].astype(int),a[:,:,1].astype(int),a[:,:,2].astype(int)
+    if name.startswith('far_'):
+        green=(g>r*1.08)&(g>b*1.03)&(a[:,:,3]>0)
+        for x in range(9,w,37):
+            y=int(h*.56+math.sin(x*.017)*h*.23)
+            d.polygon([(x,y-8),(x-3,y+3),(x+4,y+3)],fill='#587968')
+            d.line((x,y-7,x+2,y+1),fill='#91a281')
+        base=clip_layer(base,layer,green)
+        layer=Image.new('RGBA',base.size);d=ImageDraw.Draw(layer)
+        rock=(r>g*1.14)&(r>b*1.1)&(a[:,:,3]>0)
+        for y in range(8,h,13):
+            for x in range((y//13%2)*19,w,53):
+                d.line((x,y,x+16,y-2,x+28,y+1),fill='#c59278')
+        base=clip_layer(base,layer,rock)
+    elif name.startswith('ending_bg'):
+        # Plaza paving, native masonry and restrained reflections stay behind
+        # the same barrier and character positions in every finale.
+        pavement=(a[:,:,3]>0)&(np.indices(a.shape[:2])[0]>h*.81)
+        for y in range(int(h*.83),h,11):
+            for x in range((y//11%2)*13,w,29):d.line((x,y,x+24,y),fill='#554358')
+        base=clip_layer(base,layer,pavement)
+    elif name=='course_map':
+        for y in range(11,h,21):
+            for x in range((y//21%2)*9,w,39):d.line((x,y,x+5,y-1),fill='#889d57')
+        green=(g>r*1.05)&(g>b*1.04)&(a[:,:,3]>0)
+        base=clip_layer(base,layer,green)
+    else:
+        # Stars are native one-pixel points rather than doubled square blocks.
+        dark=(r+g+b<250)&(a[:,:,3]>0)
+        for x in range(17,w,53):
+            y=7+((x*37)%max(1,int(h*.52)))
+            d.point((x,y),fill='#9ea8bc')
+        base=clip_layer(base,layer,dark)
+    return base
+
+
 def palm_backdrops():
     sky=Image.new('RGBA',(1280,160));d=ImageDraw.Draw(sky)
     colors=['#1c65cb','#287cdf','#3e92e7','#67afea','#92c5ec','#bbdaed','#e3e8d4']
@@ -242,11 +300,12 @@ def main():
         inventory[name]={'motif':motif,'classicSize':[f['w'],f['h']],'states':re.findall(r'roof[1-6]|closed|straight|left|right|brake|empty|[01]$',name)}
         if name.startswith(('icon_','wx_')) or (not args.all and not PILOT.match(name)):continue
         source=sheet.crop((f['x'],f['y'],f['x']+f['w'],f['y']+f['h']))
-        category='vehicle' if CAR.match(name) else 'palm' if name.startswith('palm_') else 'scenery'
-        result=vehicle(name,source) if category=='vehicle' else palm(name,source) if category=='palm' else scenery(name,source)
-        pose=re.match(r'^(player(?:_(?:yellow|green|blue|silver|azure))?)_(?:(roof[1-6]|closed)_)?(straight|left|right)_([01])$',name)
+        category='vehicle' if CAR.match(name) else 'palm' if name.startswith('palm_') else 'people' if name.startswith(('cheer_','crash_')) else 'scenery'
+        result=vehicle(name,source) if category=='vehicle' else palm(name,source) if category=='palm' else people(name,source) if category=='people' else scenery(name,source)
+        pose=re.match(r'^(player(?:_(?:yellow|green|blue|silver|azure))?)_(?:(roof[1-6]|closed)_)?(?:(straight|left|right)_([01])|(empty))$',name)
         if pose and pose[2]:
-            prefix,_,view,frame=pose.groups();key=f'{prefix}_{view}_{frame}'
+            prefix,_,view,frame,empty=pose.groups();view=view or 'straight'
+            key=f'{prefix}_empty' if empty else f'{prefix}_{view}_{frame}'
             if key not in body_cache:
                 f0=atlas[key];original=sheet.crop((f0['x'],f0['y'],f0['x']+f0['w'],f0['y']+f0['h']))
                 body_cache[key]=vehicle(key,original)
@@ -258,6 +317,12 @@ def main():
     images={}
     for name,im in palm_backdrops().items():
         im.save(OUT/(name+'.png'));images[name]={'file':name+'.png','density':2,'opaque':name.startswith('sky')}
+    if args.all:
+        for file in sorted((ROOT/'assets/bg').glob('*.png')):
+            name=file.stem.replace('ending','ending_bg') if file.stem.startswith('ending') else file.stem
+            if name in images:continue
+            result=background(name,Image.open(file).convert('RGBA'))
+            result.save(OUT/(name+'.png'));images[name]={'file':name+'.png','density':2,'opaque':not name.startswith('far_')}
     (HERE/'catalog.json').write_text(json.dumps({'sprites':catalog,'images':images,'scope':'all' if args.all else 'pilot'},indent=2))
     (HERE/'inventory.json').write_text(json.dumps({'classicAtlasSha256':hashlib.sha256((ROOT/'assets/sprites/atlas.png').read_bytes()).hexdigest(),'sprites':inventory},indent=2))
     print(f'Authored {len(catalog)} native sprites; {len(images)} backgrounds; inventory {len(inventory)} frames / {len(set(f["motif"] for f in inventory.values()))} motifs.')
