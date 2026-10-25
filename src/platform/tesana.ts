@@ -11,6 +11,7 @@ import strings from "../../assets/ui/strings.json";
 import achievementsJson from "../../assets/ui/achievements.json";
 import boardsJson from "../../assets/ui/boards.json";
 import { DEMO_A, SAVE_PREFIX } from "../game/edition";
+import { initOnlineScores, onlineScoresConfigured, onlineScoresReachable, onlineTopScores, queueOnlineScore } from './online-scores';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 type Params = Record<string, string | number>;
@@ -44,6 +45,13 @@ export function onTesanaReady(f: () => void): void {
 
 /** Connect to the SDK in the background (the game starts drawing without waiting for this). */
 export async function initTesana(timeoutMs = 2500): Promise<void> {
+  if (!DEMO_A && import.meta.env.VITE_LOCAL_SERVICES === 'true' && !isDesktopBuild()) {
+    const hash = typeof location === 'undefined' ? '' : location.hash;
+    // Automated and warped runs never connect to the production service.
+    if (!/autopilot|stage=|sim=|yelltest|tumbletest|nametest|endtest|path=|maptest/.test(hash)) await initOnlineScores(() => run(readyFns));
+    fireReady();
+    return;
+  }
   const w = window as any;
   const ready: Promise<any> | undefined = w.__TESANA_READY__;
   if (!ready || typeof ready.then !== "function") { fireReady(); return; }
@@ -76,6 +84,7 @@ function fill(s: string, p?: Params): string {
 
 /** Localised text for a declared string id. */
 export function t(id: string, p?: Params): string {
+  if (id === 'rank.account' && onlineScoresConfigured()) return 'Online names use your saved driver name.';
   try {
     const f = sdk?.l10n?.t;
     if (typeof f === "function") {
@@ -125,6 +134,7 @@ export function usesLocalServices(): boolean {
 /** Whether online leaderboards and account badges can be asked for at all. */
 export function servicesOnline(): boolean {
   if (DEMO_A) return false;
+  if (onlineScoresReachable()) return true;
   if (!sdk) return false;
   if (sdk.__testFake) return true;
   if (usesLocalServices()) return false;
@@ -170,7 +180,11 @@ function localBadges(): LocalBadges {
 export interface BoardEntry { rank: number; score: number; displayName: string; you?: boolean }
 
 export async function submitScore(board: string, score: number): Promise<{ improved: boolean; best: number } | null> {
-  if (usesLocalServices()) return localSubmit(board, Math.round(score));
+  if (usesLocalServices()) {
+    const local = localSubmit(board, Math.round(score));
+    await queueOnlineScore(board, Math.round(score));
+    return local;
+  }
   try {
     if (!servicesOnline() || !sdk?.scores?.submit) return null;
     const r = await sdk.scores.submit(board, Math.round(score));
@@ -182,6 +196,7 @@ export async function submitScore(board: string, score: number): Promise<{ impro
 }
 
 export async function topScores(board: string, limit = 8): Promise<BoardEntry[]> {
+  if (onlineScoresConfigured()) return onlineTopScores(board, limit);
   try {
     if (!servicesOnline() || !sdk?.scores?.top) return [];
     const r = await sdk.scores.top(board, { limit });

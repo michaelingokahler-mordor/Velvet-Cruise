@@ -47,9 +47,16 @@ Offline is a supported state, not an error: with no network the game plays.
 
 Run `npm ci`, then `npm run build:web`. Serve `dist/` from a static web server.
 This build uses relative asset paths and includes all game assets.
-It does not load the Tesana SDK or contact player services.
+It does not load the Tesana SDK. Public rankings use a separate Cloudflare Worker and D1 database, configured in `public/online.json`.
 Personal bests, arcade scores, preferences, and badges stay in browser storage.
-Clearing site data removes these local records. Shared online rankings are unavailable.
+Clearing site data removes these local records and the browser's online driver identity.
+The public tables retain the best score and full-run time for each driver and difficulty.
+New results are saved locally first. If the service cannot be reached, they wait in a separate queue and retry when the browser reconnects, regains focus, or submits another result.
+Existing local arcade tables, stage bests, badges, and preferences remain unchanged. Historical local records are not uploaded automatically.
+The online name follows the existing driver-name entry; until a name is entered it is `DRIVER`. No Tesana account is required.
+
+Run `npm run qa:online-worker` and `npm run qa:online-client` to check the API and save compatibility. Run these tests with Node 24 or later (they use built-in SQLite).
+See `server/README.md` for deployment and validation limits.
 
 Run `npm run check` and `npm run qa:local-services` before exporting this edition.
 The regular `npm run build` command keeps the Tesana export behavior.

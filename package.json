@@ -9,6 +9,11 @@
     "preview": "vite preview",
     "check": "tsc --noEmit",
     "qa:local-services": "node tools/qa/check-local-services.mjs",
+    "qa:online-worker": "node tools/qa/check-online-worker.mjs",
+    "qa:online-client": "node tools/qa/check-online-client.mjs",
+    "server:dev": "wrangler dev --config server/wrangler.jsonc",
+    "server:deploy": "wrangler deploy --config server/wrangler.jsonc",
+    "server:migrate": "wrangler d1 migrations apply velvet-cruise --remote --config server/wrangler.jsonc",
     "qa:palm-cove": "node tools/qa/palm-cove.mjs . output/palm-cove/after && node tools/qa/check-palm-cove.mjs && node tools/qa/check-water.mjs",
     "qa:coral-bluffs": "node tools/qa/coral-bluffs.mjs . output/coral-bluffs/after && node tools/qa/check-coral-bluffs.mjs",
     "qa:stages": "node tools/qa/stage-refresh.mjs . output/stage-refresh/after && node tools/qa/check-stage-refresh.mjs",
@@ -30,6 +35,7 @@
     "esbuild": "^0.28.2",
     "pngjs": "^7.0.0",
     "typescript": "^5.9.2",
-    "vite": "^7.1.5"
+    "vite": "^7.1.5",
+    "wrangler": "4.151.1"
   }
 }

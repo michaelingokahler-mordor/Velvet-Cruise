@@ -7,7 +7,7 @@ import { build } from 'esbuild';
 const output = resolve('output/local-services');
 mkdirSync(output, { recursive: true });
 const values = new Map();
-globalThis.window = {};
+globalThis.window = { addEventListener() {} };
 globalThis.localStorage = {
   getItem: key => values.get(key) ?? null,
   setItem: (key, value) => values.set(key, String(value)),
