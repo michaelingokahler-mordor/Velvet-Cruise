@@ -45,5 +45,5 @@ Interfaces: existing `submitScore`, `topScores`, `myBest`, and `servicesOnline`;
 - [x] Review the whole branch independently and address substantive findings with tests.
 - [x] Create the dedicated D1 database, apply migration, and deploy Worker.
 - [x] Verify health, CORS, two-profile shared results, offline/local persistence and ranking display in browser contexts; remove exact QA profiles/results.
-- [ ] Publish the named website game subtree from this worktree; check live build metadata, chunks, API configuration and health.
-- [ ] Report source commit, live URLs, verification, local-save compatibility, and remaining replay-verification limitation.
+- [x] Publish the named website game subtree from this worktree; check live build metadata, chunks, API configuration and health.
+- [x] Report source commit, live URLs, verification, local-save compatibility, and remaining replay-verification limitation in `docs/ONLINE_HIGHSCORES.md`.
