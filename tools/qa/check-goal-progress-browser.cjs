@@ -22,7 +22,9 @@ const base=process.argv[2]||'http://127.0.0.1:4190/';
   const before=await page.evaluate(()=>JSON.parse(localStorage.getItem('sunset-coast-run.goal-progress.v1')));
   assert.equal(before.plusUnlocked,false);assert.equal(before.masks.easy,1);assert.equal(before.masks.hard,16);
   await page.waitForTimeout(500);
-  for(let i=0;i<4;i++){await page.keyboard.press('ArrowDown');await page.waitForTimeout(80);}
+  for(let i=0;i<3;i++){await page.keyboard.press('ArrowDown');await page.waitForTimeout(80);}
+  await page.keyboard.press('Enter');await page.waitForTimeout(150);
+  await page.keyboard.press('ArrowDown');await page.waitForTimeout(80);
   await page.keyboard.press('Enter');await page.waitForTimeout(300);
   await page.keyboard.press('ArrowLeft');await page.waitForTimeout(200);
   await page.locator('#game canvas').screenshot({path:path.join(out,'normal-four-of-five.png')});

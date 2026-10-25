@@ -12,6 +12,8 @@ import type { Race, Car } from "./race";
 import type { CovePoint } from "./cove";
 import { LANDSCAPES } from './landscape';
 import { navigationArt } from './navigation-art';
+import { ScaledSurface, type DrawSurface } from '../core/draw-surface';
+import type { RenderContext } from './graphics';
 import { carLights, HEADLIGHT, lampPose, lightAxis } from "./lights";
 import { slopeForms, leanOf, plotSpan, cellRand, vnoise, NF, F_LOW, F_HIGH, F_L0, F_L1, F_L20, F_L21, F_H0, F_H1, F_H20, F_H21, F_R0, F_R1, F_RS, F_T, F_TH, F_P, F_PH, F_D0, F_D1, F_O0, F_O1, F_HG, F_HGW, F_PA, F_PAW, F_V0, F_V1 } from "./terrain";
 
@@ -59,7 +61,11 @@ interface TowerCols { body: Col; far: Col; litA: Col; litB: Col; shop: Col; dark
 export class Renderer {
   private fb: FB;
   private bank: SpriteBank;
-  private scratch = new FB();
+  private scratch: FB;
+  private logical: DrawSurface;
+  private scale: 1 | 2;
+  private horizon: number;
+  private focal: number;
   private gateCache = new Map<string, Spr>();
   private visible: Seg[] = [];
   /** Localised banner text resolver, set by the scene. */
@@ -76,13 +82,19 @@ export class Renderer {
   private dust: Streak[] = [];
   private flakes: { x: number; y: number; v: number; ph: number; big: boolean }[] = [];
   private lastT = 0;
-  private row = new Uint32Array(W);
+  private row: Uint32Array;
   private tc: TowerCols = { body: 0, far: 0, litA: 0, litB: 0, shop: 0, dark: 0, trim: 0, litP: 0.4 };
   private headSources:{z:number;x:number;slope:number;br:number;from:number;to:number;gain:number}[]=[];
   private lampSources:{z:number;x:number;slope:number;radius:number;gain:number;br:number}[]=[];
 
-  constructor(fb: FB, bank: SpriteBank) {
-    this.fb = fb;
+  constructor(context: FB | RenderContext, bank: SpriteBank) {
+    this.fb = 'profile' in context ? context.fb : context;
+    this.scale = (this.fb.w / W) as 1 | 2;
+    this.horizon = HORIZON * this.scale;
+    this.focal = FOCAL * this.scale;
+    this.logical = new ScaledSurface(this.fb, this.scale);
+    this.scratch = new FB(this.fb.w, this.fb.h);
+    this.row = new Uint32Array(this.fb.w);
     this.bank = bank;
   }
 
@@ -91,39 +103,39 @@ export class Renderer {
   // ---------------------------------------------------------------- backdrop
   private background(fb: FB, th: Theme, skyOff: number, farOff: number, sunScreenX: number): void {
     const sky = this.bank.get(th.sky);
-    if (sky) fb.layer(sky, skyOff, 0, true);
+    if (sky) new ScaledSurface(fb, this.scale).layer(sky, skyOff, 0, true);
     else {
       const g = th.skyGrad;
-      for (let y = 0; y < HORIZON; y++) {
-        const t = (y / HORIZON) * (g.length - 1);
+      for (let y = 0; y < this.horizon; y++) {
+        const t = (y / this.horizon) * (g.length - 1);
         const i = Math.min(g.length - 2, Math.floor(t));
-        fb.hline(y, 0, W, mix(g[i], g[i + 1], t - i));
+        fb.hline(y, 0, this.fb.w, mix(g[i], g[i + 1], t - i));
       }
     }
     // background sea (or land, inland) below the horizon
     const land = th.side === "land";
     const bh = land ? th.landH ?? th.seaH : th.seaH, bn = land ? th.landN ?? th.seaN : th.seaN;
-    for (let y = HORIZON; y < H; y++) {
-      const t = Math.min(1, Math.pow((y - HORIZON) / 40, 0.7));
-      fb.hline(y, 0, W, mix(bh, bn, t));
+    for (let y = this.horizon; y < this.fb.h; y++) {
+      const t = Math.min(1, Math.pow((y - this.horizon) / (40*this.scale), 0.7));
+      fb.hline(y, 0, this.fb.w, mix(bh, bn, t));
     }
     // horizon glitter under the sun: short horizontal dashes in a column that widens towards the viewer,
     // drifting slowly (not a speckle of single pixels)
     const tt = Math.floor(this.time * 6);
-    for (let y = HORIZON; !land && y < HORIZON + 26; y++) {
-      const half = 8 + (y - HORIZON) * 2.1;
-      this.glints(fb, y, sunScreenX, half, th.sunGlow*(th.id==='crystal-lake'?.48:1), th.glitter, th.glitter2, tt, y - HORIZON, 0);
+    for (let y = this.horizon; !land && y < this.horizon + 26*this.scale; y++) {
+      const half = 8*this.scale + (y - this.horizon) * 2.1;
+      this.glints(fb, y, sunScreenX, half, th.sunGlow*(th.id==='crystal-lake'?.48:1), th.glitter, th.glitter2, tt, y - this.horizon, 0);
     }
-    if (th.id === 'coral-bluffs') this.bluffsBackdrop(fb, farOff);
+    if (th.id === 'coral-bluffs') this.bluffsBackdrop(new ScaledSurface(fb,this.scale), farOff);
     else {
       const far = this.bank.get(th.far);
-      if (far) fb.layer(far, farOff, HORIZON - far.h, false);
+      if (far) new ScaledSurface(fb,this.scale).layer(far,farOff,HORIZON-far.h/(far.density??1),false);
     }
   }
 
   /** Separate, hazed sandstone headlands with sky and sea between them.
    * Draw into the supplied buffer so stage cross-fades use the same scenery. */
-  private bluffsBackdrop(fb: FB, offset: number): void {
+  private bluffsBackdrop(fb: DrawSurface, offset: number): void {
     const period=640, shift=((offset%period)+period)%period;
     const massive=(x:number,w:number,h:number,back:boolean) => {
       const y=HORIZON, body=rgb(back?0xc1aaa0:0xb49a87), shade=rgb(back?0xb4a1a0:0xa08b80), lit=rgb(back?0xd1b8a7:0xcab091);
@@ -152,8 +164,8 @@ export class Renderer {
    * keep their place for a few frames, so the water reads as ripples catching the light and not as noise.
    */
   private glints(fb: FB, y: number, sunX: number, half: number, k: number, colA: Col, colB: Col, tt: number, depth: number, minX: number): void {
-    if (k <= 0.02 || y < HORIZON || y >= H) return;
-    const d = fb.data, o = y * W;
+    if (k <= 0.02 || y < this.horizon || y >= this.fb.h) return;
+    const d = fb.data, o = y * this.fb.w;
     const n = depth < 5 ? 3 : depth < 14 ? 5 : 9;
     for (let j = 0; j < n; j++) {
       const h1 = hash(y * 3 + j, 17, 31), h2 = hash(y, j + 5, 47);
@@ -166,7 +178,7 @@ export class Renderer {
       const edge = Math.abs(cx - sunX) / half;
       const left = Math.floor(cx - len / 2);
       // Clip, never move a hidden glint onto the shoreline or the screen edge.
-      const x0 = Math.max(0, minX, left), x1 = Math.min(W, left + len);
+      const x0 = Math.max(0, minX, left), x1 = Math.min(this.fb.w, left + len);
       const color = edge < .65 && phase >= 3 && phase <= 7 ? colA : colB;
       for (let x = x0; x < x1; x++) d[o + x] = color;
     }
@@ -178,7 +190,7 @@ export class Renderer {
     const fb = this.fb, d = fb.data;
     let r0 = Math.ceil(yT - 0.5), r1 = Math.ceil(yB - 0.5);
     if (r0 < 0) r0 = 0;
-    if (r1 > H) r1 = H;
+    if (r1 > this.fb.h) r1 = this.fb.h;
     const inv = 1 / (yB - yT);
     const tt = Math.floor(this.time * 6);
     const gl = glow * (1 - fogT * 0.5);
@@ -186,11 +198,11 @@ export class Renderer {
       const t = (r + 0.5 - yT) * inv;
       let x0 = Math.ceil(lT + (lB - lT) * t - 0.5);
       if (x0 < 0) x0 = 0;
-      if (x0 >= W) continue;
-      const o = r * W;
-      d.fill(c, o + x0, o + W);
+      if (x0 >= this.fb.w) continue;
+      const o = r * this.fb.w;
+      d.fill(c, o + x0, o + this.fb.w);
       if (gl <= 0) continue;
-      const depth = r - HORIZON;
+      const depth = r - this.horizon;
       const half = 8 + depth * 2.1;
       this.glints(fb, r, sunX, half, gl, glA, glB, tt, depth, x0);
     }
@@ -202,10 +214,10 @@ export class Renderer {
     const h1 = right ? s.wallRH : s.wallH, h2 = right ? n.wallRH : n.wallH;
     const a1 = off - slope * h1 * f0, b1 = off - slope * h1 * f1;
     const a2 = off2 - slope * h2 * f0, b2 = off2 - slope * h2 * f1;
-    const n0x = W / 2 + (s.cx1 + a1 - camX) * s.S1, n0y = HORIZON + (camY - s.y1 - h1 * f0) * s.S1;
-    const f0x = W / 2 + (s.cx2 + a2 - camX) * s.S2, f0y = HORIZON + (camY - s.y2 - h2 * f0) * s.S2;
-    const f1x = W / 2 + (s.cx2 + b2 - camX) * s.S2, f1y = HORIZON + (camY - s.y2 - h2 * f1) * s.S2;
-    const n1x = W / 2 + (s.cx1 + b1 - camX) * s.S1, n1y = HORIZON + (camY - s.y1 - h1 * f1) * s.S1;
+    const n0x = this.fb.w / 2 + (s.cx1 + a1 - camX) * s.S1, n0y = this.horizon + (camY - s.y1 - h1 * f0) * s.S1;
+    const f0x = this.fb.w / 2 + (s.cx2 + a2 - camX) * s.S2, f0y = this.horizon + (camY - s.y2 - h2 * f0) * s.S2;
+    const f1x = this.fb.w / 2 + (s.cx2 + b2 - camX) * s.S2, f1y = this.horizon + (camY - s.y2 - h2 * f1) * s.S2;
+    const n1x = this.fb.w / 2 + (s.cx1 + b1 - camX) * s.S1, n1y = this.horizon + (camY - s.y1 - h1 * f1) * s.S1;
     // (the far edge reaches a hair further so no one-pixel holes open between segments)
     this.fb.poly([n0x, n0y, f0x + (f0x - n0x) * SEAM, f0y + (f0y - n0y) * SEAM, f1x + (f1x - n1x) * SEAM, f1y + (f1y - n1y) * SEAM, n1x, n1y], c);
   }
@@ -213,15 +225,15 @@ export class Renderer {
   private rail(s: Seg, off: number, off2: number, th: Theme, fogT: number, haze: Col, camX: number, camY: number): void {
     const fb = this.fb;
     const hTop = 420, hMid = 250;
-    const X1 = W / 2 + (s.cx1 + off - camX) * s.S1, X2 = W / 2 + (s.cx2 + off2 - camX) * s.S2;
+    const X1 = this.fb.w / 2 + (s.cx1 + off - camX) * s.S1, X2 = this.fb.w / 2 + (s.cx2 + off2 - camX) * s.S2;
     const beam = mix(th.railBeam, haze, fogT), shade = mix(th.railShade, haze, fogT), post = mix(th.railPost, haze, fogT);
     // post every 3rd segment
     if (s.i % 3 === 0 && s.S1 * 70 > 0.35) {
       const pw = Math.max(1, 70 * s.S1);
-      fb.rect(X1 - pw / 2, HORIZON + (camY - s.y1 - hTop) * s.S1, pw, (hTop) * s.S1, post);
+      fb.rect(X1 - pw / 2, this.horizon + (camY - s.y1 - hTop) * s.S1, pw, (hTop) * s.S1, post);
     }
-    const yT1 = HORIZON + (camY - s.y1 - hTop) * s.S1, yM1 = HORIZON + (camY - s.y1 - hMid) * s.S1;
-    const yT2 = HORIZON + (camY - s.y2 - hTop) * s.S2, yM2 = HORIZON + (camY - s.y2 - hMid) * s.S2;
+    const yT1 = this.horizon + (camY - s.y1 - hTop) * s.S1, yM1 = this.horizon + (camY - s.y1 - hMid) * s.S1;
+    const yT2 = this.horizon + (camY - s.y2 - hTop) * s.S2, yM2 = this.horizon + (camY - s.y2 - hMid) * s.S2;
     const yB1 = yM1 + (yM1 - yT1) * 0.35, yB2 = yM2 + (yM2 - yT2) * 0.35;
     fb.poly([X1, yT1, X2, yT2, X2, yM2, X1, yM1], beam);
     fb.poly([X1, yM1, X2, yM2, X2, yB2, X1, yB1], shade);
@@ -241,20 +253,21 @@ export class Renderer {
     const base = this.bank.get(name);
     if (!base) return undefined;
     // draw the banner words onto a copy of the gate (text is never baked into art)
-    const tmp = new FB();
+    const density = base.density ?? 1;
+    const tmp = new FB(W*density,H*density);
     tmp.clear(0);
     const text = this.label(labelId);
     const bw = 228, bh = 24;
     let scale = 3;
     while (scale > 1 && textWidth(text, scale) > bw - 8) scale--;
     const red = rgb(0xc8302a), dark = rgb(0x5a1010);
-    drawText(tmp, text, bw / 2 + 2, 2 + (bh - 7 * scale) / 2, red, { scale, align: "center", shadow: dark });
+    drawText(new ScaledSurface(tmp,density), text, bw / 2 + 2, 2 + (bh - 7 * scale) / 2, red, { scale, align: "center", shadow: dark });
     const data = base.data.slice();
-    for (let y = 0; y < bh; y++) for (let x = 0; x < bw; x++) {
-      const p = tmp.data[y * W + x];
-      if (p >>> 24) data[(8 + y) * base.w + 14 + x] = p;
+    for (let y = 0; y < bh*density; y++) for (let x = 0; x < bw*density; x++) {
+      const p = tmp.data[y * tmp.w + x];
+      if (p >>> 24) data[(8*density + y) * base.w + 14*density + x] = p;
     }
-    s = { w: base.w, h: base.h, data };
+    s = { w: base.w, h: base.h, data, density };
     this.gateCache.set(key, s);
     return s;
   }
@@ -270,16 +283,18 @@ export class Renderer {
     const paste = (icon: string | undefined, ox: number, oy: number) => {
       const ic = icon ? this.bank.get(icon) : undefined;
       if (!ic) return;
-      const dx = ox + ((18 - ic.w) >> 1), dy = oy + ((18 - ic.h) >> 1);
-      for (let y = 0; y < ic.h; y++) for (let x = 0; x < ic.w; x++) {
-        const p = ic.data[y * ic.w + x];
+      const density=base.density??1, sourceDensity=ic.density??1;
+      const width=ic.w*density/sourceDensity,height=ic.h*density/sourceDensity;
+      const dx=ox*density+((18*density-width)>>1),dy=oy*density+((18*density-height)>>1);
+      for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) {
+        const p = ic.data[Math.floor(y*sourceDensity/density)*ic.w+Math.floor(x*sourceDensity/density)];
         const tx = dx + x, ty = dy + y;
         if ((p >>> 24) && tx >= 0 && ty >= 0 && tx < base.w && ty < base.h) data[ty * base.w + tx] = p;
       }
     };
     paste(THEMES[left]?.icon ?? 'icon_coast', FORK_ICON_L[0], FORK_ICON_L[1]);
     paste(THEMES[right]?.icon ?? 'icon_coast', FORK_ICON_R[0], FORK_ICON_R[1]);
-    s = { w: base.w, h: base.h, data };
+    s = { w: base.w, h: base.h, data, density: base.density??1 };
     this.gateCache.set(key, s);
     return s;
   }
@@ -309,9 +324,9 @@ export class Renderer {
       }
     }
     const lamp=lampPose(inst.name,inst.x);
-    const scale = inst.scale * (lamp?.size??1) * SPR_S * s.S1;
-    const x = W / 2 + (s.cx1 + this.off(s, inst.br) + inst.x * ROAD_W - camX) * s.S1;
-    const y = HORIZON + (camY - s.y1 - inst.y) * s.S1;
+    const scale = inst.scale * (lamp?.size??1) * SPR_S * s.S1 / (spr?.density??1);
+    const x = this.fb.w / 2 + (s.cx1 + this.off(s, inst.br) + inst.x * ROAD_W - camX) * s.S1;
+    const y = this.horizon + (camY - s.y1 - inst.y) * s.S1;
     if (!spr) {
       // placeholder while art loads
       const w = 30 * scale, h = 50 * scale;
@@ -319,7 +334,7 @@ export class Renderer {
       return;
     }
     const dw = spr.w * scale;
-    if (x + dw / 2 < 0 || x - dw / 2 > W) return;
+    if (x + dw / 2 < 0 || x - dw / 2 > this.fb.w) return;
     // props perched on cliffs turn into speckle noise when tiny
     if (inst.y > 0 && dw < 5) return;
     if (dw < 10 && inst.name.startsWith("cove_tuft")) return;   // grass groups are details: they vanish before they turn into specks
@@ -369,26 +384,27 @@ export class Renderer {
     const z = c.z - camZ;
     // cars we've already passed vanish before they balloon over the HUD
     if (z < PLAYER_Z * 0.62) return;
-    const S = FOCAL / z;
+    const S = this.focal / z;
     const cx = s.cx1 + (s.cx2 - s.cx1) * pct;
     const wy = s.y1 + (s.y2 - s.y1) * pct;
     const lo = this.race ? this.race.laneOff(c.z / SEG_LEN, c.br ?? 0) : 0;
-    const x = W / 2 + (cx + lo + c.x * ROAD_W - camX) * S;
-    const y = HORIZON + (camY - wy) * S;
-    const scale = SPR_S * S;
+    const x = this.fb.w / 2 + (cx + lo + c.x * ROAD_W - camX) * S;
+    const y = this.horizon + (camY - wy) * S;
+    const nativeScale = SPR_S * S;
+    const scale = nativeScale / (spr?.density??1);
     // shadow
     const sw = (spr ? spr.w : 70) * scale;
-    if (sw > 3) this.fb.rectA(x - sw * 0.5, y - Math.max(1, 3 * scale), sw, Math.max(1, 4 * scale), rgb(0x10081a), 0.35);
+    if (sw > 3) this.fb.rectA(x - sw * 0.5, y - Math.max(1, 3 * nativeScale), sw, Math.max(1, 4 * nativeScale), rgb(0x10081a), 0.35);
     if (!spr) { this.fb.rect(x - 35 * scale, y - 36 * scale, 70 * scale, 36 * scale, rgb(0x3050c0)); return; }
-    const by = y + (c.bounce > 0 ? -Math.round(c.bounce) : 0);
+    const by = y + (c.bounce > 0 ? -Math.round(c.bounce)*this.scale : 0);
     const lit = this.race ? this.race.carLightsOn(c) : this.night > 0 && this.night >= c.lightAt;
     // after dark: a pool of headlight on the road ahead of the car (drawn first, the car covers its near end)
     this.fb.blit(spr, x, by, scale, { tr: tint[0], tg: tint[1], tb: tint[2], fog: fogT, fogCol: haze });
     // on a wet road every car trails a veil of spray
     if (this.rainAmt > 0.05 && sw > 6) {
       const k = this.rainAmt * (1 - fogT);
-      this.fb.rectA(x - sw * 0.56, y - 9 * scale, sw * 1.12, 10 * scale, rgb(0xc4ccd8), 0.2 * k);
-      this.fb.rectA(x - sw * 0.44, y - 15 * scale, sw * 0.88, 7 * scale, rgb(0xc4ccd8), 0.12 * k);
+      this.fb.rectA(x - sw * 0.56, y - 9 * nativeScale, sw * 1.12, 10 * nativeScale, rgb(0xc4ccd8), 0.2 * k);
+      this.fb.rectA(x - sw * 0.44, y - 15 * nativeScale, sw * 0.88, 7 * nativeScale, rgb(0xc4ccd8), 0.12 * k);
     }
     if (lit) {
       const l = carLights(this.bank, c.sprite);
@@ -401,13 +417,13 @@ export class Renderer {
     // A requested, safe lane change has a rear indicator even in daylight.
     const turn=(c.yieldLane ?? c.targetX)-c.x;
     if(c.yieldUntil && Math.abs(turn)>.05 && sw>4 && Math.floor(this.time*3)%2===0) {
-      const bw=Math.max(1,4*scale),bh=Math.max(1,2*scale);
+      const bw=Math.max(1,4*nativeScale),bh=Math.max(1,2*nativeScale);
       const bx=x+Math.sign(turn)*sw*.39-bw*.5,by=y-spr.h*scale*.22;
       this.fb.rectA(bx-bw,by-bh,bw*3,bh*3,rgb(0xffac28),.32*(1-fogT*.5));
       this.fb.rect(bx,by,bw,bh,rgb(0xffb52e));
     }
-    c.sx = x;
-    c.sy = y - spr.h * scale;
+    c.sx = x / this.scale;
+    c.sy = (y - spr.h * scale) / this.scale;
     c.seen = this.frame;
   }
 
@@ -440,8 +456,8 @@ export class Renderer {
     const heading = race.bgHeading + race.viewTurn;
     const skyOff = 160 + heading * 0.45;
     const farOff = 160 + heading * 1.0;
-    const sunXA = wrapNear(thA.sunX + 160 - skyOff, 640);
-    const sunXB = wrapNear(thB.sunX + 160 - skyOff, 640);
+    const sunXA = wrapNear(thA.sunX + 160 - skyOff, 640)*this.scale;
+    const sunXB = wrapNear(thB.sunX + 160 - skyOff, 640)*this.scale;
     const sunX = sunXA + (sunXB - sunXA) * blendT;
 
     // backdrop (cross-faded across stage changes)
@@ -450,7 +466,7 @@ export class Renderer {
       this.background(this.scratch, thB, skyOff, farOff, sunXB);
       blendInto(fb, this.scratch, blendT);
     }
-    if (thick > 0.01) fb.rectA(0, 0, W, H, mix(thA.haze, thB.haze, blendT), 0.62 * thick);
+    if (thick > 0.01) fb.rectA(0, 0, this.fb.w, this.fb.h, mix(thA.haze, thB.haze, blendT), 0.62 * thick);
     // Heat distorts the distant backdrop before roads, signs and sprites exist.
     // Near silhouettes therefore stay stable throughout the shimmer cycle.
     const heat=race.weatherAmt('heat')*(1-race.tunnelAmt);
@@ -471,14 +487,14 @@ export class Renderer {
       s.cz1 = z1; s.cz2 = z2;
       x += dx; dx += s.curve;
       if (z1 <= 20) continue;
-      s.S1 = FOCAL / z1; s.S2 = FOCAL / z2;
+      s.S1 = this.focal / z1; s.S2 = this.focal / z2;
       // where each road of a split runs this frame (all three coincide on a plain road)
       s.oL1 = race.segOff(s, -1, false); s.oL2 = race.segOff(s, -1, true);
       s.oR1 = race.segOff(s, 1, false); s.oR2 = race.segOff(s, 1, true);
       s.oC1 = race.segOff(s, 0, false); s.oC2 = race.segOff(s, 0, true);
       const po1 = race.forkSide ? (race.forkSide < 0 ? s.oL1 : s.oR1) : s.oC1, po2 = race.forkSide ? (race.forkSide < 0 ? s.oL2 : s.oR2) : s.oC2;
-      s.X1 = W / 2 + (s.cx1 + po1 - camX) * s.S1; s.X2 = W / 2 + (s.cx2 + po2 - camX) * s.S2;
-      s.Y1 = HORIZON + (camY - s.y1) * s.S1; s.Y2 = HORIZON + (camY - s.y2) * s.S2;
+      s.X1 = this.fb.w / 2 + (s.cx1 + po1 - camX) * s.S1; s.X2 = this.fb.w / 2 + (s.cx2 + po2 - camX) * s.S2;
+      s.Y1 = this.horizon + (camY - s.y1) * s.S1; s.Y2 = this.horizon + (camY - s.y2) * s.S2;
       s.W1 = ROAD_W * s.S1; s.W2 = ROAD_W * s.S2;
       vis.push(s);
     }
@@ -508,7 +524,7 @@ export class Renderer {
       const k = 0.88 + 0.34 * (0.5 + 0.5 * Math.cos(ph * Math.PI * 2));
       ptint = [tint[0] + (1.08 * k - tint[0]) * tun, tint[1] + (0.95 * k - tint[1]) * tun, tint[2] + (0.84 * k - tint[2]) * tun];
     }
-    race.drawPlayer(fb, this.bank, ptint);
+    race.drawPlayer(this.logical, this.bank, ptint);
     // during a tumble crash, roadside props between the camera and the car would hide the scene
     const propsNear = race.tumbleT < 0;
     for (const s of nearList) {
@@ -538,19 +554,30 @@ export class Renderer {
   /** Rows near the horizon wobble in the heat. */
   private shimmer(k: number): void {
     const d = this.fb.data, row = this.row;
-    for (let y = HORIZON - 9; y < HORIZON + 9; y++) {
-      const a = Math.max(0, 1 - Math.abs(y - (HORIZON + 1)) / 10) * k;
-      const sh = Math.round(Math.sin(this.time * 2.2 + y * .45) * 1.15 * a);
+    for (let y = this.horizon - 9*this.scale; y < this.horizon + 9*this.scale; y++) {
+      const a = Math.max(0, 1 - Math.abs(y/this.scale - (HORIZON + 1)) / 10) * k;
+      const sh = Math.round(Math.sin(this.time * 2.2 + y/this.scale * .45) * 1.15 * a)*this.scale;
       if (!sh) continue;
-      const o = y * W;
-      row.set(d.subarray(o, o + W));
-      for (let x = 0; x < W; x++) d[o + x] = row[Math.max(0, Math.min(W - 1, x - sh))];
+      const o = y * this.fb.w;
+      row.set(d.subarray(o, o + this.fb.w));
+      for (let x = 0; x < this.fb.w; x++) d[o + x] = row[Math.max(0, Math.min(this.fb.w - 1, x - sh))];
+    }
+  }
+
+  /** Blend each native pixel so a weather mark retains the finer world detail beneath it. */
+  private mixLogicalPixel(x: number, y: number, c: Col, amount: number): void {
+    const left=(x|0)*this.scale,top=(y|0)*this.scale;
+    for(let dy=0;dy<this.scale;dy++)for(let dx=0;dx<this.scale;dx++){
+      const xx=left+dx,yy=top+dy;
+      if(xx<0||xx>=this.fb.w||yy<0||yy>=this.fb.h)continue;
+      const at=yy*this.fb.w+xx;
+      this.fb.data[at]=mix(this.fb.data[at],c,amount);
     }
   }
 
   /** Banks of fog drifting across the road. */
   private fogBanks(k: number, haze: Col): void {
-    const fb = this.fb, t = this.time;
+    const fb = this.logical, t = this.time;
     for (let y = HORIZON - 26; y < H; y += 2) {
       const band = y < HORIZON ? 0.55 : y < 130 ? 1 : Math.max(0.25, 1 - (y - 130) / 60);
       for (let x = 0; x < W; x += 8) {
@@ -563,7 +590,7 @@ export class Renderer {
 
   /** A dust storm: a brown haze and streaks of sand blowing across. */
   private sandstorm(k: number, race: Race, dt: number, sp: number, haze: Col): void {
-    const fb = this.fb;
+    const fb = this.logical;
     const side = race.gust / .46, forward = race.windForward;
     const strength = Math.min(1, Math.hypot(side, forward));
     fb.rectA(0, 0, W, H, mix(haze, rgb(0xc07840), 0.4), 0.1 * k + strength * .083);
@@ -573,7 +600,6 @@ export class Renderer {
       this.dust.push({ x: Math.random() * W, y: 18 + Math.random() * (H - 18), v: 220 + Math.random() * 260, len: 2 + Math.random() * 5, near: Math.random() < 0.22, col: cols[(Math.random() * 4) | 0] });
     }
     if (this.dust.length > want) this.dust.length = want;
-    const d = fb.data;
     for (const p of this.dust) {
       const radial = -forward * p.v / 85;
       const vx = side * p.v * 1.3 + (p.x - W / 2) * radial;
@@ -590,15 +616,15 @@ export class Renderer {
         const xx = (p.x - dx * q) | 0, row = (p.y - dy * q) | 0;
         if (xx < 0 || xx >= W || row < 0 || row >= H) continue;
         const o = row * W + xx;
-        d[o] = mix(d[o], p.col, p.near ? 0.75 : 0.45);
-        if (p.near && row + 1 < H) d[o + W] = mix(d[o + W], p.col, 0.35);
+        this.mixLogicalPixel(xx,row,p.col,p.near ? 0.75 : 0.45);
+        if (p.near && row + 1 < H) this.mixLogicalPixel(xx,row+1,p.col,0.35);
       }
     }
   }
 
   /** Snowfall: big soft flakes close by, small ones far off, all swaying and drifting with the steering. */
   private snow(k: number, race: Race, dt: number, sp: number): void {
-    const fb = this.fb, d = fb.data;
+    const fb = this.logical;
     fb.rectA(0, 0, W, H, rgb(0xdce6f6), 0.05 * k);
     const want = Math.round(125 * k);
     while (this.flakes.length < want) this.flakes.push({ x: Math.random() * W, y: Math.random() * H, v: 16 + Math.random() * 30, ph: Math.random() * 6.28, big: Math.random() < 0.28 });
@@ -615,19 +641,19 @@ export class Renderer {
       if (xx < 0 || xx >= W - 1 || yy < 0 || yy >= H - 1) continue;
       const o = yy * W + xx;
       if (p.big) {
-        d[o] = mix(d[o], white, 0.92);
-        d[o + 1] = mix(d[o + 1], white, 0.7);
-        d[o + W] = mix(d[o + W], blue, 0.6);
-        d[o + W + 1] = mix(d[o + W + 1], blue, 0.4);
+        this.mixLogicalPixel(xx,yy,white,0.92);
+        this.mixLogicalPixel(xx+1,yy,white,0.7);
+        this.mixLogicalPixel(xx,yy+1,blue,0.6);
+        this.mixLogicalPixel(xx+1,yy+1,blue,0.4);
       } else {
-        d[o] = mix(d[o], white, 0.72);
+        this.mixLogicalPixel(xx,yy,white,0.72);
       }
     }
   }
 
   /** Rain streaks, splashes on the road and the odd flash of lightning. */
   private rain(k: number, race: Race, dt: number, sp: number): void {
-    const fb = this.fb, d = fb.data;
+    const fb = this.logical;
     const want = Math.round(170 * k);
     while (this.drops.length < want) {
       const near = Math.random() < 0.35;
@@ -644,22 +670,22 @@ export class Renderer {
         const yy = (p.y - q) | 0, xx = (p.x - q * slant) | 0;
         if (yy < 0 || yy >= H || xx < 0 || xx >= W) continue;
         const o = yy * W + xx;
-        d[o] = mix(d[o], p.col, p.near ? 0.55 : 0.32);
+        this.mixLogicalPixel(xx,yy,p.col,p.near ? 0.55 : 0.32);
       }
     }
     // splashes dancing on the tarmac
     const n = Math.round(13 * k);
     for (let i = 0; i < n; i++) {
       const y = 112 + Math.floor(Math.random() * 64);
-      const road=this.visible.find(s=>s.Y2<y&&s.Y1>=y);
+      const road=this.visible.find(s=>s.Y2/this.scale<y&&s.Y1/this.scale>=y);
       if(!road)continue;
-      const u=(y-road.Y2)/(road.Y1-road.Y2),cx=road.X2+(road.X1-road.X2)*u;
-      const half=road.W2+(road.W1-road.W2)*u;
+      const u=(y*this.scale-road.Y2)/(road.Y1-road.Y2),cx=(road.X2+(road.X1-road.X2)*u)/this.scale;
+      const half=(road.W2+(road.W1-road.W2)*u)/this.scale;
       const x = Math.floor(cx + (Math.random() - 0.5) * half * 1.7);
       if (x < 1 || x >= W - 1) continue;
       const c = rgb(0xe4ecf6);
       fb.pset(x, y, c);
-      if (y > 140) { fb.pset(x - 1, y - 1, mix(d[(y - 1) * W + x - 1], c, 0.5)); fb.pset(x + 1, y - 1, mix(d[(y - 1) * W + x + 1], c, 0.5)); }
+      if (y > 140) { this.mixLogicalPixel(x-1,y-1,c,0.5); this.mixLogicalPixel(x+1,y-1,c,0.5); }
     }
     // spray thrown up by our own rear tyres
     if (sp > 0.25 && race.tumbleT < 0) {
@@ -690,9 +716,9 @@ export class Renderer {
         const steps = Math.ceil(ny - y);
         for (let k = 0; k <= steps; k++) {
           const px = Math.round(x + ((nx - x) * k) / steps), py = Math.round(y + k);
-          this.fb.pset(px - 1, py, glow); this.fb.pset(px + 1, py, glow);
-          this.fb.pset(px, py, core);
-          if (w > 1) this.fb.pset(px + 1, py, core);
+          this.logical.pset(px - 1, py, glow); this.logical.pset(px + 1, py, glow);
+          this.logical.pset(px, py, core);
+          if (w > 1) this.logical.pset(px + 1, py, core);
         }
         if (w > 1 && rnd() < 0.12) strand(nx, ny, Math.min(yEnd, ny + 14 + rnd() * 16), 1);
         x = nx; y = ny;
@@ -718,7 +744,7 @@ export class Renderer {
     for(const s of this.visible)for(const p of s.sprites) {
       const pose=lampPose(p.name,p.x);if(!pose||p.y>50)continue;
       const a=axis(s.i*SEG_LEN,p.x,p.br??0),spr=this.bank.get(p.name);
-      const dx=(spr?.w??16)*p.scale*pose.size*SPR_S*pose.head*(pose.flip?-1:1);
+      const dx=(spr?spr.w/(spr.density??1):16)*p.scale*pose.size*SPR_S*pose.head*(pose.flip?-1:1);
       this.lampSources.push({z:s.i*SEG_LEN,x:a.x+dx,slope:a.slope,br:p.br??0,
         radius:p.name==='gas_lamp_lit'?2300:3300,gain:Math.min(1,this.night*1.25)});
     }
@@ -728,9 +754,9 @@ export class Renderer {
   private groundLights(s:Seg):void {
     if(s.Y2>=s.Y1)return;
     const strip=(x0:number,x1:number,w0:number,w1:number,k0:number,k1:number,br:number,verge:number)=>{
-      const center0=W/2+(s.cx1+this.off(s,br)-this.camX)*s.S1;
-      const center1=W/2+(s.cx2+this.off(s,br,true)-this.camX)*s.S2;
-      const n=W/2+(x0-this.camX)*s.S1,f=W/2+(x1-this.camX)*s.S2;
+      const center0=this.fb.w/2+(s.cx1+this.off(s,br)-this.camX)*s.S1;
+      const center1=this.fb.w/2+(s.cx2+this.off(s,br,true)-this.camX)*s.S2;
+      const n=this.fb.w/2+(x0-this.camX)*s.S1,f=this.fb.w/2+(x1-this.camX)*s.S2;
       this.fb.lightTrap(s.Y2,Math.max(f-w1*s.S2,center1-verge*s.W2),Math.min(f+w1*s.S2,center1+verge*s.W2),
         s.Y1,Math.max(n-w0*s.S1,center0-verge*s.W1),Math.min(n+w0*s.S1,center0+verge*s.W1),HEADLIGHT,k1,k0);
     };
@@ -779,15 +805,15 @@ export class Renderer {
     const land = th.side === "land";
     // a split draws two roads (left & right); a plain road is drawn once
     const two = s.fork >= 0 && s.oR1 - s.oL1 > 1;
-    const xL1 = W / 2 + (s.cx1 + s.oL1 - camX) * s.S1, xL2 = W / 2 + (s.cx2 + s.oL2 - camX) * s.S2;
-    const xR1 = W / 2 + (s.cx1 + s.oR1 - camX) * s.S1, xR2 = W / 2 + (s.cx2 + s.oR2 - camX) * s.S2;
-    const xC1 = W / 2 + (s.cx1 + s.oC1 - camX) * s.S1, xC2 = W / 2 + (s.cx2 + s.oC2 - camX) * s.S2;
+    const xL1 = this.fb.w / 2 + (s.cx1 + s.oL1 - camX) * s.S1, xL2 = this.fb.w / 2 + (s.cx2 + s.oL2 - camX) * s.S2;
+    const xR1 = this.fb.w / 2 + (s.cx1 + s.oR1 - camX) * s.S1, xR2 = this.fb.w / 2 + (s.cx2 + s.oR2 - camX) * s.S2;
+    const xC1 = this.fb.w / 2 + (s.cx1 + s.oC1 - camX) * s.S1, xC2 = this.fb.w / 2 + (s.cx2 + s.oC2 - camX) * s.S2;
     if (front) {
       const ground = f(LANDSCAPES[s.theme]?.colors[1] ?? (stripe ? th.groundA : th.groundB));
       const shoulder = f(stripe ? th.sandA : th.sandB);
       if (land) {
         // inland: ground on both sides
-        fb.trap(Y2, 0, W, Y1, 0, W, ground);
+        fb.trap(Y2, 0, this.fb.w, Y1, 0, this.fb.w, ground);
       } else {
         // land side ground (and the median of a split) and sea side water
         fb.trap(Y2, 0, xR2, Y1, 0, xR1, ground);
@@ -827,7 +853,7 @@ export class Renderer {
       }
       // edge lines and lane dashes (in a split, each road only paints its own side of the old centre line)
       const ln = f(th.lane);
-      const mid1 = two ? W / 2 + (s.cx1 + s.oC1 - camX) * s.S1 : 0;
+      const mid1 = two ? this.fb.w / 2 + (s.cx1 + s.oC1 - camX) * s.S1 : 0;
       const keep = (k: number, a1: number, lx: number) => !two || (k === 0 ? a1 + W1 * lx < mid1 : a1 + W1 * lx > mid1);
       roads.forEach(([a1, a2], k) => {
         if (W1 > 8) {
@@ -905,8 +931,8 @@ export class Renderer {
   /** A tower's face along the road: storeys of lit and dark windows, shops at street level, maybe a neon roof line. */
   private towerSide(s: Seg, th: Theme, seed: number, o1: number, o2: number, h1: number, h2: number, fogT: number, haze: Col, camX: number, camY: number): void {
     const S1 = s.S1, S2 = s.S2;
-    const xa = W / 2 + (s.cx1 + o1 - camX) * S1, xb = W / 2 + (s.cx2 + o2 - camX) * S2;
-    const yBa = HORIZON + (camY - s.y1) * S1, yBb = HORIZON + (camY - s.y2) * S2;
+    const xa = this.fb.w / 2 + (s.cx1 + o1 - camX) * S1, xb = this.fb.w / 2 + (s.cx2 + o2 - camX) * S2;
+    const yBa = this.horizon + (camY - s.y1) * S1, yBb = this.horizon + (camY - s.y2) * S2;
     const yTa = yBa - h1 * S1, yTb = yBb - h2 * S2;
     const tc = this.towerCols(th, seed, fogT, haze);
     if (FLOOR_H * S2 < 2.2) {
@@ -920,7 +946,7 @@ export class Renderer {
     const d = this.fb.data;
     let c0 = Math.ceil(Math.min(xa, xb) - 0.5), c1 = Math.ceil(Math.max(xa, xb) - 0.5);
     if (c0 < 0) c0 = 0;
-    if (c1 > W) c1 = W;
+    if (c1 > this.fb.w) c1 = this.fb.w;
     const trim = tc.trim, body = tc.body, dark = tc.dark, litP = tc.litP, litH = litP * 0.5;
     for (let x = c0; x < c1; x++) {
       const t = (x + 0.5 - xa) / dx;
@@ -929,15 +955,15 @@ export class Renderer {
       const yB = yBa + (yBb - yBa) * t, yT = yTa + (yTb - yTa) * t;
       let r0 = Math.ceil(yT - 0.5), r1 = Math.ceil(yB - 0.5);
       if (r0 < 0) r0 = 0;
-      if (r1 > H) r1 = H;
+      if (r1 > this.fb.h) r1 = this.fb.h;
       if (r1 <= r0) continue;
       const hh = h1 + (h2 - h1) * u;
       const perPx = hh / (yB - yT);
       const cu = u * 2, ci = cu | 0, cf = cu - ci;
       const winCol = cf > 0.17 && cf < 0.83;
       const col = s.i * 2 + ci;
-      let o = r0 * W + x;
-      for (let r = r0; r < r1; r++, o += W) {
+      let o = r0 * this.fb.w + x;
+      for (let r = r0; r < r1; r++, o += this.fb.w) {
         const h = (yB - r - 0.5) * perPx;
         let c = body;
         if (trim && h > hh - 300) c = trim;
@@ -954,23 +980,23 @@ export class Renderer {
   /** The face of a taller tower turned toward the camera, at the far edge of segment `s`, from height hLo up to hHi. */
   private towerFront(s: Seg, th: Theme, seed: number, o2: number, dir: number, hLo: number, hHi: number, fogT: number, haze: Col, camX: number, camY: number): void {
     const S = s.S2;
-    const xIn = W / 2 + (s.cx2 + o2 - camX) * S;
+    const xIn = this.fb.w / 2 + (s.cx2 + o2 - camX) * S;
     const xOut = xIn + dir * 3.5 * ROAD_W * S;
-    const yb = HORIZON + (camY - s.y2) * S;
+    const yb = this.horizon + (camY - s.y2) * S;
     const yLo = yb - hLo * S, yHi = yb - hHi * S;
     const tc = this.towerCols(th, seed, fogT, haze);
     const shade = mix(tc.body, rgb(0x0c0a18), 0.25); // this side faces away from the light
     let c0 = Math.ceil(Math.min(xIn, xOut) - 0.5), c1 = Math.ceil(Math.max(xIn, xOut) - 0.5);
     let r0 = Math.ceil(yHi - 0.5), r1 = Math.ceil(yLo - 0.5);
     if (c0 < 0) c0 = 0;
-    if (c1 > W) c1 = W;
+    if (c1 > this.fb.w) c1 = this.fb.w;
     if (r0 < 0) r0 = 0;
-    if (r1 > H) r1 = H;
+    if (r1 > this.fb.h) r1 = this.fb.h;
     if (c1 <= c0 || r1 <= r0) return;
     const d = this.fb.data;
     if (FLOOR_H * S < 2.2) {
       const c = mix(shade, tc.litA, 0.12);
-      for (let r = r0; r < r1; r++) d.fill(c, r * W + c0, r * W + c1);
+      for (let r = r0; r < r1; r++) d.fill(c, r * this.fb.w + c0, r * this.fb.w + c1);
       return;
     }
     const inv = 1 / S;
@@ -978,8 +1004,8 @@ export class Renderer {
       const lat = Math.abs(x + 0.5 - xIn) * inv / WIN_COL;
       const ci = lat | 0, cf = lat - ci;
       const winCol = cf > 0.2 && cf < 0.8;
-      let o = r0 * W + x;
-      for (let r = r0; r < r1; r++, o += W) {
+      let o = r0 * this.fb.w + x;
+      for (let r = r0; r < r1; r++, o += this.fb.w) {
         const h = (yb - r - 0.5) * inv;
         let c = shade;
         if (tc.trim && h > hHi - 300) c = tc.trim;
@@ -996,12 +1022,12 @@ export class Renderer {
   private portal(s: Seg, n: Seg, th: Theme, fogT: number, haze: Col, camX: number, camY: number): void {
     const S = s.S2;
     if (S <= 0) return;
-    const xc = W / 2 + (s.cx2 + s.oC2 - camX) * S, yb = HORIZON + (camY - s.y2) * S;
+    const xc = this.fb.w / 2 + (s.cx2 + s.oC2 - camX) * S, yb = this.horizon + (camY - s.y2) * S;
     const tw = TUN_W * ROAD_W * S, oh = TUN_H * S, pw = PORTAL_W * ROAD_W * S, ph = PORTAL_H * S;
     const tc = this.towerCols(th, (0x5a17 + n.i * 97) | 1, fogT, haze);
     const oxL = xc - tw, oxR = xc + tw, oyT = yb - oh;
-    const c0 = Math.max(0, Math.ceil(xc - pw - 0.5)), c1 = Math.min(W, Math.ceil(xc + pw - 0.5));
-    const r0 = Math.max(0, Math.ceil(yb - ph - 0.5)), r1 = Math.min(H, Math.ceil(yb - 0.5));
+    const c0 = Math.max(0, Math.ceil(xc - pw - 0.5)), c1 = Math.min(this.fb.w, Math.ceil(xc + pw - 0.5));
+    const r0 = Math.max(0, Math.ceil(yb - ph - 0.5)), r1 = Math.min(this.fb.h, Math.ceil(yb - 0.5));
     if (c1 <= c0 || r1 <= r0) return;
     const d = this.fb.data;
     const fine = FLOOR_H * S >= 2.2;
@@ -1010,7 +1036,7 @@ export class Renderer {
     for (let r = r0; r < r1; r++) {
       const h = (yb - r - 0.5) * inv;
       const open = r + 0.5 > oyT;
-      let o = r * W + c0;
+      let o = r * this.fb.w + c0;
       const fl = h * INV_FLOOR, f = fl | 0, fy = fl - f;
       const winRow = fine && h > TUN_H + 700 && fy > 0.3 && fy < 0.78;
       for (let x = c0; x < c1; x++, o++) {
@@ -1043,9 +1069,9 @@ export class Renderer {
     const fb = this.fb;
     const TW = TUN_W * ROAD_W;
     const S1 = s.S1, S2 = s.S2;
-    const c1 = W / 2 + (s.cx1 + s.oC1 - camX) * S1, c2 = W / 2 + (s.cx2 + s.oC2 - camX) * S2;
+    const c1 = this.fb.w / 2 + (s.cx1 + s.oC1 - camX) * S1, c2 = this.fb.w / 2 + (s.cx2 + s.oC2 - camX) * S2;
     const xl1 = c1 - TW * S1, xr1 = c1 + TW * S1, xl2 = c2 - TW * S2, xr2 = c2 + TW * S2;
-    const yb1 = HORIZON + (camY - s.y1) * S1, yb2 = HORIZON + (camY - s.y2) * S2;
+    const yb1 = this.horizon + (camY - s.y1) * S1, yb2 = this.horizon + (camY - s.y2) * S2;
     const H1 = TUN_H * S1, H2 = TUN_H * S2;
     const f = (c: Col, k = 1) => (fogT > 0.003 ? mix(c, haze, Math.min(1, fogT * k)) : c);
     fb.poly([xl1, yb1 - H1, xl2, yb2 - H2, xr2, yb2 - H2, xr1, yb1 - H1], f(TUN_CEIL));
@@ -1063,9 +1089,9 @@ export class Renderer {
       // lamps over the first half of the segment: a bar across the ceiling and one high on each wall
       const zm = s.cz1 + SEG_LEN * 0.5;
       if (zm <= 20) return;
-      const Sm = FOCAL / zm;
-      const cm = W / 2 + ((s.cx1 + s.cx2) / 2 + (s.oC1 + s.oC2) / 2 - camX) * Sm;
-      const ybm = HORIZON + (camY - (s.y1 + s.y2) / 2) * Sm, Hm = TUN_H * Sm;
+      const Sm = this.focal / zm;
+      const cm = this.fb.w / 2 + ((s.cx1 + s.cx2) / 2 + (s.oC1 + s.oC2) / 2 - camX) * Sm;
+      const ybm = this.horizon + (camY - (s.y1 + s.y2) / 2) * Sm, Hm = TUN_H * Sm;
       const yt1 = yb1 - H1, ym = ybm - Hm;
       const lw = TW * 0.22, gw = TW * 0.34;
       fb.poly([c1 - gw * S1, yt1, cm - gw * Sm, ym, cm + gw * Sm, ym, c1 + gw * S1, yt1], f(mix(TUN_CEIL, TUN_LAMP_GLOW, 0.7), 0.6));
@@ -1090,13 +1116,13 @@ export class Renderer {
     const st=LANDSCAPES[s.theme],dir=right?1:-1,fb=this.fb,q=this.q8;
     const point=(p:CovePoint,far:boolean):[number,number]=>{
       const S=far?s.S2:s.S1,off=right?(far?s.oR2:s.oR1):(far?s.oL2:s.oL1);
-      return [W/2+((far?s.cx2:s.cx1)+off+dir*p.x-camX)*S,HORIZON+(camY-(far?s.y2:s.y1)-p.h)*S];
+      return [this.fb.w/2+((far?s.cx2:s.cx1)+off+dir*p.x-camX)*S,this.horizon+(camY-(far?s.y2:s.y1)-p.h)*S];
     };
     const at=(p:CovePoint,r:CovePoint,t:number):CovePoint=>({x:p.x+(r.x-p.x)*t,h:p.h+(r.h-p.h)*t});
     const band=(k:number,u0:number,u1:number,v0:number,v1:number,c:Col)=>{
       const A=point(at(a.points[k],a.points[k+1],u0),false),B=point(at(b.points[k],b.points[k+1],v0),true);
       const C=point(at(b.points[k],b.points[k+1],v1),true),D=point(at(a.points[k],a.points[k+1],u1),false);
-      if(Math.max(A[0],B[0],C[0],D[0])<0||Math.min(A[0],B[0],C[0],D[0])>=W||Math.min(A[1],B[1],C[1],D[1])>=H||Math.max(A[1],B[1],C[1],D[1])<0)return;
+      if(Math.max(A[0],B[0],C[0],D[0])<0||Math.min(A[0],B[0],C[0],D[0])>=this.fb.w||Math.min(A[1],B[1],C[1],D[1])>=this.fb.h||Math.max(A[1],B[1],C[1],D[1])<0)return;
       q[0]=A[0];q[1]=A[1];q[2]=B[0]+(B[0]-A[0])*SEAM;q[3]=B[1]+(B[1]-A[1])*SEAM;
       q[4]=C[0]+(C[0]-D[0])*SEAM;q[5]=C[1]+(C[1]-D[1])*SEAM;q[6]=D[0];q[7]=D[1];fb.poly(q,f(c));
     };
@@ -1158,9 +1184,9 @@ export class Renderer {
   private soundWall(s:Seg,n:Seg,th:Theme,f:(c:Col)=>Col,camX:number,camY:number,right:boolean):void {
     const dir=right?1:-1,h0=1350+vnoise(s.i/180,901)*450,h1=1350+vnoise((s.i+1)/180,901)*450;
     const off0=right?s.wallROff:s.wallOff,off1=right?n.wallROff:n.wallOff;
-    const x0=W/2+((s.cx1+(right?s.oR1:s.oL1))-camX+dir*off0*ROAD_W)*s.S1;
-    const x1=W/2+((s.cx2+(right?s.oR2:s.oL2))-camX+dir*off1*ROAD_W)*s.S2;
-    const y0=HORIZON+(camY-s.y1)*s.S1,y1=HORIZON+(camY-s.y2)*s.S2;
+    const x0=this.fb.w/2+((s.cx1+(right?s.oR1:s.oL1))-camX+dir*off0*ROAD_W)*s.S1;
+    const x1=this.fb.w/2+((s.cx2+(right?s.oR2:s.oL2))-camX+dir*off1*ROAD_W)*s.S2;
+    const y0=this.horizon+(camY-s.y1)*s.S1,y1=this.horizon+(camY-s.y2)*s.S2;
     const panel=(a:number,b:number,c:Col)=>this.fb.poly([x0,y0-h0*s.S1*a,x1,y1-h1*s.S2*a,x1,y1-h1*s.S2*b,x0,y0-h0*s.S1*b],f(c));
     panel(0,1,th.wallBands[0][0]);panel(.4,.92,th.wallBands[1][0]);panel(.92,1,th.wallTop[0]);
     if(s.i%22===0&&h0*s.S1>3)this.fb.rect(x0-1,y0-h0*s.S1,Math.max(1,120*s.S1),h0*s.S1,f(th.wallTop[0]));
@@ -1174,13 +1200,13 @@ export class Renderer {
     const fb = this.fb, q = this.q8;
     const point = (p: CovePoint, far: boolean): [number, number] => {
       const scale = far ? s.S2 : s.S1;
-      return [W/2 + ((far ? s.cx2+s.oL2 : s.cx1+s.oL1)-p.x-camX)*scale,
-        HORIZON + (camY-(far ? s.y2 : s.y1)-p.h)*scale];
+      return [this.fb.w/2 + ((far ? s.cx2+s.oL2 : s.cx1+s.oL1)-p.x-camX)*scale,
+        this.horizon + (camY-(far ? s.y2 : s.y1)-p.h)*scale];
     };
     const strip = (a0: CovePoint, a1: CovePoint, b0: CovePoint, b1: CovePoint, col: Col) => {
       const [x0,y0] = point(a0,false), [x1,y1] = point(a1,false);
       const [x2,y2] = point(b0,true), [x3,y3] = point(b1,true);
-      if (Math.max(x0,x1,x2,x3)<0 || Math.min(y0,y1,y2,y3)>=H || Math.max(y0,y1,y2,y3)<0) return;
+      if (Math.max(x0,x1,x2,x3)<0 || Math.min(y0,y1,y2,y3)>=this.fb.h || Math.max(y0,y1,y2,y3)<0) return;
       q[0]=x0; q[1]=y0; q[2]=x2+(x2-x0)*SEAM; q[3]=y2+(y2-y0)*SEAM;
       q[4]=x3+(x3-x1)*SEAM; q[5]=y3+(y3-y1)*SEAM; q[6]=x1; q[7]=y1;
       fb.poly(q,f(col));
@@ -1333,8 +1359,8 @@ export class Renderer {
     const slope = right ? -lean : lean;
     const h1 = right ? s.wallRH : s.wallH, h2 = right ? n.wallRH : n.wallH;
     const S1 = s.S1, S2 = s.S2;
-    const xb1 = W / 2 + (s.cx1 + off1 - camX) * S1, yb1 = HORIZON + (camY - s.y1) * S1;
-    const xb2 = W / 2 + (s.cx2 + off2 - camX) * S2, yb2 = HORIZON + (camY - s.y2) * S2;
+    const xb1 = this.fb.w / 2 + (s.cx1 + off1 - camX) * S1, yb1 = this.horizon + (camY - s.y1) * S1;
+    const xb2 = this.fb.w / 2 + (s.cx2 + off2 - camX) * S2, yb2 = this.horizon + (camY - s.y2) * S2;
     const kx1 = slope * h1 * S1, ky1 = h1 * S1, kx2 = slope * h2 * S2, ky2 = h2 * S2;
     const fb = this.fb, q = this.q8;
     const a = this.forms(s, th, right), b = this.forms(n, th, right);

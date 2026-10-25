@@ -109,17 +109,17 @@ Die niedrigstufigen FB-Blits verwenden native Pixelmaße. Ihre Aufrufer berücks
 - Welt-Spriteprojektion mit bereits skalierter Brennweite dividiert die native Sprite-Skalierung durch `density`; kein zweiter Profilfaktor.
 - Profilwechsel verwenden `${SAVE_PREFIX}.graphics-mode.v1` und die vorhandene Freischaltung aus Task 1.
 
-- [ ] **Step 1:** Schreibe Projektions- und Paritätsprüfungen für Classic und Plus. Vergleiche Straße, Wagen, Verdeckung, Wetter, holprigen Untergrund, Shake, Crash, Überschlag und Zielanimation.
-- [ ] **Step 2:** Führe `node tools/qa/check-graphics-profiles.mjs` aus. Native Projektion und Profilwechsel müssen zunächst fehlschlagen.
-- [ ] **Step 3:** Parametrisiere native Puffer, Hintergrundhöhen, Projektion, Pixelabstände, Clip-Grenzen und Wetterdarstellung. Erhalte `SPR_S`, `CAR_W` und alle übrigen Weltkonstanten.
-- [ ] **Step 4:** Verwende logische Spritehöhen bei Crash-Zentren und Passagierpositionen. Skaliere Glow-Radien und Materialkoordinaten passend zur Sprite-Dichte.
-- [ ] **Step 5:** Vergleiche identische Eingaben und Simulationsschritte bei identischer Renderanzahl. Zusätzliche Plus-Details verwenden ausschließlich kosmetische Hashwerte. Verändere keine bestehenden Aufrufe des Simulationszufalls.
-- [ ] **Step 6:** Passe Phaser Game-Size mit dem vorhandenen ScaleManager an die native Profilgröße an. Textur, Image und Kamera zeichnen 1:1; FIT betrifft nur die äußere Darstellung.
-- [ ] **Step 7:** Ergänze Optionen → Grafik → Classic / Plus. Koordiniere die Ergänzung mit dem dann aktuellen Optionenmenü; ersetze keine parallel entstandenen Eingabeeinstellungen.
-- [ ] **Step 8:** Lade und prüfe die Plus-Bilder vor dem gemeinsamen Austausch von Framebuffer, Textur, Bank und Renderer. Speichere Plus erst nach Erfolg; erhalte Classic bei jedem Ladefehler.
-- [ ] **Step 9:** Prüfe die realen Canvas-/WebGL-DrawingBuffer-Größen und ein natives Ein-Pixel-Schachbrett. Prüfe dieselben logischen Klick-, Touch- und Linkziele in beiden Profilen.
-- [ ] **Step 10:** Führe `node tools/qa/check-graphics-profiles.mjs`, die Browserprüfung gegen die lokale Standalone-Fassung und `npm run check` aus. Prüfe Start, gesperrtes Plus, Freischaltung, mehrere Wechsel, Neustart, Ladefehler und Ausrichtungswechsel.
-- [ ] **Step 11:** Committe ausschließlich die geprüften Dateien dieses Schritts.
+- [x] **Step 1:** Schreibe Projektions- und Paritätsprüfungen für Classic und Plus. Vergleiche Straße, Wagen, Verdeckung, Wetter, holprigen Untergrund, Shake, Crash, Überschlag und Zielanimation.
+- [x] **Step 2:** Führe `node tools/qa/check-graphics-profiles.mjs` aus. Native Projektion und Profilwechsel müssen zunächst fehlschlagen.
+- [x] **Step 3:** Parametrisiere native Puffer, Hintergrundhöhen, Projektion, Pixelabstände, Clip-Grenzen und Wetterdarstellung. Erhalte `SPR_S`, `CAR_W` und alle übrigen Weltkonstanten.
+- [x] **Step 4:** Verwende logische Spritehöhen bei Crash-Zentren und Passagierpositionen. Skaliere Glow-Radien und Materialkoordinaten passend zur Sprite-Dichte.
+- [x] **Step 5:** Vergleiche identische Eingaben und Simulationsschritte bei identischer Renderanzahl. Zusätzliche Plus-Details verwenden ausschließlich kosmetische Hashwerte. Verändere keine bestehenden Aufrufe des Simulationszufalls.
+- [x] **Step 6:** Passe Phaser Game-Size mit dem vorhandenen ScaleManager an die native Profilgröße an. Textur, Image und Kamera zeichnen 1:1; FIT betrifft nur die äußere Darstellung.
+- [x] **Step 7:** Ergänze Optionen → Grafik → Classic / Plus. Koordiniere die Ergänzung mit dem dann aktuellen Optionenmenü; ersetze keine parallel entstandenen Eingabeeinstellungen.
+- [x] **Step 8:** Lade und prüfe die Plus-Bilder vor dem gemeinsamen Austausch von Framebuffer, Textur, Bank und Renderer. Speichere Plus erst nach Erfolg; erhalte Classic bei jedem Ladefehler.
+- [x] **Step 9:** Prüfe die realen Canvas-/WebGL-DrawingBuffer-Größen und ein natives Ein-Pixel-Schachbrett. Prüfe dieselben logischen Klick-, Touch- und Linkziele in beiden Profilen.
+- [x] **Step 10:** Führe `node tools/qa/check-graphics-profiles.mjs`, die Browserprüfung gegen die lokale Standalone-Fassung und `npm run check` aus. Prüfe Start, gesperrtes Plus, Freischaltung, mehrere Wechsel, Neustart, Ladefehler und Ausrichtungswechsel.
+- [x] **Step 11:** Committe ausschließlich die geprüften Dateien dieses Schritts.
 
 **Acceptance:** 640×360 bleibt bis zum tatsächlichen Backbuffer erhalten. Standard, Demo-Trennung und Rückkehr zu Classic funktionieren. Die unvollständige Plus-Grafik bleibt in der Entwicklungsversion.
 

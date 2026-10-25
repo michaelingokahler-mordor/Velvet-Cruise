@@ -16,6 +16,8 @@ export class SpriteBank {
   }
 
   get(name: string): Spr | undefined { return this.map.get(name); }
+  names(): string[] { return [...this.map.keys()]; }
+  releaseScratch(): void { this.ctx.canvas.width = this.ctx.canvas.height = 4; }
   has(name: string): boolean { return this.map.has(name); }
   set(name: string, s: Spr): void { this.map.set(name, s); }
 
@@ -25,11 +27,11 @@ export class SpriteBank {
     this.ctx.clearRect(0, 0, c.width, c.height);
     this.ctx.drawImage(img, 0, 0);
     const d = this.ctx.getImageData(0, 0, w, h).data;
-    return new Uint32Array(d.buffer.slice(0));
+    return new Uint32Array(d.buffer);
   }
 
   /** Whole image as one sprite (backdrops). Alpha is snapped to 0/255. */
-  addImage(name: string, tex: Phaser.Textures.Texture, opaque = false, density: 1 | 2 = 1): void {
+  addImage(name: string, tex: Pick<Phaser.Textures.Texture,'getSourceImage'>, opaque = false, density: 1 | 2 = 1): void {
     const img = tex.getSourceImage() as HTMLImageElement;
     if (!img || !img.width) return;
     const data = this.pixels(img, img.width, img.height);
@@ -41,7 +43,7 @@ export class SpriteBank {
   }
 
   /** Slice an atlas into individual sprites. */
-  addAtlas(tex: Phaser.Textures.Texture, json: AtlasJson): void {
+  addAtlas(tex: Pick<Phaser.Textures.Texture,'getSourceImage'>, json: AtlasJson): void {
     const img = tex.getSourceImage() as HTMLImageElement;
     if (!img || !img.width) return;
     const all = this.pixels(img, img.width, img.height);
