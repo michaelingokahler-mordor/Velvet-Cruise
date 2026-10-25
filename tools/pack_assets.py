@@ -10,6 +10,7 @@ Run after any of the art generators.
 import json
 import re
 import shutil
+import sys
 from pathlib import Path
 
 from PIL import Image
@@ -64,6 +65,9 @@ def main() -> None:
     atlas.save(OUT / "atlas.png", optimize=True)
     (OUT / "atlas.json").write_text(json.dumps({"frames": frames}, indent=0))
     print(f"atlas {ATLAS_W}x{h}, {len(frames)} sprites")
+
+    if '--sprites-only' in sys.argv:
+        return
 
     BG_OUT.mkdir(parents=True, exist_ok=True)
     for p in sorted(BG_SRC.glob("*.png")):

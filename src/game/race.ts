@@ -11,6 +11,7 @@ import { Track, Gate, Seg, Fork, SprInst, FORK_LEN, FORK_W, forkSplit } from "./
 import { COLS, colOf } from "./routes";
 import { Difficulty, NORMAL } from "./difficulty";
 import { carLights } from "./lights";
+import { WeatherRoof } from "./roof";
 
 export interface Car {
   z: number; x: number; speed: number; sprite: string; hw: number;
@@ -199,6 +200,11 @@ export class Race {
   readonly diff: Difficulty;
   /** Which car the player drives: the sprite name prefix ("player", "player_yellow", ...). */
   skin = "player";
+  readonly roof = new WeatherRoof();
+  private tumbleEnclosed = false;
+  /** Roof pose shares the body's dimensions, bottom-centre anchor and light pixels. */
+  get visualSkin(): string { return this.skin + this.roof.suffix; }
+  private get roofWet(): number { return Math.max(this.weatherAmt("rain"), this.weatherAmt("snow")); }
 
   constructor(track: Track, demo = false, startStage = 0, diff: Difficulty = NORMAL) {
     this.track = track;
@@ -217,6 +223,7 @@ export class Race {
     this.pickFork();
     this.spawnInitial();
     this.updateBlend();
+    this.roof.reset(this.roofWet);
   }
 
   /** The stage being driven (THEMES index). */
@@ -379,6 +386,7 @@ export class Race {
     this.pickFork();
     this.spawnInitial();
     this.updateBlend();
+    this.roof.reset(this.roofWet);
   }
 
   private rand(): number {
@@ -566,6 +574,7 @@ export class Race {
   // ------------------------------------------------------------- update
   update(dt: number, input: Controls): void {
     dt = Math.min(dt, 1 / 20);
+    if (this.tumbleT < 0) this.roof.update(this.roofWet, dt);
     this.signalT=Math.max(0,this.signalT-dt);
     this.signalCooldown=Math.max(0,this.signalCooldown-dt);
     const track = this.track;
@@ -807,6 +816,7 @@ export class Race {
     this.crashHard = hard;
     this.shake = 1;
     if (tumble) {
+      this.tumbleEnclosed = this.roof.position > 0;
       this.tumbleT = 0;
       this.tumbleSpin = sp > 0.8 ? 2 : 1;           // flat out = a double roll
       this.tumbleSide = this.playerX < 0 ? -1 : 1;  // rolls away from the road
@@ -996,7 +1006,7 @@ export class Race {
 
   /** Her head while she sits on the sand after a tumble (null while flying, or no tumble). */
   ladyHead(): { x: number; y: number } | null {
-    if (this.tumbleT < T_PEOPLE_LAND) return null;
+    if (this.tumbleEnclosed || this.tumbleT < T_PEOPLE_LAND) return null;
     return { x: this.tumbleLadyX() + 2, y: this.carScreenY() - LAND_UP - 22 };
   }
 
@@ -1021,7 +1031,7 @@ export class Race {
           0.6 + this.rand() * 0.4, this.rand() < 0.65 ? sand : 0xb0a898, 2 + ((this.rand() * 3) | 0));
       }
     }
-    if (t0 < T_PEOPLE_LAND && t >= T_PEOPLE_LAND) {
+    if (!this.tumbleEnclosed && t0 < T_PEOPLE_LAND && t >= T_PEOPLE_LAND) {
       this.events.tumbleLand?.("people");
       for (const x of [this.tumbleDriverX(), this.tumbleLadyX()]) {
         for (let i = 0; i < 12; i++) this.emit(x + (this.rand() - 0.5) * 20, gy - LAND_UP - 2, (this.rand() - 0.5) * 44, -this.rand() * 30 - 5, 0.5, sand, 2);
@@ -1051,7 +1061,7 @@ export class Race {
     const landY = gy - LAND_UP;
     const sitting = t >= T_PEOPLE_LAND;
     // once they have landed they are further away than the car, so they go behind it
-    if (sitting) {
+    if (sitting && !this.tumbleEnclosed) {
       const v = t - T_PEOPLE_LAND;
       const hop = v < 0.2 ? Math.round(Math.sin((v / 0.2) * Math.PI) * 3) : 0;
       for (const [who, , landX] of people) {
@@ -1080,10 +1090,10 @@ export class Race {
       ang = side * Math.sin(v * 13) * 0.14 * Math.max(0, 1 - v / 0.8);
     }
     shadow(cx, gy, 80, lift);
-    const sk = this.skin;
-    const car = (t < T_EJECT ? bank.get(`${sk}_straight_0`) : bank.get(`${sk}_empty`)) ?? bank.get(`${sk}_straight_0`) ?? bank.get("player_straight_0");
+    const sk = this.visualSkin;
+    const car = (t < T_EJECT || this.tumbleEnclosed ? bank.get(`${sk}_straight_0`) : bank.get(`${sk}_empty`)) ?? bank.get(`${sk}_straight_0`) ?? bank.get("player_straight_0");
     if (car) fb.blitRot(car, cx, gy - car.h / 2 - lift, ang, 1, opt);
-    if (t < T_EJECT || sitting) return;
+    if (this.tumbleEnclosed || t < T_EJECT || sitting) return;
     // in flight: spinning through the air above the car
     const u = (t - T_EJECT) / (T_PEOPLE_LAND - T_EJECT);
     for (const [who, seat, landX, dir] of people) {
@@ -1149,7 +1159,7 @@ export class Race {
       if (this.crashHard) y -= Math.abs(Math.sin(this.crashT * 3)) * 6;
     }
     const frame = Math.floor(this.hairT) & 1;
-    const sk = bank.has(`${this.skin}_straight_0`) ? this.skin : "player";
+    const sk = bank.has(`${this.visualSkin}_straight_0`) ? this.visualSkin : bank.has(`${this.skin}_straight_0`) ? this.skin : "player";
     const name = `${sk}_${dir}_${frame}`;
     const spr: Spr | undefined = bank.get(name) ?? bank.get(`${sk}_straight_0`);
     // soft shadow under the car

@@ -1145,6 +1145,11 @@
    "id": "end.d_line3",
    "text": "My hero! I wished for another ride!"
   },
+  { "id": "car.comet", "text": "Silver Comet" },
+  { "id": "car.comet_desc", "text": "A silver grand tourer with a burgundy cabin." },
+  { "id": "car.azure", "text": "Azure Coast" },
+  { "id": "car.azure_desc", "text": "A turquoise classic with chrome and ivory trim." },
+  { "id": "garage.locked", "text": "Reach Goal" },
   { "id": "demo.tagline", "text": "DEMO - ROUTE A" },
   { "id": "demo.map_title", "text": "DEMO ROUTE A" },
   { "id": "demo.map_hint", "text": "FIVE STAGES - ONE DESTINATION" }

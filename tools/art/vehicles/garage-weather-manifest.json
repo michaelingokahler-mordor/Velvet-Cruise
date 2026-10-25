@@ -1,0 +1,27 @@
+{
+  "frame": [
+    88,
+    48
+  ],
+  "states": [
+    "",
+    "_roof1",
+    "_roof2",
+    "_closed"
+  ],
+  "views": [
+    "straight",
+    "left",
+    "right"
+  ],
+  "cars": [
+    "player",
+    "player_yellow",
+    "player_green",
+    "player_blue",
+    "player_silver",
+    "player_azure"
+  ],
+  "mask": "roof_mask_<view>; only rows 0..15",
+  "framesWritten": 120
+}

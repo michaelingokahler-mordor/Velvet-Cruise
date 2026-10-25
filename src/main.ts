@@ -23,7 +23,7 @@ import { Shouts } from "./game/shouts";
 import { DIFFS, Difficulty, DiffId, diffById } from "./game/difficulty";
 import { boardId, STAGE_BEST_KEY } from "./game/rules";
 import type { Car } from "./game/race";
-import { CARS, CarDef, carById } from "./game/cars";
+import { CARS, CarDef, carById, carUnlocked, rememberCarGoals } from "./game/cars";
 import { ArcadeEntry, ARCADE_SIZE, NAME_MAX, arcadeTable, arcadeRank, arcadeInsert, nameChar, cleanName, lastName, saveName } from "./game/arcade";
 import { Badges, BADGES, BADGE_TYPES, BADGE_ROWS, GOAL_BASES, TIERS, TIER_RIM, NEAR_MISS_RUN, drawMedal, badgeName, badgeDesc, badgeId, statId, tierName } from "./game/badges";
 
@@ -617,7 +617,16 @@ class MainScene extends Phaser.Scene {
     this.carSwapT = 9;
   }
 
-  /** The garage: every car is free to drive; the choice is remembered. */
+  /** Saved goals and account badges both count; no new progress key or difficulty restriction. */
+  private carGoals(): Set<string> {
+    const goals = new Set(GOAL_BASES.filter(g => this.badges.has(g)));
+    try {
+      return rememberCarGoals(goals, localStorage, GOALS_REACHED_KEY);
+    } catch { /* local storage unavailable */ }
+    return goals;
+  }
+
+  /** Browse every reward; only an unlocked car can become the remembered choice. */
   private garage(dt: number, taps: { x: number; y: number }[]): void {
     const inp = this.input2;
     const fb = this.fb;
@@ -635,17 +644,16 @@ class MainScene extends Phaser.Scene {
     if (inp.hit("right") || inp.hit("down") || this.tapped(taps, next)) dir = 1;
     if (dir) {
       this.carSel = (this.carSel + dir + n) % n;
-      this.car = CARS[this.carSel];
       this.carSwapT = 0;
       this.carSwapDir = dir;
-      this.demo.skin = this.car.skin;
-      try { localStorage.setItem(CAR_KEY, this.car.id); } catch { /* storage blocked */ }
+      this.demo.skin = CARS[this.carSel].skin;
       this.audio.uiMove();
     }
     this.carSwapT += dt;
     button(fb, prev, "<", false);
     button(fb, next, ">", false);
     const car = CARS[this.carSel];
+    const available = carUnlocked(car, this.carGoals());
     // the car on show at double size: hair in the wind, a glance left and right now and then,
     // and a dab of the brakes when it rolls in
     const tt = this.time2 % 6;
@@ -671,8 +679,14 @@ class MainScene extends Phaser.Scene {
     // one more line when there's room: how to browse (keyboard) or that every car drives the same
     if (lines === 1) para(fb, inp.touchMode ? t("garage.same") : t("garage.hint"), W / 2, 146, C.grey, w - 8);
     const pick: Rect = { x: W / 2 - 50, y: 162, w: 100, h: 15 };
-    button(fb, pick, t("garage.choose"), Math.floor(this.time2 * 3) % 2 === 0);
-    if (inp.hit("back") || inp.hit("confirm") || this.tapped(taps, pick)) {
+    button(fb, pick, available ? t("garage.choose") : `${t("garage.locked")} ${car.goal}`, available && Math.floor(this.time2 * 3) % 2 === 0);
+    const choose = available && (inp.hit("confirm") || this.tapped(taps, pick));
+    if (choose) {
+      this.car = car;
+      try { localStorage.setItem(CAR_KEY, this.car.id); } catch { /* storage blocked */ }
+    }
+    if (inp.hit("back") || choose) {
+      this.demo.skin = this.car.skin;
       this.audio.uiSelect();
       analytics.event("car_pick", { name: this.car.id });
       this.setMode("title");
@@ -896,6 +910,7 @@ class MainScene extends Phaser.Scene {
 
   // -------------------------------------------------------------- race
   private startRace(): void {
+    if (!carUnlocked(this.car, this.carGoals())) this.car = CARS[0];
     const race = this.race ?? this.newRace();
     race.skin = this.car.skin;
     this.race = race;
@@ -1090,7 +1105,7 @@ class MainScene extends Phaser.Scene {
         race.update(dt, ctl);
       }
       if (AUTOPILOT) (window as unknown as Record<string, unknown>).__trk = race.track;
-      if (AUTOPILOT || TUMBLETEST) (window as unknown as Record<string, unknown>).__race = { state: race.state, timer: race.timer, stage: race.stage, times: race.stageTimes, score: race.score, crash: race.crashT, kmh: race.kmh, run: race.runTime, near: this.nearRun, clean: this.runClean, tumble: race.tumbleT, crashes: this.tumbleCount, ice: race.iceAmt, x: race.playerX, z: race.position };
+      if (AUTOPILOT || TUMBLETEST) (window as unknown as Record<string, unknown>).__race = { state: race.state, timer: race.timer, stage: race.stage, times: race.stageTimes, score: race.score, crash: race.crashT, kmh: race.kmh, run: race.runTime, near: this.nearRun, clean: this.runClean, tumble: race.tumbleT, crashes: this.tumbleCount, ice: race.iceAmt, x: race.playerX, z: race.position, car: this.car.id, skin: race.visualSkin, roof: race.roof.phase, roofPosition: race.roof.position, rain: race.weatherAmt("rain"), snow: race.weatherAmt("snow") };
       this.hud.update(dt);
       // countdown beeps
       if (race.state === "countdown" || (race.state === "race" && race.countdown > 0)) {
@@ -1238,7 +1253,9 @@ class MainScene extends Phaser.Scene {
     const fb = this.fb;
     const tt = this.modeT;
     const r = this.race;
-    const skin = r?.skin ?? this.car.skin;
+    // The roof is fully open before the couple leave their seats at HOP (2 seconds).
+    r?.roof.update(0, dt);
+    const skin = r?.visualSkin ?? this.car.skin;
     const F = this.fin;
     const bg = this.bank.get(F.bg) ?? this.bank.get("ending_bg");
     if (bg) fb.layer(bg, 0, 0, true);
