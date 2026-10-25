@@ -13,6 +13,14 @@
   "ko"
  ],
  "strings": [
+  { "id": "time.afternoon", "text": "Afternoon" },
+  { "id": "time.sunset", "text": "Sunset" },
+  { "id": "time.dusk", "text": "Dusk" },
+  { "id": "time.night", "text": "Night" },
+  { "id": "route.feature.hills", "text": "Rolling hills" },
+  { "id": "route.feature.uphill", "text": "Uphill" },
+  { "id": "route.feature.pass", "text": "Mountain pass" },
+  { "id": "route.feature.road", "text": "Open road" },
   {
    "id": "game.title",
    "text": "Velvet Cruise"

@@ -5,7 +5,7 @@ import {mkdirSync,readFileSync,writeFileSync} from 'node:fs';
 import {resolve} from 'node:path';
 
 const out=resolve('output/route-balance');mkdirSync(out,{recursive:true});
-const exports=['core/fb','core/materials','game/track','game/race','game/config','game/difficulty','game/routes','game/themes','game/render','game/ui','game/stage-extension'];
+const exports=['core/fb','core/materials','game/track','game/race','game/config','game/difficulty','game/routes','game/themes','game/render','game/ui','game/stage-extension','game/elevation'];
 await build({stdin:{contents:exports.map(p=>`export * from './src/${p}';`).join('\n'),resolveDir:process.cwd(),loader:'ts'},bundle:true,platform:'node',format:'cjs',outfile:resolve(out,'after.cjs')});
 globalThis.ImageData=class{constructor(w,h){this.width=w;this.height=h;this.data=new Uint8ClampedArray(w*h*4);}};
 const require=createRequire(import.meta.url),m=require(resolve(out,'after.cjs')),old=require(resolve(out,'before.cjs'));
@@ -35,7 +35,10 @@ for(const path of routes){
  }
  const base=b.segs.filter(s=>!b.stages.some(st=>s.i>=st.extension.start&&s.i<st.extension.end));
  assert.equal(base.length,a.segs.length);
- for(let i=0;i<base.length;i++)for(const key of ['curve','y1','y2','tunnel'])assert.equal(base[i][key],a.segs[i][key],`original ${key} preserved at ${i}`);
+ for(let i=0;i<base.length;i++)for(const key of ['curve','y1','y2','tunnel']) {
+  if((key==='y1'||key==='y2')&&m.ELEVATION_PROFILES[base[i].theme])continue;
+  assert.equal(base[i][key],a.segs[i][key],`original ${key} preserved at ${i}`);
+ }
  for(const st of b.stages){
   const x=st.extension,e=m.STAGE_EXTENSIONS[st.node];
   assert.equal(x.start,st.timedEndSeg);assert.equal(x.end,st.endSeg);
@@ -51,7 +54,7 @@ for(const path of routes){
 const reroute=new m.Track(),pristine=JSON.stringify(reroute.stages);
 reroute.choose(1,5);for(let i=0;i<5;i++)reroute.step();reroute.choose(1,1);for(let i=0;i<5;i++)reroute.step();
 assert.equal(JSON.stringify(reroute.stages),pristine);
-const structure={status:'PASS',routes:routes.length,stages:stageEvidence.size,groundSections,fullHouses,normalClocks:'identical',originalGeometry:'identical after removing the additions',lazyReroute:'identical'};
+const structure={status:'PASS',routes:routes.length,stages:stageEvidence.size,groundSections,fullHouses,normalClocks:'identical',originalGeometry:'curves and tunnels retained; authored heights checked by check-elevation',lazyReroute:'identical'};
 writeFileSync(resolve(out,'structure-validation.json'),JSON.stringify(structure,null,2));
 if(process.argv.includes('--structure-only')){console.log(JSON.stringify(structure));process.exit(0);}
 

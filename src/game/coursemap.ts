@@ -5,7 +5,8 @@ import { FB, W, H, Col, rgb, mix } from "../core/fb";
 import { SpriteBank } from "../core/assets";
 import { drawText } from "../core/font";
 import { t } from "../platform/tesana";
-import { THEMES, Weather } from "./themes";
+import { THEMES } from "./themes";
+import { TIME_ICON, WEATHER_KEY, stageTimeOfDay, weatherIcon, roadFeatureKey } from './stage-info';
 import { COLUMN_NODES, NEXT, NODE_COUNT, GOAL_A_PATH, goalLetter } from "./routes";
 import { DEMO_A } from "./edition";
 import { C, big, fit, fmtTime, GRAD_SUN } from "./ui";
@@ -27,9 +28,6 @@ function fallback(): MapData {
   for (const [a, list] of Object.entries(NEXT)) for (const b of list) edges[`${a}-${b}`] = [nodes[a], nodes[String(b)]];
   return { w: W, h: H, nodes, edges };
 }
-
-export const WEATHER_ICON: Record<Weather, string> = { clear: "wx_sun", rain: "wx_rain", fog: "wx_fog", sand: "wx_sand", heat: "wx_heat", night: "wx_moon", snow: "wx_snow" };
-export const WEATHER_KEY: Record<Weather, string> = { clear: "wx.clear", rain: "wx.rain", fog: "wx.fog", sand: "wx.sand", heat: "wx.heat", night: "wx.night", snow: "wx.snow" };
 
 const RED = rgb(0xff3a2a), RED_D = rgb(0x8a1010), RED_L = rgb(0xffb0a0);
 
@@ -177,21 +175,25 @@ export class CourseMap {
     for (let k = 0; k <= n; k++) fb.rect(Math.round(a[0] + ((b[0] - a[0]) * k) / n) - 1, Math.round(a[1] + ((b[1] - a[1]) * k) / n) - 1, 3, 3, c);
   }
 
-  /** Caption box at the bottom: a stage's icon, name and weather (and the best time on it). */
+  /** Two rows keep road character, time and weather separate from the record. */
   caption(fb: FB, bank: SpriteBank, node: number, bestMs: number, extra?: string): void {
-    const y0 = H - 21;
-    fb.rectA(4, y0, W - 8, 18, rgb(0x140a26), 0.82);
-    fb.frame(4, y0, W - 8, 18, rgb(0xff9a3c));
+    const y0 = H - 30;
+    fb.rectA(4, y0, W - 8, 28, rgb(0x140a26), 0.90);
+    fb.frame(4, y0, W - 8, 28, rgb(0xff9a3c));
     const th = THEMES[node];
     const ic = bank.get(th.icon ?? "icon_coast");
-    if (ic) fb.blit(ic, 16, y0 + 17, 1);
-    drawText(fb, fit(t(th.nameKey), 118), 28, y0 + 6, C.yellow, { outline: C.ink });
+    if (ic) fb.blit(ic, 16, y0 + 24, 1);
+    drawText(fb, fit(t(th.nameKey), 118), 28, y0 + 5, C.yellow, { outline: C.ink });
+    drawText(fb, fit(t(roadFeatureKey(node)), 118), 28, y0 + 16, C.white, { outline: C.ink });
+    const time = stageTimeOfDay(th), ti = bank.get(TIME_ICON[time]);
+    if (ti) fb.blit(ti, 156, y0 + 13, 1);
+    drawText(fb, fit(t(`time.${time}`), 74), 164, y0 + 5, C.cyan, { outline: C.ink });
     const wx = th.weather ?? "clear";
-    const wi = bank.get(WEATHER_ICON[wx]);
-    if (wi) fb.blit(wi, 156, y0 + 15, 1);
-    drawText(fb, fit(t(WEATHER_KEY[wx]), 74), 164, y0 + 6, C.cyan, { outline: C.ink });
+    const wi = bank.get(weatherIcon(th));
+    if (wi) fb.blit(wi, 156, y0 + 26, 1);
+    drawText(fb, fit(t(WEATHER_KEY[wx]), 74), 164, y0 + 16, C.cyan, { outline: C.ink });
     const right = extra ?? (bestMs > 0 ? fmtTime(bestMs / 1000) : "--'--\"--");
-    drawText(fb, right, W - 10, y0 + 6, extra ? C.white : bestMs > 0 ? C.cyan : rgb(0x8a7aa8), { align: "right", outline: C.ink });
+    drawText(fb, fit(right, 68), W - 10, y0 + 5, extra ? C.white : bestMs > 0 ? C.cyan : rgb(0x8a7aa8), { align: "right", outline: C.ink });
   }
 
   /** Browsing: move the selection with the arrow keys (columns left/right, stages up/down). */

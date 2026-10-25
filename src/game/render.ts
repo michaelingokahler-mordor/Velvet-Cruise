@@ -381,7 +381,7 @@ export class Renderer {
     if (sw > 3) this.fb.rectA(x - sw * 0.5, y - Math.max(1, 3 * scale), sw, Math.max(1, 4 * scale), rgb(0x10081a), 0.35);
     if (!spr) { this.fb.rect(x - 35 * scale, y - 36 * scale, 70 * scale, 36 * scale, rgb(0x3050c0)); return; }
     const by = y + (c.bounce > 0 ? -Math.round(c.bounce) : 0);
-    const lit = this.night > 0 && this.night >= c.lightAt;
+    const lit = this.race ? this.race.carLightsOn(c) : this.night > 0 && this.night >= c.lightAt;
     // after dark: a pool of headlight on the road ahead of the car (drawn first, the car covers its near end)
     this.fb.blit(spr, x, by, scale, { tr: tint[0], tg: tint[1], tb: tint[2], fog: fogT, fogCol: haze });
     // on a wet road every car trails a veil of spray
@@ -397,6 +397,14 @@ export class Renderer {
         this.fb.blit(l.tail, x, by, scale, { fog: fogT * 0.35, fogCol: haze });
         this.fb.blitAdd(l.glow, x, by, scale, 0.95 * (1 - fogT * 0.5));
       }
+    }
+    // A requested, safe lane change has a rear indicator even in daylight.
+    const turn=(c.yieldLane ?? c.targetX)-c.x;
+    if(c.yieldUntil && Math.abs(turn)>.05 && sw>4 && Math.floor(this.time*3)%2===0) {
+      const bw=Math.max(1,4*scale),bh=Math.max(1,2*scale);
+      const bx=x+Math.sign(turn)*sw*.39-bw*.5,by=y-spr.h*scale*.22;
+      this.fb.rectA(bx-bw,by-bh,bw*3,bh*3,rgb(0xffac28),.32*(1-fogT*.5));
+      this.fb.rect(bx,by,bw,bh,rgb(0xffb52e));
     }
     c.sx = x;
     c.sy = y - spr.h * scale;
@@ -556,10 +564,10 @@ export class Renderer {
   /** A dust storm: a brown haze and streaks of sand blowing across. */
   private sandstorm(k: number, race: Race, dt: number, sp: number, haze: Col): void {
     const fb = this.fb;
-    const g = race.gust;
-    fb.rectA(0, 0, W, H, mix(haze, rgb(0xc07840), 0.4), 0.1 * k + Math.abs(g) * 0.18);
-    const want = Math.round(72 * k * (1 + Math.abs(g) * 1.3));
-    const dir = g !== 0 ? Math.sign(g) : -1;
+    const side = race.gust / .46, forward = race.windForward;
+    const strength = Math.min(1, Math.hypot(side, forward));
+    fb.rectA(0, 0, W, H, mix(haze, rgb(0xc07840), 0.4), 0.1 * k + strength * .083);
+    const want = Math.round(72 * k * (1 + strength * .6));
     const cols = [rgb(0xf0d8a8), rgb(0xe4bc80), rgb(0xd09a5c), rgb(0xfff0c8)];
     while (this.dust.length < want) {
       this.dust.push({ x: Math.random() * W, y: 18 + Math.random() * (H - 18), v: 220 + Math.random() * 260, len: 2 + Math.random() * 5, near: Math.random() < 0.22, col: cols[(Math.random() * 4) | 0] });
@@ -567,16 +575,23 @@ export class Renderer {
     if (this.dust.length > want) this.dust.length = want;
     const d = fb.data;
     for (const p of this.dust) {
-      p.x += dir * p.v * (1 + Math.abs(g) * 1.5) * dt;
-      p.y += (p.near ? 30 : 12) * dt + sp * 20 * dt;
-      if (p.x < -12 || p.x > W + 12 || p.y >= H) { p.x = dir < 0 ? W + Math.random() * 10 : -Math.random() * 10; p.y = 18 + Math.random() * (H - 18); }
-      const yy = p.y | 0, len = Math.round(p.near ? p.len * 1.6 : p.len);
+      const radial = -forward * p.v / 85;
+      const vx = side * p.v * 1.3 + (p.x - W / 2) * radial;
+      const vy = (p.y - (HORIZON - 10)) * radial + sp * (p.near ? 35 : 15);
+      p.x += vx * dt; p.y += vy * dt;
+      if (p.x < -12 || p.x > W + 12 || p.y < 18 || p.y >= H || forward > .1 && Math.hypot(p.x - W / 2, p.y - (HORIZON - 10)) < 5) {
+        if (forward < -.1) { p.x = W / 2 + (Math.random() - .5) * 80; p.y = HORIZON - 10 + (Math.random() - .5) * 20; }
+        else if (forward > .1) { p.x = Math.random() * W; p.y = H - 1; }
+        else { p.x = side > 0 ? -10 : W + 10; p.y = 18 + Math.random() * (H - 18); }
+      }
+      const len = Math.round(p.near ? p.len * 1.6 : p.len);
+      const speed = Math.hypot(vx, vy), dx = speed > .01 ? vx / speed : 0, dy = speed > .01 ? vy / speed : 0;
       for (let q = 0; q < len; q++) {
-        const xx = (p.x - dir * q) | 0;
-        if (xx < 0 || xx >= W) continue;
-        const o = yy * W + xx;
+        const xx = (p.x - dx * q) | 0, row = (p.y - dy * q) | 0;
+        if (xx < 0 || xx >= W || row < 0 || row >= H) continue;
+        const o = row * W + xx;
         d[o] = mix(d[o], p.col, p.near ? 0.75 : 0.45);
-        if (p.near && yy + 1 < H) d[o + W] = mix(d[o + W], p.col, 0.35);
+        if (p.near && row + 1 < H) d[o + W] = mix(d[o + W], p.col, 0.35);
       }
     }
   }
@@ -698,7 +713,7 @@ export class Renderer {
     };
     if(race.lightsOn&&race.tumbleT<0)head(race.playerZ,race.playerX,race.forkSide,
       race.signalFlash?2:3,race.signalFlash?78:48,race.signalFlash?1.05:.29);
-    for(const c of race.cars)if(this.night>=c.lightAt)head(c.z,c.x,c.br??0,2,27,.19);
+    for(const c of race.cars)if(race.carLightsOn(c))head(c.z,c.x,c.br??0,2,27,.19);
     if(this.night<.25)return;
     for(const s of this.visible)for(const p of s.sprites) {
       const pose=lampPose(p.name,p.x);if(!pose||p.y>50)continue;

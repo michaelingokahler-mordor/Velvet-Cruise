@@ -6,9 +6,8 @@ import { MAX_SPEED, STAGE_COUNT, SEG_LEN } from "./config";
 import type { Race } from "./race";
 import type { SpriteBank } from "../core/assets";
 import { THEMES, Weather } from "./themes";
+import { weatherIcon } from './stage-info';
 import { TOUCH, TOUCH_TILT, Rect } from "../input";
-
-const WX_ICON: Record<Weather, string> = { clear: "wx_sun", rain: "wx_rain", fog: "wx_fog", sand: "wx_sand", heat: "wx_heat", night: "wx_moon", snow: "wx_snow" };
 
 /**
  * Approaching a split: both destinations (icon, name, weather), the one the car is heading for lit up.
@@ -31,7 +30,7 @@ export function drawForkPanel(fb: FB, bank: SpriteBank, race: Race, time: number
     fb.frame(r.x, r.y, r.w, r.h, on ? rgb(0xfff0a0) : rgb(0x8a6aa8));
     const th = THEMES[node];
     const ic = bank.get(th.icon ?? "icon_coast");
-    const wx = bank.get(WX_ICON[th.weather ?? "clear"]);
+    const wx = bank.get(weatherIcon(th));
     // left box: ← icon NAME weather; right box: weather NAME icon →
     const arrowX = side < 0 ? r.x + 4 : r.x + r.w - 12;
     drawText(fb, side < 0 ? "←" : "→", arrowX, r.y + 7, C.white, { outline: C.ink });

@@ -1688,7 +1688,7 @@ class MainScene extends Phaser.Scene {
       const node = res.path[k];
       const extra = k < res.stageTimes.length ? fmtTime(res.stageTimes[k]) : res.goal ? t("map.goal") : t("map.timeup");
       cm.caption(fb, this.bank, node, 0, extra);
-      if (done && this.modeT > 0.8 && Math.floor(this.time2 * 2) % 2 === 0) para(fb, inp.touchMode ? t("res.continue_tap") : t("res.continue_key"), W / 2, H - 31, C.white, W - 10, true);
+      if (done && this.modeT > 0.8 && Math.floor(this.time2 * 2) % 2 === 0) para(fb, inp.touchMode ? t("res.continue_tap") : t("res.continue_key"), W / 2, H - 41, C.white, W - 10, true);
       if (this.modeT > 0.5 && (inp.hit("confirm") || inp.hit("back") || taps.length)) {
         this.audio.uiSelect();
         if (!done) this.mapProg = edges;

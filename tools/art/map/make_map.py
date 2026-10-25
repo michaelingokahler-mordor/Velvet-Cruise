@@ -34,6 +34,15 @@ OUT = os.path.join(HERE, "out")
 W, H = 320, 180
 ZOOM = 3
 
+# Shared with the runtime captions; weather is independent of time of day.
+with open(os.path.join(HERE, "..", "..", "..", "assets", "ui", "stage-times.json"), encoding="utf-8") as time_file:
+    STAGE_TIMES = json.load(time_file)
+FINAL_TIMES = {4: STAGE_TIMES["twilight-bay"], 12: STAGE_TIMES["gold-rush-town"], 13: STAGE_TIMES["crystal-lake"]}
+
+
+def tile_tint(node):
+    return {"sunset": (.92, .75, .78), "dusk": (.57, .61, .80), "night": (.48, .49, .73)}.get(FINAL_TIMES.get(node), (1, 1, 1))
+
 TOP_CALM = 20      # engine writes the title here
 BOT_CALM = 22      # engine draws a caption box here
 
@@ -609,7 +618,7 @@ sprite("towel_b", ["bwb", "bwb"], {"b": "#3aa0e0", "w": "#fff4e4"})
 sprite("fern", [".L.L", "LgLg"], {"g": "#2a4a26", "L": "#6a9a44"})
 
 
-PLACED = []      # (base_y, order, name, x0, y0, flip, shadow)
+PLACED = []      # (base_y, order, name, x0, y0, flip, shadow, time tint)
 WARN = []
 NOTE = []
 OCC = np.zeros((H, W), bool)     # pixels already covered by placed sprites
@@ -648,7 +657,8 @@ def place(name, bx, by, flip=False, nudge=3, shadow=True, base=None, overlap=Fal
         if ok:
             for (qx, qy, ch) in _pixels(name, x0, y0, flip):
                 OCC[qy, qx] = True
-            PLACED.append((y, order, name, x0, y0, flip, shadow))
+            node = next((n for n, mask in TOPMASK.items() if mask is base), None)
+            PLACED.append((y, order, name, x0, y0, flip, shadow, tile_tint(node)))
             if (dx, dy) != (0, 0):
                 NOTE.append(f"{name} ({bx},{by}) nudged {dx:+d},{dy:+d}")
             return True
@@ -656,15 +666,20 @@ def place(name, bx, by, flip=False, nudge=3, shadow=True, base=None, overlap=Fal
     return False
 
 
-def blit(name, x0, y0, flip=False):
+def blit(name, x0, y0, flip=False, tint=(1, 1, 1)):
     rows, leg = SPR[name]
     for (qx, qy, ch) in _pixels(name, x0, y0, flip):
-        px(qx, qy, leg[ch])
+        r, g, b = C(leg[ch])
+        # Lamps and warm lit windows remain readable after sunset.
+        lit = name.startswith("lit_") or name in ("saloon", "lamppost")
+        if not (lit and r > 200 and g > 160 and b < 145):
+            r, g, b = (round(value * factor) for value, factor in zip((r, g, b), tint))
+        px(qx, qy, (r, g, b))
 
 
 def flush_sprites():
     # shadows first (cast to the lower-left: sun upper right)
-    for by, _o, name, x0, y0, flip, sh in PLACED:
+    for by, _o, name, x0, y0, flip, sh, _tint in PLACED:
         if not sh:
             continue
         rows, _ = SPR[name]
@@ -676,8 +691,8 @@ def flush_sprites():
                     if dy == 1 and (i < 1 or i > w - 3):
                         continue
                     shade(x, y)
-    for by, _o, name, x0, y0, flip, sh in sorted(PLACED, key=lambda t: (t[0], t[1])):
-        blit(name, x0, y0, flip)
+    for by, _o, name, x0, y0, flip, sh, tint in sorted(PLACED, key=lambda t: (t[0], t[1])):
+        blit(name, x0, y0, flip, tint)
     PLACED.clear()
 
 
@@ -1076,6 +1091,9 @@ def draw_tiles():
         topedge = top & ~np.roll(top, 1, 0)
         rightedge = top & ~np.roll(top, -1, 1)
         paint(topedge | rightedge, th["hi"])
+        # Colour the textured ground as well as its sprites, before drawing
+        # neutral route lines and checkpoint pads on top.
+        img[body] = np.rint(img[body] * np.array(tile_tint(n))).astype(np.uint8)
 
 
 # ----------------------------------------------------------------------------

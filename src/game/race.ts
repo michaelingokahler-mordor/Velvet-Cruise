@@ -9,9 +9,11 @@ import {
 import { THEMES, Theme, Weather } from "./themes";
 import { Track, Gate, Seg, Fork, SprInst, FORK_LEN, FORK_W, forkSplit } from "./track";
 import { COLS, colOf } from "./routes";
-import { Difficulty, NORMAL } from "./difficulty";
+import { Difficulty, DIFFS, NORMAL, weatherBend } from "./difficulty";
 import { carLights } from "./lights";
 import { WeatherRoof } from "./roof";
+import { gradePhysics } from './grade';
+import { blendWeather, npcKeepRight, npcSpeedFactor, windBendFactor, windSpeedFactor, type RoadWeather, type WindVector } from './weather';
 
 export interface Car {
   z: number; x: number; speed: number; sprite: string; hw: number;
@@ -23,7 +25,9 @@ export interface Car {
   /** Inside a fork: which of the two roads the car drives on (-1 left, 1 right). */
   br?: number;
   /** A signalled driver waits for a safe adjacent lane, then holds it briefly. */
-  yieldLane?: number; yieldWait?: number; yieldUntil?: number;
+  yieldLane?: number; yieldWait?: number; yieldUntil?: number; yieldFromX?: number;
+  /** Smoothed lane intent and lateral ice momentum; all NPC weather uses Easy. */
+  laneX?: number; lateralV?: number; iceAmt?: number;
 }
 
 export interface Controls { steer: number; throttle: number; brake: number }
@@ -129,6 +133,7 @@ export class Race {
   private seed = 12345;
   private aiLane = 1;
   private aiThink = 0;
+  private aiYieldCruise = Infinity;
   /** The fork ahead / being driven through (index into track.forks, -1 = none left). */
   forkI = -1;
   /** The road picked at that fork's nose: -1 left, 1 right, 0 = not picked yet. */
@@ -147,9 +152,14 @@ export class Race {
   // weather
   /** Sideways push of a sandstorm gust (road half-widths per second). */
   gust = 0;
+  /** Signed longitudinal component; positive is tailwind, -1..1. */
+  windForward = 0;
   private gustT = 3;
   private gustDur = 0;
-  private gustDir = 1;
+  private gustAngle = Math.PI / 2;
+  private windSide = 0;
+  private windLong = 0;
+  private windSeed = 12345;
   /** Lightning flash brightness (0..1) and where the bolt hit the sky. */
   flash = 0;
   boltX = 160;
@@ -172,19 +182,41 @@ export class Race {
     if(!nearFork(pz)) {
       const car=this.cars.filter(c=>c.z>pz+CAR_LEN&&c.z<pz+95*SEG_LEN&&Math.abs(c.x-this.playerX)<.36&&!nearFork(c.z)&&
         (c.br===undefined||c.br===(this.forkSide||this.viewSide))).sort((a,b)=>a.z-b.z)[0];
-      if(car) {
-        const lane=LANE_X.reduce((a,x,k)=>Math.abs(x-car.x)<Math.abs(LANE_X[a]-car.x)?k:a,0);
-        const choices=[lane+1,lane-1].filter(k=>k>=0&&k<4&&Math.abs(LANE_X[k]-this.playerX)>.4);
-        const target=choices.find(k=>this.yieldSafe(car,LANE_X[k]));
-        if(target!==undefined){car.yieldLane=LANE_X[target];car.yieldWait=.32;car.yieldUntil=3.4;}
+      if(car && !car.yieldUntil) {
+        car.yieldFromX=this.playerX;car.yieldWait=.18;car.yieldUntil=6;
+        car.yieldLane=this.yieldTarget(car, this.playerX);
       }
     }
     return this.signalKind;
   }
 
+  private yieldTarget(car: Car, fromX: number): number | undefined {
+    const lane=LANE_X.reduce((a,x,k)=>Math.abs(x-car.x)<Math.abs(LANE_X[a]-car.x)?k:a,0);
+    const choices=[lane+1,lane-1].filter(k=>k>=0&&k<4&&Math.abs(LANE_X[k]-fromX)>.4);
+    const target=choices.find(k=>this.yieldSafe(car,LANE_X[k]));
+    return target===undefined ? undefined : LANE_X[target];
+  }
+
   private yieldSafe(car:Car,target:number):boolean {
+    // A deferred request may find the player in its former gap. Moving out of
+    // the player's lane is allowed; merging toward an occupied lane must wait.
+    const sameRoad=car.br===undefined || car.br===(this.forkSide||this.viewSide);
+    const fromPlayer=car.x-this.playerX,toPlayer=target-this.playerX;
+    // Near-aligned cars can leave the current lane despite normal spawn jitter.
+    const acrossPlayer=fromPlayer*toPlayer<0 && Math.abs(fromPlayer)>.06;
+    const intoPlayer=acrossPlayer || (Math.abs(toPlayer)<car.hw+PLAYER_HW+.06 &&
+      Math.abs(toPlayer)<Math.abs(fromPlayer)-.02);
+    if(sameRoad && intoPlayer) {
+      const dz=car.z-this.playerZ,predicted=dz+(car.speed-this.speed)*1.8;
+      if(Math.min(dz,predicted)<CAR_LEN*3 && Math.max(dz,predicted)>-CAR_LEN*2)return false;
+    }
     return this.cars.every(o=>{
-      if(o===car||(o.br!==undefined&&car.br!==undefined&&o.br!==car.br)||Math.abs(o.x-target)>car.hw+o.hw+.12)return true;
+      if(o===car||(o.br!==undefined&&car.br!==undefined&&o.br!==car.br))return true;
+      // Reserve the whole swept path, including an already accepted signal request.
+      const lo = Math.min(car.x, target) - car.hw - .06, hi = Math.max(car.x, target) + car.hw + .06;
+      const otherLo = Math.min(o.x, o.targetX, o.yieldLane ?? o.targetX) - o.hw - .06;
+      const otherHi = Math.max(o.x, o.targetX, o.yieldLane ?? o.targetX) + o.hw + .06;
+      if(hi < otherLo || lo > otherHi)return true;
       const dz=o.z-car.z,predicted=dz+(o.speed-car.speed)*1.8;
       return Math.min(dz,predicted)>CAR_LEN*4||Math.max(dz,predicted)<-CAR_LEN*3;
     });
@@ -366,6 +398,27 @@ export class Race {
     return a + (z - a) * b.t;
   }
 
+  /** NPC weather is sampled at its own road position, including stage transitions. */
+  localWeather(z: number): RoadWeather {
+    const s = this.track.seg(z), c = colOf(s.theme);
+    if (c > 0) {
+      const t = Math.max(0, Math.min(1, (s.i - (this.track.themeStart(c) - 1)) / 230));
+      if (t < 1) return blendWeather(THEMES[this.track.path[c - 1]], THEMES[s.theme], t * t * (3 - 2 * t));
+    }
+    return blendWeather(THEMES[s.theme], THEMES[s.theme], 0);
+  }
+
+  windAt(z: number, sand = this.localWeather(z).sand): WindVector {
+    const k = this.track.seg(z).tunnel ? 0 : sand;
+    return { side: this.windSide * k, forward: this.windLong * k };
+  }
+
+  /** Shared switch for headlights and rear lights, based on the NPC's own location. */
+  carLightsOn(c: Car): boolean {
+    const w = this.localWeather(c.z);
+    return Math.max(w.rain, w.snow, w.fog, w.sand) >= .15 || w.dark > 0 && w.dark >= c.lightAt;
+  }
+
   /** The sea beside the road (0..1): inland stages have none. */
   get seaAmt(): number {
     const b = this.stageBlend;
@@ -409,6 +462,12 @@ export class Race {
     return s.y1 + (s.y2 - s.y1) * p;
   }
 
+  /** Smooth only eight segments (about 0.09 s at full speed), across crests too. */
+  roadGrade(z: number): number {
+    const from=Math.max(0,z-4*SEG_LEN),to=Math.min(this.track.length-1,z+4*SEG_LEN);
+    return to>from ? (this.roadY(to)-this.roadY(from))/(to-from) : 0;
+  }
+
   // ------------------------------------------------------------- traffic
   private pickCar(): string {
     let tot = 0;
@@ -422,7 +481,8 @@ export class Race {
     const seg = this.track.seg(z);
     if (seg.i >= this.track.goalSeg - 5) return null;
     const th = THEMES[seg.theme];
-    const lane = Math.floor(this.rand() * 4);
+    const firstLane = npcKeepRight(this.localWeather(z)) ? 1 : 0;
+    const lane = firstLane + Math.floor(this.rand() * (4 - firstLane));
     const x = LANE_X[lane] + (this.rand() - 0.5) * 0.08;
     // inside a fork every car keeps to one road (only the picked one once the player chose)
     const f = this.fork;
@@ -467,37 +527,80 @@ export class Race {
       const c = this.makeCar(z);
       if (c) this.cars.push(c);
     }
-    const th = THEMES[this.playerSeg.theme];
     const f = this.fork;
     for (const c of this.cars) {
+      const seg = this.track.seg(c.z), th = THEMES[seg.theme], w = this.localWeather(c.z);
+      const wind = this.windAt(c.z, w.sand), easy = DIFFS[0];
+      const grade = gradePhysics(this.roadGrade(c.z));
+      const keepRight = npcKeepRight(w);
+      const iceHere = seg.ice > 0 && c.x > seg.iceL - .08 && c.x < seg.iceR + .08 ? seg.ice : 0;
+      c.iceAmt = (c.iceAmt ?? 0) + (iceHere - (c.iceAmt ?? 0)) * Math.min(1, dt * (iceHere > (c.iceAmt ?? 0) ? 9 : 5));
+      const ice = c.iceAmt, iceScale = 1 + (easy.weather - 1) * .5;
+      const hazard = Math.max(w.rain, w.snow, w.fog, w.sand, ice, Math.hypot(wind.side, wind.forward));
       // cars driving into a split keep to the road on their side
       if (f && c.br === undefined && c.z >= f.start * SEG_LEN && c.z < f.end * SEG_LEN) c.br = this.forkSide || (c.x < 0 ? -1 : 1);
       const nearFork = !!f && c.z > (f.start - 80) * SEG_LEN && c.z < f.end * SEG_LEN;
       if(c.yieldUntil) {
         c.yieldUntil=Math.max(0,c.yieldUntil-dt);
         c.yieldWait=Math.max(0,(c.yieldWait??0)-dt);
-        if(nearFork||!c.yieldUntil){c.yieldLane=undefined;c.yieldUntil=0;}
-        else if(c.yieldLane!==undefined&&!c.yieldWait) {
-          if(this.yieldSafe(c,c.yieldLane)){c.targetX=c.yieldLane;c.yieldLane=undefined;}
-          else if(c.yieldUntil<1.8){c.yieldLane=undefined;c.yieldUntil=0;}
+        if(nearFork||!c.yieldUntil){c.yieldLane=undefined;c.yieldFromX=undefined;c.yieldUntil=0;}
+        else if(c.yieldFromX!==undefined&&!c.yieldWait) {
+          const target=c.yieldLane!==undefined&&this.yieldSafe(c,c.yieldLane) ? c.yieldLane : this.yieldTarget(c,c.yieldFromX);
+          c.yieldLane=target;
+          if(target!==undefined){c.targetX=target;c.yieldLane=undefined;c.yieldFromX=undefined;}
         }
       }
       // follow the car ahead in the same lane
-      let speed = c.base;
+      let speed = c.base * npcSpeedFactor(w, ice) * windSpeedFactor(wind.forward) * grade.speedFactor;
+      // Brake before a wet/icy bend; NPCs keep their own Easy force level on every difficulty.
+      for (let k = 0; k <= 40; k += 8) {
+        const aheadSeg = this.track.seg(c.z + k * SEG_LEN);
+        const aheadIce = c.targetX > aheadSeg.iceL - .08 && c.targetX < aheadSeg.iceR + .08 ? aheadSeg.ice : 0;
+        const factor = weatherBend(easy, w.rain, w.snow, Math.max(ice, aheadIce)) * windBendFactor(wind.forward);
+        const force = Math.abs(aheadSeg.curve) * CENTRIFUGAL * easy.cornering * factor;
+        if (force > 0) speed = Math.min(speed, MAX_SPEED * Math.sqrt(STEER * .65 / force));
+        speed = Math.min(speed, c.base * npcSpeedFactor(w, Math.max(ice, aheadIce)) * windSpeedFactor(wind.forward) * grade.speedFactor);
+      }
       for (const o of this.cars) {
         if (o === c) continue;
         const dz = o.z - c.z;
-        if (dz > 0 && dz < CAR_LEN * 3 && Math.abs(o.x - c.x) < 0.32 && (o.br === undefined || c.br === undefined || o.br === c.br)) speed = Math.min(speed, o.speed * 0.98);
+        if (dz > 0 && dz < CAR_LEN * (3 + hazard * 3) && Math.abs(o.x - c.x) < .4 && (o.br === undefined || c.br === undefined || o.br === c.br)) {
+          speed = Math.min(speed, o.speed * .98);
+          // Closing gaps cannot be consumed while the ice-limited brakes respond.
+          c.speed = Math.min(c.speed, Math.max(0, o.speed + (dz - CAR_LEN * 1.6) / Math.max(dt, .001)));
+        }
       }
       // occasional lane changes (never across the middle while the road splits)
-      if (!nearFork && !c.yieldUntil && this.rand() < th.lanesChange * this.diff.lanes * dt) {
+      if (!nearFork && !c.yieldUntil && this.rand() < th.lanesChange * this.diff.lanes * (1 - .8 * hazard) * dt) {
         const lane = LANE_X.reduce((best, lx, i) => (Math.abs(lx - c.targetX) < Math.abs(LANE_X[best] - c.targetX) ? i : best), 0);
-        const nl = Math.max(0, Math.min(3, lane + (this.rand() < 0.5 ? -1 : 1)));
-        c.targetX = LANE_X[nl];
+        const nl = Math.max(keepRight ? 1 : 0, Math.min(3, lane + (this.rand() < 0.5 ? -1 : 1)));
+        if (this.yieldSafe(c, LANE_X[nl])) c.targetX = LANE_X[nl];
       }
-      const dx = c.targetX - c.x;
-      c.x += Math.sign(dx) * Math.min(Math.abs(dx), 0.28 * dt);
-      c.speed += (speed - c.speed) * Math.min(1, dt * 2);
+      if (keepRight && !nearFork && !c.yieldUntil && c.targetX < -.5 && this.yieldSafe(c, LANE_X[1])) c.targetX = LANE_X[1];
+      if (Math.abs(c.targetX - (c.laneX ?? c.x)) > .02 && !this.yieldSafe(c, c.targetX)) {
+        c.targetX = LANE_X.reduce((best, lane) => Math.abs(lane - c.x) < Math.abs(best - c.x) ? lane : best);
+      }
+      // Move the intended lane slowly; a separate bounded driver corrects weather drift.
+      c.laneX ??= c.x;
+      const laneDelta = c.targetX - c.laneX;
+      const laneRate = c.yieldUntil && c.yieldFromX===undefined ? .52 * (1 - .4 * hazard) : .28 * (1 - .5 * hazard);
+      c.laneX += Math.sign(laneDelta) * Math.min(Math.abs(laneDelta), laneRate * dt);
+      const sp = c.speed / MAX_SPEED;
+      const dryPull = sp * sp * seg.curve * CENTRIFUGAL * easy.cornering;
+      const steerLimit = STEER * Math.min(1, sp * 2.2);
+      const steering = Math.max(-steerLimit, Math.min(steerLimit, dryPull + (c.laneX - c.x) * 4));
+      const factor = weatherBend(easy, w.rain, w.snow, ice) * windBendFactor(wind.forward);
+      const push = steering - dryPull * factor + wind.side * .46 * easy.wind * Math.min(1, sp * 2.5);
+      c.lateralV = (c.lateralV ?? 0) + (push - (c.lateralV ?? 0)) * Math.min(1, dt * (16 * (1 - ice) + 1.4 * ice / iceScale));
+      const motion = ice > .02 ? push * (1 - ice) + c.lateralV * ice : push;
+      const bound = 1 - c.hw - .03;
+      const nextX = c.x + motion * dt;
+      c.x = Math.max(-bound, Math.min(bound, nextX));
+      if (c.x !== nextX) c.lateralV = 0;
+      const speedDelta = (speed - c.speed) * Math.min(1, dt * 2);
+      // The automatic driver compensates gravity at cruise, but shares its force limits.
+      c.speed += Math.max((BRAKE * (1 - .55 * ice * iceScale) + grade.acceleration) * dt, Math.min((MAX_SPEED * .34 + grade.acceleration) * dt, speedDelta));
+      c.speed = Math.max(0, c.speed);
       c.z += c.speed * dt;
       if (c.bounce > 0) c.bounce = Math.max(0, c.bounce - dt * 12);
     }
@@ -519,42 +622,64 @@ export class Race {
   private ai(dt: number, cruiseSpeed = 0.86): Controls {
     this.aiThink -= dt;
     const pz = this.playerZ;
+    const f = this.fork;
+    const plannedSide = this.forkSide || (f ? this.aiPlan?.[f.col + 1] : 0) || this.aiSide || (this.aiLane < 2 ? -1 : 1);
+    // A car farther into a fork has a different road-centre offset. Compare lanes
+    // on the intended branch, rather than letting that screen offset hide traffic.
+    const laneCarX = (c: Car): number | null => {
+      if (!f || c.br === undefined) return this.carX(c);
+      if (c.br !== plannedSide) return null;
+      return c.x + (this.forkSide ? 0 : plannedSide * this.splitAt(pz / SEG_LEN));
+    };
     if (this.aiThink <= 0) {
       this.aiThink = 0.12;
+      this.aiYieldCruise = Infinity;
       // The attract/test driver looks far enough ahead to finish a lane change,
       // and checks approaching rear traffic instead of jumping into its path.
       const gap = (lane:number) => this.cars.reduce((best,c) => {
-        const cx=this.carX(c),dz=c.z-pz;
+        const cx=laneCarX(c),dz=c.z-pz;
         return cx!==null&&dz>=0&&Math.abs(cx-LANE_X[lane])<0.4?Math.min(best,dz):best;
       },Infinity);
       const safe = (lane:number) => !this.cars.some(c=>{
-        const cx=this.carX(c),dz=c.z-pz;
-        return cx!==null&&Math.abs(cx-LANE_X[lane])<0.4&&
-          (dz>-CAR_LEN*1.4&&dz<14*SEG_LEN || dz<0&&dz>-25*SEG_LEN&&c.speed>this.speed);
+        const cx=laneCarX(c),dz=c.z-pz;
+        const nextX = cx === null ? null : cx + (c.yieldLane ?? c.targetX) - c.x;
+        const crossTime = .45 + Math.abs(LANE_X[lane] - this.playerX) / STEER;
+        const crossingSpeed = Math.min(MAX_SPEED * windSpeedFactor(this.windForward), this.speed + MAX_SPEED * .17 * crossTime);
+        const predicted = dz + (c.speed - crossingSpeed) * crossTime;
+        return cx!==null&&nextX!==null&&Math.min(cx,nextX)-.4<LANE_X[lane]&&Math.max(cx,nextX)+.4>LANE_X[lane]&&
+          Math.min(dz,predicted)<CAR_LEN*1.6&&Math.max(dz,predicted)>-CAR_LEN*1.4;
       });
       const currentGap=gap(this.aiLane);
       if (currentGap < 70*SEG_LEN) {
-        const opts = [this.aiLane-1,this.aiLane+1].filter(l=>l>=0&&l<4&&safe(l)&&gap(l)>currentGap+10*SEG_LEN);
+        const currentLane = LANE_X.reduce((best, x, i) => Math.abs(x - this.playerX) < Math.abs(LANE_X[best] - this.playerX) ? i : best, 0);
+        const opts = [0,1,2,3].filter(l=>l!==this.aiLane&&gap(l)>currentGap+10*SEG_LEN&&
+          [0,1,2,3].every(k=>k===currentLane||k<Math.min(currentLane,l)||k>Math.max(currentLane,l)||safe(k)));
         opts.sort((a,b)=>gap(b)-gap(a));
         if(opts.length)this.aiLane=opts[0];
+        else {
+          this.signal();
+          // Let an adjacent parallel car get ahead, then cross behind it into a clear lane.
+          for (const c of this.cars) {
+            const x = laneCarX(c), dz = c.z - pz;
+            if (currentGap < 35 * SEG_LEN && x !== null && dz > -CAR_LEN * 1.4 && dz < 35 * SEG_LEN && Math.abs(x - this.playerX) > .35 && Math.abs(x - this.playerX) < .9)
+              this.aiYieldCruise = Math.min(this.aiYieldCruise, Math.max(.2, c.speed / MAX_SPEED - .12));
+          }
+        }
       }
     }
     const seg = this.playerSeg;
     const sp = this.speed / MAX_SPEED;
     let target = LANE_X[this.aiLane];
     // at a split, head for the planned road
-    const f = this.fork;
-    if (f && !this.forkSide && seg.i >= f.start - 60) {
+    if (f && !this.forkSide && seg.i >= f.start - 160) {
       const side = this.aiPlan?.[f.col + 1] ?? (this.aiSide || (this.aiLane < 2 ? -1 : 1));
       // (the car is carried along its road through the split, so aim at where that road is now)
       target = side * this.splitAt(pz / SEG_LEN) + LANE_X[side < 0 ? Math.min(this.aiLane, 1) : Math.max(this.aiLane, 2)];
     }
-    const iceScale = 1 + (this.diff.weather - 1) * 0.5;
-    const wet = this.diff.weather * (0.16 * this.weatherAmt("rain") + 0.1 * this.weatherAmt("snow"));
-    const grip = (ice:number) => this.diff.cornering * (1 + wet + 1.1 * ice * iceScale);
+    const grip = (ice:number) => this.diff.cornering * weatherBend(this.diff, this.weatherAmt("rain"), this.weatherAmt("snow"), ice) * windBendFactor(this.windForward);
     const steer = Math.max(-1, Math.min(1, (target - this.playerX) * 4 +
-      seg.curve * sp * sp * CENTRIFUGAL * grip(this.iceAmt) / STEER - this.gust * this.diff.weather / STEER));
-    let cruise = this.state === "goal" ? 0.45 : cruiseSpeed;
+      seg.curve * sp * sp * CENTRIFUGAL * grip(this.iceAmt) / STEER - this.gust * this.diff.wind * Math.min(1, sp * 2.5) / (STEER * Math.min(1, sp * 2.2) || 1)));
+    let cruise = Math.min(this.aiYieldCruise, this.state === "goal" ? 0.45 : cruiseSpeed * windSpeedFactor(this.windForward));
     // A capable driver brakes for a wet/icy bend before reaching it. This is
     // only the attract/test AI; player inputs are never assisted.
     for (let k = 0; k <= 44; k += 4) {
@@ -564,8 +689,12 @@ export class Race {
       if (force > 0) cruise = Math.min(cruise, Math.sqrt(STEER * 0.99 / force));
     }
     for (const car of this.cars) {
-      const x = this.carX(car), dz = car.z - pz;
-      if (x !== null && dz > 0 && dz < 28 * SEG_LEN && Math.abs(x - this.playerX) < car.hw + 0.25)
+      const x = laneCarX(car), dz = car.z - pz;
+      const closing = Math.max(0, this.speed - car.speed);
+      const iceScale = 1 + (this.diff.weather - 1) * .5;
+      const deceleration = -BRAKE * .8 * (1 - .55 * this.iceAmt * iceScale);
+      const stopAhead = CAR_LEN * 2 + closing * .2 + closing * closing / (2 * deceleration);
+      if (x !== null && dz > 0 && dz < Math.max(28 * SEG_LEN, stopAhead) && Math.abs(x - this.playerX) < car.hw + 0.25)
         cruise = Math.min(cruise, Math.max(0.2, car.speed / MAX_SPEED - 0.04));
     }
     return { steer, throttle: sp < cruise ? 1 : 0, brake: sp > cruise + 0.018 ? 0.8 : 0 };
@@ -603,14 +732,14 @@ export class Race {
     const iceHere = this.crashT <= 0 && seg.ice > 0 && this.playerX > seg.iceL - 0.08 && this.playerX < seg.iceR + 0.08 ? seg.ice : 0;
     this.iceAmt += (iceHere - this.iceAmt) * Math.min(1, dt * (iceHere > this.iceAmt ? 9 : 5));
     const iceScale = 1 + (this.diff.weather - 1) * 0.5;
-    const wetBend = 1 + this.diff.weather * (0.16 * this.weatherAmt("rain") + 0.1 * this.weatherAmt("snow")) + 1.1 * this.iceAmt * iceScale;
+    const wetBend = weatherBend(this.diff, this.weatherAmt("rain"), this.weatherAmt("snow"), this.iceAmt) * windBendFactor(this.windForward);
     // a wet road lets the car slide out a little more in bends
     const push = ctl.steer * steerPow - sp * sp * seg.curve * CENTRIFUGAL * this.diff.cornering * wetBend;
     this.iceV += (push - this.iceV) * Math.min(1, dt * (16 * (1 - this.iceAmt) + 1.4 * this.iceAmt / iceScale));
     this.playerX += (this.iceAmt > 0.02 ? push * (1 - this.iceAmt) + this.iceV * this.iceAmt : push) * dt;
     if ((this.iceAmt > 0.3) !== this.onIce && this.state !== "demo") { this.onIce = this.iceAmt > 0.3; this.events.ice?.(this.onIce); }
     // sandstorm gusts shove the car sideways
-    if (this.state === "race" && this.crashT <= 0) this.playerX += this.gust * this.diff.weather * Math.min(1, sp * 2.5) * dt;
+    if (this.state === "race" && this.crashT <= 0) this.playerX += this.gust * this.diff.wind * Math.min(1, sp * 2.5) * dt;
     this.steer += (ctl.steer - this.steer) * Math.min(1, dt * 10);
 
     // throttle / brake
@@ -620,6 +749,8 @@ export class Race {
     else if (this.braking) this.speed += BRAKE * ctl.brake * (1 - 0.55 * this.iceAmt * iceScale) * dt;
     else this.speed += DECEL * dt;
     if (this.braking && ctl.throttle > 0) this.speed += BRAKE * 0.6 * dt;
+    const grade = gradePhysics(this.roadGrade(this.playerZ));
+    this.speed += grade.acceleration * dt;
 
     // the road's edge: the red/white strip drags at the wheels, and the sand or earth beyond it
     // drags harder the deeper the car goes (and caps its top speed lower and lower)
@@ -656,7 +787,7 @@ export class Race {
 
     // the coast road runs out past the goal: roll gently to a stop
     if (this.position > this.track.length - (DRAW_DIST + 30) * SEG_LEN) this.speed -= MAX_SPEED * 0.6 * dt;
-    this.speed = Math.max(0, Math.min(MAX_SPEED, this.speed));
+    this.speed = Math.max(0, Math.min(MAX_SPEED * windSpeedFactor(this.windForward) * grade.speedFactor, this.speed));
     if (this.crashT > 0) {
       this.crashT -= dt;
       this.speed = Math.max(0, this.speed - (this.tumbleT >= 0 ? this.tumbleDecel : MAX_SPEED * 1.1) * dt);
@@ -886,15 +1017,22 @@ export class Race {
 
   // -------------------------------------------------------------- weather
   private updateWeather(dt: number): void {
-    // sandstorm: now and then a gust shoves the car sideways
-    const sand = this.weatherAmt("sand");
+    // Independent wind RNG: lane changes and cosmetic particles cannot change a gust.
+    const windRand = () => {
+      this.windSeed = (this.windSeed * 1103515245 + 12345) & 0x7fffffff;
+      return this.windSeed / 0x7fffffff;
+    };
     this.gustT -= dt;
     if (this.gustT <= 0) {
-      if (this.gustDur > 0) { this.gustDur = 0; this.gustT = 2.4 + this.rand() * 3.2; }
-      else { this.gustDur = 1.2 + this.rand() * 0.8; this.gustT = this.gustDur; this.gustDir = this.rand() < 0.5 ? -1 : 1; }
+      if (this.gustDur > 0) { this.gustDur = 0; this.gustT = 2.4 + windRand() * 3.2; }
+      else { this.gustDur = 1.2 + windRand() * 0.8; this.gustT = this.gustDur; this.gustAngle = windRand() * Math.PI * 2; }
     }
     const env = this.gustDur > 0 ? Math.sin(Math.PI * Math.max(0, Math.min(1, 1 - this.gustT / this.gustDur))) : 0;
-    this.gust = env * this.gustDir * 0.46 * sand;
+    this.windSide = Math.sin(this.gustAngle) * env;
+    this.windLong = Math.cos(this.gustAngle) * env;
+    const wind = this.windAt(this.playerZ);
+    this.gust = .46 * wind.side;
+    this.windForward = wind.forward;
     // thunderstorm: lightning every few seconds, thunder rolls in after it
     const rain = this.weatherAmt("rain");
     this.flash = Math.max(0, this.flash - dt * 3.2);
@@ -910,8 +1048,8 @@ export class Race {
     } else this.lightningT = 2.5;
   }
 
-  /** Seconds of strong gust left (for the wind sound / dust). */
-  get gustAmt(): number { return Math.abs(this.gust) / 0.46; }
+  /** Envelope strength for wind sound and dust, including pure head/tail winds. */
+  get gustAmt(): number { return Math.min(1, Math.hypot(this.gust / .46, this.windForward)); }
 
   // ----------------------------------------------------------- particles
   private emit(x: number, y: number, vx: number, vy: number, life: number, col: number, size: number, grow = 0, g = 1): void {

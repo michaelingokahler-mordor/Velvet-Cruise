@@ -13,6 +13,7 @@ import { dressCove, type CoveSection } from "./cove";
 import { dressBluffs, type BluffSection } from "./bluffs";
 import { dressLandscape, type Landscape } from "./landscape";
 import { STAGE_EXTENSIONS } from "./stage-extension";
+import { applyStageElevation, ELEVATION_PROFILES } from './elevation';
 
 export interface SprInst {
   name: string;
@@ -350,6 +351,18 @@ export class Track {
         this.forks[c] = { col: c, start, nose: start + FORK_NOSE, gate: endSeg, end: start + FORK_LEN, left, right };
       }
     }
+    if (!this.sequential && ELEVATION_PROFILES[node]) {
+      // Keep the next stage's original entrance (including its tiny easing
+      // remainder), so stages without an authored profile stay unchanged.
+      const exitY = this.lastY;
+      applyStageElevation(this.segs, this.stages[c]);
+      const finishY = this.segs[endSeg - 1].y2, transition = this.segs.length - endSeg;
+      for (let k = 0; k < transition; k++) {
+        this.segs[endSeg + k].y1 = easeInOut(finishY, exitY, k / transition);
+        this.segs[endSeg + k].y2 = easeInOut(finishY, exitY, (k + 1) / transition);
+      }
+      this.lastY = transition ? exitY : finishY;
+    }
   }
 
   private build(fromCol: number, lazy = false): void {
@@ -384,7 +397,9 @@ export class Track {
     if (done) {
       this.col = COLS - 1;
       this.node = this.path[COLS - 1];
-      this.road(50, 900, 50, 0, -this.lastY); // victory lap road beyond the goal
+      // A summit finish stays on its mountain during the victory roll-out.
+      const summit = ELEVATION_PROFILES[this.node]?.feature === 'uphill';
+      this.road(50, 900, 50, 0, summit ? 0 : -this.lastY);
     }
     if (this.sequential) return;
 
