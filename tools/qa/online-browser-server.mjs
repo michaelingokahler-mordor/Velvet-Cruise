@@ -3,9 +3,9 @@ import { readFileSync, existsSync, statSync } from 'node:fs';
 import { resolve, relative, extname } from 'node:path';
 import { build } from 'esbuild';
 
-const root = resolve('dist');
+const root = resolve(process.argv[3] || 'dist');
 const apiBase = process.argv[2] || 'http://127.0.0.1:8789';
-const { outputFiles } = await build({ stdin: { contents: "export * from './src/platform/tesana'; export * from './src/platform/online-scores'; export * from './src/game/arcade';", resolveDir: process.cwd(), loader: 'ts' }, bundle: true, platform: 'browser', format: 'esm', write: false, define: { __DEMO_A__: 'false', 'import.meta.env.VITE_LOCAL_SERVICES': '"true"' } });
+const { outputFiles } = await build({ stdin: { contents: "export * from './src/platform/tesana'; export * from './src/platform/online-scores'; export * from './src/game/arcade';", resolveDir: resolve(process.argv[4] || '.'), loader: 'ts' }, bundle: true, platform: 'browser', format: 'esm', write: false, define: { __DEMO_A__: 'false', 'import.meta.env.VITE_LOCAL_SERVICES': '"true"' } });
 const types = { '.html': 'text/html', '.js': 'text/javascript', '.json': 'application/json', '.png': 'image/png', '.jpg': 'image/jpeg', '.mp3': 'audio/mpeg', '.ogg': 'audio/ogg', '.wav': 'audio/wav', '.wasm': 'application/wasm' };
 createServer((request, response) => {
   const path = decodeURIComponent(new URL(request.url, 'http://127.0.0.1:4187').pathname);

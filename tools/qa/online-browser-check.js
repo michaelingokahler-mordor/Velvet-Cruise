@@ -40,6 +40,8 @@ async page => {
   await page.context().setOffline(false);
   await page.reload();
   await page.waitForFunction(() => !JSON.parse(localStorage.getItem('sunset-coast-run.online-pending') || '{}')['score-normal-tour2']);
+  const localArcade = await page.evaluate(async () => (await import('/__qa/rankings.js')).arcadeTable('normal')[0]?.s);
+  check(localArcade === 98765, 'The deployed game still reads the existing local arcade table');
   entries = await bobPage.evaluate(() => window.rankingsQa.topScores('score-normal-tour2'));
   check(entries[0].displayName === 'QA ALICE' && entries[0].score === 4001, 'Reopening sends the queued result and updates the other browser');
   await bobPage.reload();

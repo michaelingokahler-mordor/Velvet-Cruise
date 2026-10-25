@@ -27,6 +27,8 @@ npm run build:web
 For a new account only, create a database with `npx wrangler d1 create velvet-cruise --config server/wrangler.jsonc` and put the returned database ID in the configuration before migrating.
 Publish the reviewed `dist/` build under the website's existing `games/more-projects/velvet-cruise/` directory. Retain older hashed chunks for open game sessions. Check the published `online.json`, entry chunk, metadata, and health response.
 
+The website still uses the earlier driving rules from `466be89`. To publish this online-service change without switching those rules or hiding existing legacy local records, use `node tools/build-web-preserving-baseline.mjs` and publish `output/web-baseline/dist/` instead. That reproducible build retains the previously released game/assets/storage keys and adds the current online adapter. Its metadata records both source revisions. A future driving-rules release must deliberately decide how to present legacy local tables; do not silently replace this baseline-preserving build.
+
 `npm run server:dev` runs the Worker locally. Apply migrations locally first using `npx wrangler d1 migrations apply velvet-cruise --local --config server/wrangler.jsonc`. Origins for localhost testing must be listed explicitly.
 
 ## Data and compatibility
