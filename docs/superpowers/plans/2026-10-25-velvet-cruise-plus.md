@@ -150,14 +150,14 @@ Die niedrigstufigen FB-Blits verwenden native Pixelmaße. Ihre Aufrufer berücks
 
 **Files:** Extend `tools/art/plus/`, `assets/plus/manifest.json` und die passenden kosmetischen Rendererpfade. Create `tools/qa/plus-stage-audit.mjs` für alle Themen; die Palm-Cove-Prüfung bleibt separat.
 
-- [ ] **Step 1:** Erweitere die Manifestprüfung auf alle sechs Fahrzeuge, Verkehrsfamilien, Dachpositionen, Lenkbilder, Bremsbilder, Insassen- und Crashbilder. Fehlende Familien müssen fehlschlagen.
-- [ ] **Step 2:** Übertrage die gemeinsame Grafikpipeline auf alle Fahrzeuge. Verwende den bei Implementierungsbeginn finalen Dachstand; derzeit sind acht Positionen vorhanden.
-- [ ] **Step 3:** Ergänze die restlichen 14 Themen in Gruppen: Küste, Wälder/Nebel, Wüste/Sand, Schnee sowie Nacht/Stadt.
-- [ ] **Step 4:** Ergänze streckenspezifische Schilder, Tunnel, Lampen, Torbilder und alle fünf Zielanimationen. Prüfe Garage und Karte mit denselben logischen Namen.
-- [ ] **Step 5:** Erzeuge pro Thema mindestens acht Fortschrittsansichten. Ergänze vorhandene Sonderfälle für Kurven, Tunnel, Gabelungen und Wetterwechsel.
-- [ ] **Step 6:** Führe `node tools/qa/check-plus-assets.mjs --release`, die vollständige Plus-Streckenprüfung, `npm run qa:depth` und die Profil-Paritätsprüfung aus.
-- [ ] **Step 7:** Überprüfe tatsächliche Dachbewegungen, geschlossenes Dach beim Überschlag, Rücklichter und Aussteigen im Finale in echten Browseraufnahmen.
-- [ ] **Step 8:** Committe die geprüften Grafikgruppen getrennt. Markiere das Paket erst nach vollständiger Abdeckung als `complete: true`.
+- [x] **Step 1:** Erweitere die Manifestprüfung auf alle sechs Fahrzeuge, Verkehrsfamilien, Dachpositionen, Lenkbilder, Bremsbilder, Insassen- und Crashbilder. Fehlende Familien müssen fehlschlagen.
+- [x] **Step 2:** Übertrage die gemeinsame Grafikpipeline auf alle Fahrzeuge. Verwende den bei Implementierungsbeginn finalen Dachstand; derzeit sind acht Positionen vorhanden.
+- [x] **Step 3:** Ergänze die restlichen 14 Themen in Gruppen: Küste, Wälder/Nebel, Wüste/Sand, Schnee sowie Nacht/Stadt.
+- [x] **Step 4:** Ergänze streckenspezifische Schilder, Tunnel, Lampen, Torbilder und alle fünf Zielanimationen. Prüfe Garage und Karte mit denselben logischen Namen.
+- [x] **Step 5:** Erzeuge pro Thema mindestens acht Fortschrittsansichten. Ergänze vorhandene Sonderfälle für Kurven, Tunnel, Gabelungen und Wetterwechsel.
+- [x] **Step 6:** Führe `node tools/qa/check-plus-assets.mjs --release`, die vollständige Plus-Streckenprüfung, `npm run qa:depth` und die Profil-Paritätsprüfung aus.
+- [x] **Step 7:** Überprüfe tatsächliche Dachbewegungen, geschlossenes Dach beim Überschlag, Rücklichter und Aussteigen im Finale in echten Browseraufnahmen.
+- [x] **Step 8:** Committe die geprüften Grafikgruppen getrennt. Markiere das Paket erst nach vollständiger Abdeckung als `complete: true`.
 
 **Acceptance:** Kein benötigtes Motiv fällt unbemerkt auf Classic zurück. Alle 15 Themen und alle fünf Ziele sind belegt.
 

@@ -56,3 +56,38 @@ fork and stage lengths and cannot validate Plus changes.
 
 The Node render measurements are short technical samples. They do not measure
 browser presentation, sustained performance or iPhone behaviour.
+
+## Complete artwork package
+
+```powershell
+python tools/art/plus/native_art.py --all
+python tools/pack_plus_assets.py --release
+node tools/qa/check-plus-assets.mjs --release
+node tools/qa/plus-stage-audit.mjs
+python tools/qa/plus-contact-sheet.py
+```
+
+The complete package contains 679 native sprites and 36 backgrounds, across
+four atlas pages. The 18 deliberate Classic replacements are small `icon_`
+and `wx_` graphics. Native detail, dimensions, binary sprite alpha and shared
+occupied/empty car bodies are checked for all six vehicles and eight roof
+positions. Braking lenses have native prism rows. All 15 themes retain their
+own original composition and material palette, with finer foliage, masonry,
+rock seams, stars and finale paving. The runtime still draws roads, tunnels,
+guardrails and lighting procedurally. The scale-zero `portal` objects mark
+tunnel collisions and do not refer to texture files.
+
+`output/plus/stages/` contains 132 paired views, including tunnel and fork
+approaches, plus a stage overview and the six-car/eight-roof source sheet.
+`output/plus/weather-browser/coverage.json` combines six complete wet/dry roof
+tours with the corrected finale run: six closed-roof tumbles and all five
+goals for each car. Screenshots include the roof opening before occupants exit.
+
+`qa:depth` uses the portable pre-Plus physical/scenery contract and the existing
+absolute closed-ground, building-footprint, light and signal checks. The older
+relative landscape-population comparison remains `qa:depth:legacy`; its
+fixtures refer to the previous stage and fork lengths. This distinction does
+not permit changed collision data or scenery placement in Plus.
+
+`complete: true` confirms artwork coverage. Sustained performance, physical
+iPhone controls and device review remain separate release checks.

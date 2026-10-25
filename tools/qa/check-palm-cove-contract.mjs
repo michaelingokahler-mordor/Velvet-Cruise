@@ -15,7 +15,7 @@ if(ref){
  await build({stdin:{contents:['game/track','game/race','game/routes'].map(p=>`export * from './src/${p}';`).join('\n'),resolveDir:root,loader:'ts'},bundle:true,format:'cjs',platform:'node',outfile:file,
   plugins:[{name:'committed-baseline',setup(b){b.onLoad({filter:/\.ts$/},args=>({contents:execFileSync('git',['show',`${ref}:${relative(root,args.path).replaceAll('\\','/')}`],{encoding:'utf8'}),loader:'ts'}));}}]});
  m=require(file);
-}else m=require(resolve('output/palm-cove/after/renderer.cjs'));
+}else m=require(resolve(process.argv.includes('--renderer')?process.argv[process.argv.indexOf('--renderer')+1]:'output/palm-cove/after/renderer.cjs'));
 const hash=value=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
 const routes=[];function visit(path){const next=m.NEXT[path.at(-1)];if(!next.length)routes.push(path);else for(const node of next)visit([...path,node]);}visit([0]);
 const contracts=routes.map(path=>{

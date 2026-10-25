@@ -23,7 +23,7 @@ for(const page of manifest.atlases){
    const p=png.data.readUInt32LE(i);pixels[y*f.w+x]=p;if(a)opaque++;
    if(a&&(x%2||y%2)&&p!==pixels[(y&~1)*f.w+(x&~1)])fine++;
   }
-  if(!/(_brake_|roof_mask)/.test(name))assert.ok(fine>0,name+' must contain native detail');
+  if(!/roof_mask/.test(name))assert.ok(fine>0,name+' must contain native detail');
   assert.ok(opaque>0,name+' empty');frames.set(name,{...f,pixels});
  }
 }
@@ -37,6 +37,13 @@ for(const prefix of Object.keys(protectedRects))for(const view of ['straight','l
   for(const[x0,y0,x1,y1]of protectedRects[prefix][view])for(let y=y0*2;y<(y1+1)*2;y++)for(let x=x0*2;x<(x1+1)*2;x++){
    assert.equal(closed.pixels[y*closed.w+x],open.pixels[y*open.w+x],name+' protected body '+x+','+y);
   }
+ }
+}
+for(const prefix of Object.keys(protectedRects)){
+ const open=frames.get(prefix+'_empty');if(!open)continue;
+ for(const suffix of ['roof1','roof2','roof3','roof4','roof5','roof6','closed']){
+  const name=`${prefix}_${suffix}_empty`,closed=frames.get(name);assert.ok(closed,'Missing empty roof '+name);
+  for(const[x0,y0,x1,y1]of protectedRects[prefix].straight)for(let y=y0*2;y<(y1+1)*2;y++)for(let x=x0*2;x<(x1+1)*2;x++)assert.equal(closed.pixels[y*closed.w+x],open.pixels[y*open.w+x],name+' empty body '+x+','+y);
  }
 }
 for(const[name,entry]of Object.entries(manifest.images)){

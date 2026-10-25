@@ -18,6 +18,8 @@ def main():
     reuse=[name for name in classic if name not in catalog['sprites']]
     if args.release and (catalog['scope']!='all' or any(not n.startswith(('icon_','wx_')) for n in reuse)):
         raise ValueError('Release needs complete native sources')
+    expected_images={p.stem.replace('ending','ending_bg') if p.stem.startswith('ending') else p.stem for p in (ROOT/'assets/bg').glob('*.png')}
+    if args.release and set(catalog['images'])!=expected_images:raise ValueError('Release needs every stage and finale background')
     TARGET.mkdir(exist_ok=True,parents=True)
     entries=[]
     for name,entry in catalog['sprites'].items():

@@ -4,12 +4,13 @@ import {readFileSync,writeFileSync} from 'node:fs';
 const require=createRequire(import.meta.url);
 globalThis.ImageData=class{constructor(w,h){this.data=new Uint8ClampedArray(w*h*4);}};
 const m=require('../../output/stage-depth/after/renderer.cjs');
-const old=require('../../output/stage-depth/before/renderer.cjs');
+const preserve=process.argv.includes('--graphics-only');
+const old=preserve?null:require('../../output/stage-depth/before/renderer.cjs');
 const {Track,Race,Renderer,FB,SEG_LEN,MAX_SPEED,ROAD_W,lampPose}=m;
 const runs=[[0,1,2,3,4],[0,5,6,11,12],[0,1,6,7,13],[0,1,2,7,14],[0,5,8,9,10]];
 const evidence=[];
 for(const path of runs){
-  const t=new Track(path),previous=new old.Track(path);
+  const t=new Track(path),previous=preserve?null:new old.Track(path);
   for(const node of path.filter(n=>[3,4,6,7,9,11,12,13,14].includes(n))){
     if(evidence.some(e=>e.node===node))continue;
     const stats=track=>{
@@ -21,11 +22,11 @@ for(const path of runs){
         openPassSegments:ss.filter(s=>Math.max(s.landscape?.left.cutting??0,s.landscape?.right?.cutting??0)<.12).length,
         maxRidge:Math.max(...ss.map(s=>s.landscape?.left.points[4].h??0)),start,end};
     };
-    const before=stats(previous),after=stats(t);
-    if(node!==12)assert.ok(after.middleObjects>before.middleObjects+15,'middle ground is populated: '+node);
-    if([4,6].includes(node))assert.ok(after.plots>before.plots*1.5,'settlements have more real plots: '+node);
+    const before=preserve?null:stats(previous),after=stats(t);
+    if(!preserve&&node!==12)assert.ok(after.middleObjects>before.middleObjects+15,'middle ground is populated: '+node);
+    if(!preserve&&[4,6].includes(node))assert.ok(after.plots>before.plots*1.5,'settlements have more real plots: '+node);
     if([7,11].includes(node)){assert.ok(after.passSegments>500);assert.ok(after.openPassSegments>1000,'passes also have open stretches');}
-    if([3,4,13,14].includes(node))assert.ok(after.maxRidge>before.maxRidge*1.3);
+    if(!preserve&&[3,4,13,14].includes(node))assert.ok(after.maxRidge>before.maxRidge*1.3);
     if(node===12){const finish=t.stages.find(s=>s.node===12).endSeg;for(const side of ['left','right']){
       const street=t.segs.slice(finish-2200,finish).filter(s=>s.landscape?.[side]?.plot?.houseSegment===s.i);
       assert.ok(street.length>=12,'western main street on '+side);
@@ -46,7 +47,7 @@ car=reset([{...sample},{...sample,x:.25,targetX:.25,z:sample.z+500},{...sample,x
 r.signal();assert.equal(car.yieldLane,undefined,'occupied lanes prevent an unsafe request');
 car=reset([{...sample},{...sample,x:.25,targetX:.25,z:sample.z-9000,speed:MAX_SPEED}]);
 r.signal();assert.equal(car.yieldLane,-.75,'fast approaching traffic blocks the preferred lane');
-car=reset();r.signal();r.cars.push({...sample,x:.25,targetX:.25,z:sample.z+400,yieldUntil:10});for(let i=0;i<105;i++)r.updateTraffic(1/60);
+car=reset();r.signal();r.cars.push({...sample,x:.25,targetX:.25,z:sample.z+400,yieldUntil:10},{...sample,x:-.75,targetX:-.75,z:sample.z+400,yieldUntil:10});for(let i=0;i<105;i++)r.updateTraffic(1/60);
 assert.equal(car.targetX,-.25,'driver cancels when the requested lane becomes blocked');
 car=reset();r.stageBlend={from:4,to:4,t:1};assert.equal(r.signal(),'flash');assert.equal(r.signalFlash,true);
 r.signalT=.46;assert.equal(r.signalFlash,false);r.signalT=.34;assert.equal(r.signalFlash,true);r.signalT=0;assert.equal(r.signalFlash,false);
