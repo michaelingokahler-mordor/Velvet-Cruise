@@ -22,8 +22,8 @@ for(const path of routes) {
   const open=new openLand.Track(path);
   assert.equal(hash(road(a)),hash(road(b)),`road changed: ${path}`);
   assert.equal(hash(solid(a)),hash(solid(b)),`collision props changed: ${path}`);
-  // Coral Bluffs has its own before/after and geometry checks now.
-  assert.equal(hash(a.segs.filter(s=>s.theme!==0 && s.theme!==1).map(s=>s.sprites)),hash(b.segs.filter(s=>s.theme!==0 && s.theme!==1).map(s=>s.sprites)),`other scenery changed: ${path}`);
+  // The other stages are intentionally refreshed; check-stage-refresh covers
+  // their full geometry, collision and decorative-ground contracts.
   assert.deepEqual(a.stages,b.stages); assert.equal(a.startTime,b.startTime);
   assert.equal(hash(open.segs.map(s=>s.cove)),hash(b.segs.map(s=>s.cove)),`open land geometry changed: ${path}`);
   assert.ok(b.segs.slice(0,260).every(s=>s.cove),'start lead-in must also have closed land');
@@ -73,6 +73,6 @@ const tr=new now.Track(); const stable=hash(tr.segs.filter(s=>s.theme===0).map(s
 tr.choose(1,5); for(let i=0;i<5;i++) tr.step();
 assert.equal(hash(tr.segs.filter(s=>s.theme===0).map(s=>[s.cove,s.sprites])),stable);
 assert.ok(details>0,'new scenery must be present');
-const result={status:'PASS',routes:routes.length,plotsChecked:plots,startLeadIn:'closed',openLandGeometry:'unchanged',newSceneryPerPalmCove:details,minimumSpriteClearanceBeyondRunoff:Math.round(minClearance),roadAndCollisions:'unchanged',otherStageScenery:'unchanged',coastAutopilot:'identical, five stages, goal',forkRebuild:'stable'};
+const result={status:'PASS',routes:routes.length,plotsChecked:plots,startLeadIn:'closed',openLandGeometry:'unchanged',newSceneryPerPalmCove:details,minimumSpriteClearanceBeyondRunoff:Math.round(minClearance),roadAndCollisions:'unchanged',otherStageScenery:'covered by all-stage refresh checks',coastAutopilot:'identical, five stages, goal',forkRebuild:'stable'};
 writeFileSync(resolve(after,'validation.json'),JSON.stringify(result,null,2));
 console.log(JSON.stringify(result,null,2));

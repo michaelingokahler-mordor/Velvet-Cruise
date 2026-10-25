@@ -7,9 +7,12 @@
 import { SEG_LEN, ROAD_W, SPR_S } from "./config";
 import { THEMES, PROP_INFO, Theme, themeShape } from "./themes";
 import { vnoise, cellRand, slopeForms, leanOf, plotSpan, ZONE, NF, F_L0, F_L1, F_H0, F_H1, F_R0, F_R1 } from "./terrain";
-import { COLS, NEXT, COAST_PATH, completePath, forks as nodeForks } from "./routes";
+import { COLS, NEXT, COAST_PATH, GOAL_A_PATH, completePath, forks as nodeForks } from "./routes";
+import { DEMO_A } from "./edition";
 import { dressCove, type CoveSection } from "./cove";
 import { dressBluffs, type BluffSection } from "./bluffs";
+import { dressLandscape, type Landscape } from "./landscape";
+import { STAGE_EXTENSIONS } from "./stage-extension";
 
 export interface SprInst {
   name: string;
@@ -22,6 +25,8 @@ export interface SprInst {
   br?: number;
   /** Banner text id for gates (overrides the gate's own label). */
   label?: string;
+  /** Cosmetic advance sign; the destinations come directly from its fork. */
+  destinations?: [number,number];
 }
 
 export type GateKind = "start" | "check" | "stage" | "goal";
@@ -52,6 +57,8 @@ export interface Seg {
   cove?: CoveSection;
   /** Coral Bluffs' cosmetic hills and inside-bend rock cuttings. */
   bluffs?: BluffSection;
+  /** Cosmetic closed ground for the remaining natural stages. */
+  landscape?: Landscape;
   wallH: number;     // land-side (left) wall height at the near edge
   wallOff: number;   // land-side wall distance (road half-widths)
   wallRH: number;    // right-hand wall (land stages), 0 = none
@@ -97,6 +104,9 @@ export interface StageInfo {
   startSeg: number;   // first segment of the stage's own road (after the previous gate / fork)
   midSeg: number;     // checkpoint gate
   endSeg: number;     // end gate
+  /** Original end before the added bend/straight; preserves the Normal clock. */
+  timedEndSeg: number;
+  extension?: {start: number; bendEnd: number; end: number};
 }
 
 /** A split in the road at the end of a stage. */
@@ -161,7 +171,7 @@ export class Track {
   get length(): number { return this.segs.length * SEG_LEN; }
 
   constructor(path: number[] = COAST_PATH, record = false) {
-    this.path = completePath(path);
+    this.path = DEMO_A && !record ? GOAL_A_PATH.slice() : completePath(path);
     this.sequential = record;
     if (!record && !coastSeeds) coastSeeds = new Track(COAST_PATH, true).recorded;
     this.build(0);
@@ -191,6 +201,7 @@ export class Track {
   /** The fork at the end of column col-1 was taken toward `node`: rebuild the road from there on
    *  (the next stage right away, later ones through `step`). */
   choose(col: number, node: number): void {
+    if (DEMO_A) return;
     while (this.pendingCol < COLS) this.step();
     if (col <= 0 || col >= COLS || this.path[col] === node) return;
     if (!(NEXT[this.path[col - 1]] ?? []).includes(node)) return;
@@ -295,13 +306,25 @@ export class Track {
     const midSeg = this.segs.length;
     this.road(30, 60, 30, 0, 0);
     this.stagePieces(LENGTHS[c] / 2 - 120, shape);
+    const timedEndSeg = this.segs.length;
+    let extension: StageInfo['extension'];
+    // The recording pass only discovers the old coast RNG states. Added road
+    // consumes no RNG and returns to the same height before the next stage.
+    if (!this.sequential) {
+      const e = STAGE_EXTENSIONS[node], y = this.lastY, start = this.segs.length;
+      this.road(e.enter, e.hold, e.leave, e.curve, e.rise);
+      const bendEnd = this.segs.length;
+      this.road(30, e.straight - 60, 30, 0, y - this.lastY);
+      this.lastY = this.segs[this.segs.length - 1].y2 = y;
+      extension = {start, bendEnd, end:this.segs.length};
+    }
     const endSeg = this.segs.length;
-    this.stages[c] = { index: c, node, startSeg, midSeg, endSeg };
+    this.stages[c] = { index: c, node, startSeg, midSeg, endSeg, timedEndSeg, extension };
     // tunnels: clear of the checkpoints and of each other
     const tun = THEMES[node].tunnels;
     if (tun && !this.sequential) {
       const g = new Rng((this.seedFor(node, c) ^ 0x7a11e1) >>> 0);
-      const lo = startSeg + 300, hi = endSeg - 260;
+      const lo = startSeg + 300, hi = timedEndSeg - 260;
       const spans: [number, number][] = [];
       for (let tries = 0; spans.length < tun.count && tries < 60; tries++) {
         const len = tun.min + Math.floor(g.next() * (tun.max - tun.min));
@@ -314,12 +337,13 @@ export class Track {
       for (const [a, b] of spans) for (let i = a; i < b; i++) this.segs[i].tunnel = true;
     }
     if (c < COLS - 1) {
-      const split = nodeForks(node);
+      const split = nodeForks(node) && (!DEMO_A || this.sequential);
       // straight run after the gate (next column; it keeps this stage's look through a split);
       // a fork needs it long enough to finish splitting
       this.col = c + 1;
       if (!split) this.node = this.path[c + 1];
-      this.road(30, split ? 170 : 90, 30, 0, -this.lastY);
+      // Keep the full route's distance and checkpoint clock in the demo.
+      this.road(30, nodeForks(node) ? 170 : 90, 30, 0, -this.lastY);
       if (split) {
         const [left, right] = NEXT[node];
         const start = endSeg - FORK_PRE;
@@ -379,7 +403,7 @@ export class Track {
     for (let c = Math.max(0, c0 - 1); c < c1; c++) {
       const a = st[c];
       if (c >= c0) {
-        const toEnd = a.endSeg - a.midSeg;
+        const toEnd = a.timedEndSeg - a.midSeg;
         segs[a.midSeg].gate = { kind: "check", stage: c, bonus: Math.round(toEnd / (VMAX_SEG * F_TIME[c])), label: "gate.checkpoint" };
       }
       if (c === COLS - 1) {
@@ -395,6 +419,19 @@ export class Track {
     this.decorate(firstSeg, c0 === 0);
     dressCove(segs, c0 === 0 ? 0 : firstSeg);
     dressBluffs(segs, firstSeg);
+    dressLandscape(segs, firstSeg);
+    for(const fork of this.forks) {
+      if(!fork)continue;
+      let i=fork.start-125;
+      while(i>=firstSeg&&(segs[i]?.cove?.plot||segs[i]?.bluffs?.plot||segs[i]?.landscape?.left.plot||segs[i]?.gate))i-=12;
+      if(i<firstSeg||!segs[i]||segs[i].tunnel)continue;
+      const s=segs[i],g=s.cove??s.bluffs??s.landscape?.left;
+      const x=Math.max(3.2,s.wallOff+1.2)*ROAD_W;
+      let y=0;
+      if(g)for(let k=1;k<g.points.length;k++)if(x<=g.points[k].x){const a=g.points[k-1],b=g.points[k];y=a.h+(b.h-a.h)*(x-a.x)/(b.x-a.x);break;}
+      // Empty segments share EMPTY; never append cosmetic signs to that array.
+      s.sprites=[...s.sprites,{name:'fork_sign',x:-x/ROAD_W,y,scale:3.2,flip:false,hit:0,destinations:[fork.left,fork.right]}];
+    }
     // the previous stage's end gate was waiting for this stage: dress it now (unless it already is)
     if (c0 > 0) this.dressGate(segs[st[c0 - 1].endSeg], firstSeg);
     this.version++;

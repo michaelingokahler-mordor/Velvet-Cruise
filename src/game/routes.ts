@@ -31,6 +31,8 @@ export function goalLetter(node: number): string {
 
 /** The coast road: right at every fork. */
 export const COAST_PATH = [0, 1, 2, 3, 4];
+/** The inland edge, ending in Neon City (goal A). */
+export const GOAL_A_PATH = [0, 5, 8, 9, 10];
 export const NODE_COUNT = 15;
 
 export function colOf(node: number): number {

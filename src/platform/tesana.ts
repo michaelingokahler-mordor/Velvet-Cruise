@@ -10,6 +10,7 @@
 import strings from "../../assets/ui/strings.json";
 import achievementsJson from "../../assets/ui/achievements.json";
 import boardsJson from "../../assets/ui/boards.json";
+import { DEMO_A, SAVE_PREFIX } from "../game/edition";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 type Params = Record<string, string | number>;
@@ -116,13 +117,14 @@ export function isDesktopBuild(): boolean {
   return false;
 }
 
-/** Self-hosted web and desktop builds keep scores and badges on this device. */
+/** Demo, self-hosted web and desktop builds keep scores and badges on this device. */
 export function usesLocalServices(): boolean {
-  return import.meta.env.VITE_LOCAL_SERVICES === "true" || isDesktopBuild();
+  return DEMO_A || import.meta.env.VITE_LOCAL_SERVICES === "true" || isDesktopBuild();
 }
 
 /** Whether online leaderboards and account badges can be asked for at all. */
 export function servicesOnline(): boolean {
+  if (DEMO_A) return false;
   if (!sdk) return false;
   if (sdk.__testFake) return true;
   if (usesLocalServices()) return false;
@@ -134,8 +136,8 @@ export function servicesOnline(): boolean {
 }
 
 // ---------------------------------------------- kept on this computer (desktop)
-const LOCAL_BESTS = "sunset-coast-run.local-bests";
-const LOCAL_BADGES = "sunset-coast-run.local-badges";
+const LOCAL_BESTS = `${SAVE_PREFIX}.local-bests`;
+const LOCAL_BADGES = `${SAVE_PREFIX}.local-badges`;
 const BOARD_ORDER: Record<string, string> = {};
 for (const b of (boardsJson as { boards: { board: string; order: string }[] }).boards) BOARD_ORDER[b.board] = b.order;
 interface AchDef { id: string; name?: string; stat?: string; target?: number }

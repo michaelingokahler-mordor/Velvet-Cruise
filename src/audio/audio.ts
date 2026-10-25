@@ -375,6 +375,36 @@ export class GameAudio {
   whoosh(): void { this.burst(0.45, "bandpass", 500, 2200, 0.16, 1.4); }
   beep(go = false): void { this.tone(go ? 1320 : 660, go ? 0.6 : 0.16, "square", 0.1); if (go) this.tone(1980, 0.6, "square", 0.04); }
   tick(): void { this.tone(1250, 0.05, "square", 0.06); }
+  /** The player's horn holds its volume above the engine and radio. */
+  horn(): void {
+    const ctx = this.ctx;
+    if (!ctx) return;
+    const t = ctx.currentTime, gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.0001, t);
+    gain.gain.linearRampToValueAtTime(0.095, t + 0.012);
+    gain.gain.setValueAtTime(0.095, t + 0.27);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.36);
+    const filter = ctx.createBiquadFilter();
+    filter.type = "lowpass";
+    filter.frequency.value = 2400;
+    filter.connect(gain);
+    gain.connect(this.sfxBus);
+    for (const frequency of [392, 494]) {
+      const oscillator = ctx.createOscillator();
+      oscillator.type = "square";
+      oscillator.frequency.value = frequency;
+      oscillator.connect(filter);
+      oscillator.start(t);
+      oscillator.stop(t + 0.38);
+    }
+    // Preserve an existing voice/jingle's longer radio duck.
+    if (t >= this.duckUntil) {
+      this.duckUntil = t + 0.55;
+      this.musicBus.gain.cancelScheduledValues(t);
+      this.musicBus.gain.setTargetAtTime(this.musicVolume * 0.35, t, 0.025);
+      this.musicBus.gain.setTargetAtTime(this.musicVolume, t + 0.4, 0.12);
+    }
+  }
   uiMove(): void { this.tone(740, 0.05, "square", 0.06); }
   uiSelect(): void { this.tone(880, 0.07, "square", 0.08); this.tone(1320, 0.12, "square", 0.08, 0.07); }
   closePass(): void { this.whoosh(); this.tone(1568, 0.09, "triangle", 0.08, 0.05); this.tone(2093, 0.12, "triangle", 0.08, 0.12); }

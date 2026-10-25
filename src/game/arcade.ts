@@ -2,6 +2,8 @@
 // difficulty, kept on this device (the online rankings always show the
 // player's account name, which a game cannot change).
 import type { DiffId } from "./difficulty";
+import {ARCADE_KEY} from './rules';
+import {SAVE_PREFIX} from './edition';
 
 export interface ArcadeEntry {
   /** Name as entered (upper case). */
@@ -14,8 +16,8 @@ export interface ArcadeEntry {
   d: number;
 }
 
-const KEY = "sunset-coast-run.arcade";
-const NAME_KEY = "sunset-coast-run.name";
+const KEY = ARCADE_KEY;
+const NAME_KEY = `${SAVE_PREFIX}.name`;
 export const ARCADE_SIZE = 10;
 export const NAME_MAX = 10;
 /** Characters a name may use (all drawn by the pixel font). */

@@ -1,6 +1,7 @@
 // Keyboard, touch and gamepad folded into one set of driving controls plus
 // edge-triggered menu presses. Coordinates are framebuffer pixels (320x180).
 import { W, H } from "./core/fb";
+import { SAVE_PREFIX } from "./game/edition";
 
 export interface Rect { x: number; y: number; w: number; h: number }
 
@@ -10,6 +11,7 @@ export const TOUCH = {
   brake: { x: W - 97, y: 128, w: 42, h: 46 },
   gas: { x: W - 51, y: 128, w: 46, h: 46 },
   pause: { x: W / 2 - 9, y: 24, w: 18, h: 16 },
+  signal: { x: W - 34, y: 82, w: 28, h: 20 },
 };
 
 /** Pads used while steering by tilting the device: brake under the left thumb, gas under the right. */
@@ -18,8 +20,8 @@ export const TOUCH_TILT = {
   gas: { x: W - 71, y: 116, w: 66, h: 58 },
 };
 
-const TILT_KEY = "sunset-coast-run.tilt";
-const CONTROLS_KEY = "sunset-coast-run.controls";
+const TILT_KEY = `${SAVE_PREFIX}.tilt`;
+const CONTROLS_KEY = `${SAVE_PREFIX}.controls`;
 
 /** How the player drives: picked on the "Choose your controls" screen. */
 export type ControlPref = "auto" | "keyboard" | "touch";
@@ -31,13 +33,14 @@ export function inRect(r: Rect, x: number, y: number): boolean {
   return x >= r.x && y >= r.y && x < r.x + r.w && y < r.y + r.h;
 }
 
-type Btn = "left" | "right" | "up" | "down" | "confirm" | "back" | "pause";
+type Btn = "left" | "right" | "up" | "down" | "confirm" | "back" | "pause" | "signal";
 
 const KEYMAP: Record<string, Btn> = {
   ArrowLeft: "left", KeyA: "left", ArrowRight: "right", KeyD: "right",
   ArrowUp: "up", KeyW: "up", ArrowDown: "down", KeyS: "down",
   Enter: "confirm", NumpadEnter: "confirm", Space: "confirm",
   Escape: "back", Backspace: "back", KeyP: "pause",
+  KeyH: "signal",
 };
 
 /** Driving keys that count as "using the keyboard" for auto-detect. */
@@ -49,6 +52,7 @@ export class Input {
   private taps: { x: number; y: number }[] = [];
   private pointers = new Map<number, { x: number; y: number }>();
   private padPrev: boolean[] = [];
+  private padId = "";
   /** Auto, keyboard or touch (remembered). */
   pref: ControlPref = "auto";
   /** What auto-detect currently thinks: a touch device (or the last thing used was the screen). */
@@ -93,17 +97,22 @@ export class Input {
         this.onGesture?.();
         return;
       }
-      const b = KEYMAP[e.code];
+      // Some embedded keyboard backends omit `code`; keep H usable there too.
+      const code = e.code && e.code !== "Unidentified" ? e.code : e.key?.toLowerCase() === "h" ? "KeyH" : e.key;
+      const b = KEYMAP[code];
       // auto-detect follows what is actually being used: a key press means keyboard
       if (b || DRIVE_KEYS.includes(e.code)) this.autoTouch = false;
       if (b || e.code === "KeyX" || e.code === "KeyZ") e.preventDefault();
-      if (!this.held.has(e.code) && b) this.pressed.add(b);
+      if (!this.held.has(code) && b) this.pressed.add(b);
       if (e.code === "KeyX") this.pressed.add("confirm");
-      this.held.add(e.code);
+      this.held.add(code);
       this.lastInput = performance.now();
       this.onGesture?.();
     });
-    window.addEventListener("keyup", (e) => { this.held.delete(e.code); });
+    window.addEventListener("keyup", (e) => {
+      this.held.delete(e.code);
+      if (!e.code || e.code === "Unidentified") this.held.delete(e.key?.toLowerCase() === "h" ? "KeyH" : e.key);
+    });
     window.addEventListener("blur", () => { this.held.clear(); this.pointers.clear(); });
     const down = (e: PointerEvent) => {
       if (e.pointerType === "touch") this.autoTouch = true;
@@ -220,10 +229,12 @@ export class Input {
   /** Call once per frame before reading presses. */
   poll(): void {
     const g = this.pad();
-    if (!g) return;
+    if (!g) { this.padPrev = []; this.padId = ""; return; }
+    const id = `${g.index}:${g.id}`;
+    if (this.padId !== id) { this.padPrev = []; this.padId = id; }
     const b = (i: number) => !!g.buttons[i]?.pressed;
-    const now = [b(0), b(1), b(9), b(12), b(13), b(14), b(15), (g.axes[0] ?? 0) < -0.6, (g.axes[0] ?? 0) > 0.6, (g.axes[1] ?? 0) < -0.6, (g.axes[1] ?? 0) > 0.6];
-    const map: Btn[] = ["confirm", "back", "pause", "up", "down", "left", "right", "left", "right", "up", "down"];
+    const now = [b(0), b(1), b(9), b(12), b(13), b(14), b(15), (g.axes[0] ?? 0) < -0.6, (g.axes[0] ?? 0) > 0.6, (g.axes[1] ?? 0) < -0.6, (g.axes[1] ?? 0) > 0.6, b(3) || b(10)];
+    const map: Btn[] = ["confirm", "back", "pause", "up", "down", "left", "right", "left", "right", "up", "down","signal"];
     for (let i = 0; i < now.length; i++) {
       if (now[i] && !this.padPrev[i]) { this.pressed.add(map[i]); this.lastInput = performance.now(); this.onGesture?.(); }
     }

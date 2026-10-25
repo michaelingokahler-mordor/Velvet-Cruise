@@ -9,12 +9,13 @@ const { PNG } = require('pngjs');
 const source = resolve(process.argv[2] || '.');
 const dest = resolve(process.argv[3] || 'output/coral-bluffs/after');
 mkdirSync(dest, { recursive: true });
-const entry = ['core/fb', 'game/track', 'game/race', 'game/render', 'game/themes', 'game/routes', 'game/terrain', 'game/bluffs']
+const entry = ['core/fb', 'game/track', 'game/race', 'game/render', 'game/themes', 'game/routes', 'game/terrain', 'game/bluffs', 'core/materials']
   .map(p => `export * from ${JSON.stringify(resolve(source, 'src', p + '.ts'))};`).join('\n');
 const bundle = resolve(dest, 'renderer.cjs');
 if (!process.argv.includes('--reuse')) await build({ stdin: { contents: entry, resolveDir: source, loader: 'ts' }, bundle: true, platform: 'node', format: 'cjs', outfile: bundle });
 globalThis.ImageData = class { constructor(w, h) { this.width = w; this.height = h; this.data = new Uint8ClampedArray(w * h * 4); } };
-const { FB, halve, Track, Race, Renderer, THEMES, COAST_PATH } = require(bundle);
+const mod = require(bundle);
+const { FB, halve, Track, Race, Renderer, THEMES, COAST_PATH } = mod;
 const sprites = new Map();
 const png = name => PNG.sync.read(readFileSync(resolve(source, name)));
 const atlas = png('assets/sprites/atlas.png');
@@ -26,7 +27,7 @@ for (const [name, f] of Object.entries(frames)) {
     const [r, g, b, alpha] = atlas.data.subarray(o, o + 4);
     if (alpha < 128) continue;
     const neon = name.startsWith('neon_');
-    const a = f.emissive && (r * .3 + g * .59 + b * .11 > 200 || neon && Math.max(r,g,b) >= 220 && Math.max(r,g,b)-Math.min(r,g,b) >= 90) ? 254 : 255;
+    const a = f.emissive && mod.emissivePixel(name,r,g,b,x,y,f.w,f.h) ? 254 : 255;
     data[y * f.w + x] = ((a << 24) | (b << 16) | (g << 8) | r) >>> 0;
   }
   const s = { w: f.w, h: f.h, data };

@@ -1,0 +1,2325 @@
+{
+  "method": "Current source; all 16 built legal paths; isolated one-tick synthetic road probes, no renderer or storage",
+  "paths": 16,
+  "stages": [
+    {
+      "node": 0,
+      "stageKey": "stage.1",
+      "name": "Palm Cove",
+      "weather": "clear",
+      "dark": 0,
+      "traffic": 1.8,
+      "carSpeed": [
+        0.38,
+        0.62
+      ],
+      "lanesChange": 0.03
+    },
+    {
+      "node": 1,
+      "stageKey": "stage.2",
+      "name": "Coral Bluffs",
+      "weather": "clear",
+      "dark": 0,
+      "traffic": 2.2,
+      "carSpeed": [
+        0.4,
+        0.66
+      ],
+      "lanesChange": 0.06
+    },
+    {
+      "node": 2,
+      "stageKey": "stage.3",
+      "name": "Surfside",
+      "weather": "clear",
+      "dark": 0,
+      "traffic": 2.6,
+      "carSpeed": [
+        0.36,
+        0.66
+      ],
+      "lanesChange": 0.08
+    },
+    {
+      "node": 3,
+      "stageKey": "stage.4",
+      "name": "Cypress Point",
+      "weather": "clear",
+      "dark": 0,
+      "traffic": 2.9,
+      "carSpeed": [
+        0.42,
+        0.7
+      ],
+      "lanesChange": 0.1
+    },
+    {
+      "node": 4,
+      "stageKey": "stage.5",
+      "name": "Twilight Bay",
+      "weather": "clear",
+      "dark": 1,
+      "traffic": 3.2,
+      "carSpeed": [
+        0.42,
+        0.72
+      ],
+      "lanesChange": 0.12
+    },
+    {
+      "node": 5,
+      "stageKey": "stage.6",
+      "name": "Thunder Highway",
+      "weather": "rain",
+      "dark": 0.62,
+      "traffic": 3,
+      "carSpeed": [
+        0.46,
+        0.72
+      ],
+      "lanesChange": 0.1
+    },
+    {
+      "node": 6,
+      "stageKey": "stage.7",
+      "name": "Vineyard Valley",
+      "weather": "clear",
+      "dark": 0,
+      "traffic": 2.4,
+      "carSpeed": [
+        0.38,
+        0.64
+      ],
+      "lanesChange": 0.07
+    },
+    {
+      "node": 7,
+      "stageKey": "stage.8",
+      "name": "Redwood Pass",
+      "weather": "fog",
+      "dark": 0.5,
+      "traffic": 2.2,
+      "carSpeed": [
+        0.36,
+        0.6
+      ],
+      "lanesChange": 0.05
+    },
+    {
+      "node": 8,
+      "stageKey": "stage.9",
+      "name": "Painted Desert",
+      "weather": "sand",
+      "dark": 0.38,
+      "traffic": 2,
+      "carSpeed": [
+        0.42,
+        0.68
+      ],
+      "lanesChange": 0.05
+    },
+    {
+      "node": 9,
+      "stageKey": "stage.10",
+      "name": "Death Valley",
+      "weather": "heat",
+      "dark": 0.22,
+      "traffic": 2.4,
+      "carSpeed": [
+        0.46,
+        0.74
+      ],
+      "lanesChange": 0.08
+    },
+    {
+      "node": 10,
+      "stageKey": "stage.11",
+      "name": "Neon City",
+      "weather": "night",
+      "dark": 1,
+      "traffic": 3.4,
+      "carSpeed": [
+        0.4,
+        0.68
+      ],
+      "lanesChange": 0.11
+    },
+    {
+      "node": 11,
+      "stageKey": "stage.12",
+      "name": "Snowcap Pass",
+      "weather": "snow",
+      "dark": 0.35,
+      "traffic": 2,
+      "carSpeed": [
+        0.36,
+        0.62
+      ],
+      "lanesChange": 0.05
+    },
+    {
+      "node": 12,
+      "stageKey": "stage.13",
+      "name": "Gold Rush Town",
+      "weather": "heat",
+      "dark": 0.6,
+      "traffic": 2.2,
+      "carSpeed": [
+        0.42,
+        0.7
+      ],
+      "lanesChange": 0.06
+    },
+    {
+      "node": 13,
+      "stageKey": "stage.14",
+      "name": "Crystal Lake",
+      "weather": "clear",
+      "dark": 0.85,
+      "traffic": 2.6,
+      "carSpeed": [
+        0.4,
+        0.68
+      ],
+      "lanesChange": 0.08
+    },
+    {
+      "node": 14,
+      "stageKey": "stage.15",
+      "name": "Starlight Summit",
+      "weather": "night",
+      "dark": 1,
+      "traffic": 1.8,
+      "carSpeed": [
+        0.36,
+        0.62
+      ],
+      "lanesChange": 0.05
+    }
+  ],
+  "inventory": [
+    {
+      "path": [
+        0,
+        5,
+        8,
+        9,
+        10
+      ],
+      "iceBlocks": [],
+      "iceTotal": 0
+    },
+    {
+      "path": [
+        0,
+        5,
+        8,
+        9,
+        12
+      ],
+      "iceBlocks": [],
+      "iceTotal": 0
+    },
+    {
+      "path": [
+        0,
+        5,
+        8,
+        11,
+        12
+      ],
+      "iceBlocks": [
+        {
+          "start": 20290,
+          "end": 20359,
+          "len": 70,
+          "l": -0.2,
+          "r": 1.15,
+          "minCurve": 0.1748586728184387,
+          "maxCurve": 3.2086080660577863,
+          "maxRequiredSteerAtFullSpeed": 1.4731696164160968,
+          "maxSteadySpeedFraction": 0.8238983316674457,
+          "signs": [
+            {
+              "seg": 20180,
+              "x": 1.7
+            },
+            {
+              "seg": 20180,
+              "x": -1.7
+            },
+            {
+              "seg": 20235,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 20696,
+          "end": 20776,
+          "len": 81,
+          "l": -0.2,
+          "r": 1.15,
+          "minCurve": 1.6214391067203133,
+          "maxCurve": 1.7,
+          "maxRequiredSteerAtFullSpeed": 0.7805217391304349,
+          "maxSteadySpeedFraction": 1,
+          "signs": [
+            {
+              "seg": 20586,
+              "x": 1.7
+            },
+            {
+              "seg": 20586,
+              "x": -1.5320222023147947
+            },
+            {
+              "seg": 20641,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 21269,
+          "end": 21346,
+          "len": 78,
+          "l": -0.55,
+          "r": 0.55,
+          "minCurve": 3.6960787649359554,
+          "maxCurve": 3.6960787649359554,
+          "maxRequiredSteerAtFullSpeed": 1.6969822503358127,
+          "maxSteadySpeedFraction": 0.7676466342435863,
+          "signs": [
+            {
+              "seg": 21159,
+              "x": 1.7
+            },
+            {
+              "seg": 21159,
+              "x": -1.7
+            },
+            {
+              "seg": 21214,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 21671,
+          "end": 21752,
+          "len": 82,
+          "l": -1.15,
+          "r": 1.15,
+          "minCurve": 3.1,
+          "maxCurve": 3.1,
+          "maxRequiredSteerAtFullSpeed": 1.4233043478260872,
+          "maxSteadySpeedFraction": 0.8382066692244555,
+          "signs": [
+            {
+              "seg": 21561,
+              "x": 1.7
+            },
+            {
+              "seg": 21561,
+              "x": -1.4784296986618595
+            },
+            {
+              "seg": 21616,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 22205,
+          "end": 22295,
+          "len": 91,
+          "l": -0.2,
+          "r": 1.15,
+          "minCurve": 0.09328404831320283,
+          "maxCurve": 3.1,
+          "maxRequiredSteerAtFullSpeed": 1.4233043478260872,
+          "maxSteadySpeedFraction": 0.8382066692244555,
+          "signs": [
+            {
+              "seg": 22095,
+              "x": 1.7
+            },
+            {
+              "seg": 22095,
+              "x": -1.7
+            },
+            {
+              "seg": 22150,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 22755,
+          "end": 22830,
+          "len": 76,
+          "l": -1.15,
+          "r": 1.15,
+          "minCurve": 3.1,
+          "maxCurve": 3.1,
+          "maxRequiredSteerAtFullSpeed": 1.4233043478260872,
+          "maxSteadySpeedFraction": 0.8382066692244555,
+          "signs": [
+            {
+              "seg": 22645,
+              "x": 1.7
+            },
+            {
+              "seg": 22645,
+              "x": -1.7
+            },
+            {
+              "seg": 22700,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 23880,
+          "end": 23956,
+          "len": 77,
+          "l": -1.15,
+          "r": 1.15,
+          "minCurve": 0,
+          "maxCurve": 1.7,
+          "maxRequiredSteerAtFullSpeed": 0.6164170434782611,
+          "maxSteadySpeedFraction": 1,
+          "signs": [
+            {
+              "seg": 23770,
+              "x": 1.7
+            },
+            {
+              "seg": 23770,
+              "x": -1.5054549181162937
+            },
+            {
+              "seg": 23825,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 24420,
+          "end": 24505,
+          "len": 86,
+          "l": -1.15,
+          "r": 1.15,
+          "minCurve": 0,
+          "maxCurve": 0.2488611111111111,
+          "maxRequiredSteerAtFullSpeed": 0.06569933333333333,
+          "maxSteadySpeedFraction": 1,
+          "signs": [
+            {
+              "seg": 24310,
+              "x": 1.7
+            },
+            {
+              "seg": 24310,
+              "x": -1.689444016341869
+            },
+            {
+              "seg": 24365,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 24790,
+          "end": 24893,
+          "len": 104,
+          "l": -0.55,
+          "r": 0.55,
+          "minCurve": 0,
+          "maxCurve": 2.6662138156220316,
+          "maxRequiredSteerAtFullSpeed": 1.2241399083899416,
+          "maxSteadySpeedFraction": 0.9038252535243458,
+          "signs": [
+            {
+              "seg": 24680,
+              "x": 1.7
+            },
+            {
+              "seg": 24680,
+              "x": -1.7
+            },
+            {
+              "seg": 24735,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 25406,
+          "end": 25495,
+          "len": 90,
+          "l": -0.55,
+          "r": 0.55,
+          "minCurve": 0.28132272680318016,
+          "maxCurve": 3.1,
+          "maxRequiredSteerAtFullSpeed": 1.4233043478260872,
+          "maxSteadySpeedFraction": 0.8382066692244555,
+          "signs": [
+            {
+              "seg": 25296,
+              "x": 1.7
+            },
+            {
+              "seg": 25296,
+              "x": -1.496451328882803
+            },
+            {
+              "seg": 25351,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 26002,
+          "end": 26088,
+          "len": 87,
+          "l": -1.15,
+          "r": 0.2,
+          "minCurve": 0.4690629192853611,
+          "maxCurve": 4.6,
+          "maxRequiredSteerAtFullSpeed": 1.9724030788786104,
+          "maxSteadySpeedFraction": 0.7120363480980266,
+          "signs": [
+            {
+              "seg": 25892,
+              "x": 1.7
+            },
+            {
+              "seg": 25892,
+              "x": -1.7
+            },
+            {
+              "seg": 25947,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 26375,
+          "end": 26471,
+          "len": 97,
+          "l": -1.15,
+          "r": 0.2,
+          "minCurve": 0,
+          "maxCurve": 3.0452972862076813,
+          "maxRequiredSteerAtFullSpeed": 1.1534353875932468,
+          "maxSteadySpeedFraction": 0.9311150882885982,
+          "signs": [
+            {
+              "seg": 26265,
+              "x": 1.7
+            },
+            {
+              "seg": 26265,
+              "x": -1.4875924065935189
+            },
+            {
+              "seg": 26320,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        }
+      ],
+      "iceTotal": 1019
+    },
+    {
+      "path": [
+        0,
+        5,
+        8,
+        11,
+        13
+      ],
+      "iceBlocks": [
+        {
+          "start": 20290,
+          "end": 20359,
+          "len": 70,
+          "l": -0.2,
+          "r": 1.15,
+          "minCurve": 0.1748586728184387,
+          "maxCurve": 3.2086080660577863,
+          "maxRequiredSteerAtFullSpeed": 1.4731696164160968,
+          "maxSteadySpeedFraction": 0.8238983316674457,
+          "signs": [
+            {
+              "seg": 20180,
+              "x": 1.7
+            },
+            {
+              "seg": 20180,
+              "x": -1.7
+            },
+            {
+              "seg": 20235,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 20696,
+          "end": 20776,
+          "len": 81,
+          "l": -0.2,
+          "r": 1.15,
+          "minCurve": 1.6214391067203133,
+          "maxCurve": 1.7,
+          "maxRequiredSteerAtFullSpeed": 0.7805217391304349,
+          "maxSteadySpeedFraction": 1,
+          "signs": [
+            {
+              "seg": 20586,
+              "x": 1.7
+            },
+            {
+              "seg": 20586,
+              "x": -1.5320222023147947
+            },
+            {
+              "seg": 20641,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 21269,
+          "end": 21346,
+          "len": 78,
+          "l": -0.55,
+          "r": 0.55,
+          "minCurve": 3.6960787649359554,
+          "maxCurve": 3.6960787649359554,
+          "maxRequiredSteerAtFullSpeed": 1.6969822503358127,
+          "maxSteadySpeedFraction": 0.7676466342435863,
+          "signs": [
+            {
+              "seg": 21159,
+              "x": 1.7
+            },
+            {
+              "seg": 21159,
+              "x": -1.7
+            },
+            {
+              "seg": 21214,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 21671,
+          "end": 21752,
+          "len": 82,
+          "l": -1.15,
+          "r": 1.15,
+          "minCurve": 3.1,
+          "maxCurve": 3.1,
+          "maxRequiredSteerAtFullSpeed": 1.4233043478260872,
+          "maxSteadySpeedFraction": 0.8382066692244555,
+          "signs": [
+            {
+              "seg": 21561,
+              "x": 1.7
+            },
+            {
+              "seg": 21561,
+              "x": -1.4784296986618595
+            },
+            {
+              "seg": 21616,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 22205,
+          "end": 22295,
+          "len": 91,
+          "l": -0.2,
+          "r": 1.15,
+          "minCurve": 0.09328404831320283,
+          "maxCurve": 3.1,
+          "maxRequiredSteerAtFullSpeed": 1.4233043478260872,
+          "maxSteadySpeedFraction": 0.8382066692244555,
+          "signs": [
+            {
+              "seg": 22095,
+              "x": 1.7
+            },
+            {
+              "seg": 22095,
+              "x": -1.7
+            },
+            {
+              "seg": 22150,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 22755,
+          "end": 22830,
+          "len": 76,
+          "l": -1.15,
+          "r": 1.15,
+          "minCurve": 3.1,
+          "maxCurve": 3.1,
+          "maxRequiredSteerAtFullSpeed": 1.4233043478260872,
+          "maxSteadySpeedFraction": 0.8382066692244555,
+          "signs": [
+            {
+              "seg": 22645,
+              "x": 1.7
+            },
+            {
+              "seg": 22645,
+              "x": -1.7
+            },
+            {
+              "seg": 22700,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 23880,
+          "end": 23956,
+          "len": 77,
+          "l": -1.15,
+          "r": 1.15,
+          "minCurve": 0,
+          "maxCurve": 1.7,
+          "maxRequiredSteerAtFullSpeed": 0.6164170434782611,
+          "maxSteadySpeedFraction": 1,
+          "signs": [
+            {
+              "seg": 23770,
+              "x": 1.7
+            },
+            {
+              "seg": 23770,
+              "x": -1.5054549181162937
+            },
+            {
+              "seg": 23825,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 24420,
+          "end": 24505,
+          "len": 86,
+          "l": -1.15,
+          "r": 1.15,
+          "minCurve": 0,
+          "maxCurve": 0.2488611111111111,
+          "maxRequiredSteerAtFullSpeed": 0.06569933333333333,
+          "maxSteadySpeedFraction": 1,
+          "signs": [
+            {
+              "seg": 24310,
+              "x": 1.7
+            },
+            {
+              "seg": 24310,
+              "x": -1.689444016341869
+            },
+            {
+              "seg": 24365,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 24790,
+          "end": 24893,
+          "len": 104,
+          "l": -0.55,
+          "r": 0.55,
+          "minCurve": 0,
+          "maxCurve": 2.6662138156220316,
+          "maxRequiredSteerAtFullSpeed": 1.2241399083899416,
+          "maxSteadySpeedFraction": 0.9038252535243458,
+          "signs": [
+            {
+              "seg": 24680,
+              "x": 1.7
+            },
+            {
+              "seg": 24680,
+              "x": -1.7
+            },
+            {
+              "seg": 24735,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 25406,
+          "end": 25495,
+          "len": 90,
+          "l": -0.55,
+          "r": 0.55,
+          "minCurve": 0.28132272680318016,
+          "maxCurve": 3.1,
+          "maxRequiredSteerAtFullSpeed": 1.4233043478260872,
+          "maxSteadySpeedFraction": 0.8382066692244555,
+          "signs": [
+            {
+              "seg": 25296,
+              "x": 1.7
+            },
+            {
+              "seg": 25296,
+              "x": -1.496451328882803
+            },
+            {
+              "seg": 25351,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 26002,
+          "end": 26088,
+          "len": 87,
+          "l": -1.15,
+          "r": 0.2,
+          "minCurve": 0.4690629192853611,
+          "maxCurve": 4.6,
+          "maxRequiredSteerAtFullSpeed": 1.9724030788786104,
+          "maxSteadySpeedFraction": 0.7120363480980266,
+          "signs": [
+            {
+              "seg": 25892,
+              "x": 1.7
+            },
+            {
+              "seg": 25892,
+              "x": -1.7
+            },
+            {
+              "seg": 25947,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 26375,
+          "end": 26471,
+          "len": 97,
+          "l": -1.15,
+          "r": 0.2,
+          "minCurve": 0,
+          "maxCurve": 3.0452972862076813,
+          "maxRequiredSteerAtFullSpeed": 1.1534353875932468,
+          "maxSteadySpeedFraction": 0.9311150882885982,
+          "signs": [
+            {
+              "seg": 26265,
+              "x": 1.7
+            },
+            {
+              "seg": 26265,
+              "x": -1.4875924065935189
+            },
+            {
+              "seg": 26320,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        }
+      ],
+      "iceTotal": 1019
+    },
+    {
+      "path": [
+        0,
+        5,
+        6,
+        11,
+        12
+      ],
+      "iceBlocks": [
+        {
+          "start": 20349,
+          "end": 20418,
+          "len": 70,
+          "l": -0.2,
+          "r": 1.15,
+          "minCurve": 0.1748586728184387,
+          "maxCurve": 3.2086080660577863,
+          "maxRequiredSteerAtFullSpeed": 1.4731696164160968,
+          "maxSteadySpeedFraction": 0.8238983316674457,
+          "signs": [
+            {
+              "seg": 20239,
+              "x": 1.7
+            },
+            {
+              "seg": 20239,
+              "x": -1.6644398385288517
+            },
+            {
+              "seg": 20294,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 20755,
+          "end": 20835,
+          "len": 81,
+          "l": -0.2,
+          "r": 1.15,
+          "minCurve": 1.6214391067203133,
+          "maxCurve": 1.7,
+          "maxRequiredSteerAtFullSpeed": 0.7805217391304349,
+          "maxSteadySpeedFraction": 1,
+          "signs": [
+            {
+              "seg": 20645,
+              "x": 1.7
+            },
+            {
+              "seg": 20645,
+              "x": -1.6006847136873146
+            },
+            {
+              "seg": 20700,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 21328,
+          "end": 21405,
+          "len": 78,
+          "l": -0.55,
+          "r": 0.55,
+          "minCurve": 3.6960787649359554,
+          "maxCurve": 3.6960787649359554,
+          "maxRequiredSteerAtFullSpeed": 1.6969822503358127,
+          "maxSteadySpeedFraction": 0.7676466342435863,
+          "signs": [
+            {
+              "seg": 21218,
+              "x": 1.7
+            },
+            {
+              "seg": 21218,
+              "x": -1.7
+            },
+            {
+              "seg": 21273,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 21730,
+          "end": 21811,
+          "len": 82,
+          "l": -1.15,
+          "r": 1.15,
+          "minCurve": 3.1,
+          "maxCurve": 3.1,
+          "maxRequiredSteerAtFullSpeed": 1.4233043478260872,
+          "maxSteadySpeedFraction": 0.8382066692244555,
+          "signs": [
+            {
+              "seg": 21620,
+              "x": 1.7
+            },
+            {
+              "seg": 21620,
+              "x": -1.4700000056859819
+            },
+            {
+              "seg": 21675,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 22264,
+          "end": 22354,
+          "len": 91,
+          "l": -0.2,
+          "r": 1.15,
+          "minCurve": 0.09328404831320283,
+          "maxCurve": 3.1,
+          "maxRequiredSteerAtFullSpeed": 1.4233043478260872,
+          "maxSteadySpeedFraction": 0.8382066692244555,
+          "signs": [
+            {
+              "seg": 22154,
+              "x": 1.7
+            },
+            {
+              "seg": 22154,
+              "x": -1.7
+            },
+            {
+              "seg": 22209,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 22814,
+          "end": 22889,
+          "len": 76,
+          "l": -1.15,
+          "r": 1.15,
+          "minCurve": 3.1,
+          "maxCurve": 3.1,
+          "maxRequiredSteerAtFullSpeed": 1.4233043478260872,
+          "maxSteadySpeedFraction": 0.8382066692244555,
+          "signs": [
+            {
+              "seg": 22704,
+              "x": 1.7
+            },
+            {
+              "seg": 22704,
+              "x": -1.7
+            },
+            {
+              "seg": 22759,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 23939,
+          "end": 24015,
+          "len": 77,
+          "l": -1.15,
+          "r": 1.15,
+          "minCurve": 0,
+          "maxCurve": 1.7,
+          "maxRequiredSteerAtFullSpeed": 0.6164170434782611,
+          "maxSteadySpeedFraction": 1,
+          "signs": [
+            {
+              "seg": 23829,
+              "x": 1.7
+            },
+            {
+              "seg": 23829,
+              "x": -1.4857801177069885
+            },
+            {
+              "seg": 23884,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 24479,
+          "end": 24564,
+          "len": 86,
+          "l": -1.15,
+          "r": 1.15,
+          "minCurve": 0,
+          "maxCurve": 0.2488611111111111,
+          "maxRequiredSteerAtFullSpeed": 0.06569933333333333,
+          "maxSteadySpeedFraction": 1,
+          "signs": [
+            {
+              "seg": 24369,
+              "x": 1.7
+            },
+            {
+              "seg": 24369,
+              "x": -1.7
+            },
+            {
+              "seg": 24424,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 24849,
+          "end": 24952,
+          "len": 104,
+          "l": -0.55,
+          "r": 0.55,
+          "minCurve": 0,
+          "maxCurve": 2.6662138156220316,
+          "maxRequiredSteerAtFullSpeed": 1.2241399083899416,
+          "maxSteadySpeedFraction": 0.9038252535243458,
+          "signs": [
+            {
+              "seg": 24739,
+              "x": 1.7
+            },
+            {
+              "seg": 24739,
+              "x": -1.7
+            },
+            {
+              "seg": 24794,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 25465,
+          "end": 25554,
+          "len": 90,
+          "l": -0.55,
+          "r": 0.55,
+          "minCurve": 0.28132272680318016,
+          "maxCurve": 3.1,
+          "maxRequiredSteerAtFullSpeed": 1.4233043478260872,
+          "maxSteadySpeedFraction": 0.8382066692244555,
+          "signs": [
+            {
+              "seg": 25355,
+              "x": 1.7
+            },
+            {
+              "seg": 25355,
+              "x": -1.5490612242569997
+            },
+            {
+              "seg": 25410,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 26061,
+          "end": 26147,
+          "len": 87,
+          "l": -1.15,
+          "r": 0.2,
+          "minCurve": 0.4690629192853611,
+          "maxCurve": 4.6,
+          "maxRequiredSteerAtFullSpeed": 1.9724030788786104,
+          "maxSteadySpeedFraction": 0.7120363480980266,
+          "signs": [
+            {
+              "seg": 25951,
+              "x": 1.7
+            },
+            {
+              "seg": 25951,
+              "x": -1.7
+            },
+            {
+              "seg": 26006,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 26434,
+          "end": 26530,
+          "len": 97,
+          "l": -1.15,
+          "r": 0.2,
+          "minCurve": 0,
+          "maxCurve": 3.0452972862076813,
+          "maxRequiredSteerAtFullSpeed": 1.1534353875932468,
+          "maxSteadySpeedFraction": 0.9311150882885982,
+          "signs": [
+            {
+              "seg": 26324,
+              "x": 1.7
+            },
+            {
+              "seg": 26324,
+              "x": -1.4712047940563615
+            },
+            {
+              "seg": 26379,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        }
+      ],
+      "iceTotal": 1019
+    },
+    {
+      "path": [
+        0,
+        5,
+        6,
+        11,
+        13
+      ],
+      "iceBlocks": [
+        {
+          "start": 20349,
+          "end": 20418,
+          "len": 70,
+          "l": -0.2,
+          "r": 1.15,
+          "minCurve": 0.1748586728184387,
+          "maxCurve": 3.2086080660577863,
+          "maxRequiredSteerAtFullSpeed": 1.4731696164160968,
+          "maxSteadySpeedFraction": 0.8238983316674457,
+          "signs": [
+            {
+              "seg": 20239,
+              "x": 1.7
+            },
+            {
+              "seg": 20239,
+              "x": -1.6644398385288517
+            },
+            {
+              "seg": 20294,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 20755,
+          "end": 20835,
+          "len": 81,
+          "l": -0.2,
+          "r": 1.15,
+          "minCurve": 1.6214391067203133,
+          "maxCurve": 1.7,
+          "maxRequiredSteerAtFullSpeed": 0.7805217391304349,
+          "maxSteadySpeedFraction": 1,
+          "signs": [
+            {
+              "seg": 20645,
+              "x": 1.7
+            },
+            {
+              "seg": 20645,
+              "x": -1.6006847136873146
+            },
+            {
+              "seg": 20700,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 21328,
+          "end": 21405,
+          "len": 78,
+          "l": -0.55,
+          "r": 0.55,
+          "minCurve": 3.6960787649359554,
+          "maxCurve": 3.6960787649359554,
+          "maxRequiredSteerAtFullSpeed": 1.6969822503358127,
+          "maxSteadySpeedFraction": 0.7676466342435863,
+          "signs": [
+            {
+              "seg": 21218,
+              "x": 1.7
+            },
+            {
+              "seg": 21218,
+              "x": -1.7
+            },
+            {
+              "seg": 21273,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 21730,
+          "end": 21811,
+          "len": 82,
+          "l": -1.15,
+          "r": 1.15,
+          "minCurve": 3.1,
+          "maxCurve": 3.1,
+          "maxRequiredSteerAtFullSpeed": 1.4233043478260872,
+          "maxSteadySpeedFraction": 0.8382066692244555,
+          "signs": [
+            {
+              "seg": 21620,
+              "x": 1.7
+            },
+            {
+              "seg": 21620,
+              "x": -1.4700000056859819
+            },
+            {
+              "seg": 21675,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 22264,
+          "end": 22354,
+          "len": 91,
+          "l": -0.2,
+          "r": 1.15,
+          "minCurve": 0.09328404831320283,
+          "maxCurve": 3.1,
+          "maxRequiredSteerAtFullSpeed": 1.4233043478260872,
+          "maxSteadySpeedFraction": 0.8382066692244555,
+          "signs": [
+            {
+              "seg": 22154,
+              "x": 1.7
+            },
+            {
+              "seg": 22154,
+              "x": -1.7
+            },
+            {
+              "seg": 22209,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 22814,
+          "end": 22889,
+          "len": 76,
+          "l": -1.15,
+          "r": 1.15,
+          "minCurve": 3.1,
+          "maxCurve": 3.1,
+          "maxRequiredSteerAtFullSpeed": 1.4233043478260872,
+          "maxSteadySpeedFraction": 0.8382066692244555,
+          "signs": [
+            {
+              "seg": 22704,
+              "x": 1.7
+            },
+            {
+              "seg": 22704,
+              "x": -1.7
+            },
+            {
+              "seg": 22759,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 23939,
+          "end": 24015,
+          "len": 77,
+          "l": -1.15,
+          "r": 1.15,
+          "minCurve": 0,
+          "maxCurve": 1.7,
+          "maxRequiredSteerAtFullSpeed": 0.6164170434782611,
+          "maxSteadySpeedFraction": 1,
+          "signs": [
+            {
+              "seg": 23829,
+              "x": 1.7
+            },
+            {
+              "seg": 23829,
+              "x": -1.4857801177069885
+            },
+            {
+              "seg": 23884,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 24479,
+          "end": 24564,
+          "len": 86,
+          "l": -1.15,
+          "r": 1.15,
+          "minCurve": 0,
+          "maxCurve": 0.2488611111111111,
+          "maxRequiredSteerAtFullSpeed": 0.06569933333333333,
+          "maxSteadySpeedFraction": 1,
+          "signs": [
+            {
+              "seg": 24369,
+              "x": 1.7
+            },
+            {
+              "seg": 24369,
+              "x": -1.7
+            },
+            {
+              "seg": 24424,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 24849,
+          "end": 24952,
+          "len": 104,
+          "l": -0.55,
+          "r": 0.55,
+          "minCurve": 0,
+          "maxCurve": 2.6662138156220316,
+          "maxRequiredSteerAtFullSpeed": 1.2241399083899416,
+          "maxSteadySpeedFraction": 0.9038252535243458,
+          "signs": [
+            {
+              "seg": 24739,
+              "x": 1.7
+            },
+            {
+              "seg": 24739,
+              "x": -1.7
+            },
+            {
+              "seg": 24794,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 25465,
+          "end": 25554,
+          "len": 90,
+          "l": -0.55,
+          "r": 0.55,
+          "minCurve": 0.28132272680318016,
+          "maxCurve": 3.1,
+          "maxRequiredSteerAtFullSpeed": 1.4233043478260872,
+          "maxSteadySpeedFraction": 0.8382066692244555,
+          "signs": [
+            {
+              "seg": 25355,
+              "x": 1.7
+            },
+            {
+              "seg": 25355,
+              "x": -1.5490612242569997
+            },
+            {
+              "seg": 25410,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 26061,
+          "end": 26147,
+          "len": 87,
+          "l": -1.15,
+          "r": 0.2,
+          "minCurve": 0.4690629192853611,
+          "maxCurve": 4.6,
+          "maxRequiredSteerAtFullSpeed": 1.9724030788786104,
+          "maxSteadySpeedFraction": 0.7120363480980266,
+          "signs": [
+            {
+              "seg": 25951,
+              "x": 1.7
+            },
+            {
+              "seg": 25951,
+              "x": -1.7
+            },
+            {
+              "seg": 26006,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 26434,
+          "end": 26530,
+          "len": 97,
+          "l": -1.15,
+          "r": 0.2,
+          "minCurve": 0,
+          "maxCurve": 3.0452972862076813,
+          "maxRequiredSteerAtFullSpeed": 1.1534353875932468,
+          "maxSteadySpeedFraction": 0.9311150882885982,
+          "signs": [
+            {
+              "seg": 26324,
+              "x": 1.7
+            },
+            {
+              "seg": 26324,
+              "x": -1.4712047940563615
+            },
+            {
+              "seg": 26379,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        }
+      ],
+      "iceTotal": 1019
+    },
+    {
+      "path": [
+        0,
+        5,
+        6,
+        7,
+        13
+      ],
+      "iceBlocks": [],
+      "iceTotal": 0
+    },
+    {
+      "path": [
+        0,
+        5,
+        6,
+        7,
+        14
+      ],
+      "iceBlocks": [],
+      "iceTotal": 0
+    },
+    {
+      "path": [
+        0,
+        1,
+        6,
+        11,
+        12
+      ],
+      "iceBlocks": [
+        {
+          "start": 20407,
+          "end": 20476,
+          "len": 70,
+          "l": -0.2,
+          "r": 1.15,
+          "minCurve": 0.1748586728184387,
+          "maxCurve": 3.2086080660577863,
+          "maxRequiredSteerAtFullSpeed": 1.4731696164160968,
+          "maxSteadySpeedFraction": 0.8238983316674457,
+          "signs": [
+            {
+              "seg": 20297,
+              "x": 1.7
+            },
+            {
+              "seg": 20297,
+              "x": -1.5861782111540152
+            },
+            {
+              "seg": 20352,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 20813,
+          "end": 20893,
+          "len": 81,
+          "l": -0.2,
+          "r": 1.15,
+          "minCurve": 1.6214391067203133,
+          "maxCurve": 1.7,
+          "maxRequiredSteerAtFullSpeed": 0.7805217391304349,
+          "maxSteadySpeedFraction": 1,
+          "signs": [
+            {
+              "seg": 20703,
+              "x": 1.7
+            },
+            {
+              "seg": 20703,
+              "x": -1.6823223028538787
+            },
+            {
+              "seg": 20758,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 21386,
+          "end": 21463,
+          "len": 78,
+          "l": -0.55,
+          "r": 0.55,
+          "minCurve": 3.6960787649359554,
+          "maxCurve": 3.6960787649359554,
+          "maxRequiredSteerAtFullSpeed": 1.6969822503358127,
+          "maxSteadySpeedFraction": 0.7676466342435863,
+          "signs": [
+            {
+              "seg": 21276,
+              "x": 1.7
+            },
+            {
+              "seg": 21276,
+              "x": -1.7
+            },
+            {
+              "seg": 21331,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 21788,
+          "end": 21869,
+          "len": 82,
+          "l": -1.15,
+          "r": 1.15,
+          "minCurve": 3.1,
+          "maxCurve": 3.1,
+          "maxRequiredSteerAtFullSpeed": 1.4233043478260872,
+          "maxSteadySpeedFraction": 0.8382066692244555,
+          "signs": [
+            {
+              "seg": 21678,
+              "x": 1.7
+            },
+            {
+              "seg": 21678,
+              "x": -1.4775809302598997
+            },
+            {
+              "seg": 21733,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 22322,
+          "end": 22412,
+          "len": 91,
+          "l": -0.2,
+          "r": 1.15,
+          "minCurve": 0.09328404831320283,
+          "maxCurve": 3.1,
+          "maxRequiredSteerAtFullSpeed": 1.4233043478260872,
+          "maxSteadySpeedFraction": 0.8382066692244555,
+          "signs": [
+            {
+              "seg": 22212,
+              "x": 1.7
+            },
+            {
+              "seg": 22212,
+              "x": -1.7
+            },
+            {
+              "seg": 22267,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 22872,
+          "end": 22947,
+          "len": 76,
+          "l": -1.15,
+          "r": 1.15,
+          "minCurve": 3.1,
+          "maxCurve": 3.1,
+          "maxRequiredSteerAtFullSpeed": 1.4233043478260872,
+          "maxSteadySpeedFraction": 0.8382066692244555,
+          "signs": [
+            {
+              "seg": 22762,
+              "x": 1.7
+            },
+            {
+              "seg": 22762,
+              "x": -1.7
+            },
+            {
+              "seg": 22817,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 23997,
+          "end": 24073,
+          "len": 77,
+          "l": -1.15,
+          "r": 1.15,
+          "minCurve": 0,
+          "maxCurve": 1.7,
+          "maxRequiredSteerAtFullSpeed": 0.6164170434782611,
+          "maxSteadySpeedFraction": 1,
+          "signs": [
+            {
+              "seg": 23887,
+              "x": 1.7
+            },
+            {
+              "seg": 23887,
+              "x": -1.4736215111845274
+            },
+            {
+              "seg": 23942,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 24537,
+          "end": 24622,
+          "len": 86,
+          "l": -1.15,
+          "r": 1.15,
+          "minCurve": 0,
+          "maxCurve": 0.2488611111111111,
+          "maxRequiredSteerAtFullSpeed": 0.06569933333333333,
+          "maxSteadySpeedFraction": 1,
+          "signs": [
+            {
+              "seg": 24427,
+              "x": 1.7
+            },
+            {
+              "seg": 24427,
+              "x": -1.7
+            },
+            {
+              "seg": 24482,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 24907,
+          "end": 25010,
+          "len": 104,
+          "l": -0.55,
+          "r": 0.55,
+          "minCurve": 0,
+          "maxCurve": 2.6662138156220316,
+          "maxRequiredSteerAtFullSpeed": 1.2241399083899416,
+          "maxSteadySpeedFraction": 0.9038252535243458,
+          "signs": [
+            {
+              "seg": 24797,
+              "x": 1.7
+            },
+            {
+              "seg": 24797,
+              "x": -1.7
+            },
+            {
+              "seg": 24852,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 25523,
+          "end": 25612,
+          "len": 90,
+          "l": -0.55,
+          "r": 0.55,
+          "minCurve": 0.28132272680318016,
+          "maxCurve": 3.1,
+          "maxRequiredSteerAtFullSpeed": 1.4233043478260872,
+          "maxSteadySpeedFraction": 0.8382066692244555,
+          "signs": [
+            {
+              "seg": 25413,
+              "x": 1.7
+            },
+            {
+              "seg": 25413,
+              "x": -1.6215107457177016
+            },
+            {
+              "seg": 25468,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 26119,
+          "end": 26205,
+          "len": 87,
+          "l": -1.15,
+          "r": 0.2,
+          "minCurve": 0.4690629192853611,
+          "maxCurve": 4.6,
+          "maxRequiredSteerAtFullSpeed": 1.9724030788786104,
+          "maxSteadySpeedFraction": 0.7120363480980266,
+          "signs": [
+            {
+              "seg": 26009,
+              "x": 1.7
+            },
+            {
+              "seg": 26009,
+              "x": -1.7
+            },
+            {
+              "seg": 26064,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 26492,
+          "end": 26588,
+          "len": 97,
+          "l": -1.15,
+          "r": 0.2,
+          "minCurve": 0,
+          "maxCurve": 3.0452972862076813,
+          "maxRequiredSteerAtFullSpeed": 1.1534353875932468,
+          "maxSteadySpeedFraction": 0.9311150882885982,
+          "signs": [
+            {
+              "seg": 26382,
+              "x": 1.7
+            },
+            {
+              "seg": 26382,
+              "x": -1.4735157242094112
+            },
+            {
+              "seg": 26437,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        }
+      ],
+      "iceTotal": 1019
+    },
+    {
+      "path": [
+        0,
+        1,
+        6,
+        11,
+        13
+      ],
+      "iceBlocks": [
+        {
+          "start": 20407,
+          "end": 20476,
+          "len": 70,
+          "l": -0.2,
+          "r": 1.15,
+          "minCurve": 0.1748586728184387,
+          "maxCurve": 3.2086080660577863,
+          "maxRequiredSteerAtFullSpeed": 1.4731696164160968,
+          "maxSteadySpeedFraction": 0.8238983316674457,
+          "signs": [
+            {
+              "seg": 20297,
+              "x": 1.7
+            },
+            {
+              "seg": 20297,
+              "x": -1.5861782111540152
+            },
+            {
+              "seg": 20352,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 20813,
+          "end": 20893,
+          "len": 81,
+          "l": -0.2,
+          "r": 1.15,
+          "minCurve": 1.6214391067203133,
+          "maxCurve": 1.7,
+          "maxRequiredSteerAtFullSpeed": 0.7805217391304349,
+          "maxSteadySpeedFraction": 1,
+          "signs": [
+            {
+              "seg": 20703,
+              "x": 1.7
+            },
+            {
+              "seg": 20703,
+              "x": -1.6823223028538787
+            },
+            {
+              "seg": 20758,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 21386,
+          "end": 21463,
+          "len": 78,
+          "l": -0.55,
+          "r": 0.55,
+          "minCurve": 3.6960787649359554,
+          "maxCurve": 3.6960787649359554,
+          "maxRequiredSteerAtFullSpeed": 1.6969822503358127,
+          "maxSteadySpeedFraction": 0.7676466342435863,
+          "signs": [
+            {
+              "seg": 21276,
+              "x": 1.7
+            },
+            {
+              "seg": 21276,
+              "x": -1.7
+            },
+            {
+              "seg": 21331,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 21788,
+          "end": 21869,
+          "len": 82,
+          "l": -1.15,
+          "r": 1.15,
+          "minCurve": 3.1,
+          "maxCurve": 3.1,
+          "maxRequiredSteerAtFullSpeed": 1.4233043478260872,
+          "maxSteadySpeedFraction": 0.8382066692244555,
+          "signs": [
+            {
+              "seg": 21678,
+              "x": 1.7
+            },
+            {
+              "seg": 21678,
+              "x": -1.4775809302598997
+            },
+            {
+              "seg": 21733,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 22322,
+          "end": 22412,
+          "len": 91,
+          "l": -0.2,
+          "r": 1.15,
+          "minCurve": 0.09328404831320283,
+          "maxCurve": 3.1,
+          "maxRequiredSteerAtFullSpeed": 1.4233043478260872,
+          "maxSteadySpeedFraction": 0.8382066692244555,
+          "signs": [
+            {
+              "seg": 22212,
+              "x": 1.7
+            },
+            {
+              "seg": 22212,
+              "x": -1.7
+            },
+            {
+              "seg": 22267,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 22872,
+          "end": 22947,
+          "len": 76,
+          "l": -1.15,
+          "r": 1.15,
+          "minCurve": 3.1,
+          "maxCurve": 3.1,
+          "maxRequiredSteerAtFullSpeed": 1.4233043478260872,
+          "maxSteadySpeedFraction": 0.8382066692244555,
+          "signs": [
+            {
+              "seg": 22762,
+              "x": 1.7
+            },
+            {
+              "seg": 22762,
+              "x": -1.7
+            },
+            {
+              "seg": 22817,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 23997,
+          "end": 24073,
+          "len": 77,
+          "l": -1.15,
+          "r": 1.15,
+          "minCurve": 0,
+          "maxCurve": 1.7,
+          "maxRequiredSteerAtFullSpeed": 0.6164170434782611,
+          "maxSteadySpeedFraction": 1,
+          "signs": [
+            {
+              "seg": 23887,
+              "x": 1.7
+            },
+            {
+              "seg": 23887,
+              "x": -1.4736215111845274
+            },
+            {
+              "seg": 23942,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 24537,
+          "end": 24622,
+          "len": 86,
+          "l": -1.15,
+          "r": 1.15,
+          "minCurve": 0,
+          "maxCurve": 0.2488611111111111,
+          "maxRequiredSteerAtFullSpeed": 0.06569933333333333,
+          "maxSteadySpeedFraction": 1,
+          "signs": [
+            {
+              "seg": 24427,
+              "x": 1.7
+            },
+            {
+              "seg": 24427,
+              "x": -1.7
+            },
+            {
+              "seg": 24482,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 24907,
+          "end": 25010,
+          "len": 104,
+          "l": -0.55,
+          "r": 0.55,
+          "minCurve": 0,
+          "maxCurve": 2.6662138156220316,
+          "maxRequiredSteerAtFullSpeed": 1.2241399083899416,
+          "maxSteadySpeedFraction": 0.9038252535243458,
+          "signs": [
+            {
+              "seg": 24797,
+              "x": 1.7
+            },
+            {
+              "seg": 24797,
+              "x": -1.7
+            },
+            {
+              "seg": 24852,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 25523,
+          "end": 25612,
+          "len": 90,
+          "l": -0.55,
+          "r": 0.55,
+          "minCurve": 0.28132272680318016,
+          "maxCurve": 3.1,
+          "maxRequiredSteerAtFullSpeed": 1.4233043478260872,
+          "maxSteadySpeedFraction": 0.8382066692244555,
+          "signs": [
+            {
+              "seg": 25413,
+              "x": 1.7
+            },
+            {
+              "seg": 25413,
+              "x": -1.6215107457177016
+            },
+            {
+              "seg": 25468,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 26119,
+          "end": 26205,
+          "len": 87,
+          "l": -1.15,
+          "r": 0.2,
+          "minCurve": 0.4690629192853611,
+          "maxCurve": 4.6,
+          "maxRequiredSteerAtFullSpeed": 1.9724030788786104,
+          "maxSteadySpeedFraction": 0.7120363480980266,
+          "signs": [
+            {
+              "seg": 26009,
+              "x": 1.7
+            },
+            {
+              "seg": 26009,
+              "x": -1.7
+            },
+            {
+              "seg": 26064,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        },
+        {
+          "start": 26492,
+          "end": 26588,
+          "len": 97,
+          "l": -1.15,
+          "r": 0.2,
+          "minCurve": 0,
+          "maxCurve": 3.0452972862076813,
+          "maxRequiredSteerAtFullSpeed": 1.1534353875932468,
+          "maxSteadySpeedFraction": 0.9311150882885982,
+          "signs": [
+            {
+              "seg": 26382,
+              "x": 1.7
+            },
+            {
+              "seg": 26382,
+              "x": -1.4735157242094112
+            },
+            {
+              "seg": 26437,
+              "x": 1.7
+            }
+          ],
+          "bad": 0
+        }
+      ],
+      "iceTotal": 1019
+    },
+    {
+      "path": [
+        0,
+        1,
+        6,
+        7,
+        13
+      ],
+      "iceBlocks": [],
+      "iceTotal": 0
+    },
+    {
+      "path": [
+        0,
+        1,
+        6,
+        7,
+        14
+      ],
+      "iceBlocks": [],
+      "iceTotal": 0
+    },
+    {
+      "path": [
+        0,
+        1,
+        2,
+        7,
+        13
+      ],
+      "iceBlocks": [],
+      "iceTotal": 0
+    },
+    {
+      "path": [
+        0,
+        1,
+        2,
+        7,
+        14
+      ],
+      "iceBlocks": [],
+      "iceTotal": 0
+    },
+    {
+      "path": [
+        0,
+        1,
+        2,
+        3,
+        14
+      ],
+      "iceBlocks": [],
+      "iceTotal": 0
+    },
+    {
+      "path": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "iceBlocks": [],
+      "iceTotal": 0
+    }
+  ],
+  "probes": {
+    "dryCurve": {
+      "x": -0.008,
+      "lateralRate": -0.48000000000000004,
+      "speedChangeFraction": -0.0023809523809524,
+      "ice": 0
+    },
+    "rainCurve": {
+      "x": -0.00928,
+      "lateralRate": -0.5568,
+      "speedChangeFraction": -0.0023809523809524,
+      "ice": 0
+    },
+    "snowCurve": {
+      "x": -0.0088,
+      "lateralRate": -0.528,
+      "speedChangeFraction": -0.0023809523809524,
+      "ice": 0
+    },
+    "heatCurve": {
+      "x": -0.008,
+      "lateralRate": -0.48000000000000004,
+      "speedChangeFraction": -0.0023809523809524,
+      "ice": 0
+    },
+    "fogCurve": {
+      "x": -0.008,
+      "lateralRate": -0.48000000000000004,
+      "speedChangeFraction": -0.0023809523809524,
+      "ice": 0
+    },
+    "nightCurve": {
+      "x": -0.008,
+      "lateralRate": -0.48000000000000004,
+      "speedChangeFraction": -0.0023809523809524,
+      "ice": 0
+    },
+    "dryBrake": {
+      "x": 0,
+      "lateralRate": 0,
+      "speedChangeFraction": -0.010416666666666666,
+      "ice": 0
+    },
+    "iceBrake": {
+      "x": 0,
+      "lateralRate": 0,
+      "speedChangeFraction": -0.0046875,
+      "ice": 1
+    },
+    "dryBoth": {
+      "x": 0,
+      "lateralRate": 0,
+      "speedChangeFraction": -0.0048333333333333865,
+      "ice": 0
+    },
+    "iceBoth": {
+      "x": 0,
+      "lateralRate": 0,
+      "speedChangeFraction": -0.0048333333333333865,
+      "ice": 1
+    },
+    "windStraight": {
+      "x": 0.007666666666666667,
+      "lateralRate": 0.46,
+      "speedChangeFraction": -0.0023809523809524,
+      "ice": 0
+    }
+  }
+}

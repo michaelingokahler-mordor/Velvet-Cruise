@@ -445,29 +445,44 @@ def rock_strata(x, y, top, pal, lit, shift):
     return c
 
 
+def butte_heights(specs, base=5):
+    """Separate eroded sandstone towers with steep upper faces and talus feet.
+    Positions wrap; unlike the old overlapping ramps they do not form a chain
+    of identical trapezoidal mountains."""
+    height = np.full(W, float(base))
+    for cx, high, width, foot in specs:
+        d = np.abs(wrapdx(XS, cx))
+        profile = np.interp(d, [0, width*.75, width, width+2, width+5, foot],
+                            [high, high, high-1, high*.59, high*.46, base])
+        height = np.maximum(height, profile)
+    return np.rint(height).astype(int)
+
+
 def far_13():
     img = new_far()
     land = hexrgb(LAND_13)
     haze = hexrgb("#e8905a")
     # 1. a far line of mesas, mauve in the dusk haze; the sun sets between two of them
-    h1 = mesa_heights(5, 9, 26, 46, 12, 26, 10, 1.9)
+    h1 = butte_heights([(45,31,16,48),(135,36,10,43),(238,28,21,61),(337,39,8,41),
+                       (445,30,23,57),(538,35,12,45),(612,27,15,40)])
     h1 = notch(h1, SUN13, 0.7, 22)
-    pal1 = [hexrgb(c) for c in ("#7a4a74", "#8a5278", "#6a4068", "#b2688a", "#c4748a", "#a65c82", "#ffc8a0")]
+    pal1 = [hexrgb(c) for c in ("#80516f", "#895972", "#754b68", "#ad6d82", "#b67886", "#a5687d", "#cb928f")]
 
     def shade1(x, y, top):
         lit = lit_face(h1, (x + (y - top) // 2) % W, SUN13, 3)
         return lerp(rock_strata(x, y, top, pal1, lit, 0), haze, 0.3)
     fill_range(img, h1, shade1)
     # 2. big red-rock mesas and buttes in front, strongly banded
-    h2 = mesa_heights(9, 7, 20, 38, 9, 22, 8, 1.35)
+    h2 = butte_heights([(10,29,10,37),(94,43,6,33),(175,34,19,55),(285,40,8,36),
+                       (393,32,18,52),(482,44,5,30),(574,35,13,45)],4)
     h2 = notch(h2, SUN13, 0.45, 18)
-    pal2 = [hexrgb(c) for c in ("#6a2a3a", "#7e3440", "#58263a", "#c4583c", "#d8704a", "#b04a3c", "#ffb27a")]
+    pal2 = [hexrgb(c) for c in ("#793f43", "#864749", "#6e3840", "#b9644e", "#ca7b5b", "#ac5a4c", "#df9971")]
 
     def shade2(x, y, top):
         lit = lit_face(h2, (x + (y - top) // 2) % W, SUN13, 3)
         c = rock_strata(x, y, top, pal2, lit, 1)
-        if not lit and hash01(x, y, 5) < 0.12:
-            c = lerp(c, hexrgb("#3a1a30"), 0.6)
+        if not lit and hash01(x//3, (y-top)//6, 5) < 0.2:
+            c = lerp(c, hexrgb("#51303b"), 0.22)
         return lerp(c, haze, 0.1)
     fill_range(img, h2, shade2)
     # 3. the town on the flat: false-front buildings, a church spire, a water tower, poles

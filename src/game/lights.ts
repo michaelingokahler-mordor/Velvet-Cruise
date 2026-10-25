@@ -67,3 +67,16 @@ export function carLights(bank: SpriteBank, name: string): CarLights | null {
 
 /** Warm headlight colour for the pools of light on the road. */
 export const HEADLIGHT = rgb(0xffe2a0);
+
+/** Original lamp art points left; the highway/city davits point right. */
+export function lampPose(name:string,x:number):{flip:boolean;size:number;head:number}|undefined {
+  if(!/^(lamp_lit|hwy_lamp_lit|city_lamp_lit|gas_lamp_lit|lantern_lit)$/.test(name))return;
+  const leftArt=name==='lamp_lit',davit=/^(hwy|city)_/.test(name);
+  return {flip:leftArt?x<0:davit?x>0:false,size:leftArt?1.3:name==='city_lamp_lit'?1.12:1,
+    head:leftArt?-.34:davit?.32:0};
+}
+
+/** A light keeps the source car's tangent. Future road curvature cannot steer it. */
+export function lightAxis(near:number,far:number,pct:number,lateral:number,length:number):{x:number;slope:number} {
+  return {x:near+(far-near)*pct+lateral,slope:(far-near)/length};
+}

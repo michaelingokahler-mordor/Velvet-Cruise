@@ -54,6 +54,10 @@
    "text": "Pause"
   },
   {
+   "id": "ctl.signal_hint",
+   "text": "H / Pad Y or L3: horn by day, flash at night. Drivers move aside when a lane is clear."
+  },
+  {
    "id": "ctl.space",
    "text": "Space"
   },
@@ -79,11 +83,11 @@
   },
   {
    "id": "ctl.keyboard_desc",
-   "text": "Arrows or WASD to steer. Up or Space for gas, Down to brake, P to pause."
+   "text": "Arrows or WASD to steer. Up or Space for gas, Down to brake, P to pause. H: horn by day, flash headlights at night. Gamepad: Y."
   },
   {
    "id": "ctl.touch_desc",
-   "text": "Big on-screen pads to steer, brake and hit the gas. Tilt steering can be switched on before you drive."
+   "text": "Big on-screen pads to steer, brake and hit the gas. H: horn by day, L: flash at night. Tilt steering can be switched on before you drive."
   },
   {
    "id": "ctl.detected",
@@ -659,11 +663,11 @@
   },
   {
    "id": "diff.normal_desc",
-   "text": "The classic arcade clock and traffic."
+   "text": "The original clock, longer roads and stronger weather effects."
   },
   {
    "id": "diff.hard_desc",
-   "text": "A tight clock and heavy, swerving traffic."
+   "text": "Busier roads, less grip and stronger weather effects."
   },
   {
    "id": "diff.score",
@@ -671,7 +675,7 @@
   },
   {
    "id": "diff.own",
-   "text": "Each difficulty has its own rankings and badges."
+   "text": "Extended tour: separate rankings and badges for each difficulty."
   },
   {
    "id": "diff.next",
@@ -1140,6 +1144,9 @@
   {
    "id": "end.d_line3",
    "text": "My hero! I wished for another ride!"
-  }
+  },
+  { "id": "demo.tagline", "text": "DEMO - ROUTE A" },
+  { "id": "demo.map_title", "text": "DEMO ROUTE A" },
+  { "id": "demo.map_hint", "text": "FIVE STAGES - ONE DESTINATION" }
  ]
 }

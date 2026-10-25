@@ -1,6 +1,7 @@
 // Turns loaded images into raw pixel arrays the software renderer can blit.
 import type Phaser from "phaser";
 import { Spr, halve } from "./fb";
+import { emissivePixel } from './materials';
 
 export interface AtlasJson { frames: Record<string, { x: number; y: number; w: number; h: number; emissive?: boolean }> }
 
@@ -48,7 +49,6 @@ export class SpriteBank {
     for (const [name, f] of Object.entries(json.frames)) {
       const data = new Uint32Array(f.w * f.h);
       // neon tubes are saturated rather than bright: count those as light too
-      const neon = name.startsWith("neon_");
       for (let y = 0; y < f.h; y++) {
         for (let x = 0; x < f.w; x++) {
           const p = all[(f.y + y) * aw + f.x + x];
@@ -58,8 +58,7 @@ export class SpriteBank {
           if (f.emissive) {
             // bright pixels of light sources ignore the stage lighting tint
             const r = p & 255, g = (p >> 8) & 255, b = (p >> 16) & 255;
-            const mx = Math.max(r, g, b), mn = Math.min(r, g, b);
-            if (r * 0.3 + g * 0.59 + b * 0.11 > 200 || (neon && mx >= 220 && mx - mn >= 90)) out = ((p & 0x00ffffff) | (254 << 24)) >>> 0;
+            if (emissivePixel(name,r,g,b,x,y,f.w,f.h)) out = ((p & 0x00ffffff) | (254 << 24)) >>> 0;
           }
           data[y * f.w + x] = out;
         }

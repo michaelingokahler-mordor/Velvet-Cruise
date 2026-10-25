@@ -1098,7 +1098,7 @@ def spray(lay, x0, y0, length, side, thick, droop, rmp, seed=0):
 def redwood():
     """Giant coast redwood: massive fluted trunk with root flare, deep
     meandering bark furrows (lit warm right, cool shade left), layered dark
-    branch tiers at the top."""
+    branch tiers covering the upper three quarters."""
     w, h = 84, 210
     s = Spr(w, h)
     B = RWBARK
@@ -1160,14 +1160,14 @@ def redwood():
     # upper sprays shade the ones beneath; irregular lengths and spacing
     crng = random.Random(15)
     k = 0
-    y = 117
+    y = 161
     while y > 10:
-        f = (y - 2) / 116.0
+        f = (y - 2) / 160.0
         env = 7 + 30 * f ** 0.8
-        th = 3.4 + 2.8 * f
-        dr = 2.5 + 6.0 * f
+        th = 4.7 + 4.6 * f
+        dr = 3.0 + 6.0 * f
         for side, dy in ((-1, 0), (1, -crng.choice((3, 4, 5)))):
-            if y > 92 and crng.random() < 0.3:
+            if y > 140 and crng.random() < 0.12:
                 continue
             ln = env * crng.uniform(0.62, 1.0)
             x0 = C - side * hw(y + dy) * 0.15

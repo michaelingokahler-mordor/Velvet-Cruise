@@ -10,7 +10,8 @@ import { Renderer } from "./game/render";
 import { Hud, C, GRAD_SUN, GRAD_RED, GRAD_PINK, GRAD_CYAN, big, label, panel, button, fmtTime, fit, para, star, drawForkPanel } from "./game/ui";
 import { CourseMap } from "./game/coursemap";
 import { LinkLayer, LinkRect } from "./game/links";
-import { COLS, COAST_PATH, COLUMN_NODES, NEXT, NODE_COUNT, completePath, goalLetter, validPath } from "./game/routes";
+import { COLS, COAST_PATH, GOAL_A_PATH, COLUMN_NODES, NEXT, NODE_COUNT, completePath, goalLetter, validPath } from "./game/routes";
+import { DEMO_A, SAVE_PREFIX } from "./game/edition";
 import { GameAudio, MusicJson } from "./audio/audio";
 import { initTesana, onTesanaReady, servicesOnline, t, onLocaleChange, locale, track as analytics, submitScore, topScores, myBest, fmtNum, BoardEntry, isTestSdk } from "./platform/tesana";
 import { Input, TOUCH, inRect, Rect, CONTROL_PREFS, ControlPref } from "./input";
@@ -20,6 +21,7 @@ import type { Gate } from "./game/track";
 import { Passenger, face } from "./game/passenger";
 import { Shouts } from "./game/shouts";
 import { DIFFS, Difficulty, DiffId, diffById } from "./game/difficulty";
+import { boardId, STAGE_BEST_KEY } from "./game/rules";
 import type { Car } from "./game/race";
 import { CARS, CarDef, carById } from "./game/cars";
 import { ArcadeEntry, ARCADE_SIZE, NAME_MAX, arcadeTable, arcadeRank, arcadeInsert, nameChar, cleanName, lastName, saveName } from "./game/arcade";
@@ -44,19 +46,17 @@ const BOARD_KINDS: { kind: BoardKind; label: string }[] = [
 ];
 /** Letter keys of the name-entry keyboard; a last row holds Space / Delete / OK. */
 const NAME_ROWS = ["ABCDEFGHIJ", "KLMNOPQRST", "UVWXYZ-.!?", "0123456789"];
-const boardId = (kind: "score" | "run", diff: DiffId): string => `${kind}-${diff}`;
-const STAGE_BEST_KEY = "sunset-coast-run.stage-bests";
-const STAGES_CLEARED_KEY = "sunset-coast-run.stages-cleared";
-const GOALS_REACHED_KEY = "sunset-coast-run.goals-reached";
+const STAGES_CLEARED_KEY = `${SAVE_PREFIX}.stages-cleared`;
+const GOALS_REACHED_KEY = `${SAVE_PREFIX}.goals-reached`;
 
 const SONG_KEYS = ["music_coastline", "music_golden", "music_wave", "music_twist", "music_highway", "music_riptide"];
 const SONG_NAME_IDS = ["song.coastline", "song.golden", "song.wave", "song.twist", "song.highway", "song.riptide"];
 /** Decoded songs kept in memory at once (each is ~20 MB decoded; phones stay comfortable at three). */
 const SONGS_KEPT = 3;
 const JINGLES = ["checkpoint", "stage", "gameover", "goal"];
-const STORE_KEY = "sunset-coast-run.station";
-const DIFF_KEY = "sunset-coast-run.difficulty";
-const CAR_KEY = "sunset-coast-run.car";
+const STORE_KEY = `${SAVE_PREFIX}.station`;
+const DIFF_KEY = `${SAVE_PREFIX}.difficulty`;
+const CAR_KEY = `${SAVE_PREFIX}.car`;
 
 function savedCar(): CarDef {
   try { return carById(localStorage.getItem(CAR_KEY)); } catch { return CARS[0]; }
@@ -79,7 +79,7 @@ const NAMETEST = HASH.includes("nametest");
 const ENDTEST = HASH.includes("endtest");
 // #path=0,5,8,9,4 plans the route (warps land on it, the autopilot takes it); #maptest opens the course map after a fake run
 const PATH_HASH = ((/path=([0-9,]+)/.exec(HASH) || [])[1] || "").split(",").filter(Boolean).map(Number);
-const PLAN = PATH_HASH.length ? completePath(PATH_HASH) : null;
+const PLAN = PATH_HASH.length ? (DEMO_A ? GOAL_A_PATH.slice() : completePath(PATH_HASH)) : null;
 const MAPTEST = HASH.includes("maptest");
 const TEST_HOOKS = AUTOPILOT || WARP > 0 || SIM > 1 || YELLTEST || TUMBLETEST || NAMETEST || ENDTEST || !!PLAN || MAPTEST;
 /** What she says at the finish, by her mood level (terrified … in love). */
@@ -349,7 +349,7 @@ class MainScene extends Phaser.Scene {
       return out;
     };
     if (MAPTEST) (window as unknown as Record<string, unknown>).__map = (path: number[], goal = true) => {
-      const p = validPath(completePath(path)) ? completePath(path) : COAST_PATH;
+      const p = DEMO_A ? GOAL_A_PATH.slice() : validPath(completePath(path)) ? completePath(path) : COAST_PATH;
       const n = goal ? COLS : Math.max(1, Math.min(COLS, path.length));
       Object.assign(this.result, { goal, path: p.slice(0, n), stage: n - 1, stageTimes: p.slice(0, goal ? COLS : n - 1).map((_v, i) => 52 + i * 3.3), diff: this.diff.id });
       this.openMap(true);
@@ -357,7 +357,7 @@ class MainScene extends Phaser.Scene {
     if (ENDTEST) (window as unknown as Record<string, unknown>).__ending = (letter?: string, mood?: number) => {
       if (!this.race) { this.race = new Race(this.track, false, 0, this.diff); this.race.skin = this.car.skin; }
       if (typeof mood === "number") this.lady.mood = mood;
-      this.startEnding(letter);
+      this.startEnding(DEMO_A ? "A" : letter);
     };
     // test hook: window.__name(score, diff) opens the name entry as if a run had just ended
     if (NAMETEST) (window as unknown as Record<string, unknown>).__name = (score: number, diff: DiffId) => {
@@ -426,7 +426,7 @@ class MainScene extends Phaser.Scene {
   private newDemo(): void {
     // attract mode shows a random stage of a random route
     const path = [0];
-    for (let c = 1; c < COLS; c++) { const nx = NEXT[path[c - 1]]; path.push(nx[Math.floor(Math.random() * nx.length)]); }
+    for (let c = 1; c < COLS; c++) { const nx = NEXT[path[c - 1]]; path.push(DEMO_A ? GOAL_A_PATH[c] : nx[Math.floor(Math.random() * nx.length)]); }
     this.track = new Track(path);
     const st = Math.floor(Math.random() * COLS);
     this.demo = new Race(this.track, true, st);
@@ -505,7 +505,7 @@ class MainScene extends Phaser.Scene {
     const bob = Math.round(Math.sin(this.time2 * 2) * 1.5);
     big(fb, t("game.title"), W / 2, 12 + bob, 3, GRAD_SUN);
     for (let i = 0; i < 4; i++) fb.rect(W / 2 - 110 + i * 3, 38 + bob + i * 2, 220 - i * 6, 1, [rgb(0xff4a7a), rgb(0xff7a4a), rgb(0xffa040), rgb(0xffd050)][i]);
-    para(fb, t("title.tagline"), W / 2, 49 + bob, C.pink, W - 10);
+    para(fb, t(DEMO_A ? "demo.tagline" : "title.tagline"), W / 2, 49 + bob, C.pink, W - 10);
     const best = this.bestScore.get(this.diff.id);
     if (best !== undefined) drawText(fb, t("title.best", { d: t(this.diff.nameKey), n: fmtNum(best) }), W / 2, 61, C.yellow, { align: "center", outline: C.ink, maxW: W - 10 });
 
@@ -1082,8 +1082,11 @@ class MainScene extends Phaser.Scene {
       taps = [];
     }
     if (!this.paused) {
+      if(inp.hit('signal')||(inp.touchMode&&this.tapped(taps,TOUCH.signal))) {
+        if(race.signal()==='horn')this.audio.horn();
+      }
       for (let k = 0; k < SIM; k++) {
-        const ctl = AUTOPILOT && race.state === "race" ? race.autopilot(dt, 0.97) : { steer: inp.steer, throttle: inp.throttle, brake: inp.brake };
+        const ctl = AUTOPILOT && race.state === "race" ? race.autopilot(dt, 0.997) : { steer: inp.steer, throttle: inp.throttle, brake: inp.brake };
         race.update(dt, ctl);
       }
       if (AUTOPILOT) (window as unknown as Record<string, unknown>).__trk = race.track;
@@ -1181,6 +1184,7 @@ class MainScene extends Phaser.Scene {
     if (inp.hit("up") || inp.hit("down")) { this.pauseSel ^= 1; this.audio.uiMove(); }
     button(fb, b1, t("pause.resume"), this.pauseSel === 0);
     button(fb, b2, t("pause.quit"), this.pauseSel === 1);
+    para(fb,t('ctl.signal_hint'),W/2,hasTilt?153:136,C.white,230);
     let act = -1;
     if (inp.hit("confirm")) act = this.pauseSel;
     if (inp.hit("pause") || inp.hit("back")) act = 0;
@@ -2086,7 +2090,7 @@ class MainScene extends Phaser.Scene {
       // every stage, by where it comes in a run (coast first in each column)
       // (two columns: the first eight stages on the left, the rest on the right)
       const rows: { col: number; node: number; first: boolean }[] = [];
-      COLUMN_NODES.forEach((list, col) => list.slice().reverse().forEach((node, k) => rows.push({ col, node, first: k === 0 })));
+      (DEMO_A ? GOAL_A_PATH.map(n => [n]) : COLUMN_NODES).forEach((list, col) => list.slice().reverse().forEach((node, k) => rows.push({ col, node, first: k === 0 })));
       const half = Math.ceil(rows.length / 2), cw = (w - 8) / 2;
       rows.forEach((row, i) => {
         const cx = x0 + 4 + (i < half ? 0 : cw), ry = 60 + (i % half) * 9;

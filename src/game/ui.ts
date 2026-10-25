@@ -139,8 +139,34 @@ export class Hud {
       if (m.sub) para(fb, m.sub, W / 2, m.y + 7 * m.scale + 4, C.white, W - 10);
     }
 
-    if (touch) drawTouch(fb, tilt, race.steer);
+    drawSignalIndicator(fb, race);
+    if (touch) drawTouch(fb, tilt, race.steer,race.nightSignal);
   }
+}
+
+/** A persistent H hint, with a bright confirmation even when no car can yield. */
+export function drawSignalIndicator(fb: FB, race: Race): void {
+  if (race.state !== "race" && race.state !== "countdown") return;
+  const x = W - 39, y = 41, active = race.signalT > 0;
+  const flash = active ? race.signalKind === "flash" : race.nightSignal;
+  const lit = active && (!flash || race.signalFlash);
+  const col = lit ? flash ? C.cyan : C.yellow : rgb(0x8a7a98);
+  fb.rectA(x, y, 32, 13, lit ? rgb(0x24304a) : C.ink, active ? 0.9 : 0.5);
+  fb.frame(x, y, 32, 13, active ? flash ? C.cyan : C.yellow : rgb(0x554560));
+  const ix = x + 4, iy = y + 3;
+  if (flash) {
+    fb.rect(ix, iy + 1, 1, 5, col);
+    fb.rect(ix + 1, iy, 4, 7, col);
+    fb.rect(ix + 2, iy + 1, 2, 5, C.ink);
+    for (let row = 0; row < 3; row++) fb.rect(ix + 7, iy + row * 3, lit ? 6 : 3, 1, col);
+  } else {
+    fb.rect(ix, iy + 2, 3, 3, col);
+    fb.rect(ix + 3, iy + 1, 2, 5, col);
+    fb.rect(ix + 5, iy, 1, 7, col);
+    fb.rect(ix + 8, iy + 2, 1, 3, col);
+    if (lit) { fb.rect(ix + 10, iy, 1, 2, col); fb.rect(ix + 11, iy + 2, 1, 3, col); fb.rect(ix + 10, iy + 5, 1, 2, col); }
+  }
+  drawText(fb, "H", x + 23, y + 3, col, { outline: C.ink });
 }
 
 function pad(fb: FB, r: Rect, glyph: string, text?: string): void {
@@ -150,7 +176,7 @@ function pad(fb: FB, r: Rect, glyph: string, text?: string): void {
   if (text) drawText(fb, text, r.x + r.w / 2, r.y + r.h - 11, C.yellow, { align: "center", outline: C.ink, maxW: r.w - 2 });
 }
 
-export function drawTouch(fb: FB, tilt = false, steer = 0): void {
+export function drawTouch(fb: FB, tilt = false, steer = 0,night=false): void {
   if (tilt) {
     pad(fb, TOUCH_TILT.brake, "↓", t("ctl.brake"));
     pad(fb, TOUCH_TILT.gas, "↑", t("ctl.gas"));
@@ -170,6 +196,9 @@ export function drawTouch(fb: FB, tilt = false, steer = 0): void {
   fb.rectA(r.x, r.y, r.w, r.h, rgb(0x100820), 0.38);
   fb.rect(r.x + 6, r.y + 4, 2, 8, C.white);
   fb.rect(r.x + 10, r.y + 4, 2, 8, C.white);
+  const h=TOUCH.signal;
+  fb.rectA(h.x,h.y,h.w,h.h,rgb(0x100820),.5);fb.frame(h.x,h.y,h.w,h.h,C.white);
+  drawText(fb,night?'L':'H',h.x+14,h.y+6,night?C.cyan:C.yellow,{align:'center',outline:C.ink});
 }
 
 export function panel(fb: FB, x: number, y: number, w: number, h: number): void {

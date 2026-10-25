@@ -49,7 +49,13 @@ function standalone() {
 
 export default defineConfig(({ mode }) => ({
   base: "./",
-  plugins: [decoders(), gameAssets(), ...(mode === "standalone" ? [standalone()] : [])],
-  define: { "import.meta.env.VITE_LOCAL_SERVICES": JSON.stringify(mode === "standalone" ? "true" : "false") },
+  plugins: [decoders(), gameAssets(), ...(mode === "standalone" ? [standalone()] : []), {
+    name: "velvet-edition",
+    transformIndexHtml: () => [{ tag: "meta", attrs: { name: "velvet-edition", content: mode === "demo" ? "demo-a" : "full" }, injectTo: "head" as const }],
+  }],
+  define: {
+    __DEMO_A__: JSON.stringify(mode === "demo"),
+    "import.meta.env.VITE_LOCAL_SERVICES": JSON.stringify(mode === "standalone" ? "true" : "false"),
+  },
   build: { target: "es2022", sourcemap: false, assetsDir: "_app" },
 }));

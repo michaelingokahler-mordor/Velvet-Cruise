@@ -10,7 +10,9 @@ import type { Seg, SprInst } from "./track";
 import { TUN_H, TUN_W, PORTAL_W, PORTAL_H } from "./track";
 import type { Race, Car } from "./race";
 import type { CovePoint } from "./cove";
-import { carLights, HEADLIGHT } from "./lights";
+import { LANDSCAPES } from './landscape';
+import { navigationArt } from './navigation-art';
+import { carLights, HEADLIGHT, lampPose, lightAxis } from "./lights";
 import { slopeForms, leanOf, plotSpan, cellRand, vnoise, NF, F_LOW, F_HIGH, F_L0, F_L1, F_L20, F_L21, F_H0, F_H1, F_H20, F_H21, F_R0, F_R1, F_RS, F_T, F_TH, F_P, F_PH, F_D0, F_D1, F_O0, F_O1, F_HG, F_HGW, F_PA, F_PAW, F_V0, F_V1 } from "./terrain";
 
 const WHITE = rgb(0xffffff);
@@ -18,7 +20,7 @@ const WHITE = rgb(0xffffff);
 const SEAM = 0.06;
 /** Test hook (URL hash #oldslopes): draw the banded walls of before, to compare speed. */
 const LEGACY_SLOPES = typeof location !== "undefined" && location.hash.includes("oldslopes");
-const SHADOWED = /^(palm|bush|cove_|house|rock|cypress|cyp_|stone_pine|pine|night_pine|snow_|bluff_|point_|summit_|dead_tree|shack|lifeguard|umbrella)/;
+const SHADOWED = /^(palm|bush|cove_|house|rock|cypress|cyp_|stone_pine|pine|night_pine|snow_|bluff_|point_|summit_|dead_tree|shack|lifeguard|umbrella|redwood|olive|winery|saloon|store|mesa_rock|saguaro|cactus|lake_|birch|cabin|observatory|radio_dish|wagon|water_tower|gas_station|fern|log)/;
 const SHADOW_COL = rgb(0x1c2a18);
 const DECKED = /^(shack|lifeguard)$/;
 const DECK_TOP = rgb(0xc89a62), DECK_FRONT = rgb(0x8a5e3c);
@@ -76,6 +78,8 @@ export class Renderer {
   private lastT = 0;
   private row = new Uint32Array(W);
   private tc: TowerCols = { body: 0, far: 0, litA: 0, litB: 0, shop: 0, dark: 0, trim: 0, litP: 0.4 };
+  private headSources:{z:number;x:number;slope:number;br:number;from:number;to:number;gain:number}[]=[];
+  private lampSources:{z:number;x:number;slope:number;radius:number;gain:number;br:number}[]=[];
 
   constructor(fb: FB, bank: SpriteBank) {
     this.fb = fb;
@@ -108,7 +112,7 @@ export class Renderer {
     const tt = Math.floor(this.time * 6);
     for (let y = HORIZON; !land && y < HORIZON + 26; y++) {
       const half = 8 + (y - HORIZON) * 2.1;
-      this.glints(fb, y, sunScreenX, half, th.sunGlow, th.glitter, th.glitter2, tt, y - HORIZON, 0);
+      this.glints(fb, y, sunScreenX, half, th.sunGlow*(th.id==='crystal-lake'?.48:1), th.glitter, th.glitter2, tt, y - HORIZON, 0);
     }
     if (th.id === 'coral-bluffs') this.bluffsBackdrop(fb, farOff);
     else {
@@ -273,8 +277,8 @@ export class Renderer {
         if ((p >>> 24) && tx >= 0 && ty >= 0 && tx < base.w && ty < base.h) data[ty * base.w + tx] = p;
       }
     };
-    paste(THEMES[left]?.icon, FORK_ICON_L[0], FORK_ICON_L[1]);
-    paste(THEMES[right]?.icon, FORK_ICON_R[0], FORK_ICON_R[1]);
+    paste(THEMES[left]?.icon ?? 'icon_coast', FORK_ICON_L[0], FORK_ICON_L[1]);
+    paste(THEMES[right]?.icon ?? 'icon_coast', FORK_ICON_R[0], FORK_ICON_R[1]);
     s = { w: base.w, h: base.h, data };
     this.gateCache.set(key, s);
     return s;
@@ -288,12 +292,24 @@ export class Renderer {
   private sprite(inst: SprInst, s: Seg, camX: number, camY: number, tint: number[], fogT: number, haze: Col, gateLabel?: string): void {
     if (inst.name === "portal") return; // the tunnel mouth's solid sides (drawn as the building face)
     let spr: Spr | undefined;
-    if (gateLabel) spr = this.gateSprite(inst.name, gateLabel);
+    let semantic=false;
+    if(inst.destinations)spr=this.forkSign(...inst.destinations);
+    else if (gateLabel) spr = this.gateSprite(inst.name, gateLabel);
     else if (inst.name === "fork_sign" && s.fork >= 0 && this.race) {
       const f = this.race.track.forks[s.fork];
       spr = f ? this.forkSign(f.left, f.right) : this.bank.get(inst.name);
     } else spr = this.bank.get(inst.name);
-    const scale = inst.scale * SPR_S * s.S1;
+    if(spr) {
+      const sCurve=(inst.name==='sign_left'&&s.curve>.2)||(inst.name==='sign_right'&&s.curve<-.2);
+      const kind=inst.name==='hwy_sign'?(s.i%400<65?'route':'reflector'):inst.name==='gantry'?'lanes':sCurve?(inst.name==='sign_left'?'s-left':'s-right'):undefined;
+      if(kind) {
+        const key=`navigation|${kind}`;
+        let art=this.gateCache.get(key);if(!art){art=navigationArt(spr,kind);this.gateCache.set(key,art);}
+        spr=art;semantic=true;
+      }
+    }
+    const lamp=lampPose(inst.name,inst.x);
+    const scale = inst.scale * (lamp?.size??1) * SPR_S * s.S1;
     const x = W / 2 + (s.cx1 + this.off(s, inst.br) + inst.x * ROAD_W - camX) * s.S1;
     const y = HORIZON + (camY - s.y1 - inst.y) * s.S1;
     if (!spr) {
@@ -320,11 +336,12 @@ export class Renderer {
       this.fb.rect(x0, y - dh, ww, dh, mix(DECK_FRONT, haze, fogT));
       this.fb.rect(x0, y - dh, ww, Math.max(1, dh * 0.45), mix(DECK_TOP, haze, fogT));
     }
-    if (this.night > 0.3 && dw > 3 && inst.name.endsWith("_lit")) this.lightPool(inst.name, x, y, dw, s.S1, fogT);
+    if (this.night > 0.3 && dw > 3 && inst.name.endsWith("_lit")&&!lamp) this.lightPool(inst.name, x, y, dw, s.S1, fogT);
     // small on screen: draw the half-size copy (twice if smaller still) so thin detail keeps its tone
     let sp = spr, sc = scale;
     while (sp.mip && sc < 0.6) { sp = sp.mip; sc *= 2; }
-    this.fb.blit(sp, x, y, sc, { flip: inst.flip, tr: tint[0], tg: tint[1], tb: tint[2], fog: fogT, fogCol: haze });
+    const shrub=s.theme===14&&inst.name.startsWith('bush');
+    this.fb.blit(sp, x, y, sc, { flip: semantic?false:lamp?.flip??inst.flip, tr: tint[0]*(shrub ? .7 : 1), tg: tint[1]*(shrub ? .65 : 1), tb: tint[2], fog: fogT, fogCol: haze });
   }
 
   /**
@@ -366,7 +383,6 @@ export class Renderer {
     const by = y + (c.bounce > 0 ? -Math.round(c.bounce) : 0);
     const lit = this.night > 0 && this.night >= c.lightAt;
     // after dark: a pool of headlight on the road ahead of the car (drawn first, the car covers its near end)
-    if (lit && z < 150 * SEG_LEN) this.headPool(c.z, c.x, c.br ?? 0, 3, 26, 0.14, 0.36, 0.4, 0.05, 1 - fogT * 0.8);
     this.fb.blit(spr, x, by, scale, { tr: tint[0], tg: tint[1], tb: tint[2], fog: fogT, fogCol: haze });
     // on a wet road every car trails a veil of spray
     if (this.rainAmt > 0.05 && sw > 6) {
@@ -427,6 +443,10 @@ export class Renderer {
       blendInto(fb, this.scratch, blendT);
     }
     if (thick > 0.01) fb.rectA(0, 0, W, H, mix(thA.haze, thB.haze, blendT), 0.62 * thick);
+    // Heat distorts the distant backdrop before roads, signs and sprites exist.
+    // Near silhouettes therefore stay stable throughout the shimmer cycle.
+    const heat=race.weatherAmt('heat')*(1-race.tunnelAmt);
+    if(heat>.01)this.shimmer(heat*(th.id==='gold-rush-town'?.6:1));
 
     // project visible segments
     const base = track.seg(camZ);
@@ -455,6 +475,7 @@ export class Renderer {
       vis.push(s);
     }
 
+    this.prepareLights(race);
     const nearList: Seg[] = [];
     const carsBySeg = race.carsBySeg;
     for (let k = vis.length - 1; k >= 0; k--) {
@@ -471,8 +492,6 @@ export class Renderer {
       if (s.cz1 > PLAYER_Z - SEG_LEN * 0.5) this.segSprites(s, carsBySeg.get(s.i), camX, camY, camZ, tint, fogT, haze);
       else nearList.push(s);
     }
-    // the player's headlights light the road ahead once dusk falls
-    if (race.lightsOn && race.tumbleT < 0) this.headPool(race.playerZ, race.playerX, race.forkSide, 5, 44, 0.18, 0.5, 0.42, 0.05, 0.65 + 0.35 * this.night);
     // in a tunnel the car flashes under each ceiling lamp as it passes
     let ptint = tint;
     const tun = race.tunnelAmt;
@@ -498,7 +517,6 @@ export class Renderer {
     const dry = 1 - race.tunnelAmt; // no rain, dust or fog inside a tunnel
     const rain = race.weatherAmt("rain") * dry, fog = race.weatherAmt("fog") * dry, sand = race.weatherAmt("sand") * dry, heat = race.weatherAmt("heat") * dry;
     const sp = race.speed / MAX_SPEED;
-    if (heat > 0.01) this.shimmer(heat);
     if (fog > 0.01) this.fogBanks(fog, haze);
     if (sand > 0.01) this.sandstorm(sand, race, dt, sp, haze);
     else this.dust.length = 0;
@@ -512,9 +530,9 @@ export class Renderer {
   /** Rows near the horizon wobble in the heat. */
   private shimmer(k: number): void {
     const d = this.fb.data, row = this.row;
-    for (let y = HORIZON - 12; y < HORIZON + 28; y++) {
-      const a = Math.max(0, 1 - Math.abs(y - (HORIZON + 6)) / 22) * k;
-      const sh = Math.round(Math.sin(this.time * 7 + y * 1.3) * 1.6 * a);
+    for (let y = HORIZON - 9; y < HORIZON + 9; y++) {
+      const a = Math.max(0, 1 - Math.abs(y - (HORIZON + 1)) / 10) * k;
+      const sh = Math.round(Math.sin(this.time * 2.2 + y * .45) * 1.15 * a);
       if (!sh) continue;
       const o = y * W;
       row.set(d.subarray(o, o + W));
@@ -540,11 +558,11 @@ export class Renderer {
     const fb = this.fb;
     const g = race.gust;
     fb.rectA(0, 0, W, H, mix(haze, rgb(0xc07840), 0.4), 0.1 * k + Math.abs(g) * 0.18);
-    const want = Math.round(110 * k * (1 + Math.abs(g) * 1.6));
+    const want = Math.round(72 * k * (1 + Math.abs(g) * 1.3));
     const dir = g !== 0 ? Math.sign(g) : -1;
     const cols = [rgb(0xf0d8a8), rgb(0xe4bc80), rgb(0xd09a5c), rgb(0xfff0c8)];
     while (this.dust.length < want) {
-      this.dust.push({ x: Math.random() * W, y: 18 + Math.random() * (H - 18), v: 220 + Math.random() * 260, len: 3 + Math.random() * 9, near: Math.random() < 0.3, col: cols[(Math.random() * 4) | 0] });
+      this.dust.push({ x: Math.random() * W, y: 18 + Math.random() * (H - 18), v: 220 + Math.random() * 260, len: 2 + Math.random() * 5, near: Math.random() < 0.22, col: cols[(Math.random() * 4) | 0] });
     }
     if (this.dust.length > want) this.dust.length = want;
     const d = fb.data;
@@ -567,7 +585,7 @@ export class Renderer {
   private snow(k: number, race: Race, dt: number, sp: number): void {
     const fb = this.fb, d = fb.data;
     fb.rectA(0, 0, W, H, rgb(0xdce6f6), 0.05 * k);
-    const want = Math.round(170 * k);
+    const want = Math.round(125 * k);
     while (this.flakes.length < want) this.flakes.push({ x: Math.random() * W, y: Math.random() * H, v: 16 + Math.random() * 30, ph: Math.random() * 6.28, big: Math.random() < 0.28 });
     if (this.flakes.length > want) this.flakes.length = want;
     const steer = race.steer || 0;
@@ -615,11 +633,14 @@ export class Renderer {
       }
     }
     // splashes dancing on the tarmac
-    const n = Math.round(26 * k);
+    const n = Math.round(13 * k);
     for (let i = 0; i < n; i++) {
       const y = 112 + Math.floor(Math.random() * 64);
-      const spread = (y - HORIZON) * 1.4;
-      const x = Math.floor(W / 2 + (Math.random() - 0.5) * spread * 2);
+      const road=this.visible.find(s=>s.Y2<y&&s.Y1>=y);
+      if(!road)continue;
+      const u=(y-road.Y2)/(road.Y1-road.Y2),cx=road.X2+(road.X1-road.X2)*u;
+      const half=road.W2+(road.W1-road.W2)*u;
+      const x = Math.floor(cx + (Math.random() - 0.5) * half * 1.7);
       if (x < 1 || x >= W - 1) continue;
       const c = rgb(0xe4ecf6);
       fb.pset(x, y, c);
@@ -631,8 +652,11 @@ export class Renderer {
       const a = 0.32 * k * Math.min(1, (sp - 0.25) * 2.5);
       for (const side of [-1, 1]) {
         const jx = (Math.random() - 0.5) * 4;
-        fb.rectA(cx + side * 28 - 9 + jx, cy - 8, 18, 8, rgb(0xd0d8e4), a);
-        fb.rectA(cx + side * 30 - 7 + jx, cy - 15, 14, 7, rgb(0xd0d8e4), a * 0.55);
+        for(let puff=0;puff<3;puff++) {
+          const px=cx+side*(26+puff*3)+jx,py=cy-7-puff*4;
+          fb.rectA(px-4,py,8-puff,3,rgb(0xd0d8e4),a*(1-puff*.22));
+          fb.rectA(px-2,py-2,4,2,rgb(0xd0d8e4),a*.4);
+        }
       }
     }
     // lightning: a jagged bolt and a white flash
@@ -662,36 +686,52 @@ export class Renderer {
     strand(x0, 0, HORIZON - 4 - rnd() * 14, 2);
   }
 
-  /**
-   * A pool of headlight on the road ahead of world position z (lateral x in road half-widths):
-   * from `from` to `to` segments ahead, half-width w0 → w1 (road half-widths), brightness k0 → k1.
-   * Uses this frame's projection, and stops where the road disappears behind a crest.
-   */
-  private headPool(z: number, x: number, br: number, from: number, to: number, w0: number, w1: number, k0: number, k1: number, gain: number): void {
-    const vis = this.visible;
-    if (!vis.length || gain <= 0.02) return;
-    const first = vis[0].i, startSeg = Math.floor(z / SEG_LEN);
-    // rows already hidden by the road between the car and the start of the pool
-    let top = H;
-    for (let i = Math.max(first, startSeg); i < startSeg + from; i++) {
-      const s = vis[i - first];
-      if (s && s.i === i) top = Math.min(top, s.Y1, s.Y2);
+  private prepareLights(race:Race):void {
+    this.headSources.length=0;this.lampSources.length=0;
+    const axis=(z:number,x:number,br:number)=>{
+      const s=race.track.seg(z),t=(z-s.i*SEG_LEN)/SEG_LEN;
+      return lightAxis(s.cx1+this.off(s,br),s.cx2+this.off(s,br,true),t,x*ROAD_W,SEG_LEN);
+    };
+    const head=(z:number,x:number,br:number,from:number,to:number,gain:number)=>{
+      if(z<race.position+SEG_LEN||z>race.position+(DRAW_DIST-to-1)*SEG_LEN)return;
+      const a=axis(z,x,br);this.headSources.push({z,x:a.x,slope:a.slope,br,from,to,gain});
+    };
+    if(race.lightsOn&&race.tumbleT<0)head(race.playerZ,race.playerX,race.forkSide,
+      race.signalFlash?2:3,race.signalFlash?78:48,race.signalFlash?1.05:.29);
+    for(const c of race.cars)if(this.night>=c.lightAt)head(c.z,c.x,c.br??0,2,27,.19);
+    if(this.night<.25)return;
+    for(const s of this.visible)for(const p of s.sprites) {
+      const pose=lampPose(p.name,p.x);if(!pose||p.y>50)continue;
+      const a=axis(s.i*SEG_LEN,p.x,p.br??0),spr=this.bank.get(p.name);
+      const dx=(spr?.w??16)*p.scale*pose.size*SPR_S*pose.head*(pose.flip?-1:1);
+      this.lampSources.push({z:s.i*SEG_LEN,x:a.x+dx,slope:a.slope,br:p.br??0,
+        radius:p.name==='gas_lamp_lit'?2300:3300,gain:Math.min(1,this.night*1.25)});
     }
-    const n = to - from;
-    for (let j = 0; j < n; j++) {
-      const s = vis[startSeg + from + j - first];
-      if (!s || s.i !== startSeg + from + j) break;
-      const t0 = j / n, t1 = (j + 1) / n;
-      if (s.Y2 < s.Y1 && s.Y2 < top) {
-        const hwN = (w0 + (w1 - w0) * t0) * s.W1, hwF = (w0 + (w1 - w0) * t1) * s.W2;
-        const xN = W / 2 + (s.cx1 + this.off(s, br) - this.camX) * s.S1 + x * s.W1;
-        const xF = W / 2 + (s.cx2 + this.off(s, br, true) - this.camX) * s.S2 + x * s.W2;
-        // brightness eases out with distance
-        const kN = (k1 + (k0 - k1) * (1 - t0) * (1 - t0)) * gain, kF = (k1 + (k0 - k1) * (1 - t1) * (1 - t1)) * gain;
-        this.fb.lightTrap(s.Y2, xF - hwF, xF + hwF, s.Y1, xN - hwN, xN + hwN, HEADLIGHT, kF, kN, top);
+  }
+
+  /** Ground light is drawn with the road, before scenery can occlude it. */
+  private groundLights(s:Seg):void {
+    if(s.Y2>=s.Y1)return;
+    const strip=(x0:number,x1:number,w0:number,w1:number,k0:number,k1:number,br:number,verge:number)=>{
+      const center0=W/2+(s.cx1+this.off(s,br)-this.camX)*s.S1;
+      const center1=W/2+(s.cx2+this.off(s,br,true)-this.camX)*s.S2;
+      const n=W/2+(x0-this.camX)*s.S1,f=W/2+(x1-this.camX)*s.S2;
+      this.fb.lightTrap(s.Y2,Math.max(f-w1*s.S2,center1-verge*s.W2),Math.min(f+w1*s.S2,center1+verge*s.W2),
+        s.Y1,Math.max(n-w0*s.S1,center0-verge*s.W1),Math.min(n+w0*s.S1,center0+verge*s.W1),HEADLIGHT,k1,k0);
+    };
+    for(const h of this.headSources) {
+      const dz=s.i*SEG_LEN-h.z,t=(dz/SEG_LEN-h.from)/(h.to-h.from);
+      if(t<0||t>1)continue;
+      const t1=Math.min(1,t+1/(h.to-h.from)),x0=h.x+h.slope*dz,x1=h.x+h.slope*(dz+SEG_LEN);
+      strip(x0,x1,(.18+t*.39)*ROAD_W,(.18+t1*.39)*ROAD_W,h.gain*(.05+.95*(1-t)**2),h.gain*(.05+.95*(1-t1)**2),h.br,1.48);
+    }
+    for(const p of this.lampSources) {
+      const dz=s.i*SEG_LEN-p.z;if(Math.abs(dz)>p.radius+SEG_LEN)continue;
+      for(const ring of [1,.78,.53,.27]) {
+        const r=p.radius*ring,w0=Math.sqrt(Math.max(0,r*r-dz*dz)),w1=Math.sqrt(Math.max(0,r*r-(dz+SEG_LEN)**2));
+        if(w0+w1<1)continue;
+        strip(p.x+p.slope*dz,p.x+p.slope*(dz+SEG_LEN),w0,w1,.07*p.gain,.07*p.gain,p.br,1.95);
       }
-      top = Math.min(top, s.Y1, s.Y2);
-      if (top <= HORIZON - 30) break;
     }
   }
 
@@ -728,7 +768,7 @@ export class Renderer {
     const xR1 = W / 2 + (s.cx1 + s.oR1 - camX) * s.S1, xR2 = W / 2 + (s.cx2 + s.oR2 - camX) * s.S2;
     const xC1 = W / 2 + (s.cx1 + s.oC1 - camX) * s.S1, xC2 = W / 2 + (s.cx2 + s.oC2 - camX) * s.S2;
     if (front) {
-      const ground = f(stripe ? th.groundA : th.groundB);
+      const ground = f(LANDSCAPES[s.theme]?.colors[1] ?? (stripe ? th.groundA : th.groundB));
       const shoulder = f(stripe ? th.sandA : th.sandB);
       if (land) {
         // inland: ground on both sides
@@ -738,10 +778,11 @@ export class Renderer {
         fb.trap(Y2, 0, xR2, Y1, 0, xR1, ground);
         const sea = mix(((s.i / 5) | 0) & 1 ? th.seaA : th.seaB, th.seaH, Math.min(1, fogT * 1.2 + 0.08 * fogT));
         const beachOut = 1.12 + 0.02 + s.beach;
-        this.seaTrap(Y2, xR2 + W2 * beachOut, Y1, xR1 + W1 * beachOut, sea, cur.glitter, cur.glitter2, sunX, cur.sunGlow, fogT);
+        this.seaTrap(Y2, xR2 + W2 * beachOut, Y1, xR1 + W1 * beachOut, sea, cur.glitter, cur.glitter2, sunX, cur.sunGlow*(cur.id==='crystal-lake'?.48:1), fogT);
         // beach / shoulder on the sea side, foam at the water's edge
         fb.trap(Y2, xR2, xR2 + W2 * beachOut, Y1, xR1, xR1 + W1 * beachOut, shoulder);
-        const foamW = 0.05 + 0.03 * Math.sin(s.i * 0.15 + this.time * 2.2);
+        const lake=th.id==='crystal-lake';
+        const foamW = lake ? .008+.004*Math.sin(s.i*.07+this.time*.7) : 0.05 + 0.03 * Math.sin(s.i * 0.15 + this.time * 2.2);
         fb.trap(Y2, xR2 + W2 * beachOut, xR2 + W2 * (beachOut + foamW), Y1, xR1 + W1 * beachOut, xR1 + W1 * (beachOut + foamW), f(th.foam));
       }
       const roads: [number, number][] = two ? [[xL1, xL2], [xR1, xR2]] : [[xC1, xC2]];
@@ -800,14 +841,19 @@ export class Renderer {
     // (in front of the tunnel, behind this segment's own towers)
     if (n.tunnel && !s.tunnel && n !== s) this.portal(s, n, th, fogT, haze, camX, camY);
     if (s.tunnel) { this.tunnelBox(s, th, fogT, haze, camX, camY); return; }
+    this.groundLights(s);
     // sea-side guardrail (beside the right road)
     if (!land && s.rail && n.rail) this.rail(s, s.oR1 + ROAD_W * RAIL_X, s.oR2 + ROAD_W * RAIL_X, th, fogT, haze, camX, camY);
     // land-side wall (cliff / hill / forest / sea wall / sound wall / towers), beside the left road
-    if (s.cove || s.bluffs) this.coveLand(s, n, th, f, camX, camY);
+    if(s.landscape) this.paintedLand(s,n,th,f,camX,camY,false);
+    else if(th.wall==='sound') this.soundWall(s,n,th,f,camX,camY,false);
+    else if (s.cove || s.bluffs) this.coveLand(s, n, th, f, camX, camY);
     else if (th.wall === "city") this.cityWall(s, n, th, false, fogT, haze, camX, camY);
     else if (s.wallH > 0 && n.wallH > 0) this.wall(s, n, th, th.wall, s.oL1 - s.wallOff * ROAD_W, s.oL2 - s.wallOff * ROAD_W, f, camX, camY, false);
     // right-hand wall of an inland road
-    if (land && th.wallR === "city") this.cityWall(s, n, th, true, fogT, haze, camX, camY);
+    if(s.landscape?.right)this.paintedLand(s,n,th,f,camX,camY,true);
+    else if(land&&th.wallR==='sound')this.soundWall(s,n,th,f,camX,camY,true);
+    else if (land && th.wallR === "city") this.cityWall(s, n, th, true, fogT, haze, camX, camY);
     else if (land && s.wallRH > 0 && n.wallRH > 0) this.wall(s, n, th, th.wallR ?? "none", s.oR1 + s.wallROff * ROAD_W, s.oR2 + s.wallROff * ROAD_W, f, camX, camY, true);
   }
 
@@ -822,7 +868,7 @@ export class Renderer {
     tc.litB = mix(wins[(seed >> 7) % wins.length], haze, lf);
     tc.shop = mix(wins[(seed >> 5) & 1 ? 0 : 3 % wins.length], haze, lf);
     tc.dark = mix(th.windowDark ?? rgb(0x161830), haze, fogT);
-    tc.litP = 0.26 + ((seed >> 9) % 100) * 0.0036;
+    tc.litP = 0.20 + ((seed >> 9) % 100) * 0.0026;
     tc.trim = (seed >> 11) % 3 === 0 ? mix(th.wallTop[(seed >> 13) & 1], haze, fogT * 0.6) : 0;
     tc.far = mix(tc.body, tc.litA, 0.16 + tc.litP * 0.2);
     return tc;
@@ -883,7 +929,7 @@ export class Renderer {
         else if (winCol) {
           const fl = h * INV_FLOOR, f = fl | 0, fy = fl - f;
           if (f === 0) { if (fy > 0.1 && fy < 0.72) c = hashI(col >> 1, 0, seed) < 0.7 ? tc.shop : dark; }
-          else if (fy > 0.3 && fy < 0.78) { const hv = hashI(col, f, seed); c = hv < litP ? (hv < litH ? tc.litA : tc.litB) : dark; }
+          else if (fy > 0.3 && fy < 0.78) { const hv = hashI(col >> 1, f >> 1, seed); c = hv < litP ? (hv < litH ? tc.litA : tc.litB) : dark; }
         }
         d[o] = c;
       }
@@ -1020,6 +1066,90 @@ export class Renderer {
 
   // --------------------------------------------------------- painted slopes
   private q8 = [0, 0, 0, 0, 0, 0, 0, 0];
+
+  /** Closed banks, shelves and distant ridges; both sides use the same ground
+   * coordinates as the scenery placement, including level building plots. */
+  private paintedLand(s:Seg,n:Seg,th:Theme,f:(c:Col)=>Col,camX:number,camY:number,right:boolean):void {
+    const a=(right?s.landscape?.right:s.landscape?.left)!;
+    const b=(right?n.landscape?.right:n.landscape?.left)??a;
+    const st=LANDSCAPES[s.theme],dir=right?1:-1,fb=this.fb,q=this.q8;
+    const point=(p:CovePoint,far:boolean):[number,number]=>{
+      const S=far?s.S2:s.S1,off=right?(far?s.oR2:s.oR1):(far?s.oL2:s.oL1);
+      return [W/2+((far?s.cx2:s.cx1)+off+dir*p.x-camX)*S,HORIZON+(camY-(far?s.y2:s.y1)-p.h)*S];
+    };
+    const at=(p:CovePoint,r:CovePoint,t:number):CovePoint=>({x:p.x+(r.x-p.x)*t,h:p.h+(r.h-p.h)*t});
+    const band=(k:number,u0:number,u1:number,v0:number,v1:number,c:Col)=>{
+      const A=point(at(a.points[k],a.points[k+1],u0),false),B=point(at(b.points[k],b.points[k+1],v0),true);
+      const C=point(at(b.points[k],b.points[k+1],v1),true),D=point(at(a.points[k],a.points[k+1],u1),false);
+      if(Math.max(A[0],B[0],C[0],D[0])<0||Math.min(A[0],B[0],C[0],D[0])>=W||Math.min(A[1],B[1],C[1],D[1])>=H||Math.max(A[1],B[1],C[1],D[1])<0)return;
+      q[0]=A[0];q[1]=A[1];q[2]=B[0]+(B[0]-A[0])*SEAM;q[3]=B[1]+(B[1]-A[1])*SEAM;
+      q[4]=C[0]+(C[0]-D[0])*SEAM;q[5]=C[1]+(C[1]-D[1])*SEAM;q[6]=D[0];q[7]=D[1];fb.poly(q,f(c));
+    };
+    for(let k=5;k>=0;k--) {
+      const face=k===0&&(a.cutting>.1||b.cutting>.1);
+      band(k,0,1,0,1,face?st.rock[1]:st.colors[k]);
+      // Large irregular patches, with long quiet intervals between them.
+      if(k>0&&k<5) {
+        const seed=s.theme*17+k*7+(right?211:0),cell=Math.floor(s.i/44),t=s.i-cell*44;
+        const center=15+cellRand(cell,seed)*15,radius=8+cellRand(cell,seed+1)*12;
+        const size=(x:number)=>Math.max(0,1-Math.abs(x-center)/radius)*.17;
+        const u=.3+cellRand(cell,seed+2)*.35,wa=size(t),wb=size(t+1);
+        if((wa+wb)*(a.points[k+1].x-a.points[k].x)*s.S1>2) {
+          band(k,u-wa,u+wa,u-wb,u+wb,mix(st.colors[k],st.colors[4],.28));
+          band(k,u-wa*.4,u+wa*.6,u-wb*.4,u+wb*.6,mix(st.colors[k],st.colors[2],.38));
+        }
+      }
+      if(face) {
+        const cell=Math.floor(s.i/67),t=s.i-cell*67,center=.39+cellRand(cell,s.theme+852)*.17;
+        const swell=(x:number)=>Math.max(0,1-Math.abs(x-32)/29),wa=swell(t),wb=swell(t+1);
+        const chipA=(vnoise(s.i/6,853)-.5)*.12,chipB=(vnoise((s.i+1)/6,853)-.5)*.12;
+        band(0,center-wa*(.23+chipA),center+wa*.24,center-wb*(.23+chipB),center+wb*.24,st.rock[0]);
+        band(0,.59,.59+wa*(.14+chipA),.59,.59+wb*(.14+chipB),st.rock[2]);
+        if(s.S1*a.points[1].h>14) {
+          // Isolated rectangular inclusions have their own start/end within a
+          // segment; no long cream seams or alternating per-segment stripes.
+          const c=Math.floor(s.i/7),at=s.i-c*7;
+          for(let vein=0;vein<5;vein++) {
+            const seed=s.theme*19+vein*9+870,mid=1+cellRand(c,seed)*5,rad=.4+cellRand(c,seed+1)*.6;
+            const t0=Math.max(0,mid-rad-at),t1=Math.min(1,mid+rad-at);
+            if(t1<=t0)continue;
+            const u=.14+vein*.14+cellRand(c,seed+2)*.06,size=.022+cellRand(c,seed+3)*.035;
+            const along=(t:number,h:number)=>{
+              const p=point(atPoint(a.points[0],a.points[1],h),false),r=point(atPoint(b.points[0],b.points[1],h),true);
+              const z=t*s.S1/((1-t)*s.S2+t*s.S1);return [p[0]+(r[0]-p[0])*z,p[1]+(r[1]-p[1])*z];
+            };
+            const atPoint=(p:CovePoint,r:CovePoint,h:number)=>({x:p.x+(r.x-p.x)*h,h:p.h+(r.h-p.h)*h});
+            fb.poly([...along(t0,u),...along(t1,u),...along(t1,u+size),...along(t0,u+size)],f(cellRand(c,seed+4)>.4?st.rock[2]:st.rock[0]));
+          }
+        }
+      }
+      if(st.kind==='snow'&&k!==1&&k!==5) {
+        const snowA=.61+.17*vnoise(s.i/28,k+861),snowB=.61+.17*vnoise((s.i+1)/28,k+861);
+        band(k,snowA,1,snowB,1,st.colors[2]);
+      }
+    }
+    if(a.plot&&a.plot===b.plot) {
+      const plotBand=a.plotBand??1;
+      const plot=a.plot,t0=Math.max(0,1-Math.abs(s.i-plot.houseSegment)/17),t1=Math.max(0,1-Math.abs(s.i+1-plot.houseSegment)/17);
+      const paving=s.theme===12?rgb(0x86674f):st.kind==='snow'?st.colors[3]:mix(st.colors[1],st.rock[2],.27);
+      band(plotBand,.5-t0*.4,.5+t0*.4,.5-t1*.4,.5+t1*.4,paving);
+      // A small foundation lip joins the full level shelf, rather than a
+      // cream band extending for the entire length of a settlement.
+      if(plotBand===1&&t0>.4&&s.S1*400>1)band(0,.92,1,.92,1,mix(st.colors[0],paving,.55));
+    }
+  }
+
+  /** Technical sound barriers have straight panels and posts, not rock teeth. */
+  private soundWall(s:Seg,n:Seg,th:Theme,f:(c:Col)=>Col,camX:number,camY:number,right:boolean):void {
+    const dir=right?1:-1,h0=1350+vnoise(s.i/180,901)*450,h1=1350+vnoise((s.i+1)/180,901)*450;
+    const off0=right?s.wallROff:s.wallOff,off1=right?n.wallROff:n.wallOff;
+    const x0=W/2+((s.cx1+(right?s.oR1:s.oL1))-camX+dir*off0*ROAD_W)*s.S1;
+    const x1=W/2+((s.cx2+(right?s.oR2:s.oL2))-camX+dir*off1*ROAD_W)*s.S2;
+    const y0=HORIZON+(camY-s.y1)*s.S1,y1=HORIZON+(camY-s.y2)*s.S2;
+    const panel=(a:number,b:number,c:Col)=>this.fb.poly([x0,y0-h0*s.S1*a,x1,y1-h1*s.S2*a,x1,y1-h1*s.S2*b,x0,y0-h0*s.S1*b],f(c));
+    panel(0,1,th.wallBands[0][0]);panel(.4,.92,th.wallBands[1][0]);panel(.92,1,th.wallTop[0]);
+    if(s.i%22===0&&h0*s.S1>3)this.fb.rect(x0-1,y0-h0*s.S1,Math.max(1,120*s.S1),h0*s.S1,f(th.wallTop[0]));
+  }
 
   /** Closed land cross-sections: bank, level shelf, distant rolling hills and
    * their back slope. Buildings use the very same shelf coordinates. */

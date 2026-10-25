@@ -16,13 +16,17 @@ export interface Difficulty {
   lanes: number;
   /** Multiplies every point earned. */
   score: number;
+  /** Dry-bend centrifugal pull; engine and steering response stay arcade-like. */
+  cornering: number;
+  /** Strength of the existing rain/snow/ice/wind effects. */
+  weather: number;
   col: Col;
 }
 
 export const DIFFS: Difficulty[] = [
-  { id: "easy", nameKey: "diff.easy", descKey: "diff.easy_desc", clock: 1.3, traffic: 0.55, lanes: 0.5, score: 0.5, col: rgb(0x7cf06a) },
-  { id: "normal", nameKey: "diff.normal", descKey: "diff.normal_desc", clock: 1, traffic: 1, lanes: 1, score: 1, col: rgb(0xffe860) },
-  { id: "hard", nameKey: "diff.hard", descKey: "diff.hard_desc", clock: 0.85, traffic: 1.5, lanes: 1.7, score: 1.5, col: rgb(0xff4a3a) },
+  { id: "easy", nameKey: "diff.easy", descKey: "diff.easy_desc", clock: 1.18, traffic: 0.65, lanes: 0.6, score: 0.5, cornering:1, weather:0.85, col: rgb(0x7cf06a) },
+  { id: "normal", nameKey: "diff.normal", descKey: "diff.normal_desc", clock: 1, traffic: 1, lanes: 1, score: 1, cornering:1.04, weather:1.2, col: rgb(0xffe860) },
+  { id: "hard", nameKey: "diff.hard", descKey: "diff.hard_desc", clock: 1, traffic: 1.1, lanes: 1.15, score: 1.5, cornering:1.08, weather:1.45, col: rgb(0xff4a3a) },
 ];
 
 export const NORMAL = DIFFS[1];

@@ -6,6 +6,12 @@
     {"board": "score-hard", "order": "desc", "label": "High score (Hard)", "format": "number", "unit": "pts", "group": "High score", "group_label": "Hard", "icon": "trophy", "min": 0, "max": 100000000},
     {"board": "run-easy", "order": "asc", "label": "Fastest full coast run (Easy)", "format": "duration_ms", "group": "Fastest full coast run", "group_label": "Easy", "icon": "flag-checkered", "min": 200000, "max": 7200000},
     {"board": "run-normal", "order": "asc", "label": "Fastest full coast run (Normal)", "format": "duration_ms", "group": "Fastest full coast run", "group_label": "Normal", "icon": "flag-checkered", "min": 200000, "max": 7200000},
-    {"board": "run-hard", "order": "asc", "label": "Fastest full coast run (Hard)", "format": "duration_ms", "group": "Fastest full coast run", "group_label": "Hard", "icon": "flag-checkered", "min": 200000, "max": 7200000}
+    {"board": "run-hard", "order": "asc", "label": "Fastest full coast run (Hard)", "format": "duration_ms", "group": "Fastest full coast run", "group_label": "Hard", "icon": "flag-checkered", "min": 200000, "max": 7200000},
+    {"board": "score-easy-tour2", "order": "desc", "label": "Extended tour high score (Easy)", "format": "number", "unit": "pts", "group": "Extended tour high score", "group_label": "Easy", "icon": "trophy", "min": 0, "max": 100000000},
+    {"board": "score-normal-tour2", "order": "desc", "label": "Extended tour high score (Normal)", "format": "number", "unit": "pts", "group": "Extended tour high score", "group_label": "Normal", "icon": "trophy", "min": 0, "max": 100000000},
+    {"board": "score-hard-tour2", "order": "desc", "label": "Extended tour high score (Hard)", "format": "number", "unit": "pts", "group": "Extended tour high score", "group_label": "Hard", "icon": "trophy", "min": 0, "max": 100000000},
+    {"board": "run-easy-tour2", "order": "asc", "label": "Extended tour fastest run (Easy)", "format": "duration_ms", "group": "Extended tour fastest run", "group_label": "Easy", "icon": "flag-checkered", "min": 200000, "max": 7200000},
+    {"board": "run-normal-tour2", "order": "asc", "label": "Extended tour fastest run (Normal)", "format": "duration_ms", "group": "Extended tour fastest run", "group_label": "Normal", "icon": "flag-checkered", "min": 200000, "max": 7200000},
+    {"board": "run-hard-tour2", "order": "asc", "label": "Extended tour fastest run (Hard)", "format": "duration_ms", "group": "Extended tour fastest run", "group_label": "Hard", "icon": "flag-checkered", "min": 200000, "max": 7200000}
   ]
 }

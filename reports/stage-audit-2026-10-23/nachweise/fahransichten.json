@@ -1,0 +1,3318 @@
+{
+  "capturedAt": "2026-10-23T07:04:39.077Z",
+  "method": "Actual software renderer, five full autopilot routes at 60 Hz simulation; scene captures without HUD. Weather renders every 12 simulation ticks. Particle randomness is not seeded.",
+  "stages": [
+    {
+      "node": 0,
+      "id": "palm-cove",
+      "name": "Palm Cove",
+      "column": 1,
+      "path": [
+        0,
+        5,
+        8,
+        9,
+        10
+      ],
+      "weather": "clear",
+      "dark": null,
+      "terrain": true,
+      "wall": "hill",
+      "wallR": null,
+      "shape": {
+        "twist": 0,
+        "hills": 1,
+        "straights": 0.18
+      },
+      "startSeg": 40,
+      "endSeg": 6100,
+      "segments": 6330,
+      "props": 1903,
+      "solidProps": 537,
+      "tunnelSegments": 0,
+      "iceSegments": 0,
+      "shots": [
+        {
+          "tag": "view-01",
+          "file": "01-palm-cove-view-01.png",
+          "segment": 162,
+          "progress": 0.0201,
+          "seconds": 3.35,
+          "curve": 0,
+          "kmh": 249,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "left-bend",
+          "file": "01-palm-cove-left-bend.png",
+          "segment": 708,
+          "progress": 0.1102,
+          "seconds": 9.53,
+          "curve": -2.8968,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-02",
+          "file": "01-palm-cove-view-02.png",
+          "segment": 829,
+          "progress": 0.1302,
+          "seconds": 10.88,
+          "curve": -1.6311,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "right-bend",
+          "file": "01-palm-cove-right-bend.png",
+          "segment": 1156,
+          "progress": 0.1842,
+          "seconds": 14.55,
+          "curve": 2.8306,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-03",
+          "file": "01-palm-cove-view-03.png",
+          "segment": 1617,
+          "progress": 0.2602,
+          "seconds": 19.72,
+          "curve": 3.1,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-04",
+          "file": "01-palm-cove-view-04.png",
+          "segment": 2464,
+          "progress": 0.4,
+          "seconds": 29.22,
+          "curve": 0,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-05",
+          "file": "01-palm-cove-view-05.png",
+          "segment": 3374,
+          "progress": 0.5502,
+          "seconds": 39.42,
+          "curve": -1.7,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-06",
+          "file": "01-palm-cove-view-06.png",
+          "segment": 4282,
+          "progress": 0.7,
+          "seconds": 49.6,
+          "curve": -3.1,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-07",
+          "file": "01-palm-cove-view-07.png",
+          "segment": 5131,
+          "progress": 0.8401,
+          "seconds": 59.12,
+          "curve": -3.3235,
+          "kmh": 285,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-08",
+          "file": "01-palm-cove-view-08.png",
+          "segment": 5737,
+          "progress": 0.9401,
+          "seconds": 68.65,
+          "curve": 0,
+          "kmh": 280,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "fork",
+          "file": "01-palm-cove-fork.png",
+          "segment": 5991,
+          "progress": 0.982,
+          "seconds": 71.5,
+          "curve": 0,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        }
+      ]
+    },
+    {
+      "node": 1,
+      "id": "coral-bluffs",
+      "name": "Coral Bluffs",
+      "column": 2,
+      "path": [
+        0,
+        1,
+        6,
+        7,
+        13
+      ],
+      "weather": "clear",
+      "dark": null,
+      "terrain": true,
+      "wall": "cliff",
+      "wallR": null,
+      "shape": {
+        "twist": 1,
+        "hills": 1,
+        "straights": 0.18
+      },
+      "startSeg": 6330,
+      "endSeg": 12808,
+      "segments": 6708,
+      "props": 1241,
+      "solidProps": 448,
+      "tunnelSegments": 0,
+      "iceSegments": 0,
+      "shots": [
+        {
+          "tag": "fork",
+          "file": "02-coral-bluffs-fork.png",
+          "segment": 6095,
+          "progress": -0.0363,
+          "seconds": 0.02,
+          "curve": 0,
+          "kmh": 285,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-01",
+          "file": "02-coral-bluffs-view-01.png",
+          "segment": 6461,
+          "progress": 0.0202,
+          "seconds": 4.12,
+          "curve": 1.7,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "left-bend",
+          "file": "02-coral-bluffs-left-bend.png",
+          "segment": 6855,
+          "progress": 0.081,
+          "seconds": 8.53,
+          "curve": -2.867,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-02",
+          "file": "02-coral-bluffs-view-02.png",
+          "segment": 7173,
+          "progress": 0.1301,
+          "seconds": 12.1,
+          "curve": -4.6,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "right-bend",
+          "file": "02-coral-bluffs-right-bend.png",
+          "segment": 7910,
+          "progress": 0.2439,
+          "seconds": 20.37,
+          "curve": 2.8631,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-03",
+          "file": "02-coral-bluffs-view-03.png",
+          "segment": 8016,
+          "progress": 0.2603,
+          "seconds": 21.55,
+          "curve": 3.1,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-04",
+          "file": "02-coral-bluffs-view-04.png",
+          "segment": 8923,
+          "progress": 0.4003,
+          "seconds": 31.72,
+          "curve": 1.7,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-05",
+          "file": "02-coral-bluffs-view-05.png",
+          "segment": 9894,
+          "progress": 0.5502,
+          "seconds": 42.6,
+          "curve": 0.3871,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-06",
+          "file": "02-coral-bluffs-view-06.png",
+          "segment": 10865,
+          "progress": 0.7001,
+          "seconds": 53.48,
+          "curve": 3.1,
+          "kmh": 285,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-07",
+          "file": "02-coral-bluffs-view-07.png",
+          "segment": 11772,
+          "progress": 0.8401,
+          "seconds": 63.65,
+          "curve": -0.2215,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-08",
+          "file": "02-coral-bluffs-view-08.png",
+          "segment": 12420,
+          "progress": 0.9401,
+          "seconds": 70.92,
+          "curve": 3.1,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        }
+      ]
+    },
+    {
+      "node": 2,
+      "id": "surfside",
+      "name": "Surfside",
+      "column": 3,
+      "path": [
+        0,
+        1,
+        2,
+        7,
+        14
+      ],
+      "weather": "clear",
+      "dark": null,
+      "terrain": false,
+      "wall": "town",
+      "wallR": null,
+      "shape": {
+        "twist": 2,
+        "hills": 1,
+        "straights": 0.18
+      },
+      "startSeg": 13038,
+      "endSeg": 19730,
+      "segments": 6922,
+      "props": 2200,
+      "solidProps": 1277,
+      "tunnelSegments": 0,
+      "iceSegments": 0,
+      "shots": [
+        {
+          "tag": "fork",
+          "file": "03-surfside-fork.png",
+          "segment": 12803,
+          "progress": -0.0351,
+          "seconds": 0.02,
+          "curve": 0,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-01",
+          "file": "03-surfside-view-01.png",
+          "segment": 13172,
+          "progress": 0.02,
+          "seconds": 4.15,
+          "curve": 3.1,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "left-bend",
+          "file": "03-surfside-left-bend.png",
+          "segment": 13440,
+          "progress": 0.0601,
+          "seconds": 7.15,
+          "curve": -3.2635,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-02",
+          "file": "03-surfside-view-02.png",
+          "segment": 13908,
+          "progress": 0.13,
+          "seconds": 13.2,
+          "curve": 0,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "right-bend",
+          "file": "03-surfside-right-bend.png",
+          "segment": 14034,
+          "progress": 0.1488,
+          "seconds": 14.62,
+          "curve": 2.867,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-03",
+          "file": "03-surfside-view-03.png",
+          "segment": 14778,
+          "progress": 0.26,
+          "seconds": 24.47,
+          "curve": 3.7932,
+          "kmh": 279,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-04",
+          "file": "03-surfside-view-04.png",
+          "segment": 15717,
+          "progress": 0.4003,
+          "seconds": 34.93,
+          "curve": 3.1,
+          "kmh": 106,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-05",
+          "file": "03-surfside-view-05.png",
+          "segment": 16719,
+          "progress": 0.5501,
+          "seconds": 47.02,
+          "curve": -3.1,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-06",
+          "file": "03-surfside-view-06.png",
+          "segment": 17724,
+          "progress": 0.7002,
+          "seconds": 58.98,
+          "curve": 1.7,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-07",
+          "file": "03-surfside-view-07.png",
+          "segment": 18660,
+          "progress": 0.8401,
+          "seconds": 69.48,
+          "curve": 4.6,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-08",
+          "file": "03-surfside-view-08.png",
+          "segment": 19329,
+          "progress": 0.9401,
+          "seconds": 76.98,
+          "curve": 0,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        }
+      ]
+    },
+    {
+      "node": 3,
+      "id": "cypress-point",
+      "name": "Cypress Point",
+      "column": 4,
+      "path": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "weather": "clear",
+      "dark": null,
+      "terrain": true,
+      "wall": "forest",
+      "wallR": null,
+      "shape": {
+        "twist": 3,
+        "hills": 1,
+        "straights": 0.18
+      },
+      "startSeg": 19960,
+      "endSeg": 26922,
+      "segments": 7192,
+      "props": 5044,
+      "solidProps": 1101,
+      "tunnelSegments": 0,
+      "iceSegments": 0,
+      "shots": [
+        {
+          "tag": "fork",
+          "file": "04-cypress-point-fork.png",
+          "segment": 19725,
+          "progress": -0.0338,
+          "seconds": 0.02,
+          "curve": 0,
+          "kmh": 168,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-01",
+          "file": "04-cypress-point-view-01.png",
+          "segment": 20100,
+          "progress": 0.0201,
+          "seconds": 4.67,
+          "curve": -4.6,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "right-bend",
+          "file": "04-cypress-point-right-bend.png",
+          "segment": 20448,
+          "progress": 0.0701,
+          "seconds": 8.57,
+          "curve": 2.9106,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-02",
+          "file": "04-cypress-point-view-02.png",
+          "segment": 20866,
+          "progress": 0.1301,
+          "seconds": 13.25,
+          "curve": 3.1,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "left-bend",
+          "file": "04-cypress-point-left-bend.png",
+          "segment": 21209,
+          "progress": 0.1794,
+          "seconds": 17.1,
+          "curve": -2.8968,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-03",
+          "file": "04-cypress-point-view-03.png",
+          "segment": 21771,
+          "progress": 0.2601,
+          "seconds": 25.23,
+          "curve": -3.1,
+          "kmh": 98,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-04",
+          "file": "04-cypress-point-view-04.png",
+          "segment": 22745,
+          "progress": 0.4,
+          "seconds": 37.07,
+          "curve": 1.6359,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-05",
+          "file": "04-cypress-point-view-05.png",
+          "segment": 23790,
+          "progress": 0.5501,
+          "seconds": 49.5,
+          "curve": -3.1,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-06",
+          "file": "04-cypress-point-view-06.png",
+          "segment": 24834,
+          "progress": 0.7001,
+          "seconds": 62.03,
+          "curve": -4.6004,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-07",
+          "file": "04-cypress-point-view-07.png",
+          "segment": 25809,
+          "progress": 0.8401,
+          "seconds": 73.78,
+          "curve": 4.6,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-08",
+          "file": "04-cypress-point-view-08.png",
+          "segment": 26505,
+          "progress": 0.9401,
+          "seconds": 84.33,
+          "curve": 4.6,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        }
+      ]
+    },
+    {
+      "node": 4,
+      "id": "twilight-bay",
+      "name": "Twilight Bay",
+      "column": 5,
+      "path": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "weather": "clear",
+      "dark": 1,
+      "terrain": false,
+      "wall": "hill",
+      "wallR": null,
+      "shape": {
+        "twist": 4,
+        "hills": 1,
+        "straights": 0.18
+      },
+      "startSeg": 27152,
+      "endSeg": 34525,
+      "segments": 8373,
+      "props": 2730,
+      "solidProps": 1332,
+      "tunnelSegments": 0,
+      "iceSegments": 0,
+      "shots": [
+        {
+          "tag": "fork",
+          "file": "05-twilight-bay-fork.png",
+          "segment": 26917,
+          "progress": -0.0319,
+          "seconds": 0.02,
+          "curve": 0,
+          "kmh": 222,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-01",
+          "file": "05-twilight-bay-view-01.png",
+          "segment": 27300,
+          "progress": 0.0201,
+          "seconds": 4.47,
+          "curve": 3.1,
+          "kmh": 285,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "left-bend",
+          "file": "05-twilight-bay-left-bend.png",
+          "segment": 27807,
+          "progress": 0.0888,
+          "seconds": 10.15,
+          "curve": -2.9975,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-02",
+          "file": "05-twilight-bay-view-02.png",
+          "segment": 28111,
+          "progress": 0.1301,
+          "seconds": 13.57,
+          "curve": 2.5905,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "right-bend",
+          "file": "05-twilight-bay-right-bend.png",
+          "segment": 28279,
+          "progress": 0.1529,
+          "seconds": 15.45,
+          "curve": 2.8719,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-03",
+          "file": "05-twilight-bay-view-03.png",
+          "segment": 29069,
+          "progress": 0.26,
+          "seconds": 24.3,
+          "curve": 0,
+          "kmh": 285,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-04",
+          "file": "05-twilight-bay-view-04.png",
+          "segment": 30102,
+          "progress": 0.4001,
+          "seconds": 35.88,
+          "curve": 3.1,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-05",
+          "file": "05-twilight-bay-view-05.png",
+          "segment": 31208,
+          "progress": 0.5501,
+          "seconds": 51.03,
+          "curve": -2.6378,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-06",
+          "file": "05-twilight-bay-view-06.png",
+          "segment": 32315,
+          "progress": 0.7003,
+          "seconds": 64.12,
+          "curve": 0.4261,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-07",
+          "file": "05-twilight-bay-view-07.png",
+          "segment": 33346,
+          "progress": 0.8401,
+          "seconds": 75.68,
+          "curve": -4.6,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-08",
+          "file": "05-twilight-bay-view-08.png",
+          "segment": 34083,
+          "progress": 0.9401,
+          "seconds": 86.68,
+          "curve": 4.6,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        }
+      ]
+    },
+    {
+      "node": 5,
+      "id": "thunder-highway",
+      "name": "Thunder Highway",
+      "column": 2,
+      "path": [
+        0,
+        5,
+        8,
+        9,
+        10
+      ],
+      "weather": "rain",
+      "dark": 0.62,
+      "terrain": false,
+      "wall": "sound",
+      "wallR": "sound",
+      "shape": {
+        "twist": 0.5,
+        "hills": 0.6,
+        "straights": 0.35
+      },
+      "startSeg": 6330,
+      "endSeg": 12750,
+      "segments": 6650,
+      "props": 2456,
+      "solidProps": 1655,
+      "tunnelSegments": 0,
+      "iceSegments": 0,
+      "shots": [
+        {
+          "tag": "fork",
+          "file": "06-thunder-highway-fork.png",
+          "segment": 6095,
+          "progress": -0.0366,
+          "seconds": 0.02,
+          "curve": 0,
+          "kmh": 285,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "sign",
+          "file": "06-thunder-highway-sign.png",
+          "segment": 6278,
+          "progress": -0.0081,
+          "seconds": 2.07,
+          "curve": 0,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-01",
+          "file": "06-thunder-highway-view-01.png",
+          "segment": 6459,
+          "progress": 0.0201,
+          "seconds": 4.1,
+          "curve": 0,
+          "kmh": 284,
+          "weather": {
+            "rain": 0.6291197501438318,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "right-bend",
+          "file": "06-thunder-highway-right-bend.png",
+          "segment": 6724,
+          "progress": 0.0614,
+          "seconds": 7.07,
+          "curve": 2.8573,
+          "kmh": 284,
+          "weather": {
+            "rain": 1,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-02",
+          "file": "06-thunder-highway-view-02.png",
+          "segment": 7166,
+          "progress": 0.1302,
+          "seconds": 12.72,
+          "curve": -0.2159,
+          "kmh": 276,
+          "weather": {
+            "rain": 1,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "left-bend",
+          "file": "06-thunder-highway-left-bend.png",
+          "segment": 7200,
+          "progress": 0.1355,
+          "seconds": 13.1,
+          "curve": -2.8226,
+          "kmh": 284,
+          "weather": {
+            "rain": 1,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-03",
+          "file": "06-thunder-highway-view-03.png",
+          "segment": 8000,
+          "progress": 0.2601,
+          "seconds": 24.82,
+          "curve": 0,
+          "kmh": 278,
+          "weather": {
+            "rain": 1,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-04",
+          "file": "06-thunder-highway-view-04.png",
+          "segment": 8898,
+          "progress": 0.4,
+          "seconds": 34.88,
+          "curve": 0,
+          "kmh": 284,
+          "weather": {
+            "rain": 1,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-05",
+          "file": "06-thunder-highway-view-05.png",
+          "segment": 9861,
+          "progress": 0.55,
+          "seconds": 45.68,
+          "curve": 3.1,
+          "kmh": 284,
+          "weather": {
+            "rain": 1,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-06",
+          "file": "06-thunder-highway-view-06.png",
+          "segment": 10824,
+          "progress": 0.7,
+          "seconds": 57.1,
+          "curve": -1.7,
+          "kmh": 284,
+          "weather": {
+            "rain": 1,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-07",
+          "file": "06-thunder-highway-view-07.png",
+          "segment": 11723,
+          "progress": 0.84,
+          "seconds": 67.18,
+          "curve": -1.1072,
+          "kmh": 284,
+          "weather": {
+            "rain": 1,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-08",
+          "file": "06-thunder-highway-view-08.png",
+          "segment": 12365,
+          "progress": 0.94,
+          "seconds": 74.38,
+          "curve": 0,
+          "kmh": 285,
+          "weather": {
+            "rain": 1,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        }
+      ]
+    },
+    {
+      "node": 6,
+      "id": "vineyard-valley",
+      "name": "Vineyard Valley",
+      "column": 3,
+      "path": [
+        0,
+        5,
+        6,
+        11,
+        12
+      ],
+      "weather": "clear",
+      "dark": null,
+      "terrain": false,
+      "wall": "hill",
+      "wallR": "none",
+      "shape": {
+        "twist": 1.5,
+        "hills": 1.5,
+        "straights": 0.15
+      },
+      "startSeg": 12980,
+      "endSeg": 19699,
+      "segments": 6949,
+      "props": 10891,
+      "solidProps": 9896,
+      "tunnelSegments": 0,
+      "iceSegments": 0,
+      "shots": [
+        {
+          "tag": "sign",
+          "file": "07-vineyard-valley-sign.png",
+          "segment": 12745,
+          "progress": -0.035,
+          "seconds": 0.02,
+          "curve": 0,
+          "kmh": 284,
+          "weather": {
+            "rain": 1,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "fork",
+          "file": "07-vineyard-valley-fork.png",
+          "segment": 12747,
+          "progress": -0.0347,
+          "seconds": 0.03,
+          "curve": 0,
+          "kmh": 284,
+          "weather": {
+            "rain": 1,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-01",
+          "file": "07-vineyard-valley-view-01.png",
+          "segment": 13115,
+          "progress": 0.0201,
+          "seconds": 4.17,
+          "curve": -3.1,
+          "kmh": 285,
+          "weather": {
+            "rain": 0.3333239089340019,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "right-bend",
+          "file": "07-vineyard-valley-right-bend.png",
+          "segment": 13422,
+          "progress": 0.0658,
+          "seconds": 7.6,
+          "curve": 2.8144,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-02",
+          "file": "07-vineyard-valley-view-02.png",
+          "segment": 13854,
+          "progress": 0.1301,
+          "seconds": 12.45,
+          "curve": 0,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "left-bend",
+          "file": "07-vineyard-valley-left-bend.png",
+          "segment": 13999,
+          "progress": 0.1517,
+          "seconds": 14.07,
+          "curve": -2.8968,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-03",
+          "file": "07-vineyard-valley-view-03.png",
+          "segment": 14727,
+          "progress": 0.26,
+          "seconds": 22.23,
+          "curve": -0.1859,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-04",
+          "file": "07-vineyard-valley-view-04.png",
+          "segment": 15669,
+          "progress": 0.4002,
+          "seconds": 35.53,
+          "curve": -0.0612,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-05",
+          "file": "07-vineyard-valley-view-05.png",
+          "segment": 16677,
+          "progress": 0.5502,
+          "seconds": 46.83,
+          "curve": 0,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-06",
+          "file": "07-vineyard-valley-view-06.png",
+          "segment": 17685,
+          "progress": 0.7003,
+          "seconds": 58.13,
+          "curve": 3.1,
+          "kmh": 285,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-07",
+          "file": "07-vineyard-valley-view-07.png",
+          "segment": 18624,
+          "progress": 0.84,
+          "seconds": 68.67,
+          "curve": 2.5211,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-08",
+          "file": "07-vineyard-valley-view-08.png",
+          "segment": 19296,
+          "progress": 0.94,
+          "seconds": 76.2,
+          "curve": 0,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        }
+      ]
+    },
+    {
+      "node": 7,
+      "id": "redwood-pass",
+      "name": "Redwood Pass",
+      "column": 4,
+      "path": [
+        0,
+        1,
+        6,
+        7,
+        13
+      ],
+      "weather": "fog",
+      "dark": 0.5,
+      "terrain": false,
+      "wall": "forest",
+      "wallR": "forest",
+      "shape": {
+        "twist": 3.2,
+        "hills": 1.1,
+        "straights": 0.1
+      },
+      "startSeg": 19987,
+      "endSeg": 26976,
+      "segments": 7219,
+      "props": 3963,
+      "solidProps": 1458,
+      "tunnelSegments": 0,
+      "iceSegments": 0,
+      "shots": [
+        {
+          "tag": "fork",
+          "file": "08-redwood-pass-fork.png",
+          "segment": 19753,
+          "progress": -0.0335,
+          "seconds": 0.02,
+          "curve": 0,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-01",
+          "file": "08-redwood-pass-view-01.png",
+          "segment": 20128,
+          "progress": 0.0202,
+          "seconds": 4.22,
+          "curve": -3.1,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "right-bend",
+          "file": "08-redwood-pass-right-bend.png",
+          "segment": 20495,
+          "progress": 0.0727,
+          "seconds": 8.33,
+          "curve": 2.8746,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-02",
+          "file": "08-redwood-pass-view-02.png",
+          "segment": 20896,
+          "progress": 0.1301,
+          "seconds": 12.83,
+          "curve": -0.4168,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "left-bend",
+          "file": "08-redwood-pass-left-bend.png",
+          "segment": 20932,
+          "progress": 0.1352,
+          "seconds": 13.23,
+          "curve": -2.8968,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-03",
+          "file": "08-redwood-pass-view-03.png",
+          "segment": 21805,
+          "progress": 0.2601,
+          "seconds": 23.02,
+          "curve": 2.5,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-04",
+          "file": "08-redwood-pass-view-04.png",
+          "segment": 22784,
+          "progress": 0.4002,
+          "seconds": 34.98,
+          "curve": -0.8401,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-05",
+          "file": "08-redwood-pass-view-05.png",
+          "segment": 23832,
+          "progress": 0.5502,
+          "seconds": 46.73,
+          "curve": -0.1757,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-06",
+          "file": "08-redwood-pass-view-06.png",
+          "segment": 24880,
+          "progress": 0.7001,
+          "seconds": 59.32,
+          "curve": -0.1344,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-07",
+          "file": "08-redwood-pass-view-07.png",
+          "segment": 25858,
+          "progress": 0.84,
+          "seconds": 71.08,
+          "curve": -3.1,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-08",
+          "file": "08-redwood-pass-view-08.png",
+          "segment": 26558,
+          "progress": 0.9402,
+          "seconds": 78.93,
+          "curve": -3.1,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        }
+      ]
+    },
+    {
+      "node": 8,
+      "id": "painted-desert",
+      "name": "Painted Desert",
+      "column": 3,
+      "path": [
+        0,
+        5,
+        8,
+        9,
+        10
+      ],
+      "weather": "sand",
+      "dark": 0.38,
+      "terrain": false,
+      "wall": "none",
+      "wallR": "none",
+      "shape": {
+        "twist": 0.8,
+        "hills": 1.4,
+        "straights": 0.4
+      },
+      "startSeg": 12980,
+      "endSeg": 19640,
+      "segments": 6890,
+      "props": 1736,
+      "solidProps": 1080,
+      "tunnelSegments": 0,
+      "iceSegments": 0,
+      "shots": [
+        {
+          "tag": "sign",
+          "file": "09-painted-desert-sign.png",
+          "segment": 12744,
+          "progress": -0.0354,
+          "seconds": 0.02,
+          "curve": 0,
+          "kmh": 284,
+          "weather": {
+            "rain": 1,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "fork",
+          "file": "09-painted-desert-fork.png",
+          "segment": 12746,
+          "progress": -0.0351,
+          "seconds": 0.03,
+          "curve": 0,
+          "kmh": 284,
+          "weather": {
+            "rain": 1,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-01",
+          "file": "09-painted-desert-view-01.png",
+          "segment": 13115,
+          "progress": 0.0203,
+          "seconds": 4.17,
+          "curve": -4.6,
+          "kmh": 285,
+          "weather": {
+            "rain": 0.3333239089340019,
+            "snow": 0,
+            "sand": 0.6666760910659981
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "right-bend",
+          "file": "09-painted-desert-right-bend.png",
+          "segment": 13414,
+          "progress": 0.0652,
+          "seconds": 7.52,
+          "curve": 2.9975,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 1
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-02",
+          "file": "09-painted-desert-view-02.png",
+          "segment": 13846,
+          "progress": 0.13,
+          "seconds": 12.37,
+          "curve": -1.7674,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 1
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "left-bend",
+          "file": "09-painted-desert-left-bend.png",
+          "segment": 14685,
+          "progress": 0.256,
+          "seconds": 21.77,
+          "curve": -2.801,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 1
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-03",
+          "file": "09-painted-desert-view-03.png",
+          "segment": 14712,
+          "progress": 0.2601,
+          "seconds": 22.07,
+          "curve": -4.7653,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 1
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-04",
+          "file": "09-painted-desert-view-04.png",
+          "segment": 15644,
+          "progress": 0.4,
+          "seconds": 32.52,
+          "curve": 3.1788,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 1
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-05",
+          "file": "09-painted-desert-view-05.png",
+          "segment": 16643,
+          "progress": 0.55,
+          "seconds": 43.72,
+          "curve": -3.1,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 1
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-06",
+          "file": "09-painted-desert-view-06.png",
+          "segment": 17642,
+          "progress": 0.7,
+          "seconds": 54.92,
+          "curve": 0,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 1
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-07",
+          "file": "09-painted-desert-view-07.png",
+          "segment": 18575,
+          "progress": 0.8401,
+          "seconds": 66.85,
+          "curve": -0.793,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 1
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-08",
+          "file": "09-painted-desert-view-08.png",
+          "segment": 19242,
+          "progress": 0.9402,
+          "seconds": 74.32,
+          "curve": -0.5743,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 1
+          },
+          "ice": 0,
+          "tunnel": 0
+        }
+      ]
+    },
+    {
+      "node": 9,
+      "id": "death-valley",
+      "name": "Death Valley",
+      "column": 4,
+      "path": [
+        0,
+        5,
+        8,
+        9,
+        10
+      ],
+      "weather": "heat",
+      "dark": 0.22,
+      "terrain": false,
+      "wall": "cliff",
+      "wallR": "none",
+      "shape": {
+        "twist": 0.6,
+        "hills": 0.7,
+        "straights": 0.5
+      },
+      "startSeg": 19870,
+      "endSeg": 26830,
+      "segments": 7190,
+      "props": 1994,
+      "solidProps": 1991,
+      "tunnelSegments": 0,
+      "iceSegments": 0,
+      "shots": [
+        {
+          "tag": "fork",
+          "file": "10-death-valley-fork.png",
+          "segment": 19636,
+          "progress": -0.0336,
+          "seconds": 0.02,
+          "curve": 0,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 1
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-01",
+          "file": "10-death-valley-view-01.png",
+          "segment": 20010,
+          "progress": 0.0201,
+          "seconds": 4.22,
+          "curve": 3.1,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0.302723103476617
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-02",
+          "file": "10-death-valley-view-02.png",
+          "segment": 20776,
+          "progress": 0.1302,
+          "seconds": 12.8,
+          "curve": 0.0608,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "right-bend",
+          "file": "10-death-valley-right-bend.png",
+          "segment": 20879,
+          "progress": 0.145,
+          "seconds": 13.95,
+          "curve": 2.9131,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-03",
+          "file": "10-death-valley-view-03.png",
+          "segment": 21680,
+          "progress": 0.2601,
+          "seconds": 22.93,
+          "curve": 0,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-04",
+          "file": "10-death-valley-view-04.png",
+          "segment": 22654,
+          "progress": 0.4,
+          "seconds": 33.85,
+          "curve": 0,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-05",
+          "file": "10-death-valley-view-05.png",
+          "segment": 23698,
+          "progress": 0.55,
+          "seconds": 45.73,
+          "curve": 4.6,
+          "kmh": 196,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "left-bend",
+          "file": "10-death-valley-left-bend.png",
+          "segment": 23860,
+          "progress": 0.5733,
+          "seconds": 47.83,
+          "curve": -2.8738,
+          "kmh": 283,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-06",
+          "file": "10-death-valley-view-06.png",
+          "segment": 24743,
+          "progress": 0.7001,
+          "seconds": 57.73,
+          "curve": 3.1,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-07",
+          "file": "10-death-valley-view-07.png",
+          "segment": 25717,
+          "progress": 0.8401,
+          "seconds": 68.65,
+          "curve": -0.3939,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-08",
+          "file": "10-death-valley-view-08.png",
+          "segment": 26414,
+          "progress": 0.9402,
+          "seconds": 76.47,
+          "curve": 0,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        }
+      ]
+    },
+    {
+      "node": 10,
+      "id": "neon-city",
+      "name": "Neon City",
+      "column": 5,
+      "path": [
+        0,
+        5,
+        8,
+        9,
+        10
+      ],
+      "weather": "night",
+      "dark": 1,
+      "terrain": false,
+      "wall": "city",
+      "wallR": "city",
+      "shape": {
+        "twist": 1.4,
+        "hills": 0.45,
+        "straights": 0.3
+      },
+      "startSeg": 27060,
+      "endSeg": 34305,
+      "segments": 8245,
+      "props": 4002,
+      "solidProps": 3176,
+      "tunnelSegments": 540,
+      "iceSegments": 0,
+      "shots": [
+        {
+          "tag": "fork",
+          "file": "11-neon-city-fork.png",
+          "segment": 26825,
+          "progress": -0.0324,
+          "seconds": 0.02,
+          "curve": 0,
+          "kmh": 192,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-01",
+          "file": "11-neon-city-view-01.png",
+          "segment": 27206,
+          "progress": 0.0202,
+          "seconds": 4.6,
+          "curve": -3.1,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "right-bend",
+          "file": "11-neon-city-right-bend.png",
+          "segment": 27543,
+          "progress": 0.0667,
+          "seconds": 8.38,
+          "curve": 2.834,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-02",
+          "file": "11-neon-city-view-02.png",
+          "segment": 28003,
+          "progress": 0.1302,
+          "seconds": 13.53,
+          "curve": 0,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "left-bend",
+          "file": "11-neon-city-left-bend.png",
+          "segment": 28203,
+          "progress": 0.1578,
+          "seconds": 15.78,
+          "curve": -2.8203,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "tunnel",
+          "file": "11-neon-city-tunnel.png",
+          "segment": 28606,
+          "progress": 0.2134,
+          "seconds": 22.53,
+          "curve": 0,
+          "kmh": 268,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0.11666666666666667
+        },
+        {
+          "tag": "view-03",
+          "file": "11-neon-city-view-03.png",
+          "segment": 28944,
+          "progress": 0.26,
+          "seconds": 26.33,
+          "curve": 4.6,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0.0000022033572919692608
+        },
+        {
+          "tag": "view-04",
+          "file": "11-neon-city-view-04.png",
+          "segment": 29958,
+          "progress": 0.4,
+          "seconds": 37.7,
+          "curve": -4.6,
+          "kmh": 285,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 1.3067244958194222e-27
+        },
+        {
+          "tag": "view-05",
+          "file": "11-neon-city-view-05.png",
+          "segment": 31045,
+          "progress": 0.55,
+          "seconds": 49.88,
+          "curve": 1.2828,
+          "kmh": 285,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 5.411039200165558e-67
+        },
+        {
+          "tag": "view-06",
+          "file": "11-neon-city-view-06.png",
+          "segment": 32133,
+          "progress": 0.7002,
+          "seconds": 62.83,
+          "curve": 3.9499,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 7.449203041270832e-109
+        },
+        {
+          "tag": "view-07",
+          "file": "11-neon-city-view-07.png",
+          "segment": 33147,
+          "progress": 0.8402,
+          "seconds": 74.2,
+          "curve": 3.1,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 7.973913832318155e-12
+        },
+        {
+          "tag": "view-08",
+          "file": "11-neon-city-view-08.png",
+          "segment": 33871,
+          "progress": 0.9401,
+          "seconds": 85.07,
+          "curve": 0.0313,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 5.955569098776068e-47
+        }
+      ]
+    },
+    {
+      "node": 11,
+      "id": "snowcap-pass",
+      "name": "Snowcap Pass",
+      "column": 4,
+      "path": [
+        0,
+        5,
+        6,
+        11,
+        12
+      ],
+      "weather": "snow",
+      "dark": 0.35,
+      "terrain": false,
+      "wall": "cliff",
+      "wallR": "cliff",
+      "shape": {
+        "twist": 2.8,
+        "hills": 1.8,
+        "straights": 0.12
+      },
+      "startSeg": 19929,
+      "endSeg": 26949,
+      "segments": 7250,
+      "props": 4861,
+      "solidProps": 2488,
+      "tunnelSegments": 0,
+      "iceSegments": 1019,
+      "shots": [
+        {
+          "tag": "fork",
+          "file": "12-snowcap-pass-fork.png",
+          "segment": 19693,
+          "progress": -0.0336,
+          "seconds": 0.02,
+          "curve": 0,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-01",
+          "file": "12-snowcap-pass-view-01.png",
+          "segment": 20070,
+          "progress": 0.0201,
+          "seconds": 5.72,
+          "curve": 3.1,
+          "kmh": 50,
+          "weather": {
+            "rain": 0,
+            "snow": 0.7033092791978302,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "ice",
+          "file": "12-snowcap-pass-ice.png",
+          "segment": 20276,
+          "progress": 0.0494,
+          "seconds": 9.28,
+          "curve": -3.2086,
+          "kmh": 273,
+          "weather": {
+            "rain": 0,
+            "snow": 1,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "left-bend",
+          "file": "12-snowcap-pass-left-bend.png",
+          "segment": 20351,
+          "progress": 0.0601,
+          "seconds": 10.13,
+          "curve": -3.2086,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 1,
+            "sand": 0
+          },
+          "ice": 0.2285859375,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-02",
+          "file": "12-snowcap-pass-view-02.png",
+          "segment": 20842,
+          "progress": 0.1301,
+          "seconds": 17.42,
+          "curve": 1.5077,
+          "kmh": 89,
+          "weather": {
+            "rain": 0,
+            "snow": 1,
+            "sand": 0
+          },
+          "ice": 0.005766020485870914,
+          "tunnel": 0
+        },
+        {
+          "tag": "right-bend",
+          "file": "12-snowcap-pass-right-bend.png",
+          "segment": 21278,
+          "progress": 0.1922,
+          "seconds": 23.28,
+          "curve": 2.884,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 1,
+            "sand": 0
+          },
+          "ice": 2.8794049570255455e-16,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-03",
+          "file": "12-snowcap-pass-view-03.png",
+          "segment": 21755,
+          "progress": 0.2601,
+          "seconds": 28.63,
+          "curve": -3.1,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 1,
+            "sand": 0
+          },
+          "ice": 0.9399854254703403,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-04",
+          "file": "12-snowcap-pass-view-04.png",
+          "segment": 22737,
+          "progress": 0.4,
+          "seconds": 40.38,
+          "curve": -1.125,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 1,
+            "sand": 0
+          },
+          "ice": 2.3884863346938632e-12,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-05",
+          "file": "12-snowcap-pass-view-05.png",
+          "segment": 23790,
+          "progress": 0.55,
+          "seconds": 57.55,
+          "curve": -1.7,
+          "kmh": 229,
+          "weather": {
+            "rain": 0,
+            "snow": 1,
+            "sand": 0
+          },
+          "ice": 2.0362567809244376e-31,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-06",
+          "file": "12-snowcap-pass-view-06.png",
+          "segment": 24843,
+          "progress": 0.7,
+          "seconds": 69.48,
+          "curve": -0.2501,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 1,
+            "sand": 0
+          },
+          "ice": 5.258109980192629e-8,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-07",
+          "file": "12-snowcap-pass-view-07.png",
+          "segment": 25826,
+          "progress": 0.84,
+          "seconds": 83.25,
+          "curve": -4.6,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 1,
+            "sand": 0
+          },
+          "ice": 3.5743207522027677e-10,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-08",
+          "file": "12-snowcap-pass-view-08.png",
+          "segment": 26528,
+          "progress": 0.94,
+          "seconds": 94.65,
+          "curve": 0,
+          "kmh": 285,
+          "weather": {
+            "rain": 0,
+            "snow": 1,
+            "sand": 0
+          },
+          "ice": 0.7164973298926512,
+          "tunnel": 0
+        }
+      ]
+    },
+    {
+      "node": 12,
+      "id": "gold-rush-town",
+      "name": "Gold Rush Town",
+      "column": 5,
+      "path": [
+        0,
+        5,
+        6,
+        11,
+        12
+      ],
+      "weather": "heat",
+      "dark": 0.6,
+      "terrain": false,
+      "wall": "hill",
+      "wallR": "none",
+      "shape": {
+        "twist": 1.2,
+        "hills": 1.2,
+        "straights": 0.35
+      },
+      "startSeg": 27179,
+      "endSeg": 34499,
+      "segments": 8320,
+      "props": 4400,
+      "solidProps": 3032,
+      "tunnelSegments": 0,
+      "iceSegments": 0,
+      "shots": [
+        {
+          "tag": "fork",
+          "file": "13-gold-rush-town-fork.png",
+          "segment": 26944,
+          "progress": -0.0321,
+          "seconds": 0.02,
+          "curve": 0,
+          "kmh": 193,
+          "weather": {
+            "rain": 0,
+            "snow": 1,
+            "sand": 0
+          },
+          "ice": 1.1089001310080929e-13,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-01",
+          "file": "13-gold-rush-town-view-01.png",
+          "segment": 27326,
+          "progress": 0.0201,
+          "seconds": 4.6,
+          "curve": -1.7,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0.26119372071998015,
+            "sand": 0
+          },
+          "ice": 4.498194085549198e-24,
+          "tunnel": 0
+        },
+        {
+          "tag": "right-bend",
+          "file": "13-gold-rush-town-right-bend.png",
+          "segment": 27894,
+          "progress": 0.0977,
+          "seconds": 10.97,
+          "curve": 2.8294,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 1.6512313689347838e-38,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-02",
+          "file": "13-gold-rush-town-view-02.png",
+          "segment": 28132,
+          "progress": 0.1302,
+          "seconds": 13.63,
+          "curve": 3.1,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 1.484698220979333e-44,
+          "tunnel": 0
+        },
+        {
+          "tag": "left-bend",
+          "file": "13-gold-rush-town-left-bend.png",
+          "segment": 28444,
+          "progress": 0.1728,
+          "seconds": 17.13,
+          "curve": -2.899,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 1.7220287637221394e-52,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-03",
+          "file": "13-gold-rush-town-view-03.png",
+          "segment": 29083,
+          "progress": 0.2601,
+          "seconds": 24.3,
+          "curve": 1.0368,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 9.704188388042095e-69,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-04",
+          "file": "13-gold-rush-town-view-04.png",
+          "segment": 30107,
+          "progress": 0.4,
+          "seconds": 37.77,
+          "curve": 1.1176,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 2.8431647123473627e-99,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-05",
+          "file": "13-gold-rush-town-view-05.png",
+          "segment": 31206,
+          "progress": 0.5501,
+          "seconds": 50.08,
+          "curve": -1.2359,
+          "kmh": 285,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 3.3733043241461383e-127,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-06",
+          "file": "13-gold-rush-town-view-06.png",
+          "segment": 32303,
+          "progress": 0.7,
+          "seconds": 62.38,
+          "curve": -3.1,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 4.36613929050845e-155,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-07",
+          "file": "13-gold-rush-town-view-07.png",
+          "segment": 33329,
+          "progress": 0.8402,
+          "seconds": 74.47,
+          "curve": 1.7,
+          "kmh": 285,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 1.7514225692655174e-182,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-08",
+          "file": "13-gold-rush-town-view-08.png",
+          "segment": 34060,
+          "progress": 0.94,
+          "seconds": 82.67,
+          "curve": 0,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 4.481454426113681e-201,
+          "tunnel": 0
+        }
+      ]
+    },
+    {
+      "node": 13,
+      "id": "crystal-lake",
+      "name": "Crystal Lake",
+      "column": 5,
+      "path": [
+        0,
+        1,
+        6,
+        7,
+        13
+      ],
+      "weather": "clear",
+      "dark": 0.85,
+      "terrain": false,
+      "wall": "forest",
+      "wallR": null,
+      "shape": {
+        "twist": 2,
+        "hills": 1,
+        "straights": 0.2
+      },
+      "startSeg": 27206,
+      "endSeg": 34526,
+      "segments": 8320,
+      "props": 4276,
+      "solidProps": 1704,
+      "tunnelSegments": 0,
+      "iceSegments": 0,
+      "shots": [
+        {
+          "tag": "fork",
+          "file": "14-crystal-lake-fork.png",
+          "segment": 26971,
+          "progress": -0.0321,
+          "seconds": 0.02,
+          "curve": 0,
+          "kmh": 285,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-01",
+          "file": "14-crystal-lake-view-01.png",
+          "segment": 27353,
+          "progress": 0.0201,
+          "seconds": 4.3,
+          "curve": 0,
+          "kmh": 285,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-02",
+          "file": "14-crystal-lake-view-02.png",
+          "segment": 28158,
+          "progress": 0.1301,
+          "seconds": 13.32,
+          "curve": 0.0422,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "right-bend",
+          "file": "14-crystal-lake-right-bend.png",
+          "segment": 28210,
+          "progress": 0.1372,
+          "seconds": 13.9,
+          "curve": 2.9975,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "left-bend",
+          "file": "14-crystal-lake-left-bend.png",
+          "segment": 28501,
+          "progress": 0.1769,
+          "seconds": 17.17,
+          "curve": -2.8639,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-03",
+          "file": "14-crystal-lake-view-03.png",
+          "segment": 29110,
+          "progress": 0.2601,
+          "seconds": 24.23,
+          "curve": -0.0662,
+          "kmh": 158,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-04",
+          "file": "14-crystal-lake-view-04.png",
+          "segment": 30134,
+          "progress": 0.4,
+          "seconds": 37.47,
+          "curve": -1.7,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-05",
+          "file": "14-crystal-lake-view-05.png",
+          "segment": 31232,
+          "progress": 0.55,
+          "seconds": 52.52,
+          "curve": -4.6,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-06",
+          "file": "14-crystal-lake-view-06.png",
+          "segment": 32330,
+          "progress": 0.7,
+          "seconds": 70.32,
+          "curve": 0.5095,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-07",
+          "file": "14-crystal-lake-view-07.png",
+          "segment": 33355,
+          "progress": 0.84,
+          "seconds": 81.8,
+          "curve": -0.9591,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-08",
+          "file": "14-crystal-lake-view-08.png",
+          "segment": 34088,
+          "progress": 0.9402,
+          "seconds": 90.02,
+          "curve": 0,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        }
+      ]
+    },
+    {
+      "node": 14,
+      "id": "starlight-summit",
+      "name": "Starlight Summit",
+      "column": 5,
+      "path": [
+        0,
+        1,
+        2,
+        7,
+        14
+      ],
+      "weather": "night",
+      "dark": 1,
+      "terrain": true,
+      "wall": "hill",
+      "wallR": "hill",
+      "shape": {
+        "twist": 3,
+        "hills": 2,
+        "straights": 0.1
+      },
+      "startSeg": 27179,
+      "endSeg": 34405,
+      "segments": 8226,
+      "props": 6540,
+      "solidProps": 2478,
+      "tunnelSegments": 0,
+      "iceSegments": 0,
+      "shots": [
+        {
+          "tag": "fork",
+          "file": "15-starlight-summit-fork.png",
+          "segment": 26944,
+          "progress": -0.0325,
+          "seconds": 0.02,
+          "curve": 0,
+          "kmh": 188,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-01",
+          "file": "15-starlight-summit-view-01.png",
+          "segment": 27325,
+          "progress": 0.0202,
+          "seconds": 4.62,
+          "curve": -3.1,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "right-bend",
+          "file": "15-starlight-summit-right-bend.png",
+          "segment": 27695,
+          "progress": 0.0714,
+          "seconds": 8.77,
+          "curve": 2.9469,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-02",
+          "file": "15-starlight-summit-view-02.png",
+          "segment": 28119,
+          "progress": 0.1301,
+          "seconds": 13.52,
+          "curve": 4.6,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "left-bend",
+          "file": "15-starlight-summit-left-bend.png",
+          "segment": 28229,
+          "progress": 0.1453,
+          "seconds": 14.75,
+          "curve": -2.832,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-03",
+          "file": "15-starlight-summit-view-03.png",
+          "segment": 29058,
+          "progress": 0.26,
+          "seconds": 24.88,
+          "curve": -3.1,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-04",
+          "file": "15-starlight-summit-view-04.png",
+          "segment": 30071,
+          "progress": 0.4002,
+          "seconds": 36.23,
+          "curve": 0,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-05",
+          "file": "15-starlight-summit-view-05.png",
+          "segment": 31154,
+          "progress": 0.5501,
+          "seconds": 52.3,
+          "curve": 4.5874,
+          "kmh": 134,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-06",
+          "file": "15-starlight-summit-view-06.png",
+          "segment": 32238,
+          "progress": 0.7001,
+          "seconds": 65.12,
+          "curve": 3.9751,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-07",
+          "file": "15-starlight-summit-view-07.png",
+          "segment": 33249,
+          "progress": 0.84,
+          "seconds": 76.45,
+          "curve": 4.8938,
+          "kmh": 285,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        },
+        {
+          "tag": "view-08",
+          "file": "15-starlight-summit-view-08.png",
+          "segment": 33973,
+          "progress": 0.9402,
+          "seconds": 84.57,
+          "curve": -4.6,
+          "kmh": 284,
+          "weather": {
+            "rain": 0,
+            "snow": 0,
+            "sand": 0
+          },
+          "ice": 0,
+          "tunnel": 0
+        }
+      ]
+    }
+  ],
+  "runs": [
+    {
+      "path": [
+        0,
+        5,
+        8,
+        9,
+        10
+      ],
+      "state": "goal",
+      "stage": 4,
+      "node": 10,
+      "stageTimes": [
+        72.64999999999716,
+        78.61666666666349,
+        78.71666666666349,
+        81.81666666666331,
+        89.86666666666285
+      ],
+      "runTime": 401.66666666663,
+      "score": 1222627.283333141,
+      "ticks": 24282
+    },
+    {
+      "path": [
+        0,
+        5,
+        6,
+        11,
+        12
+      ],
+      "state": "goal",
+      "stage": 4,
+      "node": 12,
+      "stageTimes": [
+        72.64999999999716,
+        79.24999999999679,
+        80.63333333333004,
+        100.28333333332893,
+        87.51666666666299
+      ],
+      "runTime": 420.3333333332797,
+      "score": 1213303.3666664853,
+      "ticks": 25402
+    },
+    {
+      "path": [
+        0,
+        1,
+        6,
+        7,
+        13
+      ],
+      "state": "goal",
+      "stage": 4,
+      "node": 13,
+      "stageTimes": [
+        72.64999999999716,
+        75.19999999999702,
+        81.48333333333,
+        84.23333333332984,
+        94.86666666666257
+      ],
+      "runTime": 408.43333333329053,
+      "score": 1224717.7833331425,
+      "ticks": 24688
+    },
+    {
+      "path": [
+        0,
+        1,
+        2,
+        7,
+        14
+      ],
+      "state": "goal",
+      "stage": 4,
+      "node": 14,
+      "stageTimes": [
+        72.64999999999716,
+        75.19999999999702,
+        81.39999999999667,
+        81.29999999999667,
+        89.33333333332955
+      ],
+      "runTime": 399.8833333332983,
+      "score": 1220876.766666474,
+      "ticks": 24175
+    },
+    {
+      "path": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "state": "goal",
+      "stage": 4,
+      "node": 4,
+      "stageTimes": [
+        72.64999999999716,
+        75.19999999999702,
+        91.03333333332945,
+        90.19999999999617,
+        91.56666666666275
+      ],
+      "runTime": 420.6499999999461,
+      "score": 1217517.4999998265,
+      "ticks": 25421
+    }
+  ]
+}

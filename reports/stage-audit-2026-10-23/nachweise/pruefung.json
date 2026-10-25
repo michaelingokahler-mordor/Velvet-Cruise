@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "sourceCommit": "48bb6cca567f3632d3aec8b4a7ba148d5f8faac8",
+  "stageReports": 15,
+  "stageImageSheets": 15,
+  "capturedViews": 170,
+  "autopilotFullRunsAtGoal": 5,
+  "stageCoverage": 15,
+  "relativeLinks": "valid",
+  "pngIntegrity": "valid",
+  "runtimeSourceDiff": "none",
+  "validationBoundary": "Static real-renderer scene review and source/math probes; no native Windows realtime or human input validation."
+}

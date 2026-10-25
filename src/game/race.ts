@@ -21,6 +21,8 @@ export interface Car {
   lightAt: number;
   /** Inside a fork: which of the two roads the car drives on (-1 left, 1 right). */
   br?: number;
+  /** A signalled driver waits for a safe adjacent lane, then holds it briefly. */
+  yieldLane?: number; yieldWait?: number; yieldUntil?: number;
 }
 
 export interface Controls { steer: number; throttle: number; brake: number }
@@ -155,6 +157,44 @@ export class Race {
   /** How far the camera is inside a tunnel (0..1, eases in and out): lamps, echo, no weather. */
   tunnelAmt = 0;
   private inTunnel = false;
+  signalT = 0;
+  signalKind: 'horn'|'flash' = 'horn';
+  private signalCooldown = 0;
+
+  /** H / pad Y or L3: one polite request to the nearest driver ahead. */
+  signal(): 'horn'|'flash'|undefined {
+    if(this.state!=='race'||this.crashT>0||this.signalCooldown>0)return;
+    this.signalCooldown=1.2;this.signalT=.7;
+    this.signalKind=this.nightSignal?'flash':'horn';
+    const f=this.fork,pz=this.playerZ;
+    const nearFork=(z:number)=>!!f&&z>(f.start-120)*SEG_LEN&&z<(f.end+25)*SEG_LEN;
+    if(!nearFork(pz)) {
+      const car=this.cars.filter(c=>c.z>pz+CAR_LEN&&c.z<pz+95*SEG_LEN&&Math.abs(c.x-this.playerX)<.36&&!nearFork(c.z)&&
+        (c.br===undefined||c.br===(this.forkSide||this.viewSide))).sort((a,b)=>a.z-b.z)[0];
+      if(car) {
+        const lane=LANE_X.reduce((a,x,k)=>Math.abs(x-car.x)<Math.abs(LANE_X[a]-car.x)?k:a,0);
+        const choices=[lane+1,lane-1].filter(k=>k>=0&&k<4&&Math.abs(LANE_X[k]-this.playerX)>.4);
+        const target=choices.find(k=>this.yieldSafe(car,LANE_X[k]));
+        if(target!==undefined){car.yieldLane=LANE_X[target];car.yieldWait=.32;car.yieldUntil=3.4;}
+      }
+    }
+    return this.signalKind;
+  }
+
+  private yieldSafe(car:Car,target:number):boolean {
+    return this.cars.every(o=>{
+      if(o===car||(o.br!==undefined&&car.br!==undefined&&o.br!==car.br)||Math.abs(o.x-target)>car.hw+o.hw+.12)return true;
+      const dz=o.z-car.z,predicted=dz+(o.speed-car.speed)*1.8;
+      return Math.min(dz,predicted)>CAR_LEN*4||Math.max(dz,predicted)<-CAR_LEN*3;
+    });
+  }
+
+  get signalFlash():boolean {
+    const t=.7-this.signalT;
+    return this.signalKind==='flash'&&this.signalT>0&&(t<.20||t>.34&&t<.60);
+  }
+  /** Rain and fog can turn driving lights on during the day; they keep the horn. */
+  get nightSignal():boolean {return this.night>=.65;}
 
   readonly diff: Difficulty;
   /** Which car the player drives: the sprite name prefix ("player", "player_yellow", ...). */
@@ -425,6 +465,15 @@ export class Race {
       // cars driving into a split keep to the road on their side
       if (f && c.br === undefined && c.z >= f.start * SEG_LEN && c.z < f.end * SEG_LEN) c.br = this.forkSide || (c.x < 0 ? -1 : 1);
       const nearFork = !!f && c.z > (f.start - 80) * SEG_LEN && c.z < f.end * SEG_LEN;
+      if(c.yieldUntil) {
+        c.yieldUntil=Math.max(0,c.yieldUntil-dt);
+        c.yieldWait=Math.max(0,(c.yieldWait??0)-dt);
+        if(nearFork||!c.yieldUntil){c.yieldLane=undefined;c.yieldUntil=0;}
+        else if(c.yieldLane!==undefined&&!c.yieldWait) {
+          if(this.yieldSafe(c,c.yieldLane)){c.targetX=c.yieldLane;c.yieldLane=undefined;}
+          else if(c.yieldUntil<1.8){c.yieldLane=undefined;c.yieldUntil=0;}
+        }
+      }
       // follow the car ahead in the same lane
       let speed = c.base;
       for (const o of this.cars) {
@@ -433,7 +482,7 @@ export class Race {
         if (dz > 0 && dz < CAR_LEN * 3 && Math.abs(o.x - c.x) < 0.32 && (o.br === undefined || c.br === undefined || o.br === c.br)) speed = Math.min(speed, o.speed * 0.98);
       }
       // occasional lane changes (never across the middle while the road splits)
-      if (!nearFork && this.rand() < th.lanesChange * this.diff.lanes * dt) {
+      if (!nearFork && !c.yieldUntil && this.rand() < th.lanesChange * this.diff.lanes * dt) {
         const lane = LANE_X.reduce((best, lx, i) => (Math.abs(lx - c.targetX) < Math.abs(LANE_X[best] - c.targetX) ? i : best), 0);
         const nl = Math.max(0, Math.min(3, lane + (this.rand() < 0.5 ? -1 : 1)));
         c.targetX = LANE_X[nl];
@@ -463,11 +512,23 @@ export class Race {
     this.aiThink -= dt;
     const pz = this.playerZ;
     if (this.aiThink <= 0) {
-      this.aiThink = 0.25;
-      const blocked = (lane: number) => this.cars.some((c) => { const cx = this.carX(c); return cx !== null && c.z > pz - 200 && c.z - pz < 34 * SEG_LEN && Math.abs(cx - LANE_X[lane]) < 0.36; });
-      if (blocked(this.aiLane)) {
-        const opts = [this.aiLane - 1, this.aiLane + 1].filter((l) => l >= 0 && l < 4 && !blocked(l));
-        if (opts.length) this.aiLane = opts[Math.floor(this.rand() * opts.length)];
+      this.aiThink = 0.12;
+      // The attract/test driver looks far enough ahead to finish a lane change,
+      // and checks approaching rear traffic instead of jumping into its path.
+      const gap = (lane:number) => this.cars.reduce((best,c) => {
+        const cx=this.carX(c),dz=c.z-pz;
+        return cx!==null&&dz>=0&&Math.abs(cx-LANE_X[lane])<0.4?Math.min(best,dz):best;
+      },Infinity);
+      const safe = (lane:number) => !this.cars.some(c=>{
+        const cx=this.carX(c),dz=c.z-pz;
+        return cx!==null&&Math.abs(cx-LANE_X[lane])<0.4&&
+          (dz>-CAR_LEN*1.4&&dz<14*SEG_LEN || dz<0&&dz>-25*SEG_LEN&&c.speed>this.speed);
+      });
+      const currentGap=gap(this.aiLane);
+      if (currentGap < 70*SEG_LEN) {
+        const opts = [this.aiLane-1,this.aiLane+1].filter(l=>l>=0&&l<4&&safe(l)&&gap(l)>currentGap+10*SEG_LEN);
+        opts.sort((a,b)=>gap(b)-gap(a));
+        if(opts.length)this.aiLane=opts[0];
       }
     }
     const seg = this.playerSeg;
@@ -480,14 +541,33 @@ export class Race {
       // (the car is carried along its road through the split, so aim at where that road is now)
       target = side * this.splitAt(pz / SEG_LEN) + LANE_X[side < 0 ? Math.min(this.aiLane, 1) : Math.max(this.aiLane, 2)];
     }
-    const steer = Math.max(-1, Math.min(1, (target - this.playerX) * 4 + seg.curve * sp * sp * CENTRIFUGAL / STEER * 1.1));
-    const cruise = this.state === "goal" ? 0.45 : cruiseSpeed;
-    return { steer, throttle: sp < cruise ? 1 : 0, brake: sp > cruise + 0.08 ? 0.6 : 0 };
+    const iceScale = 1 + (this.diff.weather - 1) * 0.5;
+    const wet = this.diff.weather * (0.16 * this.weatherAmt("rain") + 0.1 * this.weatherAmt("snow"));
+    const grip = (ice:number) => this.diff.cornering * (1 + wet + 1.1 * ice * iceScale);
+    const steer = Math.max(-1, Math.min(1, (target - this.playerX) * 4 +
+      seg.curve * sp * sp * CENTRIFUGAL * grip(this.iceAmt) / STEER - this.gust * this.diff.weather / STEER));
+    let cruise = this.state === "goal" ? 0.45 : cruiseSpeed;
+    // A capable driver brakes for a wet/icy bend before reaching it. This is
+    // only the attract/test AI; player inputs are never assisted.
+    for (let k = 0; k <= 44; k += 4) {
+      const ahead = this.track.seg(pz + k * SEG_LEN);
+      const ice = target > ahead.iceL && target < ahead.iceR ? ahead.ice : 0;
+      const force = Math.abs(ahead.curve) * CENTRIFUGAL * grip(Math.max(this.iceAmt, ice));
+      if (force > 0) cruise = Math.min(cruise, Math.sqrt(STEER * 0.99 / force));
+    }
+    for (const car of this.cars) {
+      const x = this.carX(car), dz = car.z - pz;
+      if (x !== null && dz > 0 && dz < 28 * SEG_LEN && Math.abs(x - this.playerX) < car.hw + 0.25)
+        cruise = Math.min(cruise, Math.max(0.2, car.speed / MAX_SPEED - 0.04));
+    }
+    return { steer, throttle: sp < cruise ? 1 : 0, brake: sp > cruise + 0.018 ? 0.8 : 0 };
   }
 
   // ------------------------------------------------------------- update
   update(dt: number, input: Controls): void {
     dt = Math.min(dt, 1 / 20);
+    this.signalT=Math.max(0,this.signalT-dt);
+    this.signalCooldown=Math.max(0,this.signalCooldown-dt);
     const track = this.track;
     track.step(); // after a re-route, the rest of the road is laid a stage per frame
     let ctl = input;
@@ -513,21 +593,22 @@ export class Race {
     // ice: only the part of the road that is glazed counts, and the tyres take a moment to bite again
     const iceHere = this.crashT <= 0 && seg.ice > 0 && this.playerX > seg.iceL - 0.08 && this.playerX < seg.iceR + 0.08 ? seg.ice : 0;
     this.iceAmt += (iceHere - this.iceAmt) * Math.min(1, dt * (iceHere > this.iceAmt ? 9 : 5));
-    const wetBend = 1 + 0.16 * this.weatherAmt("rain") + 0.1 * this.weatherAmt("snow") + 1.1 * this.iceAmt;
+    const iceScale = 1 + (this.diff.weather - 1) * 0.5;
+    const wetBend = 1 + this.diff.weather * (0.16 * this.weatherAmt("rain") + 0.1 * this.weatherAmt("snow")) + 1.1 * this.iceAmt * iceScale;
     // a wet road lets the car slide out a little more in bends
-    const push = ctl.steer * steerPow - sp * sp * seg.curve * CENTRIFUGAL * wetBend;
-    this.iceV += (push - this.iceV) * Math.min(1, dt * (16 * (1 - this.iceAmt) + 1.4 * this.iceAmt));
+    const push = ctl.steer * steerPow - sp * sp * seg.curve * CENTRIFUGAL * this.diff.cornering * wetBend;
+    this.iceV += (push - this.iceV) * Math.min(1, dt * (16 * (1 - this.iceAmt) + 1.4 * this.iceAmt / iceScale));
     this.playerX += (this.iceAmt > 0.02 ? push * (1 - this.iceAmt) + this.iceV * this.iceAmt : push) * dt;
     if ((this.iceAmt > 0.3) !== this.onIce && this.state !== "demo") { this.onIce = this.iceAmt > 0.3; this.events.ice?.(this.onIce); }
     // sandstorm gusts shove the car sideways
-    if (this.state === "race" && this.crashT <= 0) this.playerX += this.gust * Math.min(1, sp * 2.5) * dt;
+    if (this.state === "race" && this.crashT <= 0) this.playerX += this.gust * this.diff.weather * Math.min(1, sp * 2.5) * dt;
     this.steer += (ctl.steer - this.steer) * Math.min(1, dt * 10);
 
     // throttle / brake
     this.throttle = ctl.throttle;
     this.braking = ctl.brake > 0.1;
     if (ctl.throttle > 0) this.speed += MAX_SPEED * 0.34 * (1.25 - sp) * ctl.throttle * dt;
-    else if (this.braking) this.speed += BRAKE * ctl.brake * (1 - 0.55 * this.iceAmt) * dt;
+    else if (this.braking) this.speed += BRAKE * ctl.brake * (1 - 0.55 * this.iceAmt * iceScale) * dt;
     else this.speed += DECEL * dt;
     if (this.braking && ctl.throttle > 0) this.speed += BRAKE * 0.6 * dt;
 
