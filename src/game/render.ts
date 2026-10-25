@@ -753,6 +753,8 @@ export class Renderer {
   /** Ground light is drawn with the road, before scenery can occlude it. */
   private groundLights(s:Seg):void {
     if(s.Y2>=s.Y1)return;
+    // All light strips share this row interval. Far slices often cover no pixel.
+    if(Math.min(this.fb.h,Math.ceil(s.Y1-.5))<=Math.max(0,Math.ceil(s.Y2-.5)))return;
     const strip=(x0:number,x1:number,w0:number,w1:number,k0:number,k1:number,br:number,verge:number)=>{
       const center0=this.fb.w/2+(s.cx1+this.off(s,br)-this.camX)*s.S1;
       const center1=this.fb.w/2+(s.cx2+this.off(s,br,true)-this.camX)*s.S2;

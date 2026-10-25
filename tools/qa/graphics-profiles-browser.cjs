@@ -16,12 +16,12 @@ const manifest={version:1,complete:true,atlases:[{image:'atlas.png',data:'atlas.
  const browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH||'C:/Program Files/Google/Chrome/Application/chrome.exe',headless:true});
  const context=await browser.newContext({viewport:{width:960,height:540},hasTouch:true}),page=await context.newPage();
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
- let failAtlas=false;
+ let failAtlas=false,corruptAtlas=false;
  await page.route('**/assets/plus/**',route=>{
   const name=new URL(route.request().url()).pathname.split('/').at(-1);
   if(name==='manifest.json')return route.fulfill({json:manifest});
   if(name==='atlas.json')return route.fulfill({json:atlas});
-  if(name==='atlas.png')return failAtlas?route.fulfill({status:404,body:'missing'}):route.fulfill({body:fs.readFileSync('assets/sprites/atlas.png'),contentType:'image/png'});
+  if(name==='atlas.png')return failAtlas?route.fulfill({status:404,body:'missing'}):route.fulfill({body:corruptAtlas?PNG.sync.write({width:1,height:1,data:Buffer.from([100,80,60,255])}):fs.readFileSync('assets/sprites/atlas.png'),contentType:'image/png'});
   const file=path.join('assets/bg',name);if(fs.existsSync(file))return route.fulfill({body:fs.readFileSync(file),contentType:'image/png'});
   return route.fulfill({status:404,body:'missing'});
  });
@@ -82,6 +82,12 @@ const manifest={version:1,complete:true,atlases:[{image:'atlas.png',data:'atlas.
   await page.waitForFunction(()=>!window.__graphicsInfo().busy&&window.__graphicsInfo().error==='load',{timeout:30000});
   assert.equal((await page.evaluate(()=>window.__graphicsInfo())).mode,'classic');
   assert.equal(await page.evaluate(()=>localStorage.getItem('sunset-coast-run.graphics-mode.v1')),'classic');
+  failAtlas=false;corruptAtlas=true;
+  await page.reload({waitUntil:'load'});await page.waitForFunction(()=>typeof window.__graphicsInfo==='function');
+  await openGraphics();await press('ArrowDown');await press('Enter');
+  await page.waitForFunction(()=>!window.__graphicsInfo().busy&&window.__graphicsInfo().error==='load',{timeout:30000});
+  assert.equal((await page.evaluate(()=>window.__graphicsInfo())).mode,'classic');
+  assert.equal(await page.evaluate(()=>localStorage.getItem('sunset-coast-run.graphics-mode.v1')),'classic','Decoded but inconsistent PNG must not persist Plus');
   const lockedContext=await browser.newContext({viewport:{width:640,height:360}}),locked=await lockedContext.newPage();
   await locked.goto(base,{waitUntil:'load'});await locked.waitForSelector('#game canvas');await locked.waitForTimeout(350);
   const hit=async key=>{await locked.keyboard.press(key);await locked.waitForTimeout(70);};

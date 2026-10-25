@@ -8,7 +8,7 @@ export const {PNG}=require('pngjs');
 export async function rendererModule(output){
  mkdirSync(output,{recursive:true});
  const file=resolve(output,'native-renderer.mjs');
- await build({stdin:{contents:['core/fb','core/assets','core/materials','game/graphics','game/track','game/race','game/render','game/themes','game/routes','game/config'].map(p=>`export * from './src/${p}';`).join('\n'),resolveDir:process.cwd(),loader:'ts'},outfile:file,bundle:true,format:'esm',platform:'node'});
+ await build({stdin:{contents:['core/fb','core/draw-surface','core/assets','core/materials','game/graphics','game/track','game/race','game/render','game/lights','game/themes','game/routes','game/config'].map(p=>`export * from './src/${p}';`).join('\n'),resolveDir:process.cwd(),loader:'ts'},outfile:file,bundle:true,format:'esm',platform:'node'});
  globalThis.ImageData=class{constructor(w,h){this.width=w;this.height=h;this.data=new Uint8ClampedArray(w*h*4);}};
  globalThis.document={createElement:()=>({getContext:()=>({})})};
  return import(pathToFileURL(file));

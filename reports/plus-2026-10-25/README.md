@@ -73,10 +73,26 @@ zehn Minuten pro Profil sowie eine vollständige Rückmeldung zu Gas, Bremse,
 Lenkung, Signal, Pause/Fortsetzen, Menüs und Ausrichtungswechsel stehen noch aus.
 Desktop-Emulation zählt nicht als Nachweis für dieses Gerät.
 
+Danach meldet der Nutzer deutliche Verlangsamung bei Regen; getestet wurde
+bisher nur Plus. Dieser Befund hat Vorrang vor den bestandenen Desktopwerten.
+Die erste Desktopmessung beider Profile liegt unter
+`desktop-before-rain-fix.json` und bezeichnet ausdrücklich den Stand vor der
+Regenoptimierung. Der optimierte Stand muss erneut geprüft werden.
+
+Die Profilierung fand hohe Kosten bei kalten Rücklicht-Glows und nativen
+Hintergrundkopien sowie unnötige Lichtberechnungen ohne sichtbare Pixelzeile.
+Die Korrekturen behalten alle 264 Streckenbilder bytegenau bei. Der lokale
+optimierte Regentest ist bereit; eine Rückmeldung vom iPhone steht noch aus.
+Die beiden wichtigen Befunde der unabhängigen Softwareprüfung und ihre
+Regressionen sind in `code-review.md` festgehalten.
+
 Die lokale Seite `http://192.168.178.66:4191/plus-check.html` erfasst die
 Geräteangaben, Frameabstände, Szenen und Bedienprüfungen. Sie speichert das
 Ergebnis auf Wunsch als JSON und veröffentlicht keine Daten. Die Identität des
 physischen Geräts und die Bedienprüfungen sind menschliche Angaben.
+Version 2 trennt die gemessene Browser-Framekadenz von der Geräteabnahme und
+prüft mindestens acht Minuten fortschreitende Fahrt mit 30 Sekunden Regen.
+Ein Titelseiten-Dauertest genügt nicht.
 
 ## Artefakte und Grenzen
 

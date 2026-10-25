@@ -30,8 +30,12 @@ export function carLights(bank: SpriteBank, name: string): CarLights | null {
   if (!s) return null;
   const { w, h } = s;
   const density = s.density ?? 1, radius = R * density;
+  const gw = w + radius * 2;
   const tail = new Uint32Array(w * h);
-  const mask = new Uint8Array(w * h);
+  // Eight-neighbour distance transform: exact square rings in two linear passes.
+  // Searching a whole radius square at every output pixel stalls new Plus poses.
+  const distance = new Uint8Array(gw * h);
+  distance.fill(radius + 1);
   let n = 0;
   for (let i = 0; i < w * h; i++) {
     const p = s.data[i];
@@ -39,29 +43,37 @@ export function carLights(bank: SpriteBank, name: string): CarLights | null {
     const k = LENS.indexOf(p & 0xffffff);
     if (k < 0) continue;
     tail[i] = ON[k];
-    mask[i] = 1;
+    const y = (i / w) | 0, x = i - y * w;
+    distance[y * gw + x + radius] = 0;
     n++;
   }
   if (!n) { cache.set(name, null); return null; }
-  const gw = w + radius * 2;
   const glow = new Uint32Array(gw * h);
   for (let y = 0; y < h; y++) {
     for (let x = 0; x < gw; x++) {
-      // distance (in rings) to the nearest lit pixel
-      let best = 99;
-      for (let dy = -radius; dy <= radius && best > 0; dy++) {
-        const yy = y + dy;
-        if (yy < 0 || yy >= h) continue;
-        for (let dx = -radius; dx <= radius; dx++) {
-          const xx = x - radius + dx;
-          if (xx < 0 || xx >= w || !mask[yy * w + xx]) continue;
-          const d = Math.max(Math.abs(dx), Math.abs(dy));
-          if (d < best) best = d;
-        }
+      const at = y * gw + x;
+      let best = distance[at], v: number;
+      if (x > 0 && (v = distance[at - 1] + 1) < best) best = v;
+      if (y > 0) {
+        if ((v = distance[at - gw] + 1) < best) best = v;
+        if (x > 0 && (v = distance[at - gw - 1] + 1) < best) best = v;
+        if (x + 1 < gw && (v = distance[at - gw + 1] + 1) < best) best = v;
       }
-      if (best === 0) glow[y * gw + x] = HALO[0];
-      else if (best <= radius) glow[y * gw + x] = HALO[Math.floor((best - 1) / density)];
+      distance[at] = best;
     }
+  }
+  for (let y = h - 1; y >= 0; y--) for (let x = gw - 1; x >= 0; x--) {
+    const at = y * gw + x;
+    let best = distance[at], v: number;
+    if (x + 1 < gw && (v = distance[at + 1] + 1) < best) best = v;
+    if (y + 1 < h) {
+      if ((v = distance[at + gw] + 1) < best) best = v;
+      if (x > 0 && (v = distance[at + gw - 1] + 1) < best) best = v;
+      if (x + 1 < gw && (v = distance[at + gw + 1] + 1) < best) best = v;
+    }
+    distance[at] = best;
+    if (best === 0) glow[at] = HALO[0];
+    else if (best <= radius) glow[at] = HALO[((best - 1) / density) | 0];
   }
   const out: CarLights = { tail: { w, h, data: tail, density }, glow: { w: gw, h, data: glow, density } };
   cache.set(name, out);

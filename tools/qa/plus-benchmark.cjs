@@ -30,10 +30,13 @@ const base=process.argv[2]||'http://127.0.0.1:4191/';
    console.log(`${mode}: warming for ${warmup}s, then measuring ${duration}s`);
    await page.waitForTimeout(warmup*1000);
    await page.evaluate(()=>{const b=window.__bench;b.times=[];b.last=null;b.start=performance.now();b.record=true;});
-   const start=Date.now(),samples=[],scenes=[];let lastNotice=0;
+   const start=Date.now(),samples=[],scenes=[];let lastNotice=0,drivingSeconds=0,rainDrivingSeconds=0,lastMeasuredSeconds=0,lastRunTime=await page.evaluate(()=>window.__race?.run??0);
    while(Date.now()-start<duration*1000){
     await page.waitForTimeout(Math.min(5000,duration*1000-(Date.now()-start)));
-    const sample=await page.evaluate(()=>({info:window.__graphicsInfo(),screen:window.__graphicsInfo().screen,race:window.__race?.state,stage:window.__race?.stage,frames:window.__bench.times.length,heap:performance.memory?.usedJSHeapSize??null,visible:document.visibilityState}));
+    const sample=await page.evaluate(()=>({info:window.__graphicsInfo(),screen:window.__graphicsInfo().screen,race:window.__race?.state,runTime:window.__race?.run??0,rain:window.__race?.rain??0,stage:window.__race?.stage,frames:window.__bench.times.length,heap:performance.memory?.usedJSHeapSize??null,visible:document.visibilityState}));
+    const elapsed=(Date.now()-start)/1000,advancing=Math.min(elapsed-lastMeasuredSeconds,Math.max(0,sample.runTime-lastRunTime));
+    if(sample.screen==='race'&&sample.race==='race'&&advancing>0){drivingSeconds+=advancing;if(sample.rain>=.5)rainDrivingSeconds+=advancing;}
+    lastMeasuredSeconds=elapsed;lastRunTime=sample.runTime;
     samples.push({elapsedSeconds:(Date.now()-start)/1000,...sample});
     if(scenes.at(-1)?.screen!==sample.screen||scenes.at(-1)?.stage!==sample.stage)scenes.push({elapsedSeconds:(Date.now()-start)/1000,screen:sample.screen,stage:sample.stage});
     if(sample.screen==='ending'){const s=await page.evaluate(()=>window.__endingState?.());if(s?.time>5)await page.keyboard.press('Enter');}
@@ -43,8 +46,9 @@ const base=process.argv[2]||'http://127.0.0.1:4191/';
    }
    const data=await page.evaluate(()=>{const b=window.__bench;b.record=false;return {times:b.times,hidden:b.hidden,elapsedMs:performance.now()-b.start,info:window.__graphicsInfo()};});
    const sorted=[...data.times].sort((a,b)=>a-b),sum=data.times.reduce((n,t)=>n+t,0);
-   const result={mode,elapsedSeconds:data.elapsedMs/1000,frames:data.times.length,fps:data.times.length*1000/sum,medianMs:sorted[Math.floor(sorted.length*.5)],p95Ms:sorted[Math.floor(sorted.length*.95)],maxMs:sorted.at(-1),hiddenEvents:data.hidden,native:data.info,heapSamples:samples.map(s=>({elapsedSeconds:s.elapsedSeconds,bytes:s.heap})),scenes,errors};
-   result.status=result.elapsedSeconds>=duration&&result.p95Ms<=20&&result.fps>=58&&!errors.length&&!data.hidden?'PASS':'FAIL';
+   const runtimeModule=await page.evaluate(()=>document.querySelector('script[type="module"][src]')?.src??null);
+   const result={mode,elapsedSeconds:data.elapsedMs/1000,frames:data.times.length,fps:data.times.length*1000/sum,medianMs:sorted[Math.floor(sorted.length*.5)],p95Ms:sorted[Math.floor(sorted.length*.95)],maxMs:sorted.at(-1),hiddenEvents:data.hidden,native:data.info,runtimeModule,qualifyingGameplay:{drivingSeconds,rainDrivingSeconds,minimumDrivingSeconds:duration*.8,minimumRainSeconds:30},heapSamples:samples.map(s=>({elapsedSeconds:s.elapsedSeconds,bytes:s.heap})),scenes,errors};
+   result.status=result.elapsedSeconds>=duration&&result.p95Ms<=20&&result.fps>=58&&!errors.length&&!data.hidden&&drivingSeconds>=duration*.8&&rainDrivingSeconds>=30?'PASS':'FAIL';
    assert.equal(data.info.width,mode==='plus'?640:320);assert.equal(data.info.height,mode==='plus'?360:180);
    await page.locator('#game canvas').screenshot({path:path.join(out,mode+'-final.png')});
    report.profiles.push(result);delete report.current;save();await context.close();console.log(JSON.stringify({mode,status:result.status,fps:result.fps,p95Ms:result.p95Ms,seconds:result.elapsedSeconds}));

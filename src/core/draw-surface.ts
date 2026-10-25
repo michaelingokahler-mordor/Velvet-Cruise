@@ -57,6 +57,9 @@ export class ScaledSurface implements DrawSurface {
   }
   layer(s: Spr, offX: number, dstY: number, opaque: boolean): void {
     if(this.scale===1&&(s.density??1)===1){this.target.layer(s,offX,dstY,opaque);return;}
+    if(this.scale===(s.density??1)){
+      this.target.layer(s,Math.floor(offX)*this.scale,Math.round(dstY*this.scale),opaque);return;
+    }
     const density=s.density??1, top=Math.round(dstY*this.scale), bottom=Math.ceil(top+s.h*this.scale/density);
     const off=Math.floor(offX)*density;
     for(let y=Math.max(0,top);y<Math.min(this.target.h,bottom);y++){
