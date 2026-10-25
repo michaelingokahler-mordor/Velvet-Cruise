@@ -163,3 +163,10 @@ Die bereits bestandenen Web-/Demo-/Windows-Builds und der 20-minütige
 Desktop-Dauertest werden durch diesen Regressionseintritt nicht neu erzeugt.
 Der Ausführungsverlauf ist in `execution-ledger.md` archiviert. Der Stand
 bleibt auf dem Zweig `codex/velvet-cruise-plus` im isolierten Checkout erhalten.
+
+Die automatische Freigabeprüfung blockierte das Löschen des temporären
+Ausführungsordners (`blocked by policy`). Er bleibt unter
+`.superpowers/sdd/2026-10-25-velvet-cruise-plus/` erhalten; sein Inhalt
+ist zusätzlich im committed Ausführungsprotokoll archiviert. Der
+Spielstand, die Prüfpakete und die bestehende Installation sind davon
+nicht betroffen. Es wurde kein weiterer Löschversuch unternommen.

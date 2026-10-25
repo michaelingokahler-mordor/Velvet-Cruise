@@ -43,3 +43,9 @@ Offene kleine Prüflücke: Der portable Erhaltungsvertrag deckt `s.tunnel`,
 diesem Zweig unverändert. Eine spätere Regression dieser Felder könnte der
 Vertrag übersehen. Details und die beiden behobenen wichtigen Befunde stehen
 in `code-review.md`.
+
+18. Nach dem Abschluss blockierte die automatische Freigabeprüfung das
+Löschen des temporären Ausführungsordners mit `blocked by policy`.
+Der Ordner bleibt erhalten; kein Umgehungsversuch. Kosten: ein zusätzlicher
+ignorierter Protokollordner im Checkout. Die Git-Worktree bleibt wie geplant
+für die spätere Integration erhalten.
