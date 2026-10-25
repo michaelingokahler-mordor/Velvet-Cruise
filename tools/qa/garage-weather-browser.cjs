@@ -4,7 +4,8 @@ const fs=require('node:fs');
 const path=require('node:path');
 const {chromium}=require('playwright');
 const root=path.resolve(__dirname,'../..');
-const out=path.join(root,'output/garage-weather/browser');fs.mkdirSync(out,{recursive:true});
+const plus=process.argv.includes('--plus'),profileHash=plus?'&graphicstest&graphics=plus&tumbletest':'';
+const out=path.join(root,plus?'output/plus/weather-browser':'output/garage-weather/browser');fs.mkdirSync(out,{recursive:true});
 const base=process.argv[2]||'http://127.0.0.1:4176/';
 const model=require(path.join(root,'output/garage-weather/gallery.cjs'));
 const tr=new model.Track([0,5,6,11,13]);
@@ -16,11 +17,12 @@ const reportName=process.argv.includes('--finale-only')?'finale-validation.json'
 (async()=>{
  const browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH||'C:/Program Files/Google/Chrome/Application/chrome.exe',headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
  async function garageSmoke(){
-  const context=await browser.newContext({viewport:{width:960,height:540},locale:'en-US'});
+  const context=await browser.newContext({viewport:{width:plus?640:960,height:plus?360:540},locale:'en-US'});
   const page=await context.newPage();page.on('pageerror',e=>errors.push({car:'garage',error:e.message}));
   try{
-   await page.goto(base+'#autopilot',{waitUntil:'load'});
+   await page.goto(base+'#autopilot'+profileHash,{waitUntil:'load'});
    await page.waitForFunction(()=>typeof window.__trackBench==='function');
+   if(plus)await page.waitForFunction(()=>window.__graphicsInfo?.().mode==='plus',{timeout:30000});
    await page.keyboard.press('ArrowDown');await page.waitForTimeout(120);
    await page.keyboard.press('Enter');await page.waitForTimeout(300);
    await page.keyboard.press('Enter');await page.waitForTimeout(300); // Settings > Garage
@@ -37,7 +39,7 @@ const reportName=process.argv.includes('--finale-only')?'finale-validation.json'
   }finally{await context.close();}
  }
  async function tour(car){
-  const context=await browser.newContext({viewport:{width:960,height:540},locale:'en-US'});
+  const context=await browser.newContext({viewport:{width:plus?640:960,height:plus?360:540},locale:'en-US'});
   const page=await context.newPage();
   page.on('pageerror',e=>errors.push({car:car.id,error:e.message}));
   page.on('response',r=>{if(r.status()>=400)badResponses.push({url:r.url(),status:r.status()});});
@@ -55,8 +57,9 @@ const reportName=process.argv.includes('--finale-only')?'finale-validation.json'
    }});
   },{id:car.id});
   try{
-   await page.goto(base+'#autopilot&sim=12&stage=1&at='+at+'&path=0,5,6,11,13',{waitUntil:'load'});
+   await page.goto(base+'#autopilot&sim=12&stage=1&at='+at+'&path=0,5,6,11,13'+profileHash,{waitUntil:'load'});
    await page.waitForFunction(()=>typeof window.__trackBench==='function');
+   if(plus)await page.waitForFunction(()=>window.__graphicsInfo?.().mode==='plus',{timeout:30000});
    for(let i=0;i<6;i++){
     if(await page.evaluate(()=>['countdown','race'].includes(window.__race?.state)))break;
     await page.keyboard.press('Enter');await page.waitForTimeout(300);
@@ -79,7 +82,7 @@ const reportName=process.argv.includes('--finale-only')?'finale-validation.json'
   }finally{await context.close();}
  }
  async function finaleSmoke(car){
-  const context=await browser.newContext({viewport:{width:960,height:540},locale:'en-US'});
+  const context=await browser.newContext({viewport:{width:plus?640:960,height:plus?360:540},locale:'en-US'});
   const page=await context.newPage();
   page.on('pageerror',e=>errors.push({car:car.id,scene:'finale',error:e.message}));
   page.on('response',r=>{if(r.status()>=400)badResponses.push({scene:'finale',url:r.url(),status:r.status()});});
@@ -88,13 +91,21 @@ const reportName=process.argv.includes('--finale-only')?'finale-validation.json'
    localStorage.setItem('sunset-coast-run.goals-reached','["goal-a","goal-b","goal-c","goal-d","goal-e"]');
   },{id:car.id});
   try{
-   await page.goto(base+'#autopilot&endtest&stage=2&at=600&path=0,5,6,11,13',{waitUntil:'load'});
+   await page.goto(base+'#autopilot&endtest&stage=2&at=600&path=0,5,6,11,13'+profileHash,{waitUntil:'load'});
    await page.waitForFunction(()=>typeof window.__ending==='function');
+   if(plus)await page.waitForFunction(()=>window.__graphicsInfo?.().mode==='plus',{timeout:30000});
    for(let i=0;i<6;i++){
     if(await page.evaluate(()=>window.__race?.roof===7))break;
     await page.keyboard.press('Enter');await page.waitForTimeout(250);
    }
-   await page.waitForFunction(()=>window.__race?.roof===7);
+   await page.waitForFunction(()=>window.__race?.roof===7&&window.__race.state==='race');
+   if(plus){
+    await page.evaluate(()=>window.__tumble());
+    await page.waitForFunction(()=>window.__race?.tumble>0);
+    assert.ok((await page.evaluate(()=>window.__race.skin)).endsWith('_closed'),'Tumble must retain closed native roof art');
+    await page.locator('#game canvas').screenshot({path:path.join(out,car.id+'-closed-tumble.png')});
+    await page.waitForFunction(()=>window.__race?.tumble<0,{timeout:15000});
+   }
    assert.equal(await page.evaluate(()=>typeof window.__endingState),'function','Missing endtest-only roof observation hook');
    await page.evaluate(()=>{
     window.__finaleSamples=[];
@@ -108,6 +119,12 @@ const reportName=process.argv.includes('--finale-only')?'finale-validation.json'
    assert.ok(samples.some(s=>s.peopleOut&&s.roof===0));
    await page.locator('#game canvas').screenshot({path:path.join(out,car.id+'-finale-open.png')});
    finales.push({car:car.id,status:'PASS',samples});console.log('PASS browser enclosed-to-open finale: '+car.id);
+   if(plus)for(const letter of ['B','C','D','E']){
+    await page.evaluate(letter=>window.__ending(letter,80),letter);await page.waitForTimeout(2750);
+    assert.equal((await page.evaluate(()=>window.__graphicsInfo())).drawingWidth,640);
+    assert.equal((await page.evaluate(()=>window.__endingState())).peopleOut,true);
+    await page.locator('#game canvas').screenshot({path:path.join(out,car.id+'-goal-'+letter+'.png')});
+   }
   }finally{await context.close();}
  }
  try{

@@ -42,12 +42,12 @@ const tests = [], errors = [], badResponses = [];
     assert.deepEqual(await page.evaluate(() => __menuQA.mainMenuItems().map(i => i.id)), ['drive', 'settings', 'map', 'records']);
     await shot('title');
     await press('ArrowDown'); await press('Enter'); await mode('settings'); await shot('settings');
-    for (const [index, child] of [[0, 'garage'], [1, 'controls'], [2, 'bindings'], [3, 'radio'], [4, 'credits']]) {
+    for (const [index, child] of [[0, 'garage'], [1, 'controls'], [2, 'bindings'], [3, 'radio'], [4, 'credits'], [5, 'graphics']]) {
       await page.evaluate(i => { __menuQA.menuSel = i; }, index);
       await press('Enter'); await mode(child); await shot(child);
       await press('Escape'); await mode('settings', index);
     }
-    tests.push('all five settings children return to their selected parent');
+    tests.push('all six settings children, including Graphics, return to their selected parent');
     await page.evaluate(() => { __menuQA.menuSel = 2; }); await press('Enter');
     // Signal row, then replace; capture must not bind its activation key.
     await page.evaluate(() => { __menuQA.bindingFocus = 6; }); await press('Enter');
@@ -98,7 +98,8 @@ const tests = [], errors = [], badResponses = [];
     const mobile = await open(true), p = mobile.page;
     async function tap(x, y) { const b = await p.locator('#game canvas').boundingBox(); await p.touchscreen.tap(b.x + x / 320 * b.width, b.y + y / 180 * b.height); await p.waitForTimeout(160); }
     await tap(160, 94); await p.waitForFunction(() => __menuQA.mode === 'settings');
-    await tap(160, 92); await p.waitForFunction(() => __menuQA.mode === 'bindings');
+    // Seven Settings rows use y=40 + 17*i; Bindings is the third row.
+    await tap(160, 82); await p.waitForFunction(() => __menuQA.mode === 'bindings');
     await tap(55, 134); await p.waitForFunction(() => !!__menuQA.input2.capture);
     await tap(160, 124); await p.waitForFunction(() => !__menuQA.input2.capture);
     await tap(150, 129); await p.waitForFunction(() => !!__menuQA.input2.capture);

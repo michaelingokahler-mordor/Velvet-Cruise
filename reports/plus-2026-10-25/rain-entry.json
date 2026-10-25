@@ -1,0 +1,46 @@
+{
+  "status": "PASS",
+  "state": {
+    "graphics": {
+      "mode": "plus",
+      "screen": "race",
+      "busy": false,
+      "error": null,
+      "nativeSprites": 715,
+      "width": 640,
+      "height": 360,
+      "textureWidth": 640,
+      "textureHeight": 360,
+      "canvasWidth": 640,
+      "canvasHeight": 360,
+      "drawingWidth": 640,
+      "drawingHeight": 360
+    },
+    "race": {
+      "state": "countdown",
+      "timer": 60,
+      "stage": 1,
+      "times": [],
+      "score": 0,
+      "crash": 0,
+      "kmh": 0,
+      "run": 0,
+      "near": 0,
+      "clean": true,
+      "tumble": -1,
+      "crashes": 0,
+      "ice": 0,
+      "x": -0.25,
+      "z": 2235000,
+      "car": "rosso",
+      "skin": "player_closed",
+      "roof": 7,
+      "roofPosition": 1,
+      "rain": 1,
+      "snow": 0
+    },
+    "label": "Regen-Test V2 · Plus · Stage 2"
+  },
+  "errors": [],
+  "scope": "Desktop browser verifies entry URL and flags; not physical iPhone performance."
+}

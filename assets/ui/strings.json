@@ -13,6 +13,16 @@
   "ko"
  ],
  "strings": [
+  {"id":"graphics.title","text":"Graphics"},
+  {"id":"graphics.classic","text":"Classic 320 x 180"},
+  {"id":"graphics.plus","text":"Plus 640 x 360"},
+  {"id":"graphics.loading","text":"Loading graphics..."},
+  {"id":"graphics.failed","text":"Could not load graphics. Try again."},
+  {"id":"graphics.locked","text":"Reach all Normal goals: {n}/5"},
+  {"id":"graphics.preparing","text":"Plus artwork is in development."},
+  {"id":"graphics.active","text":"Active: {mode}"},
+  {"id": "badge.all_goals", "text": "Five Goals"},
+  {"id": "badge.all_goals_desc", "text": "Reach all five goals on this difficulty."},
   {"id": "menu.settings", "text": "Settings"},
   {"id": "menu.records", "text": "Rankings & Badges"},
   {"id": "menu.exit", "text": "Exit"},

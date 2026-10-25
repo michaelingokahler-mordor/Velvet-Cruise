@@ -1,3 +1,4 @@
+import type { DrawSurface } from "../core/draw-surface";
 // Race simulation: the red convertible, rival traffic, checkpoints and the
 // clock. Pure game state — rendering, sound and UI listen to its events.
 import { FB, W, rgb, Spr } from "../core/fb";
@@ -1183,7 +1184,7 @@ export class Race {
     }
   }
 
-  private drawTumble(fb: FB, bank: SpriteBank, tint: number[]): void {
+  private drawTumble(fb: DrawSurface, bank: SpriteBank, tint: number[]): void {
     const t = this.tumbleT, side = this.tumbleSide;
     const gy = this.carScreenY();
     const opt = { tr: tint[0], tg: tint[1], tb: tint[2] };
@@ -1230,7 +1231,7 @@ export class Race {
     shadow(cx, gy, 80, lift);
     const sk = this.visualSkin;
     const car = (t < T_EJECT || this.tumbleEnclosed ? bank.get(`${sk}_straight_0`) : bank.get(`${sk}_empty`)) ?? bank.get(`${sk}_straight_0`) ?? bank.get("player_straight_0");
-    if (car) fb.blitRot(car, cx, gy - car.h / 2 - lift, ang, 1, opt);
+    if (car) fb.blitRot(car, cx, gy - car.h / (car.density ?? 1) / 2 - lift, ang, 1, opt);
     if (this.tumbleEnclosed || t < T_EJECT || sitting) return;
     // in flight: spinning through the air above the car
     const u = (t - T_EJECT) / (T_PEOPLE_LAND - T_EJECT);
@@ -1245,7 +1246,7 @@ export class Race {
     }
   }
 
-  private dazedStars(fb: FB, x: number, y: number, v: number): void {
+  private dazedStars(fb: DrawSurface, x: number, y: number, v: number): void {
     for (let i = 0; i < 3; i++) {
       const a = v * 5 + (i * Math.PI * 2) / 3;
       const sx = Math.round(x + Math.cos(a) * 8), sy = Math.round(y + Math.sin(a) * 2.5);
@@ -1255,7 +1256,7 @@ export class Race {
     }
   }
 
-  private drawParts(fb: FB): void {
+  private drawParts(fb: DrawSurface): void {
     for (const p of this.parts) {
       const a = Math.min(1, p.life / p.max * 1.5);
       const c = rgb(p.col);
@@ -1280,7 +1281,7 @@ export class Race {
   get lightsOn(): boolean { return this.night >= PLAYER_LIGHTS_AT; }
 
   // ----------------------------------------------------------- the hero car
-  drawPlayer(fb: FB, bank: SpriteBank, tint: number[]): void {
+  drawPlayer(fb: DrawSurface, bank: SpriteBank, tint: number[]): void {
     if (this.tumbleT >= 0) { this.drawTumble(fb, bank, tint); this.drawParts(fb); return; }
     const sp = this.speed / MAX_SPEED;
     let x = this.carScreenX();

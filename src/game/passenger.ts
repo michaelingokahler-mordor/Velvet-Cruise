@@ -1,7 +1,8 @@
+import type { DrawSurface } from "../core/draw-surface";
 // The blonde passenger reacts to your driving with speech bubbles: sweet
 // lines and floating hearts when you drive well, frightened ones when you hit
 // something.
-import { FB, W, Col, rgb } from "../core/fb";
+import { W, Col, rgb } from "../core/fb";
 import { drawText, textWidth } from "../core/font";
 import { t } from "../platform/tesana";
 
@@ -95,7 +96,7 @@ export class Passenger {
   }
 
   /** HUD meter: her face with a bar to its left, right-aligned at (right, y). */
-  drawMeter(fb: FB, right: number, y: number): void {
+  drawMeter(fb: DrawSurface, right: number, y: number): void {
     this.shown += (this.mood - this.shown) * 0.12;
     const lv = this.mood >= 80 ? 3 : this.mood >= 55 ? 2 : this.mood >= 30 ? 1 : 0;
     const shake = this.flash > 0.35 && this.flashDir < 0 ? (Math.floor(this.flash * 40) % 2 ? 1 : -1) : 0;
@@ -118,7 +119,7 @@ export class Passenger {
   box: { x: number; y: number; w: number; h: number } | null = null;
 
   /** Draw the bubble above the passenger. headX/headY = her head in screen pixels. */
-  draw(fb: FB, headX: number, headY: number): void {
+  draw(fb: DrawSurface, headX: number, headY: number): void {
     for (const h of this.hearts) {
       if (h.life < 0.3 && Math.floor(h.life * 20) % 2) continue;
       heart(fb, Math.round(headX + h.x), Math.round(headY - 6 + h.y), h.life > 0.6 ? PINK : PINK2);
@@ -158,7 +159,7 @@ export class Passenger {
 }
 
 /** Her little 11x11 portrait: blonde hair, and an expression for each mood level. */
-export function face(fb: FB, x: number, y: number, level: number, beaming = false): void {
+export function face(fb: DrawSurface, x: number, y: number, level: number, beaming = false): void {
   const HAIR = rgb(0xffd040), HAIR2 = rgb(0xc88a20), SKIN = rgb(0xffd8b8), EYE = rgb(0x2a1238), BLUSH = rgb(0xff8aa8);
   // hair halo
   for (let r = 0; r < 11; r++) for (let q = 0; q < 11; q++) {
@@ -192,7 +193,7 @@ export function face(fb: FB, x: number, y: number, level: number, beaming = fals
   }
 }
 
-function heart(fb: FB, x: number, y: number, c: Col): void {
+function heart(fb: DrawSurface, x: number, y: number, c: Col): void {
   for (let r = 0; r < HEART.length; r++) for (let q = 0; q < 5; q++) if (HEART[r][q] === "#") fb.pset(x + q - 2, y + r, c);
 }
 

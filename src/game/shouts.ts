@@ -1,7 +1,8 @@
+import type { DrawSurface } from "../core/draw-surface";
 // Rival drivers yell at you: angry when you ram them, grumpy when you blast
 // past too close. The bubble rides on top of their car while it is on screen,
 // and hangs at the screen edge beside you once you have overtaken them.
-import { FB, W, Col, rgb } from "../core/fb";
+import { W, Col, rgb } from "../core/fb";
 import { drawText, textWidth } from "../core/font";
 import { t } from "../platform/tesana";
 import type { Car } from "./race";
@@ -48,7 +49,7 @@ export class Shouts {
   }
 
   /** frame = the renderer's frame number (a car drawn this frame has seen === frame). */
-  draw(fb: FB, frame: number, avoid: Box | null, touch: boolean): void {
+  draw(fb: DrawSurface, frame: number, avoid: Box | null, touch: boolean): void {
     for (const s of this.list) {
       const text = t(s.id);
       const tw = Math.min(W - 30, textWidth(text));
@@ -79,7 +80,7 @@ export class Shouts {
     }
   }
 
-  private bubble(fb: FB, x: number, y: number, w: number, h: number, tailX: number, text: string, tw: number): void {
+  private bubble(fb: DrawSurface, x: number, y: number, w: number, h: number, tailX: number, text: string, tw: number): void {
     // jagged "shouting" corners
     fb.rect(x - 1, y - 1, w + 2, h + 2, INK);
     fb.rect(x + 1, y - 2, 3, 1, INK); fb.rect(x + w - 4, y - 2, 3, 1, INK);

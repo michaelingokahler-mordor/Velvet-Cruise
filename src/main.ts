@@ -1,7 +1,7 @@
 // Velvet Cruise — boot, screens and the frame loop. Every pixel is drawn by
-// the software renderer into a 320x180 framebuffer that Phaser shows upscaled.
+// the software renderer into the selected native framebuffer, presented 1:1 by Phaser.
 import Phaser from "phaser";
-import { FB, W, H, rgb } from "./core/fb";
+import { W, H, rgb } from "./core/fb";
 import { SpriteBank, AtlasJson } from "./core/assets";
 import { drawText, setFontLocale, textWidth } from "./core/font";
 import { Track } from "./game/track";
@@ -26,8 +26,11 @@ import type { Car } from "./game/race";
 import { CARS, CarDef, carById, carUnlocked, rememberCarGoals } from "./game/cars";
 import { ArcadeEntry, ARCADE_SIZE, NAME_MAX, arcadeTable, arcadeRank, arcadeInsert, nameChar, cleanName, lastName, saveName } from "./game/arcade";
 import { Badges, BADGES, BADGE_TYPES, BADGE_ROWS, GOAL_BASES, TIERS, TIER_RIM, NEAR_MISS_RUN, drawMedal, badgeName, badgeDesc, badgeId, statId, tierName } from "./game/badges";
+import { GoalProgressStore, GOAL_PROGRESS_KEY, GOAL_LETTERS, goalCount, type GoalLetter } from './game/goal-progress';
+import { createRenderContext, GraphicsSelection, type GraphicsMode } from './game/graphics';
+import { loadPlusBank, type PlusManifest } from './core/plus-assets';
 
-type Mode = "title" | "settings" | "records" | "bindings" | "garage" | "rankings" | "badges" | "controls" | "difficulty" | "radio" | "race" | "ending" | "results" | "name" | "map" | "credits";
+type Mode = "title" | "settings" | "graphics" | "records" | "bindings" | "garage" | "rankings" | "badges" | "controls" | "difficulty" | "radio" | "race" | "ending" | "results" | "name" | "map" | "credits";
 
 /** The credits page: its two web addresses (shown exactly as written, opened in a new tab). */
 const CREDIT_LINKS = [
@@ -69,6 +72,7 @@ const MOOD_NAME = ["mood.terrified", "mood.nervous", "mood.happy", "mood.love"];
 const MOOD_COL = [rgb(0x5aa8ff), rgb(0xffd040), rgb(0x7cf06a), rgb(0xff5a9a)];
 // test hooks (URL hash only): #autopilot drives the run, #sim=N runs N steps per frame
 const HASH = typeof location !== "undefined" ? location.hash : "";
+const GRAPHICS_TEST = HASH.includes('graphicstest') || HASH.includes('graphics=plus');
 const AUTOPILOT = HASH.includes("autopilot");
 const YELLTEST = HASH.includes("yelltest");
 const RADIOTEST = HASH.includes("radiotest");
@@ -81,7 +85,7 @@ const ENDTEST = HASH.includes("endtest");
 const PATH_HASH = ((/path=([0-9,]+)/.exec(HASH) || [])[1] || "").split(",").filter(Boolean).map(Number);
 const PLAN = PATH_HASH.length ? (DEMO_A ? GOAL_A_PATH.slice() : completePath(PATH_HASH)) : null;
 const MAPTEST = HASH.includes("maptest");
-const TEST_HOOKS = AUTOPILOT || WARP > 0 || SIM > 1 || YELLTEST || TUMBLETEST || NAMETEST || ENDTEST || !!PLAN || MAPTEST;
+const TEST_HOOKS = AUTOPILOT || WARP > 0 || SIM > 1 || YELLTEST || TUMBLETEST || NAMETEST || ENDTEST || !!PLAN || MAPTEST || GRAPHICS_TEST;
 /** What she says at the finish, by her mood level (terrified … in love). */
 const END_LINES = ["end.line0", "end.line1", "end.line2", "end.line3"];
 const FIREWORK_COLS = [0xff4a5a, 0xffd040, 0x4ad0ff, 0xff7ac8, 0x7cf06a, 0xffa040];
@@ -130,8 +134,17 @@ interface Rocket { x: number; y: number; vy: number; ty: number; col: number }
 interface Confetti { x: number; y: number; vy: number; ph: number; sp: number; col: number }
 
 class MainScene extends Phaser.Scene {
-  private fb = new FB();
+  private renderContext = createRenderContext('classic');
+  private fb = this.renderContext.logical;
   private bank = new SpriteBank();
+  private classicBank = this.bank;
+  private plusBank: Promise<SpriteBank> | null = null;
+  private plusAvailable = false;
+  private graphicsPixels = false;
+  private screenGeneration = 0;
+  private graphicsChoice = new GraphicsSelection<SpriteBank>(mode => this.loadGraphicsBank(mode),
+    (mode, bank) => this.applyGraphics(mode, bank),
+    mode => localStorage.setItem(`${SAVE_PREFIX}.graphics-mode.v1`,mode));
   private painter!: Renderer;
   private track!: Track;
   private demo!: Race;
@@ -154,6 +167,7 @@ class MainScene extends Phaser.Scene {
   private tumbleCount = 0;
   // road-trip badges: this run's clean driving and near misses
   private badges = new Badges();
+  private goalProgress = new GoalProgressStore(undefined, GOAL_PROGRESS_KEY, !TEST_HOOKS);
   private badgeSel = 0;
   private stageClean = true;
   private runClean = true;
@@ -163,6 +177,7 @@ class MainScene extends Phaser.Scene {
   private input2!: Input;
   private ctx2d!: CanvasRenderingContext2D;
   private screenTex!: Phaser.Textures.CanvasTexture;
+  private screenImage!: Phaser.GameObjects.Image;
   private mode: Mode = "title";
   private modeT = 0;
   private time2 = 0;
@@ -227,7 +242,7 @@ class MainScene extends Phaser.Scene {
     // a loading screen from the very first frame: the window is never blank while the art loads
     this.screenTex = this.textures.createCanvas("screen", W, H)!;
     this.ctx2d = this.screenTex.getContext();
-    this.add.image(0, 0, "screen").setOrigin(0, 0);
+    this.screenImage = this.add.image(0, 0, "screen").setOrigin(0, 0);
     const drawLoading = (p: number) => {
       const fb = this.fb;
       for (let y = 0; y < H; y++) fb.hline(y, 0, W, y < 100 ? [rgb(0x1a0e3a), rgb(0x3a1858), rgb(0x7a2a6a), rgb(0xd0507a)][Math.min(3, Math.floor(y / 25))] : rgb(0x120c24));
@@ -239,7 +254,7 @@ class MainScene extends Phaser.Scene {
       fb.frame(bx - 1, 129, bw + 2, 7, rgb(0xff9a3c));
       fb.rect(bx, 130, Math.round(bw * Math.max(0, Math.min(1, p))), 5, rgb(0xffd050));
       drawText(fb, t("boot.loading"), W / 2, 142, C.grey, { align: "center", outline: C.ink });
-      this.ctx2d.putImageData(fb.img, 0, 0);
+      this.ctx2d.putImageData(this.renderContext.fb.img, 0, 0);
       this.screenTex.refresh();
     };
     drawLoading(0);
@@ -266,7 +281,8 @@ class MainScene extends Phaser.Scene {
     this.courseMap.load(this.cache.json.get("course_map_json"));
     this.load.off("progress"); // the loading screen's job is done
 
-    this.painter = new Renderer(this.fb, this.bank);
+    this.bank.releaseScratch();
+    this.painter = new Renderer(this.renderContext, this.bank);
     this.painter.label = (id) => t(id);
     this.track = new Track();
     this.newDemo();
@@ -293,10 +309,14 @@ class MainScene extends Phaser.Scene {
     // desktop builds read them from this computer instead)
     this.badges.enabled = !TEST_HOOKS;
     this.badges.onShow = () => this.audio.badge();
+    this.badges.goalProgress = () => this.goalProgress.current;
+    this.badges.onChange = () => this.syncGoalProgress();
+    this.syncGoalProgress();
     onTesanaReady(() => {
       for (const d of DIFFS) myBest(boardId("score", d.id)).then((b) => { if (b !== null) this.bestScore.set(d.id, Math.max(b, this.bestScore.get(d.id) ?? b)); });
       // a bot-driven test run must never earn the player a badge
       this.badges.enabled = !TEST_HOOKS || isTestSdk();
+      this.syncGoalProgress();
       if (this.badges.state !== "ok") { this.badges.state = "idle"; this.badges.refresh(); }
     });
 
@@ -305,6 +325,24 @@ class MainScene extends Phaser.Scene {
     });
 
     this.loadAudio();
+    void fetch('assets/plus/manifest.json').then(r=>r.ok?r.json():null).then((m: PlusManifest|null)=>{
+      this.plusAvailable = m?.version===1 && m.complete===true;
+      let wanted: string|null = null;
+      try { wanted=localStorage.getItem(`${SAVE_PREFIX}.graphics-mode.v1`); } catch { /* use Classic */ }
+      if(HASH.includes('graphics=plus') || wanted==='plus') void this.selectGraphics('plus');
+    }).catch(()=>{});
+    if(GRAPHICS_TEST) {
+      const w=window as unknown as Record<string,unknown>;
+      w.__graphicsInfo=()=>{
+        const gl=(this.game.renderer as Phaser.Renderer.WebGL.WebGLRenderer).gl;
+        return {mode:this.graphicsChoice.mode,screen:this.mode,busy:this.graphicsChoice.busy,error:this.graphicsChoice.error,
+          nativeSprites:this.bank.names().filter(name=>this.bank.get(name)?.density===2).length,
+          width:this.renderContext.fb.w,height:this.renderContext.fb.h,textureWidth:this.screenTex.width,textureHeight:this.screenTex.height,
+          canvasWidth:this.game.canvas.width,canvasHeight:this.game.canvas.height,
+          drawingWidth:gl?.drawingBufferWidth??this.game.canvas.width,drawingHeight:gl?.drawingBufferHeight??this.game.canvas.height};
+      };
+      w.__graphicsPixels=(on:boolean)=>{this.graphicsPixels=on;};
+    }
     // test hook: window.__ending() jumps straight to the finish-line celebration
     // test hook: how long building a road network takes (ms)
     if (TEST_HOOKS) (window as unknown as Record<string, unknown>).__trackBench = () => {
@@ -473,6 +511,7 @@ class MainScene extends Phaser.Scene {
     switch (this.mode) {
       case "title": this.title(dt, taps); break;
       case "settings": this.settings(dt, taps); break;
+      case "graphics": this.graphicsScreen(dt,taps); break;
       case "records": this.records(dt, taps); break;
       case "bindings": this.bindingScreen(dt, taps); break;
       case "garage": this.garage(dt, taps); break;
@@ -495,8 +534,13 @@ class MainScene extends Phaser.Scene {
     // radio hiss while the picked station is still tuning in
     this.audio.setStatic(this.mode === "radio" && !this.songReady(this.station));
     this.badges.drawToast(this.fb, this.mode === "race" ? 44 : H - 39);
+    if(this.graphicsChoice.busy && this.mode!=='graphics') {
+      this.fb.rectA(0,H-15,W,15,C.ink,0.9);
+      drawText(this.fb,t('graphics.loading'),W/2,H-11,C.yellow,{align:'center',outline:C.ink});
+    }
     this.input2.endFrame();
-    this.ctx2d.putImageData(this.fb.img, 0, 0);
+    if(this.graphicsPixels) for(let x=0;x<this.renderContext.fb.w;x++) this.renderContext.fb.pset(x,0,rgb(x%2?0:0xffffff));
+    this.ctx2d.putImageData(this.renderContext.fb.img, 0, 0);
     this.screenTex.refresh();
   }
 
@@ -585,8 +629,9 @@ class MainScene extends Phaser.Scene {
     fb.rectA(0, 0, W, H, rgb(0x0c0618), 0.55);
     panel(fb, 36, 8, W - 72, 164);
     big(fb, t(heading), W / 2, 16, 2, GRAD_SUN, "center", W - 84);
-    const top = labels.length > 4 ? 46 : 65;
-    const rows = labels.map((_, i) => ({ x: 62, y: top + i * 19, w: W - 124, h: 16 }));
+    const top = labels.length > 6 ? 40 : labels.length > 4 ? 46 : 65;
+    const pitch = labels.length > 6 ? 17 : 19;
+    const rows = labels.map((_, i) => ({ x: 62, y: top + i * pitch, w: W - 124, h: 16 }));
     if (inp.hit("up")) { this.menuSel = (this.menuSel + labels.length - 1) % labels.length; this.audio.uiMove(); }
     if (inp.hit("down")) { this.menuSel = (this.menuSel + 1) % labels.length; this.audio.uiMove(); }
     rows.forEach((r, i) => button(fb, r, t(labels[i]), this.menuSel === i));
@@ -598,13 +643,64 @@ class MainScene extends Phaser.Scene {
   }
 
   private settings(dt: number, taps: { x: number; y: number }[]): void {
-    const go = this.submenu(dt, taps, "menu.settings", ["title.garage", "menu.input", "menu.bindings", "menu.music", "title.credits", "rank.back"]);
+    const go = this.submenu(dt, taps, "menu.settings", ["title.garage", "menu.input", "menu.bindings", "menu.music", "title.credits", "graphics.title", "rank.back"]);
     if (go === 0) this.openGarage();
     else if (go === 1) this.toControls();
     else if (go === 2) { this.setMode("bindings"); this.bindingFocus = 1; this.bindingNotice = ""; }
     else if (go === 3) this.toRadio();
     else if (go === 4) { this.setMode("credits"); this.menuSel = CREDIT_LINKS.length; }
-    else if (go === 5) { this.setMode("title"); this.menuSel = 1; }
+    else if (go === 5) { this.setMode('graphics');this.menuSel=this.graphicsChoice.mode==='plus'?1:0; }
+    else if (go === 6) { this.setMode("title"); this.menuSel = 1; }
+  }
+
+  private loadGraphicsBank(mode: GraphicsMode): Promise<SpriteBank> {
+    if(mode==='classic') return Promise.resolve(this.classicBank);
+    if(!this.plusBank) this.plusBank=loadPlusBank(this.classicBank,GRAPHICS_TEST).catch(error=>{this.plusBank=null;throw error;});
+    return this.plusBank;
+  }
+
+  private async selectGraphics(mode: GraphicsMode): Promise<void> {
+    const allowed=!DEMO_A && (GRAPHICS_TEST || (this.goalProgress.current.plusUnlocked && this.plusAvailable));
+    await this.graphicsChoice.select(mode,allowed);
+  }
+
+  /** Prepare the new context first; restore the previous presentation if a resize fails. */
+  private applyGraphics(mode: GraphicsMode, bank: SpriteBank): void {
+    if(this.mode==='race'||this.mode==='ending') throw Error('A race is active');
+    const next=createRenderContext(mode),painter=new Renderer(next,bank);
+    painter.label=id=>t(id);painter.time=this.time2;
+    painter.render(this.demo);
+    const key=`screen-${++this.screenGeneration}`,texture=this.textures.createCanvas(key,next.fb.w,next.fb.h);
+    if(!texture) throw Error('Cannot create graphics texture');
+    let ctx: CanvasRenderingContext2D;
+    try {
+      ctx=texture.getContext();ctx.putImageData(next.fb.img,0,0);texture.refresh();
+    } catch(error) { this.textures.remove(key);throw error; }
+    const previous=this.renderContext,oldTexture=this.screenTex;
+    try {
+      this.scale.setGameSize(next.fb.w,next.fb.h);
+      this.cameras.main.setSize(next.fb.w,next.fb.h).setZoom(1);
+      this.screenImage.setTexture(key).setScale(1);
+    } catch(error) {
+      this.scale.setGameSize(previous.fb.w,previous.fb.h);
+      this.cameras.main.setSize(previous.fb.w,previous.fb.h).setZoom(1);
+      this.screenImage.setTexture(oldTexture.key).setScale(1);
+      this.textures.remove(key);throw error;
+    }
+    this.renderContext=next;this.fb=next.logical;this.bank=bank;this.painter=painter;this.screenTex=texture;this.ctx2d=ctx;
+    this.textures.remove(oldTexture.key);
+  }
+
+  private graphicsScreen(dt: number, taps: {x:number;y:number}[]): void {
+    const go=this.submenu(dt,taps,'graphics.title',['graphics.classic','graphics.plus','rank.back']);
+    const choice=this.graphicsChoice;
+    const text=choice.busy?t('graphics.loading'):choice.error==='load'?t('graphics.failed'):
+      (!this.goalProgress.current.plusUnlocked&&!GRAPHICS_TEST)?t('graphics.locked',{n:goalCount(this.goalProgress.current,'normal')}):
+      !this.plusAvailable&&!GRAPHICS_TEST?t('graphics.preparing'):t('graphics.active',{mode:choice.mode==='plus'?'Plus':'Classic'});
+    para(this.fb,text,W/2,130,choice.error?C.pink:C.grey,W-84);
+    if(go===0&&!choice.busy)void this.selectGraphics('classic');
+    else if(go===1&&!choice.busy)void this.selectGraphics('plus');
+    else if(go===2)this.openSettings(5);
   }
 
   private records(dt: number, taps: { x: number; y: number }[]): void {
@@ -1043,6 +1139,7 @@ class MainScene extends Phaser.Scene {
 
   // -------------------------------------------------------------- race
   private startRace(): void {
+    if(this.graphicsChoice.busy)return;
     if (!carUnlocked(this.car, this.carGoals())) this.car = CARS[0];
     const race = this.newRace();
     if (WARP > 0) race.warp(WARP - 1, Number((/at=(\d+)/.exec(HASH) || [])[1] || 60));
@@ -1407,7 +1504,8 @@ class MainScene extends Phaser.Scene {
       let by: number, clip = 0;
       if (F.entry === "rise") {
         const ease = 1 - Math.pow(1 - u, 3);
-        by = Math.round(F.clip + trophy.h - (F.clip + trophy.h - F.rest) * ease);
+        const height = trophy.h / (trophy.density ?? 1);
+        by = Math.round(F.clip + height - (F.clip + height - F.rest) * ease);
         clip = F.clip;
       } else {
         // falls in and settles with a small bounce
@@ -1422,7 +1520,7 @@ class MainScene extends Phaser.Scene {
       fb.blit(trophy, W / 2, by, 1, clip ? { clipY: clip } : {});
       // a star-fall trail behind the dropping trophy
       if (F.entry === "drop" && u < 0.87) {
-        for (let i = 1; i < 9; i++) fb.rectA(W / 2 - 1 + (i % 2), by - trophy.h - i * 4, 2, 3, rgb(F.cols[i % F.cols.length]), 0.5 * (1 - i / 9));
+        for (let i = 1; i < 9; i++) fb.rectA(W / 2 - 1 + (i % 2), by - trophy.h / (trophy.density ?? 1) - i * 4, 2, 3, rgb(F.cols[i % F.cols.length]), 0.5 * (1 - i / 9));
       }
       // twinkles around it once it is up
       if (u >= 1) {
@@ -1511,7 +1609,7 @@ class MainScene extends Phaser.Scene {
         fb.rectA(x - 9, 172, 18, 3, rgb(0x120a1c), 0.4);
         if (spr) {
           fb.blit(spr, x, feet, 1);
-          if (name === "lady") ladyHead = { x: x + 1, y: feet - spr.h + 10 };
+          if (name === "lady") ladyHead = { x: x + 1, y: feet - spr.h / (spr.density ?? 1) + 10 };
         }
       }
     }
@@ -2054,6 +2152,9 @@ class MainScene extends Phaser.Scene {
   private badgeGoal(node: number): void {
     const letter = goalLetter(node);
     if (!letter) return;
+    this.goalProgress.enabled = !TEST_HOOKS || isTestSdk();
+    this.goalProgress.record(this.tier, letter as GoalLetter);
+    this.syncGoalProgress();
     const b = this.badges, mine = `goal-${letter.toLowerCase()}`;
     b.unlock(mine);
     let seen = new Set<string>();
@@ -2068,6 +2169,17 @@ class MainScene extends Phaser.Scene {
     // goals earned on another device count too
     for (const g of GOAL_BASES) if (g === mine || b.has(g)) seen.add(g);
     if (GOAL_BASES.every((g) => seen.has(g))) b.unlock("goal-all");
+  }
+
+  /** Merge proven difficulty-specific finishes; old tier-less goal rewards stay separate. */
+  private syncGoalProgress(): void {
+    this.goalProgress.enabled = !TEST_HOOKS || isTestSdk();
+    const cleared = Object.fromEntries(TIERS.map(tier => [tier, [...this.stagesCleared(tier)]]));
+    const completed = new Set(TIERS.filter(tier => this.badges.has(badgeId('all-goals', tier))));
+    this.goalProgress.merge(cleared, completed);
+    for (const tier of TIERS) if (goalCount(this.goalProgress.current, tier) === 5) {
+      this.badges.unlock(badgeId('all-goals', tier));
+    }
   }
 
   /** Report this run's near misses so far (once per checkpoint, never per pass). */
@@ -2128,7 +2240,7 @@ class MainScene extends Phaser.Scene {
       this.badgeSel = rowStart[r2] + c2;
       this.audio.uiMove();
     }
-    const SP = 21, PITCH = 17, TOP = 40;
+    const SP = Math.min(21, Math.floor((w - 12) / Math.max(...BADGE_ROWS))), PITCH = 17, TOP = 40;
     BADGES.forEach((def, i) => {
       const r = rowStart.findIndex((st, k) => i >= st && i < st + BADGE_ROWS[k]);
       const cx = Math.round(W / 2 + ((i - rowStart[r]) - (BADGE_ROWS[r] - 1) / 2) * SP), cy = TOP + r * PITCH;
@@ -2154,6 +2266,11 @@ class MainScene extends Phaser.Scene {
     drawText(fb, fit(name, w - 12 - textWidth(tierTxt)), nx, 103, earned ? C.yellow : C.white, { outline: C.ink });
     drawText(fb, tierTxt, nx + Math.min(textWidth(name), w - 12 - textWidth(tierTxt)), 103, TIER_RIM[def.tier][1], { outline: C.ink });
     para(fb, badgeDesc(def), W / 2, 114, C.grey, w - 16);
+    if (def.base === 'all-goals' && def.tier !== 'goal') {
+      const mask = bd.has(def.id) ? 31 : this.goalProgress.current.masks[def.tier];
+      GOAL_LETTERS.forEach((letter, i) => drawText(fb, letter, W / 2 + (i - 2) * 17, 125,
+        mask & (1 << i) ? C.green : C.grey, { align: 'center', outline: C.ink }));
+    }
     const sy = 135;
     if (earned) {
       // pixel tick + "Earned"

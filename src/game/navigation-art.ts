@@ -1,10 +1,11 @@
 import { FB, rgb, type Spr } from '../core/fb';
 import { drawText } from '../core/font';
+import { ScaledSurface } from '../core/draw-surface';
 
 /** Retain original posts/trusses; replace only the semantic panel. */
 export function navigationArt(base:Spr,kind:'route'|'reflector'|'lanes'|'s-left'|'s-right'):Spr {
-  const fb=new FB();fb.clear(0);
-  for(let y=0;y<base.h;y++)fb.data.set(base.data.subarray(y*base.w,(y+1)*base.w),y*320);
+  const target=new FB(base.w,base.h);target.data.set(base.data);
+  const fb=new ScaledSurface(target,base.density??1);
   const white=rgb(0xf3f0d9),green=rgb(0x236440),dark=rgb(0x343531);
   if(kind==='route') {
     fb.rect(1,0,62,39,white);fb.rect(3,2,58,35,green);
@@ -27,7 +28,5 @@ export function navigationArt(base:Spr,kind:'route'|'reflector'|'lanes'|'s-left'
     }
     fb.poly([X(12),3,X(7),9,X(17),9],dark);
   }
-  const data=new Uint32Array(base.w*base.h);
-  for(let y=0;y<base.h;y++)data.set(fb.data.subarray(y*320,y*320+base.w),y*base.w);
-  return {w:base.w,h:base.h,data};
+  return {w:base.w,h:base.h,data:target.data,density:base.density??1};
 }

@@ -1,0 +1,666 @@
+RUN npm.cmd run check
+
+> check
+> tsc --noEmit
+
+RUN npm.cmd run qa:local-services
+
+> qa:local-services
+> node tools/qa/check-local-services.mjs
+
+PASS: self-hosted scores, score ordering, badges, counters, persistence, and existing export behavior
+RUN npm.cmd run qa:balance
+
+> qa:balance
+> node tools/qa/route-balance.mjs && node tools/qa/check-handling.mjs && node tools/qa/check-signal-input.mjs
+
+▲ [WARNING] "import.meta" is not available with the "cjs" output format and will be empty [empty-import-meta]
+
+    src/platform/tesana.ts:122:19:
+      122 │   return DEMO_A || import.meta.env.VITE_LOCAL_SERVICES === "true"...
+          ╵                    ~~~~~~~~~~~
+
+  You need to set the output format to "esm" for "import.meta" to work correctly.
+
+{"difficulty":"easy","finished":16,"total":16,"minRemaining":51.13,"maxRemaining":53.18,"failures":[]}
+{"difficulty":"normal","finished":16,"total":16,"minRemaining":6.88,"maxRemaining":37.72,"failures":[]}
+{"difficulty":"hard","finished":16,"total":16,"minRemaining":13,"maxRemaining":27.8,"failures":[]}
+{"status":"PASS","physics":"progressive; dry engine/brakes identical","records":"PASS"}
+▲ [WARNING] "import.meta" is not available with the "cjs" output format and will be empty [empty-import-meta]
+
+    src/platform/tesana.ts:122:19:
+      122 │   return DEMO_A || import.meta.env.VITE_LOCAL_SERVICES === "true"...
+          ╵                    ~~~~~~~~~~~
+
+  You need to set the output format to "esm" for "import.meta" to work correctly.
+
+{
+  "status": "PASS",
+  "tests": [
+    "H press/release; held key and consumed press do not repeat",
+    "H fallback for missing/Unidentified native key codes",
+    "name entry keeps H as text",
+    "standard Y/Triangle and L3; one request per press",
+    "disconnect/reconnect and controller replacement clear stale held buttons",
+    "keyboard to Race.signal to safe lane request",
+    "gamepad to night signal and both flash pulses with a dark interval",
+    "HUD confirms an accepted signal even without a yielding car"
+  ],
+  "hudChangedPixels": 366
+}
+RUN npm.cmd run qa:course-map
+
+> qa:course-map
+> node tools/qa/check-course-map.mjs
+
+{
+  "status": "PASS",
+  "tests": [
+    "gold-rush-town shows its real time of day",
+    "crystal-lake shows its real time of day",
+    "twilight-bay shows its real time of day",
+    "Gold Rush retains heat haze as a separate condition",
+    "vineyard-valley names its road feature",
+    "cypress-point names its road feature",
+    "starlight-summit names its road feature",
+    "redwood-pass names its road feature",
+    "snowcap-pass names its road feature",
+    "caption preserves its best-time display",
+    "blinking Continue leaves the post-run time and weather labels intact"
+  ],
+  "failures": []
+}
+RUN npm.cmd run qa:grade-horn
+
+> qa:grade-horn
+> node tools/qa/check-grade-horn.mjs
+
+{
+  "status": "PASS",
+  "checks": [
+    "flat full-throttle physics remains identical",
+    "uphill and downhill change attainable speed in real Race updates",
+    "grade strength grows with actual slope and is bounded",
+    "grade changes acceleration and coasting before reaching the speed cap",
+    "grade combines multiplicatively with the selected wind cap",
+    "stopped uphill does not roll backwards and downhill brakes still stop",
+    "NPCs use the local slope on every difficulty",
+    "a signalled NPC visibly starts moving within 0.6 seconds and clears the lane promptly",
+    "snow retains a slower but perceptible signalled lane change",
+    "a request waits for a safe gap that opens after the horn",
+    "a permanently blocked NPC stays in its lane and expires the request",
+    "a delayed request does not merge into a player who entered the target lane",
+    "repeated honking does not restart a lane change",
+    "fork approach keeps the signal lane-change exclusion",
+    "accepted NPC lane changes have a visible amber indicator"
+  ],
+  "failures": [],
+  "measurements": {
+    "player": {
+      "up": 0.9,
+      "flat": 1,
+      "down": 1.1,
+      "kmh": [
+        263.7,
+        293,
+        322.3
+      ]
+    },
+    "acceleration": [
+      0.4157132086086821,
+      0.4489058421538032,
+      0.48209847569892417
+    ],
+    "coasting": [
+      0.4851428571428562,
+      0.557142857142856,
+      0.6291428571428538
+    ],
+    "npc": [
+      {
+        "difficulty": "easy",
+        "up": 0.5850003254924363,
+        "flat": 0.65,
+        "down": 0.7149996745075634
+      },
+      {
+        "difficulty": "normal",
+        "up": 0.5850003254924363,
+        "flat": 0.65,
+        "down": 0.7149996745075634
+      },
+      {
+        "difficulty": "hard",
+        "up": 0.5850003254924363,
+        "flat": 0.65,
+        "down": 0.7149996745075634
+      }
+    ],
+    "hornDry": [
+      {
+        "t": 0.5,
+        "x": -0.16747078331395077,
+        "target": 0.25
+      },
+      {
+        "t": 1,
+        "x": 0.06585317700694412,
+        "target": 0.25
+      },
+      {
+        "t": 1.5,
+        "x": 0.22443750519538191,
+        "target": 0.25
+      },
+      {
+        "t": 2,
+        "x": 0.24677368672002983,
+        "target": 0.25
+      },
+      {
+        "t": 2.5,
+        "x": 0.24959279806372295,
+        "target": 0.25
+      },
+      {
+        "t": 3,
+        "x": 0.2499486059156322,
+        "target": 0.25
+      }
+    ],
+    "hornSnow": [
+      {
+        "t": 0.5,
+        "x": -0.20048246998837033,
+        "target": 0.25
+      },
+      {
+        "t": 1,
+        "x": -0.060488093795833246,
+        "target": 0.25
+      },
+      {
+        "t": 1.5,
+        "x": 0.09349179208624049,
+        "target": 0.25
+      },
+      {
+        "t": 2,
+        "x": 0.2220216949868168,
+        "target": 0.25
+      },
+      {
+        "t": 2.5,
+        "x": 0.24646878062156982,
+        "target": 0.25
+      },
+      {
+        "t": 3,
+        "x": 0.24955431502041578,
+        "target": 0.25
+      }
+    ],
+    "laterGap": [
+      {
+        "t": 0.5,
+        "x": -0.25,
+        "target": -0.25
+      },
+      {
+        "t": 1,
+        "x": -0.18028703866822576,
+        "target": 0.25
+      },
+      {
+        "t": 1.5,
+        "x": 0.04908995659810766,
+        "target": 0.25
+      },
+      {
+        "t": 2,
+        "x": 0.22065529933143332,
+        "target": 0.25
+      },
+      {
+        "t": 2.5,
+        "x": 0.24629632404085058,
+        "target": 0.25
+      },
+      {
+        "t": 3,
+        "x": 0.24953254879764117,
+        "target": 0.25
+      }
+    ],
+    "indicatorChangedPixels": 9
+  }
+}
+RUN npm.cmd run qa:demo
+
+> qa:demo
+> node tools/qa/check-demo-a.mjs
+
+▲ [WARNING] "import.meta" is not available with the "cjs" output format and will be empty [empty-import-meta]
+
+    src/platform/tesana.ts:122:19:
+      122 │   return DEMO_A || import.meta.env.VITE_LOCAL_SERVICES === "true"...
+          ╵                    ~~~~~~~~~~~
+
+  You need to set the output format to "esm" for "import.meta" to work correctly.
+
+▲ [WARNING] "import.meta" is not available with the "cjs" output format and will be empty [empty-import-meta]
+
+    src/platform/tesana.ts:122:19:
+      122 │   return DEMO_A || import.meta.env.VITE_LOCAL_SERVICES === "true"...
+          ╵                    ~~~~~~~~~~~
+
+  You need to set the output format to "esm" for "import.meta" to work correctly.
+
+{
+  "status": "PASS",
+  "edition": "demo-a",
+  "path": [
+    0,
+    5,
+    8,
+    9,
+    10
+  ],
+  "goal": "A",
+  "branchCount": 0,
+  "fullEditionRoutes": 16,
+  "geometry": "curves, heights, tunnels and distance preserved",
+  "clocks": "identical to full route A",
+  "saves": "separate keys; existing full edition records preserved",
+  "map": "only five demo stages selectable",
+  "runs": [
+    {
+      "difficulty": "easy",
+      "state": "goal",
+      "path": [
+        0,
+        5,
+        8,
+        9,
+        10
+      ],
+      "runTime": 416.12,
+      "remaining": 53.2,
+      "gates": [
+        {
+          "kind": "check",
+          "stage": 0,
+          "remaining": 81.1
+        },
+        {
+          "kind": "stage",
+          "stage": 0,
+          "remaining": 93.38
+        },
+        {
+          "kind": "check",
+          "stage": 1,
+          "remaining": 99
+        },
+        {
+          "kind": "stage",
+          "stage": 1,
+          "remaining": 99
+        },
+        {
+          "kind": "check",
+          "stage": 2,
+          "remaining": 99
+        },
+        {
+          "kind": "stage",
+          "stage": 2,
+          "remaining": 99
+        },
+        {
+          "kind": "check",
+          "stage": 3,
+          "remaining": 99
+        },
+        {
+          "kind": "stage",
+          "stage": 3,
+          "remaining": 99
+        },
+        {
+          "kind": "check",
+          "stage": 4,
+          "remaining": 99
+        },
+        {
+          "kind": "goal",
+          "stage": 4,
+          "remaining": 53.2
+        }
+      ]
+    },
+    {
+      "difficulty": "normal",
+      "state": "goal",
+      "path": [
+        0,
+        5,
+        8,
+        9,
+        10
+      ],
+      "runTime": 416.65,
+      "remaining": 35.35,
+      "gates": [
+        {
+          "kind": "check",
+          "stage": 0,
+          "remaining": 63.17
+        },
+        {
+          "kind": "stage",
+          "stage": 0,
+          "remaining": 67.4
+        },
+        {
+          "kind": "check",
+          "stage": 1,
+          "remaining": 70.15
+        },
+        {
+          "kind": "stage",
+          "stage": 1,
+          "remaining": 73.35
+        },
+        {
+          "kind": "check",
+          "stage": 2,
+          "remaining": 74.58
+        },
+        {
+          "kind": "stage",
+          "stage": 2,
+          "remaining": 77.3
+        },
+        {
+          "kind": "check",
+          "stage": 3,
+          "remaining": 78.88
+        },
+        {
+          "kind": "stage",
+          "stage": 3,
+          "remaining": 79.5
+        },
+        {
+          "kind": "check",
+          "stage": 4,
+          "remaining": 81.15
+        },
+        {
+          "kind": "goal",
+          "stage": 4,
+          "remaining": 35.35
+        }
+      ]
+    },
+    {
+      "difficulty": "hard",
+      "state": "goal",
+      "path": [
+        0,
+        5,
+        8,
+        9,
+        10
+      ],
+      "runTime": 419.32,
+      "remaining": 32.68,
+      "gates": [
+        {
+          "kind": "check",
+          "stage": 0,
+          "remaining": 61.43
+        },
+        {
+          "kind": "stage",
+          "stage": 0,
+          "remaining": 65.58
+        },
+        {
+          "kind": "check",
+          "stage": 1,
+          "remaining": 67.67
+        },
+        {
+          "kind": "stage",
+          "stage": 1,
+          "remaining": 70.87
+        },
+        {
+          "kind": "check",
+          "stage": 2,
+          "remaining": 72.4
+        },
+        {
+          "kind": "stage",
+          "stage": 2,
+          "remaining": 74.85
+        },
+        {
+          "kind": "check",
+          "stage": 3,
+          "remaining": 76.43
+        },
+        {
+          "kind": "stage",
+          "stage": 3,
+          "remaining": 77.05
+        },
+        {
+          "kind": "check",
+          "stage": 4,
+          "remaining": 78.55
+        },
+        {
+          "kind": "goal",
+          "stage": 4,
+          "remaining": 32.68
+        }
+      ]
+    }
+  ]
+}
+RUN node tools/qa/check-goal-progress.mjs
+PASS distinctGoals
+PASS tiersStaySeparate
+PASS legacyFinalNodes
+PASS invalidMasksAndUnknownVersions
+PASS legacyGoalBadgesDoNotQualify
+PASS accountCompletion
+PASS storageBlocked
+PASS failedReadNeverOverwritesUnknownSave
+PASS persistenceAndNonDestructiveMigration
+PASS testHooksDoNotPersist
+PASS badgeDefinitionsAndProgress
+PASS idempotentAccountCompletion
+PASS repeatedBadgeDoesNotNotifyAgain
+PASS realSceneIgnoresInvalidGoalNodes
+PASS realSceneGoalHandlerCountsDistinctGoals
+PASS realSceneEarnsNewBadgeAndRetainsOldRewards
+PASS realSceneTestHooksDoNotPersist
+PASS demoProgressHasSeparateNamespace
+PASS 18 goal-progress checks
+RUN node tools/qa/check-graphics-surfaces.mjs
+PASS classicPixelParity
+PASS classicLogicalAdapterPixelParity
+PASS nativeDimensionsAndClipping
+PASS scaledPrimitivesAndNativeBlending
+PASS fontUsesLogicalPixelsWithoutLosingNativeBackground
+PASS fontUsesTheActualSurfaceBounds
+PASS atlasRetainsDensityAndDefaultCompatibility
+PASS spriteDensityPreservesFootprintAndAnchor
+PASS profilesAreExactNativePairs
+PASS lightsRetainDensityAndNeverReuseAnotherBanksPixels
+PASS emissiveWindowsUseLogicalMaterialCoordinates
+PASS 11 graphics-surface checks
+RUN node tools/qa/check-graphics-profiles.mjs
+PASS trafficGeometryDoesNotDependOnSourceDensity
+PASS derivedGateAndNavigationArtRetainDensity
+PASS nativeProjectionKeepsWorldCoordinates
+PASS simulationParity-straight
+PASS simulationParity-offroad
+PASS simulationParity-shake
+PASS simulationParity-crash
+PASS simulationParity-tumble
+PASS weatherUsesTheSameLogicalPositionsAtBothResolutions
+PASS selectionLoadsBeforeApplyingAndRemembering
+PASS lockedAndFailedPackagesKeepClassic
+PASS supersededPackageCannotReplaceNewerChoice
+PASS endingAnchorsUseLogicalSpriteHeights
+PASS failedTextureUploadReleasesCandidateAndKeepsActiveContext
+PASS 14 graphics-profile checks
+RUN node tools/qa/check-plus-loading.mjs
+PASS decodedAtlasMismatchDoesNotApplyOrPersist
+PASS negativeFrameBounds
+PASS fractionalFrameBounds
+PASS invalidDensity
+PASS wrongLogicalCarSize
+PASS emptyRequiredSprite
+PASS duplicateAtlasSprite
+PASS wrongBackdropDimensions
+PASS wrongBackdropDensity
+PASS validNativePackage
+PASS 10 delivered Plus-package validation cases
+RUN node tools/qa/check-plus-assets.mjs --release
+PASS Plus release assets: 679 native sprites, 36 backgrounds, 18 declared replacements
+RUN node tools/qa/check-light-generation.mjs
+{
+  source: [ 176, 96 ],
+  samples: 16,
+  referenceMs: 92.55819999999994,
+  candidateMs: 3.5801000000001295,
+  speedup: 25.85352364458998,
+  oracle: 'exact tail/glow pixels, size, density and anchor for both profiles'
+}
+PASS exact light-generation pixels and cold-pose performance
+RUN node tools/qa/check-native-copy.mjs
+{
+  samples: 100,
+  source: [ 1280, 160 ],
+  referenceMs: 186.33100000000002,
+  candidateMs: 4.1527999999999565,
+  speedup: 44.86876324407676,
+  lightCalls: 0
+}
+PASS native layer raster equivalence, copy performance and subpixel light culling
+RUN node tools/qa/check-input-bindings.mjs
+{
+  "status": "PASS",
+  "tests": [
+    "defaults preserve old keyboard aliases and Auto preference",
+    "keyboard remap changes driving but leaves menu navigation fixed",
+    "bindings persist separately and malformed data falls back to defaults",
+    "conflicts and deleting the final binding preserve valid controls",
+    "gamepad remaps retain analogue trigger values and signed axes",
+    "signal and pause are one-shot with keyboard and gamepad",
+    "text entry suppresses driving bindings without swallowing typed names",
+    "capture waits for activation release and does not navigate on captured input",
+    "capture can be cancelled without saving and conflict keeps old binding",
+    "gamepad capture ignores jitter and captures a negative axis direction",
+    "custom input switches Auto away from touch and reconnects do not stick",
+    "standard menu gamepad buttons work after driving remaps",
+    "Escape cancellation waits for release before menu navigation can resume",
+    "reserved Escape offers Pause while Backspace remains a valid driving binding",
+    "generic gamepad capture waits for a held stick to return to its known neutral",
+    "generic trigger resting at minus one keeps its analogue neutral during capture"
+  ],
+  "failures": []
+}
+RUN node tools/qa/check-menu-settings.mjs
+{
+  "status": "PASS",
+  "tests": [
+    "web main menu opens Settings and the records hub in the approved order",
+    "Drive goes directly to difficulty and Back returns to Drive",
+    "settings children return to their selected parent item",
+    "rankings and badges return to their hub rather than title",
+    "settings music preview creates no race and stops when leaving",
+    "difficulty starts a fresh race with the remembered station without radio",
+    "desktop metadata alone cannot expose Exit, but native capability does",
+    "native Exit calls the existing quit bridge once",
+    "control preference is changed in settings without starting a run",
+    "Course Map remains the third main menu item and returns to it",
+    "actual startRace always creates a new race and plays the saved station",
+    "Pause bound to a menu confirmation cannot immediately resume the race",
+    "fixed confirmation takes priority over a custom Pause binding in the pause menu",
+    "fixed menu Back does not override a driving action during the race",
+    "the touch that opens Add cannot cancel the new capture overlay"
+  ],
+  "failures": []
+}
+RUN node tools/qa/check-garage-weather.mjs
+{
+  "status": "PASS",
+  "tests": [
+    "account goal unlock survives reload before account badges load",
+    "rain and snow use aligned closed skins while dry stages remain open",
+    "roof moves through intermediate frames, with hysteresis and no tunnel reopening",
+    "eight roof poses reverse continuously and finish in 0.65 seconds",
+    "weather roof changes neither car position nor handling",
+    "six stable car identities follow the approved first-goal unlock mapping"
+  ],
+  "failures": []
+}
+RUN node tools/qa/check-palm-cove-contract.mjs
+PASS Palm Cove pre-Plus contract: 16 routes, all road/scenery/collision data, clocks and complete coast run unchanged
+RUN D:\Python314\python.exe tools/qa/check-garage-sprites.py
+..........
+----------------------------------------------------------------------
+Ran 10 tests in 1.188s
+
+OK
+RUN node tools/qa/check-stage-refresh.mjs output/stage-depth --graphics-only
+{
+  "status": "PASS",
+  "mode": "graphics-preservation",
+  "routes": 16,
+  "sections": 642105,
+  "plotSegments": 20568,
+  "fullBuildingFootprints": 616,
+  "advanceSigns": 64,
+  "groundedDecorationChecked": 0,
+  "minClearance": null,
+  "physics": "verified by the separate committed pre-Plus contract",
+  "coastGround": "identical",
+  "coralDistantMountains": "original method retained",
+  "emission": "only lenses and windows",
+  "showcaseRuns": "five goals reached; current road/timer contracts verified separately"
+}
+RUN node tools/qa/check-stage-depth.mjs --graphics-only
+{"status":"PASS","stages":9,"signals":"PASS","lighting":"PASS"}
+RUN node tools/qa/graphics-profiles-browser.cjs http://127.0.0.1:4193/
+PASS graphics browser: native 640x360 pixels, rotation, real touch events, matching links, lock, persistence, Classic return and failed-load recovery
+RUN node tools/qa/check-goal-progress-browser.cjs http://127.0.0.1:4193/
+PASS browser: migration 4/5→5/5, tier badge navigation, saved unlock, old rewards and clean runtime
+RUN node tools/qa/plus-native-browser.cjs http://127.0.0.1:4193/
+PASS native Plus browser: actual package, native sprite densities, racing HUD, ending and isolated rewards
+RUN node tools/qa/menu-settings-browser.cjs http://127.0.0.1:4193/
+{
+  "status": "PASS",
+  "tests": [
+    "all six settings children, including Graphics, return to their selected parent",
+    "keyboard capture rejects conflict, retries, saves without navigation leakage",
+    "Course Map, rankings and badges retain correct parents",
+    "direct start remembers music; custom Enter pauses once; restart creates a fresh race",
+    "virtual axis mapping, disconnect, stored bindings and unrelated saves survive",
+    "mobile taps open bindings, cancel capture and return to Settings"
+  ]
+}
+RUN node tools/qa/check-plus-device-page.cjs http://127.0.0.1:4193/
+PASS device-check page: actual Plus iframe, warm-up exclusion, incomplete measurement stays failed, physical status explicit, export retains measured profile
+RUN node tools/qa/check-rain-entry.cjs http://127.0.0.1:4193/
+PASS simple rain URL: Drive starts real Thunder Highway rain, closed roof, native Plus 640x360 and isolated progress
+RUN node tools/qa/plus-demo-browser.cjs http://127.0.0.1:4192/
+PASS actual Demo build: Plus remains locked even with a full-edition unlock and development hash; native Classic, no Plus pages or save leakage
+PASS final Plus regressions, actual browser builds, desktop measurement evidence and package hashes; physical iPhone acceptance explicitly deferred by user.

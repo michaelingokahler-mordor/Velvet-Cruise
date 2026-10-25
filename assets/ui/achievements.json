@@ -96,6 +96,12 @@
    "icon": "route"
   },
   {
+   "id": "all-goals-easy",
+   "name": "Five Goals (Easy)",
+   "description": "Reach all five different goals on easy.",
+   "icon": "trophy-star"
+  },
+  {
    "id": "stage-clear",
    "name": "Hit the Road (Normal)",
    "description": "Clear your first stage on Normal.",
@@ -190,6 +196,12 @@
    "icon": "route"
   },
   {
+   "id": "all-goals",
+   "name": "Five Goals (Normal)",
+   "description": "Reach all five different goals on normal.",
+   "icon": "trophy-star"
+  },
+  {
    "id": "stage-clear-hard",
    "name": "Hit the Road (Hard)",
    "description": "Clear your first stage on Hard.",
@@ -282,6 +294,12 @@
    "name": "Every Road (Hard)",
    "description": "Clear all fifteen stages on Hard, whichever route each run takes.",
    "icon": "route"
+  },
+  {
+   "id": "all-goals-hard",
+   "name": "Five Goals (Hard)",
+   "description": "Reach all five different goals on hard.",
+   "icon": "trophy-star"
   },
   {
    "id": "goal-a",

@@ -1,5 +1,6 @@
+import type { DrawSurface } from "../core/draw-surface";
 // Arcade HUD and menu drawing helpers (everything is pixel text in the framebuffer).
-import { FB, W, H, Col, rgb } from "../core/fb";
+import { W, H, Col, rgb } from "../core/fb";
 import { drawText, textWidth } from "../core/font";
 import { t, fmtNum } from "../platform/tesana";
 import { MAX_SPEED, STAGE_COUNT, SEG_LEN } from "./config";
@@ -13,7 +14,7 @@ import { TOUCH, TOUCH_TILT, Rect } from "../input";
  * Approaching a split: both destinations (icon, name, weather), the one the car is heading for lit up.
  * Stays a moment after the choice, flashing the road taken.
  */
-export function drawForkPanel(fb: FB, bank: SpriteBank, race: Race, time: number): void {
+export function drawForkPanel(fb: DrawSurface, bank: SpriteBank, race: Race, time: number): void {
   const f = race.fork;
   if (!f || race.state !== "race") return;
   const seg = race.playerZ / SEG_LEN;
@@ -61,11 +62,11 @@ export function fmtTime(sec: number): string {
   return `${m}'${r < 10 ? "0" : ""}${r}"${h < 10 ? "0" : ""}${h}`;
 }
 
-export function label(fb: FB, s: string, x: number, y: number, col: Col = C.orange, align: "left" | "center" | "right" = "left", maxW?: number): number {
+export function label(fb: DrawSurface, s: string, x: number, y: number, col: Col = C.orange, align: "left" | "center" | "right" = "left", maxW?: number): number {
   return drawText(fb, s, x, y, col, { align, outline: C.ink, maxW });
 }
 
-export function big(fb: FB, s: string, x: number, y: number, scale: number, grad: Col[] = GRAD_SUN, align: "left" | "center" | "right" = "center", maxW = W - 8): void {
+export function big(fb: DrawSurface, s: string, x: number, y: number, scale: number, grad: Col[] = GRAD_SUN, align: "left" | "center" | "right" = "center", maxW = W - 8): void {
   drawText(fb, s, x, y, grad[3], { scale, grad, outline: C.ink, align, maxW, shadow: C.shadow });
 }
 
@@ -87,7 +88,7 @@ export class Hud {
     this.flash += dt;
   }
 
-  draw(fb: FB, race: Race, touch: boolean, time: number, tilt = false): void {
+  draw(fb: DrawSurface, race: Race, touch: boolean, time: number, tilt = false): void {
     // TIME
     label(fb, t("hud.time"), 7, 4, C.orange);
     const secs = Math.ceil(race.timer);
@@ -144,7 +145,7 @@ export class Hud {
 }
 
 /** A persistent H hint, with a bright confirmation even when no car can yield. */
-export function drawSignalIndicator(fb: FB, race: Race): void {
+export function drawSignalIndicator(fb: DrawSurface, race: Race): void {
   if (race.state !== "race" && race.state !== "countdown") return;
   const x = W - 39, y = 41, active = race.signalT > 0;
   const flash = active ? race.signalKind === "flash" : race.nightSignal;
@@ -168,14 +169,14 @@ export function drawSignalIndicator(fb: FB, race: Race): void {
   drawText(fb, "H", x + 23, y + 3, col, { outline: C.ink });
 }
 
-function pad(fb: FB, r: Rect, glyph: string, text?: string): void {
+function pad(fb: DrawSurface, r: Rect, glyph: string, text?: string): void {
   fb.rectA(r.x, r.y, r.w, r.h, rgb(0x100820), 0.38);
   fb.frame(r.x, r.y, r.w, r.h, rgb(0xfff0d0));
   drawText(fb, glyph, r.x + r.w / 2, r.y + r.h / 2 - (text ? 9 : 7), C.white, { align: "center", scale: 2, outline: C.ink });
   if (text) drawText(fb, text, r.x + r.w / 2, r.y + r.h - 11, C.yellow, { align: "center", outline: C.ink, maxW: r.w - 2 });
 }
 
-export function drawTouch(fb: FB, tilt = false, steer = 0,night=false): void {
+export function drawTouch(fb: DrawSurface, tilt = false, steer = 0,night=false): void {
   if (tilt) {
     pad(fb, TOUCH_TILT.brake, "↓", t("ctl.brake"));
     pad(fb, TOUCH_TILT.gas, "↑", t("ctl.gas"));
@@ -200,13 +201,13 @@ export function drawTouch(fb: FB, tilt = false, steer = 0,night=false): void {
   drawText(fb,night?'L':'H',h.x+14,h.y+6,night?C.cyan:C.yellow,{align:'center',outline:C.ink});
 }
 
-export function panel(fb: FB, x: number, y: number, w: number, h: number): void {
+export function panel(fb: DrawSurface, x: number, y: number, w: number, h: number): void {
   fb.rectA(x, y, w, h, rgb(0x140a26), 0.78);
   fb.frame(x, y, w, h, rgb(0xff9a3c));
   fb.frame(x + 1, y + 1, w - 2, h - 2, rgb(0x5a2a5a));
 }
 
-export function button(fb: FB, r: Rect, text: string, active: boolean): void {
+export function button(fb: DrawSurface, r: Rect, text: string, active: boolean): void {
   fb.rectA(r.x, r.y, r.w, r.h, active ? rgb(0xff7a30) : rgb(0x2a1840), active ? 0.95 : 0.8);
   fb.frame(r.x, r.y, r.w, r.h, active ? rgb(0xfff0a0) : rgb(0x8a6aa8));
   drawText(fb, fit(text, r.w - 6), r.x + r.w / 2, r.y + (r.h - 7) / 2, active ? C.white : C.grey, { align: "center", outline: C.ink });
@@ -216,7 +217,7 @@ export function centerW(s: string, scale = 1): number { return textWidth(s, scal
 
 const STAR = ["...#...", "...#...", "#######", ".#####.", "..###..", ".##.##.", "##...##"];
 /** A little 7x7 pixel star with a dark outline (top-left at x, y): marks a new personal best. */
-export function star(fb: FB, x: number, y: number, col: Col): void {
+export function star(fb: DrawSurface, x: number, y: number, col: Col): void {
   STAR.forEach((row, ry) => { for (let q = 0; q < 7; q++) if (row[q] === "#") fb.rect(x + q - 1, y + ry - 1, 3, 3, C.ink); });
   STAR.forEach((row, ry) => { for (let q = 0; q < 7; q++) if (row[q] === "#") fb.pset(x + q, y + ry, col); });
 }
@@ -231,7 +232,7 @@ export function fit(s: string, maxW: number): string {
 
 /** Word-wrapped centred text (falls back to per-character wrapping for scripts without spaces).
  *  When `fromBottom` is set, y is the top of the LAST line and extra lines grow upward. */
-export function para(fb: FB, s: string, x: number, y: number, col: Col, maxW: number, fromBottom = false): number {
+export function para(fb: DrawSurface, s: string, x: number, y: number, col: Col, maxW: number, fromBottom = false): number {
   const lines: string[] = [];
   const words = s.includes(" ") ? s.split(" ") : Array.from(s);
   const sep = s.includes(" ") ? " " : "";

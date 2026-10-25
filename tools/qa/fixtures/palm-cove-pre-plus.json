@@ -1,0 +1,1289 @@
+{
+  "baseline": "a5f93770a766962b9ce09f742999d6de51a9e970",
+  "contracts": [
+    {
+      "path": [
+        0,
+        5,
+        8,
+        9,
+        10
+      ],
+      "stages": [
+        {
+          "index": 0,
+          "node": 0,
+          "startSeg": 40,
+          "midSeg": 3040,
+          "endSeg": 6620,
+          "timedEndSeg": 6100,
+          "extension": {
+            "start": 6100,
+            "bendEnd": 6360,
+            "end": 6620
+          }
+        },
+        {
+          "index": 1,
+          "node": 5,
+          "startSeg": 6850,
+          "midSeg": 10060,
+          "endSeg": 13830,
+          "timedEndSeg": 13270,
+          "extension": {
+            "start": 13270,
+            "bendEnd": 13550,
+            "end": 13830
+          }
+        },
+        {
+          "index": 2,
+          "node": 8,
+          "startSeg": 14060,
+          "midSeg": 17420,
+          "endSeg": 21260,
+          "timedEndSeg": 20720,
+          "extension": {
+            "start": 20720,
+            "bendEnd": 21000,
+            "end": 21260
+          }
+        },
+        {
+          "index": 3,
+          "node": 9,
+          "startSeg": 21490,
+          "midSeg": 25000,
+          "endSeg": 29010,
+          "timedEndSeg": 28450,
+          "extension": {
+            "start": 28450,
+            "bendEnd": 28730,
+            "end": 29010
+          }
+        },
+        {
+          "index": 4,
+          "node": 10,
+          "startSeg": 29240,
+          "midSeg": 32840,
+          "endSeg": 36985,
+          "timedEndSeg": 36485,
+          "extension": {
+            "start": 36485,
+            "bendEnd": 36725,
+            "end": 36985
+          }
+        }
+      ],
+      "startTime": 57,
+      "road": "a6f684565d5a831c30c015b75bfe1ff10987fdb22daef87db42a9fb28d00938b",
+      "scenery": "66efa49b208c2b8e8134895131640e480e17e77644ee54245685e52fd2523aa6"
+    },
+    {
+      "path": [
+        0,
+        5,
+        8,
+        9,
+        12
+      ],
+      "stages": [
+        {
+          "index": 0,
+          "node": 0,
+          "startSeg": 40,
+          "midSeg": 3040,
+          "endSeg": 6620,
+          "timedEndSeg": 6100,
+          "extension": {
+            "start": 6100,
+            "bendEnd": 6360,
+            "end": 6620
+          }
+        },
+        {
+          "index": 1,
+          "node": 5,
+          "startSeg": 6850,
+          "midSeg": 10060,
+          "endSeg": 13830,
+          "timedEndSeg": 13270,
+          "extension": {
+            "start": 13270,
+            "bendEnd": 13550,
+            "end": 13830
+          }
+        },
+        {
+          "index": 2,
+          "node": 8,
+          "startSeg": 14060,
+          "midSeg": 17420,
+          "endSeg": 21260,
+          "timedEndSeg": 20720,
+          "extension": {
+            "start": 20720,
+            "bendEnd": 21000,
+            "end": 21260
+          }
+        },
+        {
+          "index": 3,
+          "node": 9,
+          "startSeg": 21490,
+          "midSeg": 25000,
+          "endSeg": 29010,
+          "timedEndSeg": 28450,
+          "extension": {
+            "start": 28450,
+            "bendEnd": 28730,
+            "end": 29010
+          }
+        },
+        {
+          "index": 4,
+          "node": 12,
+          "startSeg": 29240,
+          "midSeg": 32900,
+          "endSeg": 37080,
+          "timedEndSeg": 36560,
+          "extension": {
+            "start": 36560,
+            "bendEnd": 36800,
+            "end": 37080
+          }
+        }
+      ],
+      "startTime": 57,
+      "road": "7019b03ec50ca4a37679b92af9517d7629057b3b7724c79ac621ec5b4788a938",
+      "scenery": "463792c1140eb5780f3015656efb02db3d61fd3ae21de244cb575ac15b95ebc6"
+    },
+    {
+      "path": [
+        0,
+        5,
+        8,
+        11,
+        12
+      ],
+      "stages": [
+        {
+          "index": 0,
+          "node": 0,
+          "startSeg": 40,
+          "midSeg": 3040,
+          "endSeg": 6620,
+          "timedEndSeg": 6100,
+          "extension": {
+            "start": 6100,
+            "bendEnd": 6360,
+            "end": 6620
+          }
+        },
+        {
+          "index": 1,
+          "node": 5,
+          "startSeg": 6850,
+          "midSeg": 10060,
+          "endSeg": 13830,
+          "timedEndSeg": 13270,
+          "extension": {
+            "start": 13270,
+            "bendEnd": 13550,
+            "end": 13830
+          }
+        },
+        {
+          "index": 2,
+          "node": 8,
+          "startSeg": 14060,
+          "midSeg": 17420,
+          "endSeg": 21260,
+          "timedEndSeg": 20720,
+          "extension": {
+            "start": 20720,
+            "bendEnd": 21000,
+            "end": 21260
+          }
+        },
+        {
+          "index": 3,
+          "node": 11,
+          "startSeg": 21490,
+          "midSeg": 25000,
+          "endSeg": 28990,
+          "timedEndSeg": 28510,
+          "extension": {
+            "start": 28510,
+            "bendEnd": 28760,
+            "end": 28990
+          }
+        },
+        {
+          "index": 4,
+          "node": 12,
+          "startSeg": 29220,
+          "midSeg": 32880,
+          "endSeg": 37060,
+          "timedEndSeg": 36540,
+          "extension": {
+            "start": 36540,
+            "bendEnd": 36780,
+            "end": 37060
+          }
+        }
+      ],
+      "startTime": 57,
+      "road": "75859d2f1c9fffc9a99fdae119a0e1de854b5fff042c74d7e7376bbd3c153144",
+      "scenery": "c03a5400e4b89a8dc124b504760ffe03bda061fd99a576076cc4d1325faae427"
+    },
+    {
+      "path": [
+        0,
+        5,
+        8,
+        11,
+        13
+      ],
+      "stages": [
+        {
+          "index": 0,
+          "node": 0,
+          "startSeg": 40,
+          "midSeg": 3040,
+          "endSeg": 6620,
+          "timedEndSeg": 6100,
+          "extension": {
+            "start": 6100,
+            "bendEnd": 6360,
+            "end": 6620
+          }
+        },
+        {
+          "index": 1,
+          "node": 5,
+          "startSeg": 6850,
+          "midSeg": 10060,
+          "endSeg": 13830,
+          "timedEndSeg": 13270,
+          "extension": {
+            "start": 13270,
+            "bendEnd": 13550,
+            "end": 13830
+          }
+        },
+        {
+          "index": 2,
+          "node": 8,
+          "startSeg": 14060,
+          "midSeg": 17420,
+          "endSeg": 21260,
+          "timedEndSeg": 20720,
+          "extension": {
+            "start": 20720,
+            "bendEnd": 21000,
+            "end": 21260
+          }
+        },
+        {
+          "index": 3,
+          "node": 11,
+          "startSeg": 21490,
+          "midSeg": 25000,
+          "endSeg": 28990,
+          "timedEndSeg": 28510,
+          "extension": {
+            "start": 28510,
+            "bendEnd": 28760,
+            "end": 28990
+          }
+        },
+        {
+          "index": 4,
+          "node": 13,
+          "startSeg": 29220,
+          "midSeg": 32880,
+          "endSeg": 37040,
+          "timedEndSeg": 36540,
+          "extension": {
+            "start": 36540,
+            "bendEnd": 36800,
+            "end": 37040
+          }
+        }
+      ],
+      "startTime": 57,
+      "road": "6aaac068dbaff5d97ca52e03b79c44b6e473f7ce17ee0664edbc2678ad22318b",
+      "scenery": "f60aef84b85a4f35a47b802c14402ecac8c48c238c2976b04404b690c6568a15"
+    },
+    {
+      "path": [
+        0,
+        5,
+        6,
+        11,
+        12
+      ],
+      "stages": [
+        {
+          "index": 0,
+          "node": 0,
+          "startSeg": 40,
+          "midSeg": 3040,
+          "endSeg": 6620,
+          "timedEndSeg": 6100,
+          "extension": {
+            "start": 6100,
+            "bendEnd": 6360,
+            "end": 6620
+          }
+        },
+        {
+          "index": 1,
+          "node": 5,
+          "startSeg": 6850,
+          "midSeg": 10060,
+          "endSeg": 13830,
+          "timedEndSeg": 13270,
+          "extension": {
+            "start": 13270,
+            "bendEnd": 13550,
+            "end": 13830
+          }
+        },
+        {
+          "index": 2,
+          "node": 6,
+          "startSeg": 14060,
+          "midSeg": 17419,
+          "endSeg": 21279,
+          "timedEndSeg": 20779,
+          "extension": {
+            "start": 20779,
+            "bendEnd": 21029,
+            "end": 21279
+          }
+        },
+        {
+          "index": 3,
+          "node": 11,
+          "startSeg": 21509,
+          "midSeg": 25019,
+          "endSeg": 29009,
+          "timedEndSeg": 28529,
+          "extension": {
+            "start": 28529,
+            "bendEnd": 28779,
+            "end": 29009
+          }
+        },
+        {
+          "index": 4,
+          "node": 12,
+          "startSeg": 29239,
+          "midSeg": 32899,
+          "endSeg": 37079,
+          "timedEndSeg": 36559,
+          "extension": {
+            "start": 36559,
+            "bendEnd": 36799,
+            "end": 37079
+          }
+        }
+      ],
+      "startTime": 57,
+      "road": "dc16c1f720b3a370c684528a2cf5f3ea0e93885fa9ec85542f53975c9875f8c0",
+      "scenery": "e88ec5c6e456114e53bcbb8ce941bbb7539b9704713418ebe69d321baa63f491"
+    },
+    {
+      "path": [
+        0,
+        5,
+        6,
+        11,
+        13
+      ],
+      "stages": [
+        {
+          "index": 0,
+          "node": 0,
+          "startSeg": 40,
+          "midSeg": 3040,
+          "endSeg": 6620,
+          "timedEndSeg": 6100,
+          "extension": {
+            "start": 6100,
+            "bendEnd": 6360,
+            "end": 6620
+          }
+        },
+        {
+          "index": 1,
+          "node": 5,
+          "startSeg": 6850,
+          "midSeg": 10060,
+          "endSeg": 13830,
+          "timedEndSeg": 13270,
+          "extension": {
+            "start": 13270,
+            "bendEnd": 13550,
+            "end": 13830
+          }
+        },
+        {
+          "index": 2,
+          "node": 6,
+          "startSeg": 14060,
+          "midSeg": 17419,
+          "endSeg": 21279,
+          "timedEndSeg": 20779,
+          "extension": {
+            "start": 20779,
+            "bendEnd": 21029,
+            "end": 21279
+          }
+        },
+        {
+          "index": 3,
+          "node": 11,
+          "startSeg": 21509,
+          "midSeg": 25019,
+          "endSeg": 29009,
+          "timedEndSeg": 28529,
+          "extension": {
+            "start": 28529,
+            "bendEnd": 28779,
+            "end": 29009
+          }
+        },
+        {
+          "index": 4,
+          "node": 13,
+          "startSeg": 29239,
+          "midSeg": 32899,
+          "endSeg": 37059,
+          "timedEndSeg": 36559,
+          "extension": {
+            "start": 36559,
+            "bendEnd": 36819,
+            "end": 37059
+          }
+        }
+      ],
+      "startTime": 57,
+      "road": "9c52ed52ef687f8a7fc0a2ca1f61ceda2ff85e67d3e4c4059deb1b532626f235",
+      "scenery": "037fb972a0193f7b701ab8181978820d0186a7c127bca7dd51164c0e4bc5f5e7"
+    },
+    {
+      "path": [
+        0,
+        5,
+        6,
+        7,
+        13
+      ],
+      "stages": [
+        {
+          "index": 0,
+          "node": 0,
+          "startSeg": 40,
+          "midSeg": 3040,
+          "endSeg": 6620,
+          "timedEndSeg": 6100,
+          "extension": {
+            "start": 6100,
+            "bendEnd": 6360,
+            "end": 6620
+          }
+        },
+        {
+          "index": 1,
+          "node": 5,
+          "startSeg": 6850,
+          "midSeg": 10060,
+          "endSeg": 13830,
+          "timedEndSeg": 13270,
+          "extension": {
+            "start": 13270,
+            "bendEnd": 13550,
+            "end": 13830
+          }
+        },
+        {
+          "index": 2,
+          "node": 6,
+          "startSeg": 14060,
+          "midSeg": 17419,
+          "endSeg": 21279,
+          "timedEndSeg": 20779,
+          "extension": {
+            "start": 20779,
+            "bendEnd": 21029,
+            "end": 21279
+          }
+        },
+        {
+          "index": 3,
+          "node": 7,
+          "startSeg": 21509,
+          "midSeg": 25000,
+          "endSeg": 28978,
+          "timedEndSeg": 28498,
+          "extension": {
+            "start": 28498,
+            "bendEnd": 28748,
+            "end": 28978
+          }
+        },
+        {
+          "index": 4,
+          "node": 13,
+          "startSeg": 29208,
+          "midSeg": 32868,
+          "endSeg": 37028,
+          "timedEndSeg": 36528,
+          "extension": {
+            "start": 36528,
+            "bendEnd": 36788,
+            "end": 37028
+          }
+        }
+      ],
+      "startTime": 57,
+      "road": "006f54c31e3f4cae9fd749e2fb18b62fac046f8313a4beab7048018d9ab16dd3",
+      "scenery": "0b6c7999f1c5a1e1c348057433e88e97fe2be4ffb3a441c203aa4e83bf586827"
+    },
+    {
+      "path": [
+        0,
+        5,
+        6,
+        7,
+        14
+      ],
+      "stages": [
+        {
+          "index": 0,
+          "node": 0,
+          "startSeg": 40,
+          "midSeg": 3040,
+          "endSeg": 6620,
+          "timedEndSeg": 6100,
+          "extension": {
+            "start": 6100,
+            "bendEnd": 6360,
+            "end": 6620
+          }
+        },
+        {
+          "index": 1,
+          "node": 5,
+          "startSeg": 6850,
+          "midSeg": 10060,
+          "endSeg": 13830,
+          "timedEndSeg": 13270,
+          "extension": {
+            "start": 13270,
+            "bendEnd": 13550,
+            "end": 13830
+          }
+        },
+        {
+          "index": 2,
+          "node": 6,
+          "startSeg": 14060,
+          "midSeg": 17419,
+          "endSeg": 21279,
+          "timedEndSeg": 20779,
+          "extension": {
+            "start": 20779,
+            "bendEnd": 21029,
+            "end": 21279
+          }
+        },
+        {
+          "index": 3,
+          "node": 7,
+          "startSeg": 21509,
+          "midSeg": 25000,
+          "endSeg": 28978,
+          "timedEndSeg": 28498,
+          "extension": {
+            "start": 28498,
+            "bendEnd": 28748,
+            "end": 28978
+          }
+        },
+        {
+          "index": 4,
+          "node": 14,
+          "startSeg": 29208,
+          "midSeg": 32808,
+          "endSeg": 36914,
+          "timedEndSeg": 36434,
+          "extension": {
+            "start": 36434,
+            "bendEnd": 36674,
+            "end": 36914
+          }
+        }
+      ],
+      "startTime": 57,
+      "road": "6d65d417e3c97762b2c580b1ea326db7705b386d6d8d9f1a651d8eb887dc77ec",
+      "scenery": "ec9fd938c68d99deaea06e5840a9d95f2678740e787dbc323e8af0b2d260acf5"
+    },
+    {
+      "path": [
+        0,
+        1,
+        6,
+        11,
+        12
+      ],
+      "stages": [
+        {
+          "index": 0,
+          "node": 0,
+          "startSeg": 40,
+          "midSeg": 3040,
+          "endSeg": 6620,
+          "timedEndSeg": 6100,
+          "extension": {
+            "start": 6100,
+            "bendEnd": 6360,
+            "end": 6620
+          }
+        },
+        {
+          "index": 1,
+          "node": 1,
+          "startSeg": 6850,
+          "midSeg": 10060,
+          "endSeg": 13828,
+          "timedEndSeg": 13328,
+          "extension": {
+            "start": 13328,
+            "bendEnd": 13578,
+            "end": 13828
+          }
+        },
+        {
+          "index": 2,
+          "node": 6,
+          "startSeg": 14058,
+          "midSeg": 17417,
+          "endSeg": 21277,
+          "timedEndSeg": 20777,
+          "extension": {
+            "start": 20777,
+            "bendEnd": 21027,
+            "end": 21277
+          }
+        },
+        {
+          "index": 3,
+          "node": 11,
+          "startSeg": 21507,
+          "midSeg": 25017,
+          "endSeg": 29007,
+          "timedEndSeg": 28527,
+          "extension": {
+            "start": 28527,
+            "bendEnd": 28777,
+            "end": 29007
+          }
+        },
+        {
+          "index": 4,
+          "node": 12,
+          "startSeg": 29237,
+          "midSeg": 32897,
+          "endSeg": 37077,
+          "timedEndSeg": 36557,
+          "extension": {
+            "start": 36557,
+            "bendEnd": 36797,
+            "end": 37077
+          }
+        }
+      ],
+      "startTime": 57,
+      "road": "1a05561b10c87ca2de80e72713da1d489c089a15eaf8d28d45de2c07df5f035e",
+      "scenery": "825d6c8e2f7bb2fca1bfdcb6069e0bd8cb69fc6dedbc7a9fde2da44ce7d23b7c"
+    },
+    {
+      "path": [
+        0,
+        1,
+        6,
+        11,
+        13
+      ],
+      "stages": [
+        {
+          "index": 0,
+          "node": 0,
+          "startSeg": 40,
+          "midSeg": 3040,
+          "endSeg": 6620,
+          "timedEndSeg": 6100,
+          "extension": {
+            "start": 6100,
+            "bendEnd": 6360,
+            "end": 6620
+          }
+        },
+        {
+          "index": 1,
+          "node": 1,
+          "startSeg": 6850,
+          "midSeg": 10060,
+          "endSeg": 13828,
+          "timedEndSeg": 13328,
+          "extension": {
+            "start": 13328,
+            "bendEnd": 13578,
+            "end": 13828
+          }
+        },
+        {
+          "index": 2,
+          "node": 6,
+          "startSeg": 14058,
+          "midSeg": 17417,
+          "endSeg": 21277,
+          "timedEndSeg": 20777,
+          "extension": {
+            "start": 20777,
+            "bendEnd": 21027,
+            "end": 21277
+          }
+        },
+        {
+          "index": 3,
+          "node": 11,
+          "startSeg": 21507,
+          "midSeg": 25017,
+          "endSeg": 29007,
+          "timedEndSeg": 28527,
+          "extension": {
+            "start": 28527,
+            "bendEnd": 28777,
+            "end": 29007
+          }
+        },
+        {
+          "index": 4,
+          "node": 13,
+          "startSeg": 29237,
+          "midSeg": 32897,
+          "endSeg": 37057,
+          "timedEndSeg": 36557,
+          "extension": {
+            "start": 36557,
+            "bendEnd": 36817,
+            "end": 37057
+          }
+        }
+      ],
+      "startTime": 57,
+      "road": "3d07d9c18677e80cb999ba751bb65d7c65b2b041466ba8bcb22405830b249236",
+      "scenery": "bd2999d629ad60b6b85a0234b55ad195997776a91173c39606025c83fc4a9221"
+    },
+    {
+      "path": [
+        0,
+        1,
+        6,
+        7,
+        13
+      ],
+      "stages": [
+        {
+          "index": 0,
+          "node": 0,
+          "startSeg": 40,
+          "midSeg": 3040,
+          "endSeg": 6620,
+          "timedEndSeg": 6100,
+          "extension": {
+            "start": 6100,
+            "bendEnd": 6360,
+            "end": 6620
+          }
+        },
+        {
+          "index": 1,
+          "node": 1,
+          "startSeg": 6850,
+          "midSeg": 10060,
+          "endSeg": 13828,
+          "timedEndSeg": 13328,
+          "extension": {
+            "start": 13328,
+            "bendEnd": 13578,
+            "end": 13828
+          }
+        },
+        {
+          "index": 2,
+          "node": 6,
+          "startSeg": 14058,
+          "midSeg": 17417,
+          "endSeg": 21277,
+          "timedEndSeg": 20777,
+          "extension": {
+            "start": 20777,
+            "bendEnd": 21027,
+            "end": 21277
+          }
+        },
+        {
+          "index": 3,
+          "node": 7,
+          "startSeg": 21507,
+          "midSeg": 24998,
+          "endSeg": 28976,
+          "timedEndSeg": 28496,
+          "extension": {
+            "start": 28496,
+            "bendEnd": 28746,
+            "end": 28976
+          }
+        },
+        {
+          "index": 4,
+          "node": 13,
+          "startSeg": 29206,
+          "midSeg": 32866,
+          "endSeg": 37026,
+          "timedEndSeg": 36526,
+          "extension": {
+            "start": 36526,
+            "bendEnd": 36786,
+            "end": 37026
+          }
+        }
+      ],
+      "startTime": 57,
+      "road": "e206b5964acd773d20673b50cd4a033bbbfbbc88603d3921d7667eaf3f5d8a1f",
+      "scenery": "1b151d4faaeb87576982487968195c5aaafc75135d8016f2ef4d0747c8ad6682"
+    },
+    {
+      "path": [
+        0,
+        1,
+        6,
+        7,
+        14
+      ],
+      "stages": [
+        {
+          "index": 0,
+          "node": 0,
+          "startSeg": 40,
+          "midSeg": 3040,
+          "endSeg": 6620,
+          "timedEndSeg": 6100,
+          "extension": {
+            "start": 6100,
+            "bendEnd": 6360,
+            "end": 6620
+          }
+        },
+        {
+          "index": 1,
+          "node": 1,
+          "startSeg": 6850,
+          "midSeg": 10060,
+          "endSeg": 13828,
+          "timedEndSeg": 13328,
+          "extension": {
+            "start": 13328,
+            "bendEnd": 13578,
+            "end": 13828
+          }
+        },
+        {
+          "index": 2,
+          "node": 6,
+          "startSeg": 14058,
+          "midSeg": 17417,
+          "endSeg": 21277,
+          "timedEndSeg": 20777,
+          "extension": {
+            "start": 20777,
+            "bendEnd": 21027,
+            "end": 21277
+          }
+        },
+        {
+          "index": 3,
+          "node": 7,
+          "startSeg": 21507,
+          "midSeg": 24998,
+          "endSeg": 28976,
+          "timedEndSeg": 28496,
+          "extension": {
+            "start": 28496,
+            "bendEnd": 28746,
+            "end": 28976
+          }
+        },
+        {
+          "index": 4,
+          "node": 14,
+          "startSeg": 29206,
+          "midSeg": 32806,
+          "endSeg": 36912,
+          "timedEndSeg": 36432,
+          "extension": {
+            "start": 36432,
+            "bendEnd": 36672,
+            "end": 36912
+          }
+        }
+      ],
+      "startTime": 57,
+      "road": "a024c3fd9b468d44ea3fdaed5ff3b4d1ccac21fb4d52b0e37e65674de5af3571",
+      "scenery": "0346d196cd32da77260541c8b55652bf17625d639aea6242b7fe1d7695427739"
+    },
+    {
+      "path": [
+        0,
+        1,
+        2,
+        7,
+        13
+      ],
+      "stages": [
+        {
+          "index": 0,
+          "node": 0,
+          "startSeg": 40,
+          "midSeg": 3040,
+          "endSeg": 6620,
+          "timedEndSeg": 6100,
+          "extension": {
+            "start": 6100,
+            "bendEnd": 6360,
+            "end": 6620
+          }
+        },
+        {
+          "index": 1,
+          "node": 1,
+          "startSeg": 6850,
+          "midSeg": 10060,
+          "endSeg": 13828,
+          "timedEndSeg": 13328,
+          "extension": {
+            "start": 13328,
+            "bendEnd": 13578,
+            "end": 13828
+          }
+        },
+        {
+          "index": 2,
+          "node": 2,
+          "startSeg": 14058,
+          "midSeg": 17450,
+          "endSeg": 21270,
+          "timedEndSeg": 20750,
+          "extension": {
+            "start": 20750,
+            "bendEnd": 21040,
+            "end": 21270
+          }
+        },
+        {
+          "index": 3,
+          "node": 7,
+          "startSeg": 21500,
+          "midSeg": 24991,
+          "endSeg": 28969,
+          "timedEndSeg": 28489,
+          "extension": {
+            "start": 28489,
+            "bendEnd": 28739,
+            "end": 28969
+          }
+        },
+        {
+          "index": 4,
+          "node": 13,
+          "startSeg": 29199,
+          "midSeg": 32859,
+          "endSeg": 37019,
+          "timedEndSeg": 36519,
+          "extension": {
+            "start": 36519,
+            "bendEnd": 36779,
+            "end": 37019
+          }
+        }
+      ],
+      "startTime": 57,
+      "road": "2ee9e7edce260499fa27b2d9c1ea75e9326431c993a3f003f9251aa7775c13ff",
+      "scenery": "049027d1d8835e6515c12203c0b389bb8e37848ec96979edcd08bfef8d2e4081"
+    },
+    {
+      "path": [
+        0,
+        1,
+        2,
+        7,
+        14
+      ],
+      "stages": [
+        {
+          "index": 0,
+          "node": 0,
+          "startSeg": 40,
+          "midSeg": 3040,
+          "endSeg": 6620,
+          "timedEndSeg": 6100,
+          "extension": {
+            "start": 6100,
+            "bendEnd": 6360,
+            "end": 6620
+          }
+        },
+        {
+          "index": 1,
+          "node": 1,
+          "startSeg": 6850,
+          "midSeg": 10060,
+          "endSeg": 13828,
+          "timedEndSeg": 13328,
+          "extension": {
+            "start": 13328,
+            "bendEnd": 13578,
+            "end": 13828
+          }
+        },
+        {
+          "index": 2,
+          "node": 2,
+          "startSeg": 14058,
+          "midSeg": 17450,
+          "endSeg": 21270,
+          "timedEndSeg": 20750,
+          "extension": {
+            "start": 20750,
+            "bendEnd": 21040,
+            "end": 21270
+          }
+        },
+        {
+          "index": 3,
+          "node": 7,
+          "startSeg": 21500,
+          "midSeg": 24991,
+          "endSeg": 28969,
+          "timedEndSeg": 28489,
+          "extension": {
+            "start": 28489,
+            "bendEnd": 28739,
+            "end": 28969
+          }
+        },
+        {
+          "index": 4,
+          "node": 14,
+          "startSeg": 29199,
+          "midSeg": 32799,
+          "endSeg": 36905,
+          "timedEndSeg": 36425,
+          "extension": {
+            "start": 36425,
+            "bendEnd": 36665,
+            "end": 36905
+          }
+        }
+      ],
+      "startTime": 57,
+      "road": "6a1abe3a2f4457c3bb9c26f14ac8e797a474163531b1f0760b3feb6518608b66",
+      "scenery": "adf9f29a67ce8388deb13030bf61dc5b1f754f59dd4fb352dbfc23fe583eb37d"
+    },
+    {
+      "path": [
+        0,
+        1,
+        2,
+        3,
+        14
+      ],
+      "stages": [
+        {
+          "index": 0,
+          "node": 0,
+          "startSeg": 40,
+          "midSeg": 3040,
+          "endSeg": 6620,
+          "timedEndSeg": 6100,
+          "extension": {
+            "start": 6100,
+            "bendEnd": 6360,
+            "end": 6620
+          }
+        },
+        {
+          "index": 1,
+          "node": 1,
+          "startSeg": 6850,
+          "midSeg": 10060,
+          "endSeg": 13828,
+          "timedEndSeg": 13328,
+          "extension": {
+            "start": 13328,
+            "bendEnd": 13578,
+            "end": 13828
+          }
+        },
+        {
+          "index": 2,
+          "node": 2,
+          "startSeg": 14058,
+          "midSeg": 17450,
+          "endSeg": 21270,
+          "timedEndSeg": 20750,
+          "extension": {
+            "start": 20750,
+            "bendEnd": 21040,
+            "end": 21270
+          }
+        },
+        {
+          "index": 3,
+          "node": 3,
+          "startSeg": 21500,
+          "midSeg": 25010,
+          "endSeg": 28962,
+          "timedEndSeg": 28462,
+          "extension": {
+            "start": 28462,
+            "bendEnd": 28732,
+            "end": 28962
+          }
+        },
+        {
+          "index": 4,
+          "node": 14,
+          "startSeg": 29192,
+          "midSeg": 32792,
+          "endSeg": 36898,
+          "timedEndSeg": 36418,
+          "extension": {
+            "start": 36418,
+            "bendEnd": 36658,
+            "end": 36898
+          }
+        }
+      ],
+      "startTime": 57,
+      "road": "6143fa0aa46a9e2809d163a11d78476d9616aa094ae3000afebf788dcd20df22",
+      "scenery": "665300474b2223b5d4e47dee9e557dfb58a8ff13d8e2c9331fdcde9b4c1b86d7"
+    },
+    {
+      "path": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "stages": [
+        {
+          "index": 0,
+          "node": 0,
+          "startSeg": 40,
+          "midSeg": 3040,
+          "endSeg": 6620,
+          "timedEndSeg": 6100,
+          "extension": {
+            "start": 6100,
+            "bendEnd": 6360,
+            "end": 6620
+          }
+        },
+        {
+          "index": 1,
+          "node": 1,
+          "startSeg": 6850,
+          "midSeg": 10060,
+          "endSeg": 13828,
+          "timedEndSeg": 13328,
+          "extension": {
+            "start": 13328,
+            "bendEnd": 13578,
+            "end": 13828
+          }
+        },
+        {
+          "index": 2,
+          "node": 2,
+          "startSeg": 14058,
+          "midSeg": 17450,
+          "endSeg": 21270,
+          "timedEndSeg": 20750,
+          "extension": {
+            "start": 20750,
+            "bendEnd": 21040,
+            "end": 21270
+          }
+        },
+        {
+          "index": 3,
+          "node": 3,
+          "startSeg": 21500,
+          "midSeg": 25010,
+          "endSeg": 28962,
+          "timedEndSeg": 28462,
+          "extension": {
+            "start": 28462,
+            "bendEnd": 28732,
+            "end": 28962
+          }
+        },
+        {
+          "index": 4,
+          "node": 4,
+          "startSeg": 29192,
+          "midSeg": 32852,
+          "endSeg": 37085,
+          "timedEndSeg": 36565,
+          "extension": {
+            "start": 36565,
+            "bendEnd": 36835,
+            "end": 37085
+          }
+        }
+      ],
+      "startTime": 57,
+      "road": "defbb19f0ecbf7504b42315468c1a4048ec91e600309e34340498eddf091f0d7",
+      "scenery": "946b45c719709656ec4206ad85dc03011d3befd9fce45702d1d67a3d839ce1b3"
+    }
+  ],
+  "run": {
+    "state": "goal",
+    "stage": 4,
+    "stageTimes": [
+      79.16666666666346,
+      86.69999999999636,
+      87.19999999999634,
+      94.59999999999592,
+      94.2166666666626
+    ],
+    "runTime": 441.8833333332601,
+    "score": 1298855.9833331523,
+    "path": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ]
+  }
+}

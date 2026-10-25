@@ -1,12 +1,14 @@
+import type { DrawSurface } from "../core/draw-surface";
 // Road-trip badges: what they are, the pixel medals that show them, the
 // "Badge earned!" pop-up, and the (failure-proof) reporting to the player's
 // account. Plain badges are unlocked directly; counted ones report a total at a
 // checkpoint and the server decides when the target is reached.
 // Every badge exists once per difficulty: Easy (bronze), Normal (silver), Hard (gold).
-import { FB, W, Col, rgb, mix } from "../core/fb";
+import { W, Col, rgb, mix } from "../core/fb";
 import { drawText, textWidth } from "../core/font";
 import { t, track, listBadges, unlockBadge, badgeProgress } from "../platform/tesana";
 import { fit } from "./ui";
+import { goalCount, type GoalProgress } from './goal-progress';
 
 export type Tier = "easy" | "normal" | "hard";
 export const TIERS: Tier[] = ["easy", "normal", "hard"];
@@ -91,6 +93,7 @@ export const BADGE_TYPES: BadgeType[] = [
   { base: "coast-love", icon: I.heart, col: LOVE },
   { base: "photo-finish", icon: I.watch, col: rgb(0xc89a10) },
   { base: "every-road", icon: I.fork, col: rgb(0x2a9ab8) },
+  { base: "all-goals", icon: GOAL_ICONS.trophy, col: rgb(0xc89a10), target: 5 },
 ];
 
 /** Badge id for a kind on a difficulty. The original badges are the Normal set (their ids never
@@ -137,7 +140,7 @@ export const TIER_RIM: Record<Rim, [Col, Col, Col]> = {
 const LOCK_RING = rgb(0x4a3a62), LOCK_FACE = rgb(0x24163a), LOCK_ICON = rgb(0x5e4e7a);
 
 /** A round medal centred at (cx, cy). Earned medals get their tier's rim and colour; locked ones are dark. */
-export function drawMedal(fb: FB, cx: number, cy: number, def: BadgeType, earned: boolean, r = 11, glint = -1, tier: Rim = "hard"): void {
+export function drawMedal(fb: DrawSurface, cx: number, cy: number, def: BadgeType, earned: boolean, r = 11, glint = -1, tier: Rim = "hard"): void {
   const r2 = r * r, inner = (r - 2) * (r - 2);
   const [RIM, RIM_HI, RIM_LO] = TIER_RIM[tier];
   // locked medals keep a faint hint of their tier's metal so each difficulty's row reads at a glance
@@ -197,11 +200,19 @@ export class Badges {
   private toasts: Toast[] = [];
   /** Called the moment a pop-up starts (for the chime). */
   onShow: ((id: string) => void) | null = null;
+  /** Distinct goals are counted locally, without additive server statistics. */
+  goalProgress: (() => GoalProgress) | null = null;
+  onChange: (() => void) | null = null;
 
   has(id: string): boolean { return this.earned.has(id); }
   get count(): number { return BADGES.filter((b) => this.earned.has(b.id)).length; }
   /** Progress towards a counted badge (capped at its target). */
-  progressOf(def: BadgeDef): number { return def.stat && def.target ? Math.min(def.target, this.counts.get(def.stat) ?? 0) : 0; }
+  progressOf(def: BadgeDef): number {
+    if (def.base === 'all-goals' && def.tier !== 'goal') {
+      return this.has(def.id) ? 5 : this.goalProgress ? goalCount(this.goalProgress(), def.tier) : 0;
+    }
+    return def.stat && def.target ? Math.min(def.target, this.counts.get(def.stat) ?? 0) : 0;
+  }
 
   /** Read the account's badges (for the badges screen, and so earned ones aren't re-sent). */
   refresh(): void {
@@ -215,6 +226,7 @@ export class Badges {
         if (def?.stat && typeof a.progress === "number") this.counts.set(def.stat, Math.max(this.counts.get(def.stat) ?? 0, a.progress));
       }
       this.state = "ok";
+      this.onChange?.();
     });
   }
 
@@ -224,7 +236,7 @@ export class Badges {
     unlockBadge(id).then((r) => {
       this.pending.delete(id);
       if (r === "new") this.earn(id);
-      else if (r === "had") this.earned.add(id);
+      else if (r === "had") { this.earned.add(id); this.onChange?.(); }
     });
   }
 
@@ -243,6 +255,7 @@ export class Badges {
   private earn(id: string): void {
     if (this.earned.has(id) || !badgeDef(id)) return;
     this.earned.add(id);
+    this.onChange?.();
     this.toasts.push({ id, t: 0, dur: TOAST_DUR });
     track.event("badge_earned", { name: id });
   }
@@ -258,7 +271,7 @@ export class Badges {
   }
 
   /** "Badge earned!" pop-up sliding down to `y` (only when it is showing). */
-  drawToast(fb: FB, y: number): void {
+  drawToast(fb: DrawSurface, y: number): void {
     const h = this.toasts[0];
     if (!h || h.t === 0) return;
     const def = badgeDef(h.id)!;

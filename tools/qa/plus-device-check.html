@@ -1,0 +1,46 @@
+<!doctype html><html lang="de"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Velvet Cruise – Gerätetest</title>
+<style>
+body{margin:0;background:#171321;color:#f5e8ce;font:15px system-ui}main{max-width:1000px;margin:auto;padding:12px}h1{font-size:21px}label{display:inline-block;margin:6px 10px 6px 0}input,select,button{font:inherit;padding:8px;border:1px solid #9d77a8;border-radius:4px;background:#292034;color:inherit}button{cursor:pointer}iframe{display:block;width:100%;height:auto;aspect-ratio:16/9;border:0;background:#000}pre{white-space:pre-wrap;background:#292034;padding:10px}.focus main{padding:0;max-width:none}.focus .controls{display:none}.focus iframe{width:100vw;height:100dvh}.focus #return{display:block}#return{display:none;position:fixed;right:5px;top:5px;z-index:9;font-size:12px;padding:4px}small{display:block;line-height:1.5;color:#d3bdd8}
+</style>
+<main><section class="controls"><h1>Velvet Cruise – Test auf dem iPhone</h1>
+<p>Je Profil 30 Sekunden aufwärmen und danach zehn Minuten messen. Mindestens acht Minuten fahren, davon 30 Sekunden im Regen. Danach die geprüften Bedienelemente markieren und das Ergebnis speichern. Testläufe vergeben keine Erfolge.</p>
+<label>Gerät <input id="device" placeholder="iPhone-Modell"></label><label>System <input id="system" placeholder="iOS-Version"></label>
+<label><input type="checkbox" id="physical"> Echtes iPhone</label>
+<label>Grafik <select id="mode"><option value="classic">Classic</option><option value="plus">Plus</option></select></label>
+<button id="load">Spiel laden</button><button id="start">Messung starten</button><button id="focus">Nur Spiel anzeigen</button>
+<p id="status">Spiel laden, dann Messung starten.</p></section>
+<iframe id="game" title="Velvet Cruise" allow="autoplay; accelerometer; gyroscope; fullscreen"></iframe>
+<section class="controls"><p>Auf diesem Gerät geprüft:</p><div id="checks"></div>
+<button id="stop">Messung beenden</button><button id="download">JSON-Ergebnis speichern</button><pre id="result">Noch keine Messung.</pre>
+<small>Frameabstände stammen aus den requestAnimationFrame-Zeitstempeln des Spiel-Fensters. Verfügbarer JavaScript-Speicher wird getrennt protokolliert; Safari kann diesen Wert auslassen. Das Ergebnis ersetzt keine Sicht- und Bedienprüfung. Diese lokale Testseite veröffentlicht keine Daten.</small></section></main>
+<button id="return">Zur Messung</button>
+<script>
+const $=id=>document.getElementById(id),checks=['Gas','Bremse','Lenken','Signal','Pause/Fortsetzen','Ausrichtungswechsel','Menüs'];
+for(const text of checks){const label=document.createElement('label'),input=document.createElement('input');input.type='checkbox';input.dataset.check=text;label.append(input,' '+text);$('checks').append(label);}
+let run=null,interval=null,finished=null,loading=false;
+const details=()=>({device:$('device').value,system:$('system').value,physicalIPhoneReported:$('physical').checked,userAgent:navigator.userAgent,profile:$('mode').value,checks:Object.fromEntries([...$('checks').querySelectorAll('input')].map(c=>[c.dataset.check,c.checked]))});
+$('load').onclick=()=>{if(run)stop();loading=true;localStorage.setItem('sunset-coast-run.graphics-mode.v1',$('mode').value);$('game').src='./index.html#graphicstest&tumbletest'+($('mode').value==='plus'?'&graphics=plus':'');$('status').textContent='Spiel lädt. Anschließend Messung starten.';};
+$('focus').onclick=()=>document.body.classList.add('focus');$('return').onclick=()=>document.body.classList.remove('focus');
+$('start').onclick=()=>{
+ const g=$('game').contentWindow,info=g.__graphicsInfo?.();
+ if(!loading||!info||info.busy||info.mode!==$('mode').value){$('status').textContent='Bitte erst das gewählte Profil vollständig laden.';return;}
+ if(run)stop();finished=null;run={started:performance.now(),times:[],last:null,hidden:0,native:info,scenes:[],memory:[],metadata:details(),drivingSeconds:0,rainDrivingSeconds:0,lastMeasuredSeconds:0,lastRunTime:g.__race?.run??null};
+ const active=run;
+ const tick=ts=>{if(run!==active)return;if(performance.now()-run.started>=30000&&run.last!==ts){if(run.last!==null)run.times.push(ts-run.last);run.last=ts;}g.requestAnimationFrame(tick);};g.requestAnimationFrame(tick);
+ interval=setInterval(()=>{if(!run)return;const total=(performance.now()-run.started)/1000,seconds=Math.max(0,total-30),state=g.__graphicsInfo?.(),race=g.__race,stage=race?.stage;
+  if(run.scenes.at(-1)?.screen!==state?.screen||run.scenes.at(-1)?.stage!==stage)run.scenes.push({seconds,screen:state?.screen,stage,rain:race?.rain??0,snow:race?.snow??0});
+  const advancing=Math.min(seconds-run.lastMeasuredSeconds,Math.max(0,(race?.run??0)-(run.lastRunTime??race?.run??0)));
+  if(state?.screen==='race'&&race?.state==='race'&&advancing>0){run.drivingSeconds+=advancing;if(race.rain>=.5)run.rainDrivingSeconds+=advancing;}
+  run.lastMeasuredSeconds=seconds;run.lastRunTime=race?.run??null;
+  run.memory.push({seconds,bytes:g.performance.memory?.usedJSHeapSize??null});
+  $('status').textContent=total<30?`Aufwärmen: ${Math.round(total)} / 30 Sekunden`:`${Math.round(seconds)} / 600 Sekunden – Fahrt ${Math.round(run.drivingSeconds)} s, Regen ${Math.round(run.rainDrivingSeconds)} s`;
+  if(seconds>=600)stop();
+ },1000);$('status').textContent='Messung läuft. Für die Bedienprüfung normal spielen.';
+};
+document.addEventListener('visibilitychange',()=>{if(run&&document.hidden)run.hidden++;});
+function stop(){if(!run)return;clearInterval(interval);const elapsedSeconds=Math.max(0,(performance.now()-run.started)/1000-30),sorted=[...run.times].sort((a,b)=>a-b),sum=run.times.reduce((n,t)=>n+t,0);
+ finished={formatVersion:2,...run.metadata,...details(),profile:run.native.mode,runtimeModule:$('game').contentDocument?.querySelector('script[type="module"][src]')?.src??null,warmupSeconds:30,elapsedSeconds,frames:sorted.length,fps:sum?sorted.length*1000/sum:null,medianMs:sorted[Math.floor(sorted.length*.5)]??null,p95Ms:sorted[Math.floor(sorted.length*.95)]??null,maxMs:sorted.at(-1)??null,hiddenEvents:run.hidden,native:run.native,scenes:run.scenes,memory:run.memory,qualifyingGameplay:{drivingSeconds:run.drivingSeconds,rainDrivingSeconds:run.rainDrivingSeconds,minimumDrivingSeconds:480,minimumRainSeconds:30,coverageSufficient:run.drivingSeconds>=480&&run.rainDrivingSeconds>=30},deviceAcceptance:'unassessed',measurement:'Browser RAF timestamps; physical-device identity and controls are human reported'};
+ run=null;finished.frameCadencePassed=elapsedSeconds>=600&&finished.p95Ms<=20&&finished.fps>=58&&finished.hiddenEvents===0;
+ $('result').textContent=JSON.stringify(finished,null,2);$('status').textContent='Messung beendet. Bedienelemente prüfen und Ergebnis speichern.';document.body.classList.remove('focus');}
+$('stop').onclick=stop;$('download').onclick=()=>{if(run)stop();if(!finished)return;finished={...finished,...details(),profile:finished.native.mode};const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(finished,null,2)],{type:'application/json'}));a.download='velvet-cruise-'+finished.profile+'-iphone.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);};
+</script></html>

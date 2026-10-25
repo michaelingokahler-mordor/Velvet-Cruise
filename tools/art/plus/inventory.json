@@ -1,0 +1,7449 @@
+{
+  "classicAtlasSha256": "8ea8b7d43f74e19dba37188b54e3a10ff8eac07c4d7e7c4d6a8ae5da415891ed",
+  "sprites": {
+    "redwood": {
+      "motif": "redwood",
+      "classicSize": [
+        84,
+        210
+      ],
+      "states": []
+    },
+    "palm_a": {
+      "motif": "palm_a",
+      "classicSize": [
+        72,
+        160
+      ],
+      "states": []
+    },
+    "neon_palm_lit": {
+      "motif": "neon_palm_lit",
+      "classicSize": [
+        70,
+        158
+      ],
+      "states": []
+    },
+    "pylon": {
+      "motif": "pylon",
+      "classicSize": [
+        64,
+        150
+      ],
+      "states": []
+    },
+    "palm_g": {
+      "motif": "palm_g",
+      "classicSize": [
+        46,
+        150
+      ],
+      "states": []
+    },
+    "antenna_lit": {
+      "motif": "antenna_lit",
+      "classicSize": [
+        30,
+        148
+      ],
+      "states": []
+    },
+    "lighthouse": {
+      "motif": "lighthouse",
+      "classicSize": [
+        48,
+        144
+      ],
+      "states": []
+    },
+    "palm_b": {
+      "motif": "palm_b",
+      "classicSize": [
+        64,
+        136
+      ],
+      "states": []
+    },
+    "tele_pole": {
+      "motif": "tele_pole",
+      "classicSize": [
+        30,
+        132
+      ],
+      "states": []
+    },
+    "palm_f": {
+      "motif": "palm_f",
+      "classicSize": [
+        84,
+        126
+      ],
+      "states": []
+    },
+    "lake_spruce": {
+      "motif": "lake_spruce",
+      "classicSize": [
+        60,
+        126
+      ],
+      "states": []
+    },
+    "palm_d": {
+      "motif": "palm_d",
+      "classicSize": [
+        96,
+        124
+      ],
+      "states": []
+    },
+    "palm_h": {
+      "motif": "palm_h",
+      "classicSize": [
+        66,
+        124
+      ],
+      "states": []
+    },
+    "night_pine": {
+      "motif": "night_pine",
+      "classicSize": [
+        58,
+        124
+      ],
+      "states": []
+    },
+    "pine": {
+      "motif": "pine",
+      "classicSize": [
+        58,
+        124
+      ],
+      "states": []
+    },
+    "snow_pine": {
+      "motif": "snow_pine",
+      "classicSize": [
+        58,
+        124
+      ],
+      "states": []
+    },
+    "pump_windmill": {
+      "motif": "pump_windmill",
+      "classicSize": [
+        50,
+        124
+      ],
+      "states": []
+    },
+    "hwy_lamp_lit": {
+      "motif": "hwy_lamp_lit",
+      "classicSize": [
+        26,
+        124
+      ],
+      "states": []
+    },
+    "night_pine_d": {
+      "motif": "night_pine_d",
+      "classicSize": [
+        75,
+        122
+      ],
+      "states": []
+    },
+    "night_pine_e": {
+      "motif": "night_pine_e",
+      "classicSize": [
+        41,
+        122
+      ],
+      "states": []
+    },
+    "night_pine_b": {
+      "motif": "night_pine_b",
+      "classicSize": [
+        37,
+        122
+      ],
+      "states": []
+    },
+    "city_lamp_lit": {
+      "motif": "city_lamp_lit",
+      "classicSize": [
+        28,
+        122
+      ],
+      "states": []
+    },
+    "truck_white": {
+      "motif": "truck_white",
+      "classicSize": [
+        96,
+        120
+      ],
+      "states": []
+    },
+    "water_tower": {
+      "motif": "water_tower",
+      "classicSize": [
+        56,
+        120
+      ],
+      "states": []
+    },
+    "gantry": {
+      "motif": "gantry",
+      "classicSize": [
+        256,
+        112
+      ],
+      "states": []
+    },
+    "gate": {
+      "motif": "gate",
+      "classicSize": [
+        256,
+        112
+      ],
+      "states": []
+    },
+    "gate_goal": {
+      "motif": "gate_goal",
+      "classicSize": [
+        256,
+        112
+      ],
+      "states": []
+    },
+    "neon_arch_lit": {
+      "motif": "neon_arch_lit",
+      "classicSize": [
+        256,
+        112
+      ],
+      "states": []
+    },
+    "windmill": {
+      "motif": "windmill",
+      "classicSize": [
+        66,
+        112
+      ],
+      "states": []
+    },
+    "palm_c": {
+      "motif": "palm_c",
+      "classicSize": [
+        56,
+        112
+      ],
+      "states": []
+    },
+    "saguaro": {
+      "motif": "saguaro",
+      "classicSize": [
+        46,
+        112
+      ],
+      "states": []
+    },
+    "mesa_rock": {
+      "motif": "mesa_rock",
+      "classicSize": [
+        100,
+        104
+      ],
+      "states": []
+    },
+    "birch": {
+      "motif": "birch",
+      "classicSize": [
+        60,
+        104
+      ],
+      "states": []
+    },
+    "cypress_tall": {
+      "motif": "cypress_tall",
+      "classicSize": [
+        26,
+        104
+      ],
+      "states": []
+    },
+    "signal_lit": {
+      "motif": "signal_lit",
+      "classicSize": [
+        22,
+        104
+      ],
+      "states": []
+    },
+    "cyp_c": {
+      "motif": "cyp_c",
+      "classicSize": [
+        59,
+        102
+      ],
+      "states": []
+    },
+    "stone_pine": {
+      "motif": "stone_pine",
+      "classicSize": [
+        79,
+        101
+      ],
+      "states": []
+    },
+    "saloon_lit": {
+      "motif": "saloon_lit",
+      "classicSize": [
+        104,
+        100
+      ],
+      "states": []
+    },
+    "gas_station": {
+      "motif": "gas_station",
+      "classicSize": [
+        130,
+        98
+      ],
+      "states": []
+    },
+    "cove_chapel": {
+      "motif": "cove_chapel",
+      "classicSize": [
+        104,
+        98
+      ],
+      "states": []
+    },
+    "cove_villa_b": {
+      "motif": "cove_villa_b",
+      "classicSize": [
+        112,
+        97
+      ],
+      "states": []
+    },
+    "cypress": {
+      "motif": "cypress",
+      "classicSize": [
+        112,
+        96
+      ],
+      "states": []
+    },
+    "observatory_lit": {
+      "motif": "observatory_lit",
+      "classicSize": [
+        100,
+        96
+      ],
+      "states": []
+    },
+    "gas_lamp_lit": {
+      "motif": "gas_lamp_lit",
+      "classicSize": [
+        20,
+        96
+      ],
+      "states": []
+    },
+    "lamp": {
+      "motif": "lamp",
+      "classicSize": [
+        16,
+        96
+      ],
+      "states": []
+    },
+    "lamp_lit": {
+      "motif": "lamp_lit",
+      "classicSize": [
+        16,
+        96
+      ],
+      "states": []
+    },
+    "cove_villa_a": {
+      "motif": "cove_villa_a",
+      "classicSize": [
+        112,
+        95
+      ],
+      "states": []
+    },
+    "cove_row": {
+      "motif": "cove_row",
+      "classicSize": [
+        116,
+        94
+      ],
+      "states": []
+    },
+    "cyp_d": {
+      "motif": "cyp_d",
+      "classicSize": [
+        96,
+        93
+      ],
+      "states": []
+    },
+    "dead_tree": {
+      "motif": "dead_tree",
+      "classicSize": [
+        66,
+        92
+      ],
+      "states": []
+    },
+    "snow_dead_tree": {
+      "motif": "snow_dead_tree",
+      "classicSize": [
+        66,
+        92
+      ],
+      "states": []
+    },
+    "neon_blade_d_lit": {
+      "motif": "neon_blade_d_lit",
+      "classicSize": [
+        36,
+        90
+      ],
+      "states": []
+    },
+    "cove_cube": {
+      "motif": "cove_cube",
+      "classicSize": [
+        112,
+        89
+      ],
+      "states": []
+    },
+    "cove_cottage": {
+      "motif": "cove_cottage",
+      "classicSize": [
+        112,
+        87
+      ],
+      "states": []
+    },
+    "winery": {
+      "motif": "winery",
+      "classicSize": [
+        116,
+        86
+      ],
+      "states": []
+    },
+    "fork_sign": {
+      "motif": "fork_sign",
+      "classicSize": [
+        132,
+        84
+      ],
+      "states": []
+    },
+    "neon_billboard_lit": {
+      "motif": "neon_billboard_lit",
+      "classicSize": [
+        104,
+        84
+      ],
+      "states": []
+    },
+    "sea_stack": {
+      "motif": "sea_stack",
+      "classicSize": [
+        96,
+        84
+      ],
+      "states": []
+    },
+    "neon_blade_b_lit": {
+      "motif": "neon_blade_b_lit",
+      "classicSize": [
+        34,
+        84
+      ],
+      "states": []
+    },
+    "lantern_lit": {
+      "motif": "lantern_lit",
+      "classicSize": [
+        18,
+        84
+      ],
+      "states": []
+    },
+    "house": {
+      "motif": "house",
+      "classicSize": [
+        96,
+        80
+      ],
+      "states": []
+    },
+    "house_lit": {
+      "motif": "house_lit",
+      "classicSize": [
+        96,
+        80
+      ],
+      "states": []
+    },
+    "palm_e": {
+      "motif": "palm_e",
+      "classicSize": [
+        52,
+        80
+      ],
+      "states": []
+    },
+    "neon_blade_a_lit": {
+      "motif": "neon_blade_a_lit",
+      "classicSize": [
+        32,
+        80
+      ],
+      "states": []
+    },
+    "radio_dish": {
+      "motif": "radio_dish",
+      "classicSize": [
+        64,
+        78
+      ],
+      "states": []
+    },
+    "night_pine_c": {
+      "motif": "night_pine_c",
+      "classicSize": [
+        55,
+        77
+      ],
+      "states": []
+    },
+    "cabin_snow_lit": {
+      "motif": "cabin_snow_lit",
+      "classicSize": [
+        104,
+        76
+      ],
+      "states": []
+    },
+    "lifeguard": {
+      "motif": "lifeguard",
+      "classicSize": [
+        64,
+        76
+      ],
+      "states": []
+    },
+    "neon_blade_c_lit": {
+      "motif": "neon_blade_c_lit",
+      "classicSize": [
+        30,
+        76
+      ],
+      "states": []
+    },
+    "cove_village_a": {
+      "motif": "cove_village_a",
+      "classicSize": [
+        150,
+        75
+      ],
+      "states": []
+    },
+    "cove_village_b": {
+      "motif": "cove_village_b",
+      "classicSize": [
+        118,
+        74
+      ],
+      "states": []
+    },
+    "store_lit": {
+      "motif": "store_lit",
+      "classicSize": [
+        84,
+        74
+      ],
+      "states": []
+    },
+    "bluff_rock_b": {
+      "motif": "bluff_rock_b",
+      "classicSize": [
+        60,
+        74
+      ],
+      "states": []
+    },
+    "cove_rock_b": {
+      "motif": "cove_rock_b",
+      "classicSize": [
+        60,
+        74
+      ],
+      "states": []
+    },
+    "point_rock_b": {
+      "motif": "point_rock_b",
+      "classicSize": [
+        60,
+        74
+      ],
+      "states": []
+    },
+    "summit_rock_b": {
+      "motif": "summit_rock_b",
+      "classicSize": [
+        60,
+        74
+      ],
+      "states": []
+    },
+    "snow_fir": {
+      "motif": "snow_fir",
+      "classicSize": [
+        40,
+        74
+      ],
+      "states": []
+    },
+    "cabin_lit": {
+      "motif": "cabin_lit",
+      "classicSize": [
+        104,
+        72
+      ],
+      "states": []
+    },
+    "van_blue": {
+      "motif": "van_blue",
+      "classicSize": [
+        74,
+        72
+      ],
+      "states": []
+    },
+    "van_orange": {
+      "motif": "van_orange",
+      "classicSize": [
+        74,
+        72
+      ],
+      "states": []
+    },
+    "cyp_e": {
+      "motif": "cyp_e",
+      "classicSize": [
+        72,
+        70
+      ],
+      "states": []
+    },
+    "olive": {
+      "motif": "olive",
+      "classicSize": [
+        72,
+        70
+      ],
+      "states": []
+    },
+    "telescope": {
+      "motif": "telescope",
+      "classicSize": [
+        44,
+        68
+      ],
+      "states": []
+    },
+    "shack": {
+      "motif": "shack",
+      "classicSize": [
+        104,
+        64
+      ],
+      "states": []
+    },
+    "billboard_a": {
+      "motif": "billboard_a",
+      "classicSize": [
+        96,
+        64
+      ],
+      "states": []
+    },
+    "billboard_b": {
+      "motif": "billboard_b",
+      "classicSize": [
+        96,
+        64
+      ],
+      "states": []
+    },
+    "wagon": {
+      "motif": "wagon",
+      "classicSize": [
+        80,
+        64
+      ],
+      "states": []
+    },
+    "snow_pole": {
+      "motif": "snow_pole",
+      "classicSize": [
+        10,
+        60
+      ],
+      "states": []
+    },
+    "bluff_rock_d": {
+      "motif": "bluff_rock_d",
+      "classicSize": [
+        100,
+        59
+      ],
+      "states": []
+    },
+    "cove_rock_d": {
+      "motif": "cove_rock_d",
+      "classicSize": [
+        100,
+        59
+      ],
+      "states": []
+    },
+    "point_rock_d": {
+      "motif": "point_rock_d",
+      "classicSize": [
+        100,
+        59
+      ],
+      "states": []
+    },
+    "summit_rock_d": {
+      "motif": "summit_rock_d",
+      "classicSize": [
+        100,
+        59
+      ],
+      "states": []
+    },
+    "hwy_sign": {
+      "motif": "hwy_sign",
+      "classicSize": [
+        64,
+        58
+      ],
+      "states": []
+    },
+    "bus_stop_lit": {
+      "motif": "bus_stop_lit",
+      "classicSize": [
+        72,
+        54
+      ],
+      "states": []
+    },
+    "crystal_lit": {
+      "motif": "crystal_lit",
+      "classicSize": [
+        48,
+        52
+      ],
+      "states": []
+    },
+    "umbrella_a": {
+      "motif": "umbrella_a",
+      "classicSize": [
+        40,
+        52
+      ],
+      "states": []
+    },
+    "umbrella_b": {
+      "motif": "umbrella_b",
+      "classicSize": [
+        40,
+        52
+      ],
+      "states": []
+    },
+    "ice_sign": {
+      "motif": "ice_sign",
+      "classicSize": [
+        24,
+        52
+      ],
+      "states": []
+    },
+    "trophy_glow": {
+      "motif": "trophy_glow",
+      "classicSize": [
+        44,
+        51
+      ],
+      "states": []
+    },
+    "trophy_glow_a": {
+      "motif": "trophy_glow_a",
+      "classicSize": [
+        44,
+        51
+      ],
+      "states": []
+    },
+    "trophy_glow_b": {
+      "motif": "trophy_glow_b",
+      "classicSize": [
+        44,
+        51
+      ],
+      "states": []
+    },
+    "trophy_glow_c": {
+      "motif": "trophy_glow_c",
+      "classicSize": [
+        44,
+        51
+      ],
+      "states": []
+    },
+    "trophy_glow_d": {
+      "motif": "trophy_glow_d",
+      "classicSize": [
+        44,
+        51
+      ],
+      "states": []
+    },
+    "bush_d": {
+      "motif": "bush_d",
+      "classicSize": [
+        40,
+        50
+      ],
+      "states": []
+    },
+    "bluff_rock_a": {
+      "motif": "bluff_rock_a",
+      "classicSize": [
+        92,
+        49
+      ],
+      "states": []
+    },
+    "cove_rock_a": {
+      "motif": "cove_rock_a",
+      "classicSize": [
+        92,
+        49
+      ],
+      "states": []
+    },
+    "point_rock_a": {
+      "motif": "point_rock_a",
+      "classicSize": [
+        92,
+        49
+      ],
+      "states": []
+    },
+    "summit_rock_a": {
+      "motif": "summit_rock_a",
+      "classicSize": [
+        92,
+        49
+      ],
+      "states": []
+    },
+    "player_azure_brake_left": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "brake",
+        "left"
+      ]
+    },
+    "player_azure_brake_right": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "brake",
+        "right"
+      ]
+    },
+    "player_azure_brake_straight": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "brake",
+        "straight"
+      ]
+    },
+    "player_azure_closed_brake_left": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "brake",
+        "left"
+      ]
+    },
+    "player_azure_closed_brake_right": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "brake",
+        "right"
+      ]
+    },
+    "player_azure_closed_brake_straight": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "brake",
+        "straight"
+      ]
+    },
+    "player_azure_closed_empty": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "empty"
+      ]
+    },
+    "player_azure_closed_left_0": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "left",
+        "0"
+      ]
+    },
+    "player_azure_closed_left_1": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "left",
+        "1"
+      ]
+    },
+    "player_azure_closed_right_0": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "right",
+        "0"
+      ]
+    },
+    "player_azure_closed_right_1": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "right",
+        "1"
+      ]
+    },
+    "player_azure_closed_straight_0": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "straight",
+        "0"
+      ]
+    },
+    "player_azure_closed_straight_1": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "straight",
+        "1"
+      ]
+    },
+    "player_azure_empty": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "empty"
+      ]
+    },
+    "player_azure_left_0": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "left",
+        "0"
+      ]
+    },
+    "player_azure_left_1": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "left",
+        "1"
+      ]
+    },
+    "player_azure_right_0": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "right",
+        "0"
+      ]
+    },
+    "player_azure_right_1": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "right",
+        "1"
+      ]
+    },
+    "player_azure_roof1_brake_left": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "brake",
+        "left"
+      ]
+    },
+    "player_azure_roof1_brake_right": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "brake",
+        "right"
+      ]
+    },
+    "player_azure_roof1_brake_straight": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "brake",
+        "straight"
+      ]
+    },
+    "player_azure_roof1_empty": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "empty"
+      ]
+    },
+    "player_azure_roof1_left_0": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "left",
+        "0"
+      ]
+    },
+    "player_azure_roof1_left_1": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "left",
+        "1"
+      ]
+    },
+    "player_azure_roof1_right_0": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "right",
+        "0"
+      ]
+    },
+    "player_azure_roof1_right_1": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "right",
+        "1"
+      ]
+    },
+    "player_azure_roof1_straight_0": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "straight",
+        "0"
+      ]
+    },
+    "player_azure_roof1_straight_1": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "straight",
+        "1"
+      ]
+    },
+    "player_azure_roof2_brake_left": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "brake",
+        "left"
+      ]
+    },
+    "player_azure_roof2_brake_right": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "brake",
+        "right"
+      ]
+    },
+    "player_azure_roof2_brake_straight": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "brake",
+        "straight"
+      ]
+    },
+    "player_azure_roof2_empty": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "empty"
+      ]
+    },
+    "player_azure_roof2_left_0": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "left",
+        "0"
+      ]
+    },
+    "player_azure_roof2_left_1": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "left",
+        "1"
+      ]
+    },
+    "player_azure_roof2_right_0": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "right",
+        "0"
+      ]
+    },
+    "player_azure_roof2_right_1": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "right",
+        "1"
+      ]
+    },
+    "player_azure_roof2_straight_0": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "straight",
+        "0"
+      ]
+    },
+    "player_azure_roof2_straight_1": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "straight",
+        "1"
+      ]
+    },
+    "player_azure_roof3_brake_left": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "brake",
+        "left"
+      ]
+    },
+    "player_azure_roof3_brake_right": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "brake",
+        "right"
+      ]
+    },
+    "player_azure_roof3_brake_straight": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "brake",
+        "straight"
+      ]
+    },
+    "player_azure_roof3_empty": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "empty"
+      ]
+    },
+    "player_azure_roof3_left_0": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "left",
+        "0"
+      ]
+    },
+    "player_azure_roof3_left_1": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "left",
+        "1"
+      ]
+    },
+    "player_azure_roof3_right_0": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "right",
+        "0"
+      ]
+    },
+    "player_azure_roof3_right_1": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "right",
+        "1"
+      ]
+    },
+    "player_azure_roof3_straight_0": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "straight",
+        "0"
+      ]
+    },
+    "player_azure_roof3_straight_1": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "straight",
+        "1"
+      ]
+    },
+    "player_azure_roof4_brake_left": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "brake",
+        "left"
+      ]
+    },
+    "player_azure_roof4_brake_right": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "brake",
+        "right"
+      ]
+    },
+    "player_azure_roof4_brake_straight": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "brake",
+        "straight"
+      ]
+    },
+    "player_azure_roof4_empty": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "empty"
+      ]
+    },
+    "player_azure_roof4_left_0": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "left",
+        "0"
+      ]
+    },
+    "player_azure_roof4_left_1": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "left",
+        "1"
+      ]
+    },
+    "player_azure_roof4_right_0": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "right",
+        "0"
+      ]
+    },
+    "player_azure_roof4_right_1": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "right",
+        "1"
+      ]
+    },
+    "player_azure_roof4_straight_0": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "straight",
+        "0"
+      ]
+    },
+    "player_azure_roof4_straight_1": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "straight",
+        "1"
+      ]
+    },
+    "player_azure_roof5_brake_left": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "brake",
+        "left"
+      ]
+    },
+    "player_azure_roof5_brake_right": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "brake",
+        "right"
+      ]
+    },
+    "player_azure_roof5_brake_straight": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "brake",
+        "straight"
+      ]
+    },
+    "player_azure_roof5_empty": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "empty"
+      ]
+    },
+    "player_azure_roof5_left_0": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "left",
+        "0"
+      ]
+    },
+    "player_azure_roof5_left_1": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "left",
+        "1"
+      ]
+    },
+    "player_azure_roof5_right_0": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "right",
+        "0"
+      ]
+    },
+    "player_azure_roof5_right_1": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "right",
+        "1"
+      ]
+    },
+    "player_azure_roof5_straight_0": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "straight",
+        "0"
+      ]
+    },
+    "player_azure_roof5_straight_1": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "straight",
+        "1"
+      ]
+    },
+    "player_azure_roof6_brake_left": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "brake",
+        "left"
+      ]
+    },
+    "player_azure_roof6_brake_right": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "brake",
+        "right"
+      ]
+    },
+    "player_azure_roof6_brake_straight": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "brake",
+        "straight"
+      ]
+    },
+    "player_azure_roof6_empty": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "empty"
+      ]
+    },
+    "player_azure_roof6_left_0": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "left",
+        "0"
+      ]
+    },
+    "player_azure_roof6_left_1": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "left",
+        "1"
+      ]
+    },
+    "player_azure_roof6_right_0": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "right",
+        "0"
+      ]
+    },
+    "player_azure_roof6_right_1": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "right",
+        "1"
+      ]
+    },
+    "player_azure_roof6_straight_0": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "straight",
+        "0"
+      ]
+    },
+    "player_azure_roof6_straight_1": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "straight",
+        "1"
+      ]
+    },
+    "player_azure_roof_mask_left": {
+      "motif": "player_azure_roof_mask",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "left"
+      ]
+    },
+    "player_azure_roof_mask_right": {
+      "motif": "player_azure_roof_mask",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "right"
+      ]
+    },
+    "player_azure_roof_mask_straight": {
+      "motif": "player_azure_roof_mask",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "straight"
+      ]
+    },
+    "player_azure_straight_0": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "straight",
+        "0"
+      ]
+    },
+    "player_azure_straight_1": {
+      "motif": "player_azure",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "straight",
+        "1"
+      ]
+    },
+    "player_blue_brake_left": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "brake",
+        "left"
+      ]
+    },
+    "player_blue_brake_right": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "brake",
+        "right"
+      ]
+    },
+    "player_blue_brake_straight": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "brake",
+        "straight"
+      ]
+    },
+    "player_blue_closed_brake_left": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "brake",
+        "left"
+      ]
+    },
+    "player_blue_closed_brake_right": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "brake",
+        "right"
+      ]
+    },
+    "player_blue_closed_brake_straight": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "brake",
+        "straight"
+      ]
+    },
+    "player_blue_closed_empty": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "empty"
+      ]
+    },
+    "player_blue_closed_left_0": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "left",
+        "0"
+      ]
+    },
+    "player_blue_closed_left_1": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "left",
+        "1"
+      ]
+    },
+    "player_blue_closed_right_0": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "right",
+        "0"
+      ]
+    },
+    "player_blue_closed_right_1": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "right",
+        "1"
+      ]
+    },
+    "player_blue_closed_straight_0": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "straight",
+        "0"
+      ]
+    },
+    "player_blue_closed_straight_1": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "straight",
+        "1"
+      ]
+    },
+    "player_blue_empty": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "empty"
+      ]
+    },
+    "player_blue_left_0": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "left",
+        "0"
+      ]
+    },
+    "player_blue_left_1": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "left",
+        "1"
+      ]
+    },
+    "player_blue_right_0": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "right",
+        "0"
+      ]
+    },
+    "player_blue_right_1": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "right",
+        "1"
+      ]
+    },
+    "player_blue_roof1_brake_left": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "brake",
+        "left"
+      ]
+    },
+    "player_blue_roof1_brake_right": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "brake",
+        "right"
+      ]
+    },
+    "player_blue_roof1_brake_straight": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "brake",
+        "straight"
+      ]
+    },
+    "player_blue_roof1_empty": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "empty"
+      ]
+    },
+    "player_blue_roof1_left_0": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "left",
+        "0"
+      ]
+    },
+    "player_blue_roof1_left_1": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "left",
+        "1"
+      ]
+    },
+    "player_blue_roof1_right_0": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "right",
+        "0"
+      ]
+    },
+    "player_blue_roof1_right_1": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "right",
+        "1"
+      ]
+    },
+    "player_blue_roof1_straight_0": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "straight",
+        "0"
+      ]
+    },
+    "player_blue_roof1_straight_1": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "straight",
+        "1"
+      ]
+    },
+    "player_blue_roof2_brake_left": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "brake",
+        "left"
+      ]
+    },
+    "player_blue_roof2_brake_right": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "brake",
+        "right"
+      ]
+    },
+    "player_blue_roof2_brake_straight": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "brake",
+        "straight"
+      ]
+    },
+    "player_blue_roof2_empty": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "empty"
+      ]
+    },
+    "player_blue_roof2_left_0": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "left",
+        "0"
+      ]
+    },
+    "player_blue_roof2_left_1": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "left",
+        "1"
+      ]
+    },
+    "player_blue_roof2_right_0": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "right",
+        "0"
+      ]
+    },
+    "player_blue_roof2_right_1": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "right",
+        "1"
+      ]
+    },
+    "player_blue_roof2_straight_0": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "straight",
+        "0"
+      ]
+    },
+    "player_blue_roof2_straight_1": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "straight",
+        "1"
+      ]
+    },
+    "player_blue_roof3_brake_left": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "brake",
+        "left"
+      ]
+    },
+    "player_blue_roof3_brake_right": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "brake",
+        "right"
+      ]
+    },
+    "player_blue_roof3_brake_straight": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "brake",
+        "straight"
+      ]
+    },
+    "player_blue_roof3_empty": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "empty"
+      ]
+    },
+    "player_blue_roof3_left_0": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "left",
+        "0"
+      ]
+    },
+    "player_blue_roof3_left_1": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "left",
+        "1"
+      ]
+    },
+    "player_blue_roof3_right_0": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "right",
+        "0"
+      ]
+    },
+    "player_blue_roof3_right_1": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "right",
+        "1"
+      ]
+    },
+    "player_blue_roof3_straight_0": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "straight",
+        "0"
+      ]
+    },
+    "player_blue_roof3_straight_1": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "straight",
+        "1"
+      ]
+    },
+    "player_blue_roof4_brake_left": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "brake",
+        "left"
+      ]
+    },
+    "player_blue_roof4_brake_right": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "brake",
+        "right"
+      ]
+    },
+    "player_blue_roof4_brake_straight": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "brake",
+        "straight"
+      ]
+    },
+    "player_blue_roof4_empty": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "empty"
+      ]
+    },
+    "player_blue_roof4_left_0": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "left",
+        "0"
+      ]
+    },
+    "player_blue_roof4_left_1": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "left",
+        "1"
+      ]
+    },
+    "player_blue_roof4_right_0": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "right",
+        "0"
+      ]
+    },
+    "player_blue_roof4_right_1": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "right",
+        "1"
+      ]
+    },
+    "player_blue_roof4_straight_0": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "straight",
+        "0"
+      ]
+    },
+    "player_blue_roof4_straight_1": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "straight",
+        "1"
+      ]
+    },
+    "player_blue_roof5_brake_left": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "brake",
+        "left"
+      ]
+    },
+    "player_blue_roof5_brake_right": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "brake",
+        "right"
+      ]
+    },
+    "player_blue_roof5_brake_straight": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "brake",
+        "straight"
+      ]
+    },
+    "player_blue_roof5_empty": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "empty"
+      ]
+    },
+    "player_blue_roof5_left_0": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "left",
+        "0"
+      ]
+    },
+    "player_blue_roof5_left_1": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "left",
+        "1"
+      ]
+    },
+    "player_blue_roof5_right_0": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "right",
+        "0"
+      ]
+    },
+    "player_blue_roof5_right_1": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "right",
+        "1"
+      ]
+    },
+    "player_blue_roof5_straight_0": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "straight",
+        "0"
+      ]
+    },
+    "player_blue_roof5_straight_1": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "straight",
+        "1"
+      ]
+    },
+    "player_blue_roof6_brake_left": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "brake",
+        "left"
+      ]
+    },
+    "player_blue_roof6_brake_right": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "brake",
+        "right"
+      ]
+    },
+    "player_blue_roof6_brake_straight": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "brake",
+        "straight"
+      ]
+    },
+    "player_blue_roof6_empty": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "empty"
+      ]
+    },
+    "player_blue_roof6_left_0": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "left",
+        "0"
+      ]
+    },
+    "player_blue_roof6_left_1": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "left",
+        "1"
+      ]
+    },
+    "player_blue_roof6_right_0": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "right",
+        "0"
+      ]
+    },
+    "player_blue_roof6_right_1": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "right",
+        "1"
+      ]
+    },
+    "player_blue_roof6_straight_0": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "straight",
+        "0"
+      ]
+    },
+    "player_blue_roof6_straight_1": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "straight",
+        "1"
+      ]
+    },
+    "player_blue_roof_mask_left": {
+      "motif": "player_blue_roof_mask",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "left"
+      ]
+    },
+    "player_blue_roof_mask_right": {
+      "motif": "player_blue_roof_mask",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "right"
+      ]
+    },
+    "player_blue_roof_mask_straight": {
+      "motif": "player_blue_roof_mask",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "straight"
+      ]
+    },
+    "player_blue_straight_0": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "straight",
+        "0"
+      ]
+    },
+    "player_blue_straight_1": {
+      "motif": "player_blue",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "straight",
+        "1"
+      ]
+    },
+    "player_brake_left": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "brake",
+        "left"
+      ]
+    },
+    "player_brake_right": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "brake",
+        "right"
+      ]
+    },
+    "player_brake_straight": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "brake",
+        "straight"
+      ]
+    },
+    "player_closed_brake_left": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "brake",
+        "left"
+      ]
+    },
+    "player_closed_brake_right": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "brake",
+        "right"
+      ]
+    },
+    "player_closed_brake_straight": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "brake",
+        "straight"
+      ]
+    },
+    "player_closed_empty": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "empty"
+      ]
+    },
+    "player_closed_left_0": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "left",
+        "0"
+      ]
+    },
+    "player_closed_left_1": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "left",
+        "1"
+      ]
+    },
+    "player_closed_right_0": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "right",
+        "0"
+      ]
+    },
+    "player_closed_right_1": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "right",
+        "1"
+      ]
+    },
+    "player_closed_straight_0": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "straight",
+        "0"
+      ]
+    },
+    "player_closed_straight_1": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "straight",
+        "1"
+      ]
+    },
+    "player_empty": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "empty"
+      ]
+    },
+    "player_green_brake_left": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "brake",
+        "left"
+      ]
+    },
+    "player_green_brake_right": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "brake",
+        "right"
+      ]
+    },
+    "player_green_brake_straight": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "brake",
+        "straight"
+      ]
+    },
+    "player_green_closed_brake_left": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "brake",
+        "left"
+      ]
+    },
+    "player_green_closed_brake_right": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "brake",
+        "right"
+      ]
+    },
+    "player_green_closed_brake_straight": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "brake",
+        "straight"
+      ]
+    },
+    "player_green_closed_empty": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "empty"
+      ]
+    },
+    "player_green_closed_left_0": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "left",
+        "0"
+      ]
+    },
+    "player_green_closed_left_1": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "left",
+        "1"
+      ]
+    },
+    "player_green_closed_right_0": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "right",
+        "0"
+      ]
+    },
+    "player_green_closed_right_1": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "right",
+        "1"
+      ]
+    },
+    "player_green_closed_straight_0": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "straight",
+        "0"
+      ]
+    },
+    "player_green_closed_straight_1": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "straight",
+        "1"
+      ]
+    },
+    "player_green_empty": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "empty"
+      ]
+    },
+    "player_green_left_0": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "left",
+        "0"
+      ]
+    },
+    "player_green_left_1": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "left",
+        "1"
+      ]
+    },
+    "player_green_right_0": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "right",
+        "0"
+      ]
+    },
+    "player_green_right_1": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "right",
+        "1"
+      ]
+    },
+    "player_green_roof1_brake_left": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "brake",
+        "left"
+      ]
+    },
+    "player_green_roof1_brake_right": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "brake",
+        "right"
+      ]
+    },
+    "player_green_roof1_brake_straight": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "brake",
+        "straight"
+      ]
+    },
+    "player_green_roof1_empty": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "empty"
+      ]
+    },
+    "player_green_roof1_left_0": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "left",
+        "0"
+      ]
+    },
+    "player_green_roof1_left_1": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "left",
+        "1"
+      ]
+    },
+    "player_green_roof1_right_0": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "right",
+        "0"
+      ]
+    },
+    "player_green_roof1_right_1": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "right",
+        "1"
+      ]
+    },
+    "player_green_roof1_straight_0": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "straight",
+        "0"
+      ]
+    },
+    "player_green_roof1_straight_1": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "straight",
+        "1"
+      ]
+    },
+    "player_green_roof2_brake_left": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "brake",
+        "left"
+      ]
+    },
+    "player_green_roof2_brake_right": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "brake",
+        "right"
+      ]
+    },
+    "player_green_roof2_brake_straight": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "brake",
+        "straight"
+      ]
+    },
+    "player_green_roof2_empty": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "empty"
+      ]
+    },
+    "player_green_roof2_left_0": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "left",
+        "0"
+      ]
+    },
+    "player_green_roof2_left_1": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "left",
+        "1"
+      ]
+    },
+    "player_green_roof2_right_0": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "right",
+        "0"
+      ]
+    },
+    "player_green_roof2_right_1": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "right",
+        "1"
+      ]
+    },
+    "player_green_roof2_straight_0": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "straight",
+        "0"
+      ]
+    },
+    "player_green_roof2_straight_1": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "straight",
+        "1"
+      ]
+    },
+    "player_green_roof3_brake_left": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "brake",
+        "left"
+      ]
+    },
+    "player_green_roof3_brake_right": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "brake",
+        "right"
+      ]
+    },
+    "player_green_roof3_brake_straight": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "brake",
+        "straight"
+      ]
+    },
+    "player_green_roof3_empty": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "empty"
+      ]
+    },
+    "player_green_roof3_left_0": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "left",
+        "0"
+      ]
+    },
+    "player_green_roof3_left_1": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "left",
+        "1"
+      ]
+    },
+    "player_green_roof3_right_0": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "right",
+        "0"
+      ]
+    },
+    "player_green_roof3_right_1": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "right",
+        "1"
+      ]
+    },
+    "player_green_roof3_straight_0": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "straight",
+        "0"
+      ]
+    },
+    "player_green_roof3_straight_1": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "straight",
+        "1"
+      ]
+    },
+    "player_green_roof4_brake_left": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "brake",
+        "left"
+      ]
+    },
+    "player_green_roof4_brake_right": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "brake",
+        "right"
+      ]
+    },
+    "player_green_roof4_brake_straight": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "brake",
+        "straight"
+      ]
+    },
+    "player_green_roof4_empty": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "empty"
+      ]
+    },
+    "player_green_roof4_left_0": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "left",
+        "0"
+      ]
+    },
+    "player_green_roof4_left_1": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "left",
+        "1"
+      ]
+    },
+    "player_green_roof4_right_0": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "right",
+        "0"
+      ]
+    },
+    "player_green_roof4_right_1": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "right",
+        "1"
+      ]
+    },
+    "player_green_roof4_straight_0": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "straight",
+        "0"
+      ]
+    },
+    "player_green_roof4_straight_1": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "straight",
+        "1"
+      ]
+    },
+    "player_green_roof5_brake_left": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "brake",
+        "left"
+      ]
+    },
+    "player_green_roof5_brake_right": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "brake",
+        "right"
+      ]
+    },
+    "player_green_roof5_brake_straight": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "brake",
+        "straight"
+      ]
+    },
+    "player_green_roof5_empty": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "empty"
+      ]
+    },
+    "player_green_roof5_left_0": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "left",
+        "0"
+      ]
+    },
+    "player_green_roof5_left_1": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "left",
+        "1"
+      ]
+    },
+    "player_green_roof5_right_0": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "right",
+        "0"
+      ]
+    },
+    "player_green_roof5_right_1": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "right",
+        "1"
+      ]
+    },
+    "player_green_roof5_straight_0": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "straight",
+        "0"
+      ]
+    },
+    "player_green_roof5_straight_1": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "straight",
+        "1"
+      ]
+    },
+    "player_green_roof6_brake_left": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "brake",
+        "left"
+      ]
+    },
+    "player_green_roof6_brake_right": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "brake",
+        "right"
+      ]
+    },
+    "player_green_roof6_brake_straight": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "brake",
+        "straight"
+      ]
+    },
+    "player_green_roof6_empty": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "empty"
+      ]
+    },
+    "player_green_roof6_left_0": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "left",
+        "0"
+      ]
+    },
+    "player_green_roof6_left_1": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "left",
+        "1"
+      ]
+    },
+    "player_green_roof6_right_0": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "right",
+        "0"
+      ]
+    },
+    "player_green_roof6_right_1": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "right",
+        "1"
+      ]
+    },
+    "player_green_roof6_straight_0": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "straight",
+        "0"
+      ]
+    },
+    "player_green_roof6_straight_1": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "straight",
+        "1"
+      ]
+    },
+    "player_green_roof_mask_left": {
+      "motif": "player_green_roof_mask",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "left"
+      ]
+    },
+    "player_green_roof_mask_right": {
+      "motif": "player_green_roof_mask",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "right"
+      ]
+    },
+    "player_green_roof_mask_straight": {
+      "motif": "player_green_roof_mask",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "straight"
+      ]
+    },
+    "player_green_straight_0": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "straight",
+        "0"
+      ]
+    },
+    "player_green_straight_1": {
+      "motif": "player_green",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "straight",
+        "1"
+      ]
+    },
+    "player_left_0": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "left",
+        "0"
+      ]
+    },
+    "player_left_1": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "left",
+        "1"
+      ]
+    },
+    "player_right_0": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "right",
+        "0"
+      ]
+    },
+    "player_right_1": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "right",
+        "1"
+      ]
+    },
+    "player_roof1_brake_left": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "brake",
+        "left"
+      ]
+    },
+    "player_roof1_brake_right": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "brake",
+        "right"
+      ]
+    },
+    "player_roof1_brake_straight": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "brake",
+        "straight"
+      ]
+    },
+    "player_roof1_empty": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "empty"
+      ]
+    },
+    "player_roof1_left_0": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "left",
+        "0"
+      ]
+    },
+    "player_roof1_left_1": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "left",
+        "1"
+      ]
+    },
+    "player_roof1_right_0": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "right",
+        "0"
+      ]
+    },
+    "player_roof1_right_1": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "right",
+        "1"
+      ]
+    },
+    "player_roof1_straight_0": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "straight",
+        "0"
+      ]
+    },
+    "player_roof1_straight_1": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "straight",
+        "1"
+      ]
+    },
+    "player_roof2_brake_left": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "brake",
+        "left"
+      ]
+    },
+    "player_roof2_brake_right": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "brake",
+        "right"
+      ]
+    },
+    "player_roof2_brake_straight": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "brake",
+        "straight"
+      ]
+    },
+    "player_roof2_empty": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "empty"
+      ]
+    },
+    "player_roof2_left_0": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "left",
+        "0"
+      ]
+    },
+    "player_roof2_left_1": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "left",
+        "1"
+      ]
+    },
+    "player_roof2_right_0": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "right",
+        "0"
+      ]
+    },
+    "player_roof2_right_1": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "right",
+        "1"
+      ]
+    },
+    "player_roof2_straight_0": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "straight",
+        "0"
+      ]
+    },
+    "player_roof2_straight_1": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "straight",
+        "1"
+      ]
+    },
+    "player_roof3_brake_left": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "brake",
+        "left"
+      ]
+    },
+    "player_roof3_brake_right": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "brake",
+        "right"
+      ]
+    },
+    "player_roof3_brake_straight": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "brake",
+        "straight"
+      ]
+    },
+    "player_roof3_empty": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "empty"
+      ]
+    },
+    "player_roof3_left_0": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "left",
+        "0"
+      ]
+    },
+    "player_roof3_left_1": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "left",
+        "1"
+      ]
+    },
+    "player_roof3_right_0": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "right",
+        "0"
+      ]
+    },
+    "player_roof3_right_1": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "right",
+        "1"
+      ]
+    },
+    "player_roof3_straight_0": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "straight",
+        "0"
+      ]
+    },
+    "player_roof3_straight_1": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "straight",
+        "1"
+      ]
+    },
+    "player_roof4_brake_left": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "brake",
+        "left"
+      ]
+    },
+    "player_roof4_brake_right": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "brake",
+        "right"
+      ]
+    },
+    "player_roof4_brake_straight": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "brake",
+        "straight"
+      ]
+    },
+    "player_roof4_empty": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "empty"
+      ]
+    },
+    "player_roof4_left_0": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "left",
+        "0"
+      ]
+    },
+    "player_roof4_left_1": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "left",
+        "1"
+      ]
+    },
+    "player_roof4_right_0": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "right",
+        "0"
+      ]
+    },
+    "player_roof4_right_1": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "right",
+        "1"
+      ]
+    },
+    "player_roof4_straight_0": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "straight",
+        "0"
+      ]
+    },
+    "player_roof4_straight_1": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "straight",
+        "1"
+      ]
+    },
+    "player_roof5_brake_left": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "brake",
+        "left"
+      ]
+    },
+    "player_roof5_brake_right": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "brake",
+        "right"
+      ]
+    },
+    "player_roof5_brake_straight": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "brake",
+        "straight"
+      ]
+    },
+    "player_roof5_empty": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "empty"
+      ]
+    },
+    "player_roof5_left_0": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "left",
+        "0"
+      ]
+    },
+    "player_roof5_left_1": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "left",
+        "1"
+      ]
+    },
+    "player_roof5_right_0": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "right",
+        "0"
+      ]
+    },
+    "player_roof5_right_1": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "right",
+        "1"
+      ]
+    },
+    "player_roof5_straight_0": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "straight",
+        "0"
+      ]
+    },
+    "player_roof5_straight_1": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "straight",
+        "1"
+      ]
+    },
+    "player_roof6_brake_left": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "brake",
+        "left"
+      ]
+    },
+    "player_roof6_brake_right": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "brake",
+        "right"
+      ]
+    },
+    "player_roof6_brake_straight": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "brake",
+        "straight"
+      ]
+    },
+    "player_roof6_empty": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "empty"
+      ]
+    },
+    "player_roof6_left_0": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "left",
+        "0"
+      ]
+    },
+    "player_roof6_left_1": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "left",
+        "1"
+      ]
+    },
+    "player_roof6_right_0": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "right",
+        "0"
+      ]
+    },
+    "player_roof6_right_1": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "right",
+        "1"
+      ]
+    },
+    "player_roof6_straight_0": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "straight",
+        "0"
+      ]
+    },
+    "player_roof6_straight_1": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "straight",
+        "1"
+      ]
+    },
+    "player_roof_mask_left": {
+      "motif": "player_roof_mask",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "left"
+      ]
+    },
+    "player_roof_mask_right": {
+      "motif": "player_roof_mask",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "right"
+      ]
+    },
+    "player_roof_mask_straight": {
+      "motif": "player_roof_mask",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "straight"
+      ]
+    },
+    "player_silver_brake_left": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "brake",
+        "left"
+      ]
+    },
+    "player_silver_brake_right": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "brake",
+        "right"
+      ]
+    },
+    "player_silver_brake_straight": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "brake",
+        "straight"
+      ]
+    },
+    "player_silver_closed_brake_left": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "brake",
+        "left"
+      ]
+    },
+    "player_silver_closed_brake_right": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "brake",
+        "right"
+      ]
+    },
+    "player_silver_closed_brake_straight": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "brake",
+        "straight"
+      ]
+    },
+    "player_silver_closed_empty": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "empty"
+      ]
+    },
+    "player_silver_closed_left_0": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "left",
+        "0"
+      ]
+    },
+    "player_silver_closed_left_1": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "left",
+        "1"
+      ]
+    },
+    "player_silver_closed_right_0": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "right",
+        "0"
+      ]
+    },
+    "player_silver_closed_right_1": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "right",
+        "1"
+      ]
+    },
+    "player_silver_closed_straight_0": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "straight",
+        "0"
+      ]
+    },
+    "player_silver_closed_straight_1": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "straight",
+        "1"
+      ]
+    },
+    "player_silver_empty": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "empty"
+      ]
+    },
+    "player_silver_left_0": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "left",
+        "0"
+      ]
+    },
+    "player_silver_left_1": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "left",
+        "1"
+      ]
+    },
+    "player_silver_right_0": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "right",
+        "0"
+      ]
+    },
+    "player_silver_right_1": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "right",
+        "1"
+      ]
+    },
+    "player_silver_roof1_brake_left": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "brake",
+        "left"
+      ]
+    },
+    "player_silver_roof1_brake_right": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "brake",
+        "right"
+      ]
+    },
+    "player_silver_roof1_brake_straight": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "brake",
+        "straight"
+      ]
+    },
+    "player_silver_roof1_empty": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "empty"
+      ]
+    },
+    "player_silver_roof1_left_0": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "left",
+        "0"
+      ]
+    },
+    "player_silver_roof1_left_1": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "left",
+        "1"
+      ]
+    },
+    "player_silver_roof1_right_0": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "right",
+        "0"
+      ]
+    },
+    "player_silver_roof1_right_1": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "right",
+        "1"
+      ]
+    },
+    "player_silver_roof1_straight_0": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "straight",
+        "0"
+      ]
+    },
+    "player_silver_roof1_straight_1": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "straight",
+        "1"
+      ]
+    },
+    "player_silver_roof2_brake_left": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "brake",
+        "left"
+      ]
+    },
+    "player_silver_roof2_brake_right": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "brake",
+        "right"
+      ]
+    },
+    "player_silver_roof2_brake_straight": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "brake",
+        "straight"
+      ]
+    },
+    "player_silver_roof2_empty": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "empty"
+      ]
+    },
+    "player_silver_roof2_left_0": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "left",
+        "0"
+      ]
+    },
+    "player_silver_roof2_left_1": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "left",
+        "1"
+      ]
+    },
+    "player_silver_roof2_right_0": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "right",
+        "0"
+      ]
+    },
+    "player_silver_roof2_right_1": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "right",
+        "1"
+      ]
+    },
+    "player_silver_roof2_straight_0": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "straight",
+        "0"
+      ]
+    },
+    "player_silver_roof2_straight_1": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "straight",
+        "1"
+      ]
+    },
+    "player_silver_roof3_brake_left": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "brake",
+        "left"
+      ]
+    },
+    "player_silver_roof3_brake_right": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "brake",
+        "right"
+      ]
+    },
+    "player_silver_roof3_brake_straight": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "brake",
+        "straight"
+      ]
+    },
+    "player_silver_roof3_empty": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "empty"
+      ]
+    },
+    "player_silver_roof3_left_0": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "left",
+        "0"
+      ]
+    },
+    "player_silver_roof3_left_1": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "left",
+        "1"
+      ]
+    },
+    "player_silver_roof3_right_0": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "right",
+        "0"
+      ]
+    },
+    "player_silver_roof3_right_1": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "right",
+        "1"
+      ]
+    },
+    "player_silver_roof3_straight_0": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "straight",
+        "0"
+      ]
+    },
+    "player_silver_roof3_straight_1": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "straight",
+        "1"
+      ]
+    },
+    "player_silver_roof4_brake_left": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "brake",
+        "left"
+      ]
+    },
+    "player_silver_roof4_brake_right": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "brake",
+        "right"
+      ]
+    },
+    "player_silver_roof4_brake_straight": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "brake",
+        "straight"
+      ]
+    },
+    "player_silver_roof4_empty": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "empty"
+      ]
+    },
+    "player_silver_roof4_left_0": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "left",
+        "0"
+      ]
+    },
+    "player_silver_roof4_left_1": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "left",
+        "1"
+      ]
+    },
+    "player_silver_roof4_right_0": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "right",
+        "0"
+      ]
+    },
+    "player_silver_roof4_right_1": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "right",
+        "1"
+      ]
+    },
+    "player_silver_roof4_straight_0": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "straight",
+        "0"
+      ]
+    },
+    "player_silver_roof4_straight_1": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "straight",
+        "1"
+      ]
+    },
+    "player_silver_roof5_brake_left": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "brake",
+        "left"
+      ]
+    },
+    "player_silver_roof5_brake_right": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "brake",
+        "right"
+      ]
+    },
+    "player_silver_roof5_brake_straight": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "brake",
+        "straight"
+      ]
+    },
+    "player_silver_roof5_empty": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "empty"
+      ]
+    },
+    "player_silver_roof5_left_0": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "left",
+        "0"
+      ]
+    },
+    "player_silver_roof5_left_1": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "left",
+        "1"
+      ]
+    },
+    "player_silver_roof5_right_0": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "right",
+        "0"
+      ]
+    },
+    "player_silver_roof5_right_1": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "right",
+        "1"
+      ]
+    },
+    "player_silver_roof5_straight_0": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "straight",
+        "0"
+      ]
+    },
+    "player_silver_roof5_straight_1": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "straight",
+        "1"
+      ]
+    },
+    "player_silver_roof6_brake_left": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "brake",
+        "left"
+      ]
+    },
+    "player_silver_roof6_brake_right": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "brake",
+        "right"
+      ]
+    },
+    "player_silver_roof6_brake_straight": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "brake",
+        "straight"
+      ]
+    },
+    "player_silver_roof6_empty": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "empty"
+      ]
+    },
+    "player_silver_roof6_left_0": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "left",
+        "0"
+      ]
+    },
+    "player_silver_roof6_left_1": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "left",
+        "1"
+      ]
+    },
+    "player_silver_roof6_right_0": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "right",
+        "0"
+      ]
+    },
+    "player_silver_roof6_right_1": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "right",
+        "1"
+      ]
+    },
+    "player_silver_roof6_straight_0": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "straight",
+        "0"
+      ]
+    },
+    "player_silver_roof6_straight_1": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "straight",
+        "1"
+      ]
+    },
+    "player_silver_roof_mask_left": {
+      "motif": "player_silver_roof_mask",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "left"
+      ]
+    },
+    "player_silver_roof_mask_right": {
+      "motif": "player_silver_roof_mask",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "right"
+      ]
+    },
+    "player_silver_roof_mask_straight": {
+      "motif": "player_silver_roof_mask",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "straight"
+      ]
+    },
+    "player_silver_straight_0": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "straight",
+        "0"
+      ]
+    },
+    "player_silver_straight_1": {
+      "motif": "player_silver",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "straight",
+        "1"
+      ]
+    },
+    "player_straight_0": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "straight",
+        "0"
+      ]
+    },
+    "player_straight_1": {
+      "motif": "player",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "straight",
+        "1"
+      ]
+    },
+    "player_yellow_brake_left": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "brake",
+        "left"
+      ]
+    },
+    "player_yellow_brake_right": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "brake",
+        "right"
+      ]
+    },
+    "player_yellow_brake_straight": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "brake",
+        "straight"
+      ]
+    },
+    "player_yellow_closed_brake_left": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "brake",
+        "left"
+      ]
+    },
+    "player_yellow_closed_brake_right": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "brake",
+        "right"
+      ]
+    },
+    "player_yellow_closed_brake_straight": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "brake",
+        "straight"
+      ]
+    },
+    "player_yellow_closed_empty": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "empty"
+      ]
+    },
+    "player_yellow_closed_left_0": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "left",
+        "0"
+      ]
+    },
+    "player_yellow_closed_left_1": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "left",
+        "1"
+      ]
+    },
+    "player_yellow_closed_right_0": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "right",
+        "0"
+      ]
+    },
+    "player_yellow_closed_right_1": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "right",
+        "1"
+      ]
+    },
+    "player_yellow_closed_straight_0": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "straight",
+        "0"
+      ]
+    },
+    "player_yellow_closed_straight_1": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "closed",
+        "straight",
+        "1"
+      ]
+    },
+    "player_yellow_empty": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "empty"
+      ]
+    },
+    "player_yellow_left_0": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "left",
+        "0"
+      ]
+    },
+    "player_yellow_left_1": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "left",
+        "1"
+      ]
+    },
+    "player_yellow_right_0": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "right",
+        "0"
+      ]
+    },
+    "player_yellow_right_1": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "right",
+        "1"
+      ]
+    },
+    "player_yellow_roof1_brake_left": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "brake",
+        "left"
+      ]
+    },
+    "player_yellow_roof1_brake_right": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "brake",
+        "right"
+      ]
+    },
+    "player_yellow_roof1_brake_straight": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "brake",
+        "straight"
+      ]
+    },
+    "player_yellow_roof1_empty": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "empty"
+      ]
+    },
+    "player_yellow_roof1_left_0": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "left",
+        "0"
+      ]
+    },
+    "player_yellow_roof1_left_1": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "left",
+        "1"
+      ]
+    },
+    "player_yellow_roof1_right_0": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "right",
+        "0"
+      ]
+    },
+    "player_yellow_roof1_right_1": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "right",
+        "1"
+      ]
+    },
+    "player_yellow_roof1_straight_0": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "straight",
+        "0"
+      ]
+    },
+    "player_yellow_roof1_straight_1": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof1",
+        "straight",
+        "1"
+      ]
+    },
+    "player_yellow_roof2_brake_left": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "brake",
+        "left"
+      ]
+    },
+    "player_yellow_roof2_brake_right": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "brake",
+        "right"
+      ]
+    },
+    "player_yellow_roof2_brake_straight": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "brake",
+        "straight"
+      ]
+    },
+    "player_yellow_roof2_empty": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "empty"
+      ]
+    },
+    "player_yellow_roof2_left_0": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "left",
+        "0"
+      ]
+    },
+    "player_yellow_roof2_left_1": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "left",
+        "1"
+      ]
+    },
+    "player_yellow_roof2_right_0": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "right",
+        "0"
+      ]
+    },
+    "player_yellow_roof2_right_1": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "right",
+        "1"
+      ]
+    },
+    "player_yellow_roof2_straight_0": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "straight",
+        "0"
+      ]
+    },
+    "player_yellow_roof2_straight_1": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof2",
+        "straight",
+        "1"
+      ]
+    },
+    "player_yellow_roof3_brake_left": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "brake",
+        "left"
+      ]
+    },
+    "player_yellow_roof3_brake_right": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "brake",
+        "right"
+      ]
+    },
+    "player_yellow_roof3_brake_straight": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "brake",
+        "straight"
+      ]
+    },
+    "player_yellow_roof3_empty": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "empty"
+      ]
+    },
+    "player_yellow_roof3_left_0": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "left",
+        "0"
+      ]
+    },
+    "player_yellow_roof3_left_1": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "left",
+        "1"
+      ]
+    },
+    "player_yellow_roof3_right_0": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "right",
+        "0"
+      ]
+    },
+    "player_yellow_roof3_right_1": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "right",
+        "1"
+      ]
+    },
+    "player_yellow_roof3_straight_0": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "straight",
+        "0"
+      ]
+    },
+    "player_yellow_roof3_straight_1": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof3",
+        "straight",
+        "1"
+      ]
+    },
+    "player_yellow_roof4_brake_left": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "brake",
+        "left"
+      ]
+    },
+    "player_yellow_roof4_brake_right": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "brake",
+        "right"
+      ]
+    },
+    "player_yellow_roof4_brake_straight": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "brake",
+        "straight"
+      ]
+    },
+    "player_yellow_roof4_empty": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "empty"
+      ]
+    },
+    "player_yellow_roof4_left_0": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "left",
+        "0"
+      ]
+    },
+    "player_yellow_roof4_left_1": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "left",
+        "1"
+      ]
+    },
+    "player_yellow_roof4_right_0": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "right",
+        "0"
+      ]
+    },
+    "player_yellow_roof4_right_1": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "right",
+        "1"
+      ]
+    },
+    "player_yellow_roof4_straight_0": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "straight",
+        "0"
+      ]
+    },
+    "player_yellow_roof4_straight_1": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof4",
+        "straight",
+        "1"
+      ]
+    },
+    "player_yellow_roof5_brake_left": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "brake",
+        "left"
+      ]
+    },
+    "player_yellow_roof5_brake_right": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "brake",
+        "right"
+      ]
+    },
+    "player_yellow_roof5_brake_straight": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "brake",
+        "straight"
+      ]
+    },
+    "player_yellow_roof5_empty": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "empty"
+      ]
+    },
+    "player_yellow_roof5_left_0": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "left",
+        "0"
+      ]
+    },
+    "player_yellow_roof5_left_1": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "left",
+        "1"
+      ]
+    },
+    "player_yellow_roof5_right_0": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "right",
+        "0"
+      ]
+    },
+    "player_yellow_roof5_right_1": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "right",
+        "1"
+      ]
+    },
+    "player_yellow_roof5_straight_0": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "straight",
+        "0"
+      ]
+    },
+    "player_yellow_roof5_straight_1": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof5",
+        "straight",
+        "1"
+      ]
+    },
+    "player_yellow_roof6_brake_left": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "brake",
+        "left"
+      ]
+    },
+    "player_yellow_roof6_brake_right": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "brake",
+        "right"
+      ]
+    },
+    "player_yellow_roof6_brake_straight": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "brake",
+        "straight"
+      ]
+    },
+    "player_yellow_roof6_empty": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "empty"
+      ]
+    },
+    "player_yellow_roof6_left_0": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "left",
+        "0"
+      ]
+    },
+    "player_yellow_roof6_left_1": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "left",
+        "1"
+      ]
+    },
+    "player_yellow_roof6_right_0": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "right",
+        "0"
+      ]
+    },
+    "player_yellow_roof6_right_1": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "right",
+        "1"
+      ]
+    },
+    "player_yellow_roof6_straight_0": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "straight",
+        "0"
+      ]
+    },
+    "player_yellow_roof6_straight_1": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "roof6",
+        "straight",
+        "1"
+      ]
+    },
+    "player_yellow_roof_mask_left": {
+      "motif": "player_yellow_roof_mask",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "left"
+      ]
+    },
+    "player_yellow_roof_mask_right": {
+      "motif": "player_yellow_roof_mask",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "right"
+      ]
+    },
+    "player_yellow_roof_mask_straight": {
+      "motif": "player_yellow_roof_mask",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "straight"
+      ]
+    },
+    "player_yellow_straight_0": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "straight",
+        "0"
+      ]
+    },
+    "player_yellow_straight_1": {
+      "motif": "player_yellow",
+      "classicSize": [
+        88,
+        48
+      ],
+      "states": [
+        "straight",
+        "1"
+      ]
+    },
+    "pickup_brown": {
+      "motif": "pickup_brown",
+      "classicSize": [
+        76,
+        48
+      ],
+      "states": []
+    },
+    "pickup_white": {
+      "motif": "pickup_white",
+      "classicSize": [
+        76,
+        48
+      ],
+      "states": []
+    },
+    "surfboards": {
+      "motif": "surfboards",
+      "classicSize": [
+        40,
+        48
+      ],
+      "states": []
+    },
+    "red_rock": {
+      "motif": "red_rock",
+      "classicSize": [
+        64,
+        46
+      ],
+      "states": []
+    },
+    "food_cart_lit": {
+      "motif": "food_cart_lit",
+      "classicSize": [
+        50,
+        46
+      ],
+      "states": []
+    },
+    "reeds": {
+      "motif": "reeds",
+      "classicSize": [
+        34,
+        46
+      ],
+      "states": []
+    },
+    "trophy": {
+      "motif": "trophy",
+      "classicSize": [
+        34,
+        46
+      ],
+      "states": []
+    },
+    "trophy_a": {
+      "motif": "trophy_a",
+      "classicSize": [
+        34,
+        46
+      ],
+      "states": []
+    },
+    "trophy_b": {
+      "motif": "trophy_b",
+      "classicSize": [
+        34,
+        46
+      ],
+      "states": []
+    },
+    "trophy_c": {
+      "motif": "trophy_c",
+      "classicSize": [
+        34,
+        46
+      ],
+      "states": []
+    },
+    "trophy_d": {
+      "motif": "trophy_d",
+      "classicSize": [
+        34,
+        46
+      ],
+      "states": []
+    },
+    "cheer_driver_0": {
+      "motif": "cheer_driver",
+      "classicSize": [
+        28,
+        46
+      ],
+      "states": [
+        "0"
+      ]
+    },
+    "cheer_driver_1": {
+      "motif": "cheer_driver",
+      "classicSize": [
+        28,
+        46
+      ],
+      "states": [
+        "1"
+      ]
+    },
+    "cheer_lady_0": {
+      "motif": "cheer_lady",
+      "classicSize": [
+        27,
+        46
+      ],
+      "states": [
+        "0"
+      ]
+    },
+    "cheer_lady_1": {
+      "motif": "cheer_lady",
+      "classicSize": [
+        27,
+        46
+      ],
+      "states": [
+        "1"
+      ]
+    },
+    "beetle_teal": {
+      "motif": "beetle_teal",
+      "classicSize": [
+        60,
+        44
+      ],
+      "states": []
+    },
+    "beetle_yellow": {
+      "motif": "beetle_yellow",
+      "classicSize": [
+        60,
+        44
+      ],
+      "states": []
+    },
+    "tent_lit": {
+      "motif": "tent_lit",
+      "classicSize": [
+        60,
+        44
+      ],
+      "states": []
+    },
+    "snowman": {
+      "motif": "snowman",
+      "classicSize": [
+        30,
+        44
+      ],
+      "states": []
+    },
+    "wreck": {
+      "motif": "wreck",
+      "classicSize": [
+        82,
+        42
+      ],
+      "states": []
+    },
+    "snow_rock": {
+      "motif": "snow_rock",
+      "classicSize": [
+        64,
+        42
+      ],
+      "states": []
+    },
+    "skull_post": {
+      "motif": "skull_post",
+      "classicSize": [
+        26,
+        42
+      ],
+      "states": []
+    },
+    "bluff_rock_c": {
+      "motif": "bluff_rock_c",
+      "classicSize": [
+        80,
+        41
+      ],
+      "states": []
+    },
+    "cove_rock_c": {
+      "motif": "cove_rock_c",
+      "classicSize": [
+        80,
+        41
+      ],
+      "states": []
+    },
+    "point_rock_c": {
+      "motif": "point_rock_c",
+      "classicSize": [
+        80,
+        41
+      ],
+      "states": []
+    },
+    "summit_rock_c": {
+      "motif": "summit_rock_c",
+      "classicSize": [
+        80,
+        41
+      ],
+      "states": []
+    },
+    "crowd": {
+      "motif": "crowd",
+      "classicSize": [
+        72,
+        40
+      ],
+      "states": []
+    },
+    "sign_left": {
+      "motif": "sign",
+      "classicSize": [
+        32,
+        40
+      ],
+      "states": [
+        "left"
+      ]
+    },
+    "sign_right": {
+      "motif": "sign",
+      "classicSize": [
+        32,
+        40
+      ],
+      "states": [
+        "right"
+      ]
+    },
+    "bush_e": {
+      "motif": "bush_e",
+      "classicSize": [
+        60,
+        39
+      ],
+      "states": []
+    },
+    "coupe_blue": {
+      "motif": "coupe_blue",
+      "classicSize": [
+        72,
+        38
+      ],
+      "states": []
+    },
+    "coupe_green": {
+      "motif": "coupe_green",
+      "classicSize": [
+        72,
+        38
+      ],
+      "states": []
+    },
+    "coupe_white": {
+      "motif": "coupe_white",
+      "classicSize": [
+        72,
+        38
+      ],
+      "states": []
+    },
+    "coupe_yellow": {
+      "motif": "coupe_yellow",
+      "classicSize": [
+        72,
+        38
+      ],
+      "states": []
+    },
+    "sports_black": {
+      "motif": "sports_black",
+      "classicSize": [
+        72,
+        38
+      ],
+      "states": []
+    },
+    "sports_silver": {
+      "motif": "sports_silver",
+      "classicSize": [
+        72,
+        38
+      ],
+      "states": []
+    },
+    "rock_dark": {
+      "motif": "rock_dark",
+      "classicSize": [
+        58,
+        38
+      ],
+      "states": []
+    },
+    "crash_lady_fly": {
+      "motif": "crash_lady_fly",
+      "classicSize": [
+        29,
+        38
+      ],
+      "states": []
+    },
+    "rock_a": {
+      "motif": "rock_a",
+      "classicSize": [
+        56,
+        36
+      ],
+      "states": []
+    },
+    "mine_cart": {
+      "motif": "mine_cart",
+      "classicSize": [
+        52,
+        36
+      ],
+      "states": []
+    },
+    "crash_driver_fly": {
+      "motif": "crash_driver_fly",
+      "classicSize": [
+        31,
+        36
+      ],
+      "states": []
+    },
+    "vines": {
+      "motif": "vines",
+      "classicSize": [
+        84,
+        34
+      ],
+      "states": []
+    },
+    "hitch_rail": {
+      "motif": "hitch_rail",
+      "classicSize": [
+        68,
+        34
+      ],
+      "states": []
+    },
+    "crash_lady_sit_0": {
+      "motif": "crash_lady_sit",
+      "classicSize": [
+        29,
+        32
+      ],
+      "states": [
+        "0"
+      ]
+    },
+    "crash_lady_sit_1": {
+      "motif": "crash_lady_sit",
+      "classicSize": [
+        29,
+        32
+      ],
+      "states": [
+        "1"
+      ]
+    },
+    "bush_b": {
+      "motif": "bush_b",
+      "classicSize": [
+        48,
+        30
+      ],
+      "states": []
+    },
+    "lake_rock": {
+      "motif": "lake_rock",
+      "classicSize": [
+        44,
+        30
+      ],
+      "states": []
+    },
+    "barrels": {
+      "motif": "barrels",
+      "classicSize": [
+        42,
+        30
+      ],
+      "states": []
+    },
+    "crash_driver_sit_0": {
+      "motif": "crash_driver_sit",
+      "classicSize": [
+        35,
+        29
+      ],
+      "states": [
+        "0"
+      ]
+    },
+    "crash_driver_sit_1": {
+      "motif": "crash_driver_sit",
+      "classicSize": [
+        35,
+        29
+      ],
+      "states": [
+        "1"
+      ]
+    },
+    "bush_a": {
+      "motif": "bush_a",
+      "classicSize": [
+        48,
+        28
+      ],
+      "states": []
+    },
+    "cactus": {
+      "motif": "cactus",
+      "classicSize": [
+        38,
+        28
+      ],
+      "states": []
+    },
+    "campfire_lit": {
+      "motif": "campfire_lit",
+      "classicSize": [
+        30,
+        28
+      ],
+      "states": []
+    },
+    "bush_c": {
+      "motif": "bush_c",
+      "classicSize": [
+        64,
+        27
+      ],
+      "states": []
+    },
+    "rowboat": {
+      "motif": "rowboat",
+      "classicSize": [
+        58,
+        26
+      ],
+      "states": []
+    },
+    "rock_b": {
+      "motif": "rock_b",
+      "classicSize": [
+        40,
+        26
+      ],
+      "states": []
+    },
+    "bush_f": {
+      "motif": "bush_f",
+      "classicSize": [
+        56,
+        25
+      ],
+      "states": []
+    },
+    "cove_wall_b": {
+      "motif": "cove_wall_b",
+      "classicSize": [
+        104,
+        24
+      ],
+      "states": []
+    },
+    "cove_tuft_a": {
+      "motif": "cove_tuft_a",
+      "classicSize": [
+        52,
+        24
+      ],
+      "states": []
+    },
+    "fern": {
+      "motif": "fern",
+      "classicSize": [
+        42,
+        24
+      ],
+      "states": []
+    },
+    "desert_bush": {
+      "motif": "desert_bush",
+      "classicSize": [
+        40,
+        24
+      ],
+      "states": []
+    },
+    "log": {
+      "motif": "log",
+      "classicSize": [
+        74,
+        22
+      ],
+      "states": []
+    },
+    "snow_log": {
+      "motif": "snow_log",
+      "classicSize": [
+        74,
+        22
+      ],
+      "states": []
+    },
+    "haybale": {
+      "motif": "haybale",
+      "classicSize": [
+        30,
+        22
+      ],
+      "states": []
+    },
+    "tumbleweed": {
+      "motif": "tumbleweed",
+      "classicSize": [
+        24,
+        22
+      ],
+      "states": []
+    },
+    "cove_wall_a": {
+      "motif": "cove_wall_a",
+      "classicSize": [
+        72,
+        21
+      ],
+      "states": []
+    },
+    "cove_wall_c": {
+      "motif": "cove_wall_c",
+      "classicSize": [
+        52,
+        21
+      ],
+      "states": []
+    },
+    "barrier": {
+      "motif": "barrier",
+      "classicSize": [
+        64,
+        20
+      ],
+      "states": []
+    },
+    "snow_drift": {
+      "motif": "snow_drift",
+      "classicSize": [
+        54,
+        20
+      ],
+      "states": []
+    },
+    "cove_tuft_b": {
+      "motif": "cove_tuft_b",
+      "classicSize": [
+        44,
+        20
+      ],
+      "states": []
+    },
+    "hydrant": {
+      "motif": "hydrant",
+      "classicSize": [
+        14,
+        18
+      ],
+      "states": []
+    },
+    "grass_a": {
+      "motif": "grass_a",
+      "classicSize": [
+        28,
+        16
+      ],
+      "states": []
+    },
+    "icon_city": {
+      "motif": "icon_city",
+      "classicSize": [
+        16,
+        16
+      ],
+      "states": []
+    },
+    "icon_coast": {
+      "motif": "icon_coast",
+      "classicSize": [
+        16,
+        16
+      ],
+      "states": []
+    },
+    "icon_desert": {
+      "motif": "icon_desert",
+      "classicSize": [
+        16,
+        16
+      ],
+      "states": []
+    },
+    "icon_forest": {
+      "motif": "icon_forest",
+      "classicSize": [
+        16,
+        16
+      ],
+      "states": []
+    },
+    "icon_highway": {
+      "motif": "icon_highway",
+      "classicSize": [
+        16,
+        16
+      ],
+      "states": []
+    },
+    "icon_lake": {
+      "motif": "icon_lake",
+      "classicSize": [
+        16,
+        16
+      ],
+      "states": []
+    },
+    "icon_snow": {
+      "motif": "icon_snow",
+      "classicSize": [
+        16,
+        16
+      ],
+      "states": []
+    },
+    "icon_star": {
+      "motif": "icon_star",
+      "classicSize": [
+        16,
+        16
+      ],
+      "states": []
+    },
+    "icon_valley": {
+      "motif": "icon_valley",
+      "classicSize": [
+        16,
+        16
+      ],
+      "states": []
+    },
+    "icon_vineyard": {
+      "motif": "icon_vineyard",
+      "classicSize": [
+        16,
+        16
+      ],
+      "states": []
+    },
+    "icon_western": {
+      "motif": "icon_western",
+      "classicSize": [
+        16,
+        16
+      ],
+      "states": []
+    },
+    "lily": {
+      "motif": "lily",
+      "classicSize": [
+        46,
+        12
+      ],
+      "states": []
+    },
+    "wx_fog": {
+      "motif": "wx_fog",
+      "classicSize": [
+        12,
+        12
+      ],
+      "states": []
+    },
+    "wx_heat": {
+      "motif": "wx_heat",
+      "classicSize": [
+        12,
+        12
+      ],
+      "states": []
+    },
+    "wx_moon": {
+      "motif": "wx_moon",
+      "classicSize": [
+        12,
+        12
+      ],
+      "states": []
+    },
+    "wx_rain": {
+      "motif": "wx_rain",
+      "classicSize": [
+        12,
+        12
+      ],
+      "states": []
+    },
+    "wx_sand": {
+      "motif": "wx_sand",
+      "classicSize": [
+        12,
+        12
+      ],
+      "states": []
+    },
+    "wx_snow": {
+      "motif": "wx_snow",
+      "classicSize": [
+        12,
+        12
+      ],
+      "states": []
+    },
+    "wx_sun": {
+      "motif": "wx_sun",
+      "classicSize": [
+        12,
+        12
+      ],
+      "states": []
+    }
+  }
+}

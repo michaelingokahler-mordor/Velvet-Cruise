@@ -1,8 +1,9 @@
+import type { DrawSurface } from "./draw-surface";
 // 5x7 arcade bitmap font drawn straight into the framebuffer. Characters the
 // font does not cover (Cyrillic, CJK, symbols in player names) are rasterised
 // once through the browser's own fonts and cached as 1-bit glyphs, so every
 // language still renders in the same chunky pixel style.
-import { FB, Col, W, H } from "./fb";
+import { Col } from "./fb";
 
 const G: Record<string, string> = {
   A: ".###.#...##...#######...##...##...#", B: "####.#...##...#####.#...##...#####.",
@@ -145,10 +146,13 @@ export interface TextOpts {
   maxW?: number;
 }
 
-const mask = new Uint8Array(W * H);
+const masks = new WeakMap<DrawSurface, Uint8Array>();
 
 /** Draw text with top-left (or aligned) at x, y (y = top of cap height). Returns width drawn. */
-export function drawText(fb: FB, s: string, x: number, y: number, col: Col, o: TextOpts = {}): number {
+export function drawText(fb: DrawSurface, s: string, x: number, y: number, col: Col, o: TextOpts = {}): number {
+  const W = fb.w, H = fb.h;
+  let mask = masks.get(fb);
+  if (!mask) { mask = new Uint8Array(W * H); masks.set(fb, mask); }
   let scale = o.scale ?? 1;
   let tw = textWidth(s, scale);
   if (o.maxW && tw > o.maxW) {
@@ -178,9 +182,9 @@ export function drawText(fb: FB, s: string, x: number, y: number, col: Col, o: T
     cx += (g.w + 1) * scale;
   }
   if (!cells.length) return tw;
-  const d = fb.data;
+
   if (o.shadow !== undefined) {
-    for (const p of cells) { const sx = p.x + 1, sy = p.y + 1; if (sx < W && sy < H) d[sy * W + sx] = o.shadow; }
+    for (const p of cells) { const sx = p.x + 1, sy = p.y + 1; if (sx < W && sy < H) fb.pset(sx, sy, o.shadow); }
   }
   if (o.outline !== undefined) {
     for (const p of cells) mask[p.y * W + p.x] = 1;
@@ -189,12 +193,12 @@ export function drawText(fb: FB, s: string, x: number, y: number, col: Col, o: T
       for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
         const qx = p.x + dx, qy = p.y + dy;
         if (qx < 0 || qy < 0 || qx >= W || qy >= H) continue;
-        if (!mask[qy * W + qx]) d[qy * W + qx] = oc;
+        if (!mask[qy * W + qx]) fb.pset(qx, qy, oc);
       }
     }
     for (const p of cells) mask[p.y * W + p.x] = 0;
   }
   const grad = o.grad;
-  for (const p of cells) d[p.y * W + p.x] = grad ? grad[p.row] ?? col : col;
+  for (const p of cells) fb.pset(p.x, p.y, grad ? grad[p.row] ?? col : col);
   return tw;
 }

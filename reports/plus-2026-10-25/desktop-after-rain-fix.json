@@ -1,0 +1,1175 @@
+{
+  "status": "PASS",
+  "environment": {
+    "browser": "155.0.8059.86",
+    "headless": true,
+    "os": "win32 10.0.26300",
+    "cpu": "Intel(R) Core(TM) i9-14900HX",
+    "viewport": [
+      640,
+      360
+    ],
+    "clock": "requestAnimationFrame callback timestamps, deduplicated per presented browser frame",
+    "memory": "JavaScript heap only; total process/device memory is not measured"
+  },
+  "warmupSeconds": 30,
+  "requiredSeconds": 600,
+  "profiles": [
+    {
+      "mode": "classic",
+      "elapsedSeconds": 600.0105999999978,
+      "frames": 35992,
+      "fps": 59.987326527258475,
+      "medianMs": 16.699999999953434,
+      "p95Ms": 17,
+      "maxMs": 116.59999999997672,
+      "hiddenEvents": 0,
+      "native": {
+        "mode": "classic",
+        "screen": "race",
+        "busy": false,
+        "error": null,
+        "nativeSprites": 0,
+        "width": 320,
+        "height": 180,
+        "textureWidth": 320,
+        "textureHeight": 180,
+        "canvasWidth": 320,
+        "canvasHeight": 180,
+        "drawingWidth": 320,
+        "drawingHeight": 180
+      },
+      "runtimeModule": "http://127.0.0.1:4191/_app/index-BgK9JsxI.js",
+      "qualifyingGameplay": {
+        "drivingSeconds": 559.6220000000027,
+        "rainDrivingSeconds": 120.13930999999836,
+        "minimumDrivingSeconds": 480,
+        "minimumRainSeconds": 30
+      },
+      "heapSamples": [
+        {
+          "elapsedSeconds": 5.006,
+          "bytes": 175463468
+        },
+        {
+          "elapsedSeconds": 10.022,
+          "bytes": 179526780
+        },
+        {
+          "elapsedSeconds": 15.035,
+          "bytes": 186928784
+        },
+        {
+          "elapsedSeconds": 20.046,
+          "bytes": 168142628
+        },
+        {
+          "elapsedSeconds": 25.061,
+          "bytes": 175379260
+        },
+        {
+          "elapsedSeconds": 30.071,
+          "bytes": 181908228
+        },
+        {
+          "elapsedSeconds": 35.087,
+          "bytes": 185715012
+        },
+        {
+          "elapsedSeconds": 40.092,
+          "bytes": 181164112
+        },
+        {
+          "elapsedSeconds": 45.101,
+          "bytes": 169698432
+        },
+        {
+          "elapsedSeconds": 50.116,
+          "bytes": 193711212
+        },
+        {
+          "elapsedSeconds": 55.126,
+          "bytes": 174009340
+        },
+        {
+          "elapsedSeconds": 60.142,
+          "bytes": 168924428
+        },
+        {
+          "elapsedSeconds": 65.146,
+          "bytes": 189408360
+        },
+        {
+          "elapsedSeconds": 70.155,
+          "bytes": 124546522
+        },
+        {
+          "elapsedSeconds": 75.17,
+          "bytes": 124744946
+        },
+        {
+          "elapsedSeconds": 80.186,
+          "bytes": 124895302
+        },
+        {
+          "elapsedSeconds": 85.2,
+          "bytes": 126925574
+        },
+        {
+          "elapsedSeconds": 90.207,
+          "bytes": 127334058
+        },
+        {
+          "elapsedSeconds": 95.223,
+          "bytes": 125827078
+        },
+        {
+          "elapsedSeconds": 100.23,
+          "bytes": 127762274
+        },
+        {
+          "elapsedSeconds": 105.235,
+          "bytes": 127946090
+        },
+        {
+          "elapsedSeconds": 110.239,
+          "bytes": 128175938
+        },
+        {
+          "elapsedSeconds": 115.251,
+          "bytes": 126644302
+        },
+        {
+          "elapsedSeconds": 120.254,
+          "bytes": 124665758
+        },
+        {
+          "elapsedSeconds": 125.268,
+          "bytes": 126585198
+        },
+        {
+          "elapsedSeconds": 130.281,
+          "bytes": 129546782
+        },
+        {
+          "elapsedSeconds": 135.283,
+          "bytes": 128948206
+        },
+        {
+          "elapsedSeconds": 140.299,
+          "bytes": 129817010
+        },
+        {
+          "elapsedSeconds": 145.314,
+          "bytes": 132907482
+        },
+        {
+          "elapsedSeconds": 150.322,
+          "bytes": 127881550
+        },
+        {
+          "elapsedSeconds": 155.332,
+          "bytes": 131536366
+        },
+        {
+          "elapsedSeconds": 160.347,
+          "bytes": 131588446
+        },
+        {
+          "elapsedSeconds": 165.355,
+          "bytes": 133703210
+        },
+        {
+          "elapsedSeconds": 170.372,
+          "bytes": 128798578
+        },
+        {
+          "elapsedSeconds": 175.379,
+          "bytes": 131405050
+        },
+        {
+          "elapsedSeconds": 180.384,
+          "bytes": 132518210
+        },
+        {
+          "elapsedSeconds": 185.399,
+          "bytes": 136086766
+        },
+        {
+          "elapsedSeconds": 190.408,
+          "bytes": 129456582
+        },
+        {
+          "elapsedSeconds": 195.427,
+          "bytes": 132248622
+        },
+        {
+          "elapsedSeconds": 200.436,
+          "bytes": 135017314
+        },
+        {
+          "elapsedSeconds": 205.448,
+          "bytes": 138429818
+        },
+        {
+          "elapsedSeconds": 210.463,
+          "bytes": 132808054
+        },
+        {
+          "elapsedSeconds": 215.468,
+          "bytes": 134894550
+        },
+        {
+          "elapsedSeconds": 220.47,
+          "bytes": 130128594
+        },
+        {
+          "elapsedSeconds": 225.473,
+          "bytes": 133823926
+        },
+        {
+          "elapsedSeconds": 230.48,
+          "bytes": 130309850
+        },
+        {
+          "elapsedSeconds": 235.495,
+          "bytes": 137548126
+        },
+        {
+          "elapsedSeconds": 240.506,
+          "bytes": 143156866
+        },
+        {
+          "elapsedSeconds": 245.517,
+          "bytes": 132320870
+        },
+        {
+          "elapsedSeconds": 250.525,
+          "bytes": 138196162
+        },
+        {
+          "elapsedSeconds": 255.531,
+          "bytes": 135079630
+        },
+        {
+          "elapsedSeconds": 260.541,
+          "bytes": 136345086
+        },
+        {
+          "elapsedSeconds": 265.55,
+          "bytes": 133146690
+        },
+        {
+          "elapsedSeconds": 270.567,
+          "bytes": 135518546
+        },
+        {
+          "elapsedSeconds": 275.573,
+          "bytes": 136701002
+        },
+        {
+          "elapsedSeconds": 280.579,
+          "bytes": 139692310
+        },
+        {
+          "elapsedSeconds": 285.591,
+          "bytes": 139157810
+        },
+        {
+          "elapsedSeconds": 290.6,
+          "bytes": 144011810
+        },
+        {
+          "elapsedSeconds": 295.615,
+          "bytes": 136283926
+        },
+        {
+          "elapsedSeconds": 300.63,
+          "bytes": 136340434
+        },
+        {
+          "elapsedSeconds": 305.635,
+          "bytes": 127052965
+        },
+        {
+          "elapsedSeconds": 310.639,
+          "bytes": 128539073
+        },
+        {
+          "elapsedSeconds": 315.656,
+          "bytes": 130325469
+        },
+        {
+          "elapsedSeconds": 320.66,
+          "bytes": 130459001
+        },
+        {
+          "elapsedSeconds": 325.668,
+          "bytes": 129323229
+        },
+        {
+          "elapsedSeconds": 330.674,
+          "bytes": 130614107
+        },
+        {
+          "elapsedSeconds": 335.689,
+          "bytes": 130233847
+        },
+        {
+          "elapsedSeconds": 340.705,
+          "bytes": 189578034
+        },
+        {
+          "elapsedSeconds": 345.715,
+          "bytes": 193266319
+        },
+        {
+          "elapsedSeconds": 350.718,
+          "bytes": 248461832
+        },
+        {
+          "elapsedSeconds": 355.727,
+          "bytes": 236804804
+        },
+        {
+          "elapsedSeconds": 360.74,
+          "bytes": 243214216
+        },
+        {
+          "elapsedSeconds": 365.747,
+          "bytes": 245123852
+        },
+        {
+          "elapsedSeconds": 370.749,
+          "bytes": 248134276
+        },
+        {
+          "elapsedSeconds": 375.761,
+          "bytes": 249480548
+        },
+        {
+          "elapsedSeconds": 380.776,
+          "bytes": 250207940
+        },
+        {
+          "elapsedSeconds": 385.785,
+          "bytes": 256817288
+        },
+        {
+          "elapsedSeconds": 390.789,
+          "bytes": 233846532
+        },
+        {
+          "elapsedSeconds": 395.804,
+          "bytes": 239955300
+        },
+        {
+          "elapsedSeconds": 400.809,
+          "bytes": 246330352
+        },
+        {
+          "elapsedSeconds": 405.812,
+          "bytes": 251842684
+        },
+        {
+          "elapsedSeconds": 410.817,
+          "bytes": 256117604
+        },
+        {
+          "elapsedSeconds": 415.824,
+          "bytes": 253089692
+        },
+        {
+          "elapsedSeconds": 420.826,
+          "bytes": 254728492
+        },
+        {
+          "elapsedSeconds": 425.834,
+          "bytes": 238299056
+        },
+        {
+          "elapsedSeconds": 430.845,
+          "bytes": 253946444
+        },
+        {
+          "elapsedSeconds": 435.85,
+          "bytes": 247050496
+        },
+        {
+          "elapsedSeconds": 440.852,
+          "bytes": 240194684
+        },
+        {
+          "elapsedSeconds": 445.868,
+          "bytes": 139164507
+        },
+        {
+          "elapsedSeconds": 450.875,
+          "bytes": 141209555
+        },
+        {
+          "elapsedSeconds": 455.882,
+          "bytes": 139535727
+        },
+        {
+          "elapsedSeconds": 460.894,
+          "bytes": 141454907
+        },
+        {
+          "elapsedSeconds": 465.905,
+          "bytes": 141699427
+        },
+        {
+          "elapsedSeconds": 470.913,
+          "bytes": 139950935
+        },
+        {
+          "elapsedSeconds": 475.923,
+          "bytes": 140058443
+        },
+        {
+          "elapsedSeconds": 480.939,
+          "bytes": 141934487
+        },
+        {
+          "elapsedSeconds": 485.955,
+          "bytes": 140274883
+        },
+        {
+          "elapsedSeconds": 490.962,
+          "bytes": 142135655
+        },
+        {
+          "elapsedSeconds": 495.969,
+          "bytes": 142234611
+        },
+        {
+          "elapsedSeconds": 500.969,
+          "bytes": 142400659
+        },
+        {
+          "elapsedSeconds": 505.974,
+          "bytes": 144322403
+        },
+        {
+          "elapsedSeconds": 510.991,
+          "bytes": 147888275
+        },
+        {
+          "elapsedSeconds": 516.001,
+          "bytes": 141059879
+        },
+        {
+          "elapsedSeconds": 521.016,
+          "bytes": 143772307
+        },
+        {
+          "elapsedSeconds": 526.019,
+          "bytes": 144663211
+        },
+        {
+          "elapsedSeconds": 531.033,
+          "bytes": 144814631
+        },
+        {
+          "elapsedSeconds": 536.049,
+          "bytes": 148124539
+        },
+        {
+          "elapsedSeconds": 541.063,
+          "bytes": 141607851
+        },
+        {
+          "elapsedSeconds": 546.064,
+          "bytes": 141705515
+        },
+        {
+          "elapsedSeconds": 551.07,
+          "bytes": 141137435
+        },
+        {
+          "elapsedSeconds": 556.079,
+          "bytes": 139978347
+        },
+        {
+          "elapsedSeconds": 561.086,
+          "bytes": 140055455
+        },
+        {
+          "elapsedSeconds": 566.096,
+          "bytes": 140588431
+        },
+        {
+          "elapsedSeconds": 571.1,
+          "bytes": 141860411
+        },
+        {
+          "elapsedSeconds": 576.11,
+          "bytes": 144671839
+        },
+        {
+          "elapsedSeconds": 581.122,
+          "bytes": 143671883
+        },
+        {
+          "elapsedSeconds": 586.126,
+          "bytes": 144394859
+        },
+        {
+          "elapsedSeconds": 591.143,
+          "bytes": 144131963
+        },
+        {
+          "elapsedSeconds": 596.147,
+          "bytes": 141643867
+        },
+        {
+          "elapsedSeconds": 600.009,
+          "bytes": 144321415
+        }
+      ],
+      "scenes": [
+        {
+          "elapsedSeconds": 5.006,
+          "screen": "race",
+          "stage": 1
+        },
+        {
+          "elapsedSeconds": 45.101,
+          "screen": "race",
+          "stage": 2
+        },
+        {
+          "elapsedSeconds": 135.283,
+          "screen": "race",
+          "stage": 3
+        },
+        {
+          "elapsedSeconds": 225.473,
+          "screen": "race",
+          "stage": 4
+        },
+        {
+          "elapsedSeconds": 320.66,
+          "screen": "ending",
+          "stage": 4
+        },
+        {
+          "elapsedSeconds": 330.674,
+          "screen": "map",
+          "stage": 4
+        },
+        {
+          "elapsedSeconds": 335.689,
+          "screen": "results",
+          "stage": 4
+        },
+        {
+          "elapsedSeconds": 340.705,
+          "screen": "title",
+          "stage": 4
+        },
+        {
+          "elapsedSeconds": 345.715,
+          "screen": "difficulty",
+          "stage": 4
+        },
+        {
+          "elapsedSeconds": 350.718,
+          "screen": "race",
+          "stage": 1
+        },
+        {
+          "elapsedSeconds": 425.834,
+          "screen": "race",
+          "stage": 2
+        },
+        {
+          "elapsedSeconds": 510.991,
+          "screen": "race",
+          "stage": 3
+        }
+      ],
+      "errors": [],
+      "status": "PASS"
+    },
+    {
+      "mode": "plus",
+      "elapsedSeconds": 600.0193999999985,
+      "frames": 35993,
+      "fps": 59.987313549003005,
+      "medianMs": 16.699999999953434,
+      "p95Ms": 16.900000000023283,
+      "maxMs": 116.29999999998836,
+      "hiddenEvents": 0,
+      "native": {
+        "mode": "plus",
+        "screen": "race",
+        "busy": false,
+        "error": null,
+        "nativeSprites": 715,
+        "width": 640,
+        "height": 360,
+        "textureWidth": 640,
+        "textureHeight": 360,
+        "canvasWidth": 640,
+        "canvasHeight": 360,
+        "drawingWidth": 640,
+        "drawingHeight": 360
+      },
+      "runtimeModule": "http://127.0.0.1:4191/_app/index-BgK9JsxI.js",
+      "qualifyingGameplay": {
+        "drivingSeconds": 564.6812700000069,
+        "rainDrivingSeconds": 120.28768999999839,
+        "minimumDrivingSeconds": 480,
+        "minimumRainSeconds": 30
+      },
+      "heapSamples": [
+        {
+          "elapsedSeconds": 5.011,
+          "bytes": 230709088
+        },
+        {
+          "elapsedSeconds": 10.027,
+          "bytes": 242031764
+        },
+        {
+          "elapsedSeconds": 15.035,
+          "bytes": 230503544
+        },
+        {
+          "elapsedSeconds": 20.044,
+          "bytes": 220401708
+        },
+        {
+          "elapsedSeconds": 25.057,
+          "bytes": 235376832
+        },
+        {
+          "elapsedSeconds": 30.076,
+          "bytes": 224043812
+        },
+        {
+          "elapsedSeconds": 35.092,
+          "bytes": 237622048
+        },
+        {
+          "elapsedSeconds": 40.108,
+          "bytes": 225087788
+        },
+        {
+          "elapsedSeconds": 45.109,
+          "bytes": 241826512
+        },
+        {
+          "elapsedSeconds": 50.123,
+          "bytes": 239911984
+        },
+        {
+          "elapsedSeconds": 55.142,
+          "bytes": 251348400
+        },
+        {
+          "elapsedSeconds": 60.156,
+          "bytes": 253052764
+        },
+        {
+          "elapsedSeconds": 65.16,
+          "bytes": 252356456
+        },
+        {
+          "elapsedSeconds": 70.177,
+          "bytes": 216353876
+        },
+        {
+          "elapsedSeconds": 75.183,
+          "bytes": 216806124
+        },
+        {
+          "elapsedSeconds": 80.201,
+          "bytes": 217180452
+        },
+        {
+          "elapsedSeconds": 85.207,
+          "bytes": 219423972
+        },
+        {
+          "elapsedSeconds": 90.212,
+          "bytes": 219605496
+        },
+        {
+          "elapsedSeconds": 95.222,
+          "bytes": 221751496
+        },
+        {
+          "elapsedSeconds": 100.229,
+          "bytes": 218027740
+        },
+        {
+          "elapsedSeconds": 105.246,
+          "bytes": 220073484
+        },
+        {
+          "elapsedSeconds": 110.257,
+          "bytes": 222098452
+        },
+        {
+          "elapsedSeconds": 115.262,
+          "bytes": 218647040
+        },
+        {
+          "elapsedSeconds": 120.268,
+          "bytes": 216472664
+        },
+        {
+          "elapsedSeconds": 125.285,
+          "bytes": 218564680
+        },
+        {
+          "elapsedSeconds": 130.298,
+          "bytes": 223791360
+        },
+        {
+          "elapsedSeconds": 135.309,
+          "bytes": 227491612
+        },
+        {
+          "elapsedSeconds": 140.316,
+          "bytes": 223763144
+        },
+        {
+          "elapsedSeconds": 145.326,
+          "bytes": 226877796
+        },
+        {
+          "elapsedSeconds": 150.331,
+          "bytes": 225281316
+        },
+        {
+          "elapsedSeconds": 155.342,
+          "bytes": 229077628
+        },
+        {
+          "elapsedSeconds": 160.359,
+          "bytes": 225470920
+        },
+        {
+          "elapsedSeconds": 165.367,
+          "bytes": 222928408
+        },
+        {
+          "elapsedSeconds": 170.374,
+          "bytes": 223015232
+        },
+        {
+          "elapsedSeconds": 175.38,
+          "bytes": 227757928
+        },
+        {
+          "elapsedSeconds": 180.394,
+          "bytes": 226518624
+        },
+        {
+          "elapsedSeconds": 185.409,
+          "bytes": 230324652
+        },
+        {
+          "elapsedSeconds": 190.425,
+          "bytes": 231221600
+        },
+        {
+          "elapsedSeconds": 195.428,
+          "bytes": 229255456
+        },
+        {
+          "elapsedSeconds": 200.441,
+          "bytes": 217866745
+        },
+        {
+          "elapsedSeconds": 205.444,
+          "bytes": 221607973
+        },
+        {
+          "elapsedSeconds": 210.447,
+          "bytes": 222106653
+        },
+        {
+          "elapsedSeconds": 215.461,
+          "bytes": 221570437
+        },
+        {
+          "elapsedSeconds": 220.475,
+          "bytes": 227314457
+        },
+        {
+          "elapsedSeconds": 225.491,
+          "bytes": 231780377
+        },
+        {
+          "elapsedSeconds": 230.494,
+          "bytes": 234838397
+        },
+        {
+          "elapsedSeconds": 235.497,
+          "bytes": 234893713
+        },
+        {
+          "elapsedSeconds": 240.514,
+          "bytes": 227270021
+        },
+        {
+          "elapsedSeconds": 245.523,
+          "bytes": 236959345
+        },
+        {
+          "elapsedSeconds": 250.539,
+          "bytes": 238988953
+        },
+        {
+          "elapsedSeconds": 255.549,
+          "bytes": 236292525
+        },
+        {
+          "elapsedSeconds": 260.561,
+          "bytes": 237344153
+        },
+        {
+          "elapsedSeconds": 265.576,
+          "bytes": 236137501
+        },
+        {
+          "elapsedSeconds": 270.583,
+          "bytes": 228613517
+        },
+        {
+          "elapsedSeconds": 275.59,
+          "bytes": 227614609
+        },
+        {
+          "elapsedSeconds": 280.605,
+          "bytes": 235150849
+        },
+        {
+          "elapsedSeconds": 285.621,
+          "bytes": 236008005
+        },
+        {
+          "elapsedSeconds": 290.628,
+          "bytes": 228068061
+        },
+        {
+          "elapsedSeconds": 295.639,
+          "bytes": 233990089
+        },
+        {
+          "elapsedSeconds": 300.655,
+          "bytes": 238799421
+        },
+        {
+          "elapsedSeconds": 305.672,
+          "bytes": 222922377
+        },
+        {
+          "elapsedSeconds": 310.679,
+          "bytes": 225425189
+        },
+        {
+          "elapsedSeconds": 315.698,
+          "bytes": 225195089
+        },
+        {
+          "elapsedSeconds": 320.712,
+          "bytes": 227356249
+        },
+        {
+          "elapsedSeconds": 325.731,
+          "bytes": 224934047
+        },
+        {
+          "elapsedSeconds": 330.75,
+          "bytes": 225198831
+        },
+        {
+          "elapsedSeconds": 335.772,
+          "bytes": 303436733
+        },
+        {
+          "elapsedSeconds": 340.777,
+          "bytes": 282541158
+        },
+        {
+          "elapsedSeconds": 345.782,
+          "bytes": 355373571
+        },
+        {
+          "elapsedSeconds": 350.799,
+          "bytes": 332610967
+        },
+        {
+          "elapsedSeconds": 355.815,
+          "bytes": 349544239
+        },
+        {
+          "elapsedSeconds": 360.827,
+          "bytes": 332633475
+        },
+        {
+          "elapsedSeconds": 365.842,
+          "bytes": 343317883
+        },
+        {
+          "elapsedSeconds": 370.848,
+          "bytes": 353393135
+        },
+        {
+          "elapsedSeconds": 375.86,
+          "bytes": 334844423
+        },
+        {
+          "elapsedSeconds": 380.873,
+          "bytes": 351765923
+        },
+        {
+          "elapsedSeconds": 385.889,
+          "bytes": 338942203
+        },
+        {
+          "elapsedSeconds": 390.907,
+          "bytes": 355213951
+        },
+        {
+          "elapsedSeconds": 395.921,
+          "bytes": 343324747
+        },
+        {
+          "elapsedSeconds": 400.938,
+          "bytes": 358057803
+        },
+        {
+          "elapsedSeconds": 405.955,
+          "bytes": 346304635
+        },
+        {
+          "elapsedSeconds": 410.974,
+          "bytes": 351755859
+        },
+        {
+          "elapsedSeconds": 415.98,
+          "bytes": 335794843
+        },
+        {
+          "elapsedSeconds": 420.989,
+          "bytes": 350680343
+        },
+        {
+          "elapsedSeconds": 425.993,
+          "bytes": 333923803
+        },
+        {
+          "elapsedSeconds": 431.002,
+          "bytes": 339636395
+        },
+        {
+          "elapsedSeconds": 436.004,
+          "bytes": 340028651
+        },
+        {
+          "elapsedSeconds": 441.019,
+          "bytes": 239265006
+        },
+        {
+          "elapsedSeconds": 446.035,
+          "bytes": 239500214
+        },
+        {
+          "elapsedSeconds": 451.053,
+          "bytes": 241412370
+        },
+        {
+          "elapsedSeconds": 456.064,
+          "bytes": 237801202
+        },
+        {
+          "elapsedSeconds": 461.071,
+          "bytes": 239971714
+        },
+        {
+          "elapsedSeconds": 466.076,
+          "bytes": 239989334
+        },
+        {
+          "elapsedSeconds": 471.081,
+          "bytes": 240088978
+        },
+        {
+          "elapsedSeconds": 476.091,
+          "bytes": 238275142
+        },
+        {
+          "elapsedSeconds": 481.102,
+          "bytes": 240340594
+        },
+        {
+          "elapsedSeconds": 486.106,
+          "bytes": 240384934
+        },
+        {
+          "elapsedSeconds": 491.118,
+          "bytes": 242290298
+        },
+        {
+          "elapsedSeconds": 496.123,
+          "bytes": 238836846
+        },
+        {
+          "elapsedSeconds": 501.135,
+          "bytes": 244732166
+        },
+        {
+          "elapsedSeconds": 506.154,
+          "bytes": 246983638
+        },
+        {
+          "elapsedSeconds": 511.16,
+          "bytes": 239804150
+        },
+        {
+          "elapsedSeconds": 516.171,
+          "bytes": 242045366
+        },
+        {
+          "elapsedSeconds": 521.18,
+          "bytes": 242319002
+        },
+        {
+          "elapsedSeconds": 526.188,
+          "bytes": 246920918
+        },
+        {
+          "elapsedSeconds": 531.195,
+          "bytes": 239840642
+        },
+        {
+          "elapsedSeconds": 536.21,
+          "bytes": 243427622
+        },
+        {
+          "elapsedSeconds": 541.212,
+          "bytes": 246668878
+        },
+        {
+          "elapsedSeconds": 546.22,
+          "bytes": 240011270
+        },
+        {
+          "elapsedSeconds": 551.226,
+          "bytes": 241172146
+        },
+        {
+          "elapsedSeconds": 556.24,
+          "bytes": 238702966
+        },
+        {
+          "elapsedSeconds": 561.256,
+          "bytes": 242484718
+        },
+        {
+          "elapsedSeconds": 566.272,
+          "bytes": 240003602
+        },
+        {
+          "elapsedSeconds": 571.287,
+          "bytes": 245480266
+        },
+        {
+          "elapsedSeconds": 576.304,
+          "bytes": 242752742
+        },
+        {
+          "elapsedSeconds": 581.306,
+          "bytes": 243383590
+        },
+        {
+          "elapsedSeconds": 586.308,
+          "bytes": 243466142
+        },
+        {
+          "elapsedSeconds": 591.313,
+          "bytes": 243468722
+        },
+        {
+          "elapsedSeconds": 596.321,
+          "bytes": 248348554
+        },
+        {
+          "elapsedSeconds": 600.012,
+          "bytes": 245724786
+        }
+      ],
+      "scenes": [
+        {
+          "elapsedSeconds": 5.011,
+          "screen": "race",
+          "stage": 1
+        },
+        {
+          "elapsedSeconds": 45.109,
+          "screen": "race",
+          "stage": 2
+        },
+        {
+          "elapsedSeconds": 135.309,
+          "screen": "race",
+          "stage": 3
+        },
+        {
+          "elapsedSeconds": 225.491,
+          "screen": "race",
+          "stage": 4
+        },
+        {
+          "elapsedSeconds": 315.698,
+          "screen": "ending",
+          "stage": 4
+        },
+        {
+          "elapsedSeconds": 325.731,
+          "screen": "map",
+          "stage": 4
+        },
+        {
+          "elapsedSeconds": 330.75,
+          "screen": "results",
+          "stage": 4
+        },
+        {
+          "elapsedSeconds": 335.772,
+          "screen": "title",
+          "stage": 4
+        },
+        {
+          "elapsedSeconds": 340.777,
+          "screen": "difficulty",
+          "stage": 4
+        },
+        {
+          "elapsedSeconds": 345.782,
+          "screen": "race",
+          "stage": 1
+        },
+        {
+          "elapsedSeconds": 420.989,
+          "screen": "race",
+          "stage": 2
+        },
+        {
+          "elapsedSeconds": 511.16,
+          "screen": "race",
+          "stage": 3
+        }
+      ],
+      "errors": [],
+      "status": "PASS"
+    }
+  ]
+}

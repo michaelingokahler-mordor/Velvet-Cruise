@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "tests": [
+    "all six settings children, including Graphics, return to their selected parent",
+    "keyboard capture rejects conflict, retries, saves without navigation leakage",
+    "Course Map, rankings and badges retain correct parents",
+    "direct start remembers music; custom Enter pauses once; restart creates a fresh race",
+    "virtual axis mapping, disconnect, stored bindings and unrelated saves survive",
+    "mobile taps open bindings, cancel capture and return to Settings"
+  ],
+  "errors": [],
+  "badResponses": []
+}

@@ -34,6 +34,8 @@ export function mul(c: Col, tr: number, tg: number, tb: number): Col {
 export interface Spr {
   w: number;
   h: number;
+  /** Source-art pixel density; mip levels retain this and compensate their sampling scale. */
+  density?: 1 | 2;
   data: Uint32Array; // alpha 0 = transparent, 254 = emissive (ignores tint), 255 = solid
   /** Half-size copy (area-averaged, thin details kept): used when the sprite is drawn small, so its
    *  rings, blades and window bars keep their tone instead of flickering as pixels are skipped. */
@@ -62,7 +64,7 @@ export function halve(s: Spr): Spr {
       out[y * w + x] = (((emi ? 254 : 255) << 24) | (((b / n) | 0) << 16) | (((g / n) | 0) << 8) | ((r / n) | 0)) >>> 0;
     }
   }
-  return { w, h, data: out };
+  return { w, h, data: out, ...(s.density === undefined ? {} : { density: s.density }) };
 }
 
 export interface BlitOpts {
@@ -78,19 +80,23 @@ export interface BlitOpts {
   solid?: Col;
 }
 
-const colMap = new Int32Array(4096);
-
 export class FB {
-  readonly w = W;
-  readonly h = H;
+  readonly w: number;
+  readonly h: number;
   readonly img: ImageData;
   readonly data: Uint32Array;
   // scratch for convex polygon fill
-  private readonly spanL = new Float32Array(H);
-  private readonly spanR = new Float32Array(H);
+  private readonly colMap: Int32Array;
+  private readonly spanL: Float32Array;
+  private readonly spanR: Float32Array;
 
-  constructor() {
-    this.img = new ImageData(W, H);
+  constructor(width = W, height = H) {
+    this.w = width;
+    this.h = height;
+    this.colMap = new Int32Array(width);
+    this.spanL = new Float32Array(height);
+    this.spanR = new Float32Array(height);
+    this.img = new ImageData(width, height);
     this.data = new Uint32Array(this.img.data.buffer);
   }
 
@@ -98,30 +104,30 @@ export class FB {
 
   /** Fill pixels [x0, x1) on row y. */
   hline(y: number, x0: number, x1: number, c: Col): void {
-    if (y < 0 || y >= H) return;
+    if (y < 0 || y >= this.h) return;
     if (x0 < 0) x0 = 0;
-    if (x1 > W) x1 = W;
+    if (x1 > this.w) x1 = this.w;
     if (x1 <= x0) return;
-    const o = y * W;
+    const o = y * this.w;
     this.data.fill(c, o + x0, o + x1);
   }
 
   rect(x: number, y: number, w: number, h: number, c: Col): void {
     x = Math.round(x); y = Math.round(y); w = Math.round(w); h = Math.round(h);
-    const y0 = Math.max(0, y), y1 = Math.min(H, y + h);
+    const y0 = Math.max(0, y), y1 = Math.min(this.h, y + h);
     for (let r = y0; r < y1; r++) this.hline(r, x, x + w, c);
   }
 
   /** Alpha-blended rectangle (a 0..1). */
   rectA(x: number, y: number, w: number, h: number, c: Col, a: number): void {
     x = Math.round(x); y = Math.round(y); w = Math.round(w); h = Math.round(h);
-    const x0 = Math.max(0, x), x1 = Math.min(W, x + w);
-    const y0 = Math.max(0, y), y1 = Math.min(H, y + h);
+    const x0 = Math.max(0, x), x1 = Math.min(this.w, x + w);
+    const y0 = Math.max(0, y), y1 = Math.min(this.h, y + h);
     const d = this.data;
     const cr = c & 255, cg = (c >> 8) & 255, cb = (c >> 16) & 255;
     const ia = 1 - a;
     for (let r = y0; r < y1; r++) {
-      let o = r * W + x0;
+      let o = r * this.w + x0;
       for (let q = x0; q < x1; q++, o++) {
         const p = d[o];
         d[o] = rgbc((p & 255) * ia + cr * a, ((p >> 8) & 255) * ia + cg * a, ((p >> 16) & 255) * ia + cb * a);
@@ -138,21 +144,21 @@ export class FB {
 
   pset(x: number, y: number, c: Col): void {
     x |= 0; y |= 0;
-    if (x < 0 || y < 0 || x >= W || y >= H) return;
-    this.data[y * W + x] = c;
+    if (x < 0 || y < 0 || x >= this.w || y >= this.h) return;
+    this.data[y * this.w + x] = c;
   }
 
   /**
    * Trapezoid with horizontal top (far) and bottom (near) edges.
    * yT < yB. Pixel centres inside are filled. Rows >= clipY are skipped.
    */
-  trap(yT: number, lT: number, rT: number, yB: number, lB: number, rB: number, c: Col, clipY = H): void {
+  trap(yT: number, lT: number, rT: number, yB: number, lB: number, rB: number, c: Col, clipY = this.h): void {
     if (yB <= yT) return;
     let r0 = Math.ceil(yT - 0.5);
     let r1 = Math.ceil(yB - 0.5);
     if (r0 < 0) r0 = 0;
     if (r1 > clipY) r1 = Math.ceil(clipY);
-    if (r1 > H) r1 = H;
+    if (r1 > this.h) r1 = this.h;
     const inv = 1 / (yB - yT);
     const d = this.data;
     for (let r = r0; r < r1; r++) {
@@ -160,13 +166,13 @@ export class FB {
       let x0 = Math.ceil(lT + (lB - lT) * t - 0.5);
       let x1 = Math.ceil(rT + (rB - rT) * t - 0.5);
       if (x0 < 0) x0 = 0;
-      if (x1 > W) x1 = W;
-      if (x1 > x0) d.fill(c, r * W + x0, r * W + x1);
+      if (x1 > this.w) x1 = this.w;
+      if (x1 > x0) d.fill(c, r * this.w + x0, r * this.w + x1);
     }
   }
 
   /** Convex polygon fill (vertices as flat x,y pairs). */
-  poly(pts: number[], c: Col, clipY = H): void {
+  poly(pts: number[], c: Col, clipY = this.h): void {
     const n = pts.length >> 1;
     let ymin = Infinity, ymax = -Infinity;
     for (let i = 0; i < n; i++) {
@@ -176,7 +182,7 @@ export class FB {
     }
     let r0 = Math.ceil(ymin - 0.5), r1 = Math.ceil(ymax - 0.5);
     if (r0 < 0) r0 = 0;
-    if (r1 > H) r1 = H;
+    if (r1 > this.h) r1 = this.h;
     if (r1 > clipY) r1 = Math.ceil(clipY);
     if (r1 <= r0) return;
     const L = this.spanL, R = this.spanR;
@@ -202,8 +208,8 @@ export class FB {
       if (L[r] > R[r]) continue;
       let x0 = Math.ceil(L[r] - 0.5), x1 = Math.ceil(R[r] - 0.5);
       if (x0 < 0) x0 = 0;
-      if (x1 > W) x1 = W;
-      if (x1 > x0) d.fill(c, r * W + x0, r * W + x1);
+      if (x1 > this.w) x1 = this.w;
+      if (x1 > x0) d.fill(c, r * this.w + x0, r * this.w + x1);
     }
   }
 
@@ -217,9 +223,9 @@ export class FB {
     let c0 = Math.ceil(x0 - 0.5), c1 = Math.ceil(x0 + dw - 0.5);
     let r0 = Math.ceil(y0 - 0.5), r1 = Math.ceil(by - 0.5);
     if (c0 < 0) c0 = 0;
-    if (c1 > W) c1 = W;
+    if (c1 > this.w) c1 = this.w;
     if (r0 < 0) r0 = 0;
-    if (r1 > H) r1 = H;
+    if (r1 > this.h) r1 = this.h;
     if (o.clipY !== undefined && r1 > o.clipY) r1 = Math.ceil(o.clipY);
     if (c1 <= c0 || r1 <= r0) return;
     const inv = 1 / scale;
@@ -228,7 +234,7 @@ export class FB {
     for (let q = c0; q < c1; q++) {
       let sx = ((q + 0.5 - x0) * inv) | 0;
       if (sx >= sw) sx = sw - 1;
-      colMap[q - c0] = flip ? sw - 1 - sx : sx;
+      this.colMap[q - c0] = flip ? sw - 1 - sx : sx;
     }
     const src = s.data, d = this.data;
     const tr = o.tr ?? 1, tg = o.tg ?? 1, tb = o.tb ?? 1;
@@ -244,9 +250,9 @@ export class FB {
       let sy = ((r + 0.5 - y0) * inv) | 0;
       if (sy >= sh) sy = sh - 1;
       const so = sy * sw;
-      let o2 = r * W + c0;
+      let o2 = r * this.w + c0;
       for (let q = c0; q < c1; q++, o2++) {
-        const p = src[so + colMap[q - c0]];
+        const p = src[so + this.colMap[q - c0]];
         const a = p >>> 24;
         if (a === 0) continue;
         if (solid !== undefined) { d[o2] = solid; continue; }
@@ -270,24 +276,24 @@ export class FB {
     let c0 = Math.ceil(x0 - 0.5), c1 = Math.ceil(x0 + dw - 0.5);
     let r0 = Math.ceil(y0 - 0.5), r1 = Math.ceil(by - 0.5);
     if (c0 < 0) c0 = 0;
-    if (c1 > W) c1 = W;
+    if (c1 > this.w) c1 = this.w;
     if (r0 < 0) r0 = 0;
-    if (r1 > H) r1 = H;
+    if (r1 > this.h) r1 = this.h;
     if (c1 <= c0 || r1 <= r0) return;
     const inv = 1 / scale, sw = s.w, sh = s.h;
     for (let q = c0; q < c1; q++) {
       let sx = ((q + 0.5 - x0) * inv) | 0;
       if (sx >= sw) sx = sw - 1;
-      colMap[q - c0] = flip ? sw - 1 - sx : sx;
+      this.colMap[q - c0] = flip ? sw - 1 - sx : sx;
     }
     const src = s.data, d = this.data;
     for (let r = r0; r < r1; r++) {
       let sy = ((r + 0.5 - y0) * inv) | 0;
       if (sy >= sh) sy = sh - 1;
       const so = sy * sw;
-      let o2 = r * W + c0;
+      let o2 = r * this.w + c0;
       for (let q = c0; q < c1; q++, o2++) {
-        const p = src[so + colMap[q - c0]];
+        const p = src[so + this.colMap[q - c0]];
         if ((p >>> 24) === 0) continue;
         const t = d[o2];
         let pr = (t & 255) + (p & 255) * k, pg = ((t >> 8) & 255) + ((p >> 8) & 255) * k, pb = ((t >> 16) & 255) + ((p >> 16) & 255) * k;
@@ -303,12 +309,12 @@ export class FB {
    * chunky steps and is strongest down the middle (a headlight pool on the road).
    * Rows at or below clipY are skipped (road hidden behind a crest).
    */
-  lightTrap(yT: number, lT: number, rT: number, yB: number, lB: number, rB: number, col: Col, kT: number, kB: number, clipY = H): void {
+  lightTrap(yT: number, lT: number, rT: number, yB: number, lB: number, rB: number, col: Col, kT: number, kB: number, clipY = this.h): void {
     if (yB <= yT) return;
     const cr = col & 255, cg = (col >> 8) & 255, cb = (col >> 16) & 255;
     let r0 = Math.ceil(yT - 0.5), r1 = Math.ceil(yB - 0.5);
     if (r0 < 0) r0 = 0;
-    if (r1 > H) r1 = H;
+    if (r1 > this.h) r1 = this.h;
     if (r1 > clipY) r1 = Math.ceil(clipY - 0.5);
     const d = this.data, inv = 1 / (yB - yT);
     for (let r = r0; r < r1; r++) {
@@ -321,8 +327,8 @@ export class FB {
       if (half < 0.5) continue;
       let x0 = Math.ceil(l - 0.5), x1 = Math.ceil(rr - 0.5);
       if (x0 < 0) x0 = 0;
-      if (x1 > W) x1 = W;
-      const o = r * W;
+      if (x1 > this.w) x1 = this.w;
+      const o = r * this.w;
       for (let x = x0; x < x1; x++) {
         const u = Math.abs(x + 0.5 - mid) / half;
         const kk = u < 0.45 ? k : u < 0.75 ? k * 0.62 : k * 0.3;
@@ -341,8 +347,8 @@ export class FB {
   blitRot(s: Spr, cx: number, cy: number, ang: number, scale = 1, o: BlitOpts = {}): void {
     const hw = s.w / 2, hh = s.h / 2;
     const rad = Math.sqrt(hw * hw + hh * hh) * scale + 1;
-    const c0 = Math.max(0, Math.floor(cx - rad)), c1 = Math.min(W, Math.ceil(cx + rad));
-    const r0 = Math.max(0, Math.floor(cy - rad)), r1 = Math.min(H, Math.ceil(cy + rad));
+    const c0 = Math.max(0, Math.floor(cx - rad)), c1 = Math.min(this.w, Math.ceil(cx + rad));
+    const r0 = Math.max(0, Math.floor(cy - rad)), r1 = Math.min(this.h, Math.ceil(cy + rad));
     if (c1 <= c0 || r1 <= r0) return;
     const cs = Math.cos(ang) / scale, sn = Math.sin(ang) / scale;
     const src = s.data, d = this.data, sw = s.w, sh = s.h;
@@ -351,7 +357,7 @@ export class FB {
     const flip = !!o.flip, solid = o.solid;
     for (let r = r0; r < r1; r++) {
       const dy = r + 0.5 - cy;
-      let o2 = r * W + c0;
+      let o2 = r * this.w + c0;
       for (let q = c0; q < c1; q++, o2++) {
         const dx = q + 0.5 - cx;
         const fx = dx * cs + dy * sn + hw;
@@ -378,20 +384,20 @@ export class FB {
     const src = s.data, d = this.data;
     for (let r = 0; r < s.h; r++) {
       const y = dstY + r;
-      if (y < 0 || y >= H) continue;
+      if (y < 0 || y >= this.h) continue;
       const so = r * sw;
-      const o = y * W;
+      const o = y * this.w;
       if (opaque) {
         // copy in up to two runs
         let x = 0, sx = ox;
-        while (x < W) {
-          const run = Math.min(W - x, sw - sx);
+        while (x < this.w) {
+          const run = Math.min(this.w - x, sw - sx);
           d.set(src.subarray(so + sx, so + sx + run), o + x);
           x += run; sx = 0;
         }
       } else {
         let sx = ox;
-        for (let x = 0; x < W; x++) {
+        for (let x = 0; x < this.w; x++) {
           const p = src[so + sx];
           if (p >>> 24) d[o + x] = p;
           if (++sx >= sw) sx = 0;
