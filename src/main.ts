@@ -14,7 +14,7 @@ import { COLS, COAST_PATH, GOAL_A_PATH, COLUMN_NODES, NEXT, NODE_COUNT, complete
 import { DEMO_A, SAVE_PREFIX } from "./game/edition";
 import { GameAudio, MusicJson } from "./audio/audio";
 import { initTesana, onTesanaReady, servicesOnline, t, onLocaleChange, locale, track as analytics, submitScore, topScores, myBest, fmtNum, BoardEntry, isTestSdk } from "./platform/tesana";
-import { Input, TOUCH, inRect, Rect, CONTROL_PREFS, ControlPref } from "./input";
+import { Input, TOUCH, inRect, Rect, CONTROL_PREFS, ControlPref, DRIVE_ACTIONS, bindingLabel, BindingDevice } from "./input";
 import { THEMES } from "./game/themes";
 import { STAGE_COUNT, MAX_SPEED } from "./game/config";
 import type { Gate } from "./game/track";
@@ -27,7 +27,7 @@ import { CARS, CarDef, carById, carUnlocked, rememberCarGoals } from "./game/car
 import { ArcadeEntry, ARCADE_SIZE, NAME_MAX, arcadeTable, arcadeRank, arcadeInsert, nameChar, cleanName, lastName, saveName } from "./game/arcade";
 import { Badges, BADGES, BADGE_TYPES, BADGE_ROWS, GOAL_BASES, TIERS, TIER_RIM, NEAR_MISS_RUN, drawMedal, badgeName, badgeDesc, badgeId, statId, tierName } from "./game/badges";
 
-type Mode = "title" | "garage" | "rankings" | "badges" | "controls" | "difficulty" | "radio" | "race" | "ending" | "results" | "name" | "map" | "credits";
+type Mode = "title" | "settings" | "records" | "bindings" | "garage" | "rankings" | "badges" | "controls" | "difficulty" | "radio" | "race" | "ending" | "results" | "name" | "map" | "credits";
 
 /** The credits page: its two web addresses (shown exactly as written, opened in a new tab). */
 const CREDIT_LINKS = [
@@ -183,6 +183,14 @@ class MainScene extends Phaser.Scene {
   /** The player's best score on each difficulty (shown on the title screen). */
   private bestScore = new Map<DiffId, number>();
   private ctlSel = 0;
+  private badgeFrom: Mode = "records";
+  private exitPending = false;
+  private bindingDevice: BindingDevice = "keyboard";
+  private bindingAction = 0;
+  private bindingSlot = 0;
+  private bindingFocus = 1;
+  private bindingNotice = "";
+  private captureSavedAt = -1;
   // results
   private result = { goal: false, score: 0, stage: 0, stageTimes: [] as number[], path: [0] as number[], run: 0, bonus: 0, passBonus: 0, moodLevel: 2, diff: "normal" as DiffId, newBest: new Set<string>(), top: [] as BoardEntry[], topLoaded: false, arcade: -1 };
   // course map: browsing from the title, or showing the route of the run just finished
@@ -464,6 +472,9 @@ class MainScene extends Phaser.Scene {
 
     switch (this.mode) {
       case "title": this.title(dt, taps); break;
+      case "settings": this.settings(dt, taps); break;
+      case "records": this.records(dt, taps); break;
+      case "bindings": this.bindingScreen(dt, taps); break;
       case "garage": this.garage(dt, taps); break;
       case "rankings": this.rankings(dt, taps); break;
       case "badges": this.badgeScreen(dt, taps); break;
@@ -513,35 +524,12 @@ class MainScene extends Phaser.Scene {
     const best = this.bestScore.get(this.diff.id);
     if (best !== undefined) drawText(fb, t("title.best", { d: t(this.diff.nameKey), n: fmtNum(best) }), W / 2, 61, C.yellow, { align: "center", outline: C.ink, maxW: W - 10 });
 
-    const bStart: Rect = { x: W / 2 - 60, y: 70, w: 120, h: 12 };
-    const bGarage: Rect = { x: W / 2 - 60, y: 83, w: 120, h: 12 };
-    const bMap: Rect = { x: W / 2 - 60, y: 96, w: 120, h: 12 };
-    const bRank: Rect = { x: W / 2 - 60, y: 109, w: 120, h: 12 };
-    const bBadge: Rect = { x: W / 2 - 60, y: 122, w: 120, h: 12 };
-    const bCredits: Rect = { x: W / 2 - 60, y: 135, w: 120, h: 12 };
-    if (inp.hit("up")) { this.menuSel = (this.menuSel + 5) % 6; this.audio.uiMove(); }
-    if (inp.hit("down")) { this.menuSel = (this.menuSel + 1) % 6; this.audio.uiMove(); }
-    button(fb, bStart, t("radio.drive"), this.menuSel === 0);
-    button(fb, bGarage, t("title.garage"), this.menuSel === 1);
-    button(fb, bMap, t("title.map"), this.menuSel === 2);
-    button(fb, bRank, t("title.rankings"), this.menuSel === 3);
-    button(fb, bBadge, t("title.badges"), this.menuSel === 4);
-    button(fb, bCredits, t("title.credits"), this.menuSel === 5);
-    // a tiny map pin on the course map button
-    {
-      const mx = bMap.x + 6, my = bMap.y + 2;
-      fb.rect(mx - 1, my, 7, 6, C.ink); fb.rect(mx, my + 1, 5, 4, rgb(0xff3a2a)); fb.rect(mx + 1, my + 6, 3, 2, C.ink); fb.pset(mx + 2, my + 8, C.ink);
-      fb.pset(mx + 2, my + 2, rgb(0xffffff));
-    }
-    // a little car in the chosen colour on the garage button
-    fb.rect(bGarage.x + 4, bGarage.y + 4, 11, 5, C.ink);
-    fb.rect(bGarage.x + 5, bGarage.y + 5, 9, 3, this.car.col);
-    fb.rect(bGarage.x + 7, bGarage.y + 3, 5, 2, C.ink);
-    fb.rect(bGarage.x + 8, bGarage.y + 4, 3, 1, this.car.col);
-    fb.rect(bGarage.x + 5, bGarage.y + 8, 2, 2, C.ink);
-    fb.rect(bGarage.x + 12, bGarage.y + 8, 2, 2, C.ink);
-    // little gold medal on the badges button
-    drawMedal(fb, bBadge.x + 9, bBadge.y + 6, BADGE_TYPES[9], true, 5);
+    const items = this.mainMenuItems();
+    this.menuSel = Math.min(this.menuSel, items.length - 1);
+    const rows: Rect[] = items.map((_, i) => ({ x: 65, y: 71 + i * 15, w: 190, h: 14 }));
+    if (inp.hit("up")) { this.menuSel = (this.menuSel + items.length - 1) % items.length; this.audio.uiMove(); }
+    if (inp.hit("down")) { this.menuSel = (this.menuSel + 1) % items.length; this.audio.uiMove(); }
+    rows.forEach((r, i) => button(fb, r, t(items[i].label), this.menuSel === i));
     if (Math.floor(this.time2 * 2) % 2 === 0) {
       drawText(fb, inp.touchMode ? t("title.start_tap") : t("title.start_key"), W / 2, 150, C.white, { align: "center", outline: C.ink, maxW: W - 10 });
     }
@@ -549,23 +537,167 @@ class MainScene extends Phaser.Scene {
     drawText(fb, t("title.copyright"), W / 2, inp.touchMode ? H - 10 : 159, rgb(0xc8b8e8), { align: "center", outline: C.ink, maxW: W - 10 });
     if (!inp.touchMode) {
       fb.rectA(0, H - 12, W, 12, rgb(0x100820), 0.6);
-      drawText(fb, `${t("ctl.steer")} ← →    ${t("ctl.gas")} ↑ / ${t("ctl.space")}    ${t("ctl.brake")} ↓`, W / 2, H - 9, C.white, { align: "center", outline: C.ink, maxW: W - 10 });
+      drawText(fb, t("menu.navigate"), W / 2, H - 9, C.white, { align: "center", outline: C.ink, maxW: W - 10 });
     }
 
-    let go = -1;
-    if (inp.hit("confirm")) go = this.menuSel;
-    if (this.tapped(taps, bStart)) go = 0;
-    else if (this.tapped(taps, bGarage)) go = 1;
-    else if (this.tapped(taps, bMap)) go = 2;
-    else if (this.tapped(taps, bRank)) go = 3;
-    else if (this.tapped(taps, bBadge)) go = 4;
-    else if (this.tapped(taps, bCredits)) go = 5;
-    if (go === 0) { this.audio.uiSelect(); this.toControls(); }
-    else if (go === 1) { this.audio.uiSelect(); this.openGarage(); }
-    else if (go === 2) { this.audio.uiSelect(); this.openMap(false); }
-    else if (go === 3) { this.audio.uiSelect(); this.openRankings("title"); }
-    else if (go === 4) { this.audio.uiSelect(); this.openBadges(); }
-    else if (go === 5) { this.audio.uiSelect(); this.setMode("credits"); this.menuSel = CREDIT_LINKS.length; }
+    let go = inp.hit("confirm") ? this.menuSel : -1;
+    rows.forEach((r, i) => { if (this.tapped(taps, r)) go = i; });
+    if (go >= 0) {
+      this.audio.uiSelect();
+      const id = items[go].id;
+      if (id === "drive") this.toDifficulty();
+      else if (id === "settings") this.openSettings();
+      else if (id === "map") this.openMap(false);
+      else if (id === "records") this.openRecords();
+      else if (id === "exit" && !this.exitPending) {
+        const bridge = this.desktopExit();
+        if (bridge) {
+          this.exitPending = true;
+          try { Promise.resolve(bridge.quit()).catch(() => { this.exitPending = false; }); }
+          catch { this.exitPending = false; }
+        }
+      }
+    }
+  }
+
+  private desktopExit(): { quit(): unknown } | null {
+    const bridge = (window as unknown as { TesanaDesktop?: { embedded?: boolean; quit?: () => unknown } }).TesanaDesktop;
+    return bridge?.embedded === true && typeof bridge.quit === "function" ? bridge as { quit(): unknown } : null;
+  }
+
+  private mainMenuItems(): { id: string; label: string }[] {
+    const items = [
+      { id: "drive", label: "radio.drive" }, { id: "settings", label: "menu.settings" },
+      { id: "map", label: "title.map" }, { id: "records", label: "menu.records" },
+    ];
+    if (this.desktopExit()) items.push({ id: "exit", label: "menu.exit" });
+    return items;
+  }
+
+  private openSettings(selected = 0): void { this.setMode("settings"); this.menuSel = selected; }
+  private openRecords(selected = 0): void { this.setMode("records"); this.menuSel = selected; }
+
+  /** Shared pixel menu; the two hubs retain their selected row when a child returns. */
+  private submenu(dt: number, taps: { x: number; y: number }[], heading: string, labels: string[]): number {
+    const inp = this.input2, fb = this.fb;
+    this.demo.update(dt, { steer: 0, throttle: 0, brake: 0 });
+    this.painter.render(this.demo);
+    fb.rectA(0, 0, W, H, rgb(0x0c0618), 0.55);
+    panel(fb, 36, 8, W - 72, 164);
+    big(fb, t(heading), W / 2, 16, 2, GRAD_SUN, "center", W - 84);
+    const top = labels.length > 4 ? 46 : 65;
+    const rows = labels.map((_, i) => ({ x: 62, y: top + i * 19, w: W - 124, h: 16 }));
+    if (inp.hit("up")) { this.menuSel = (this.menuSel + labels.length - 1) % labels.length; this.audio.uiMove(); }
+    if (inp.hit("down")) { this.menuSel = (this.menuSel + 1) % labels.length; this.audio.uiMove(); }
+    rows.forEach((r, i) => button(fb, r, t(labels[i]), this.menuSel === i));
+    let go = inp.hit("confirm") ? this.menuSel : -1;
+    rows.forEach((r, i) => { if (this.tapped(taps, r)) go = i; });
+    if (inp.hit("back")) go = labels.length - 1;
+    if (go >= 0) this.audio.uiSelect();
+    return go;
+  }
+
+  private settings(dt: number, taps: { x: number; y: number }[]): void {
+    const go = this.submenu(dt, taps, "menu.settings", ["title.garage", "menu.input", "menu.bindings", "menu.music", "title.credits", "rank.back"]);
+    if (go === 0) this.openGarage();
+    else if (go === 1) this.toControls();
+    else if (go === 2) { this.setMode("bindings"); this.bindingFocus = 1; this.bindingNotice = ""; }
+    else if (go === 3) this.toRadio();
+    else if (go === 4) { this.setMode("credits"); this.menuSel = CREDIT_LINKS.length; }
+    else if (go === 5) { this.setMode("title"); this.menuSel = 1; }
+  }
+
+  private records(dt: number, taps: { x: number; y: number }[]): void {
+    const go = this.submenu(dt, taps, "menu.records", ["title.rankings", "title.badges", "rank.back"]);
+    if (go === 0) this.openRankings("records");
+    else if (go === 1) this.openBadges();
+    else if (go === 2) { this.setMode("title"); this.menuSel = 3; }
+  }
+
+  // ------------------------------------------------------- driving bindings
+  private bindingScreen(dt: number, taps: { x: number; y: number }[]): void {
+    const inp = this.input2, fb = this.fb;
+    this.demo.update(dt, { steer: 0, throttle: 0, brake: 0 });
+    this.painter.render(this.demo);
+    fb.rectA(0, 0, W, H, rgb(0x0c0618), 0.7);
+    panel(fb, 4, 2, W - 8, H - 4);
+    big(fb, t("menu.bindings"), W / 2, 7, 2, GRAD_SUN, "center", W - 20);
+    const devices: BindingDevice[] = ["keyboard", "gamepad"];
+    const tabs = devices.map((_, i) => ({ x: 10 + i * 152, y: 28, w: 148, h: 14 }));
+    const rows = DRIVE_ACTIONS.map((_, i) => ({ x: 10, y: 46 + i * 13, w: 300, h: 12 }));
+    const prev = { x: 266, y: 46 + this.bindingAction * 13, w: 19, h: 12 };
+    const next = { ...prev, x: 288 };
+    const actions = ["bind.replace", "bind.add", "bind.remove", "bind.defaults", "rank.back"];
+    const buttons = actions.map((_, i) => i < 3
+      ? { x: 10 + i * 102, y: 127, w: 96, h: 14 }
+      : { x: 10 + (i - 3) * 153, y: 144, w: 147, h: 14 });
+    const capture = inp.capture;
+    const changeDevice = (d: BindingDevice) => {
+      this.bindingDevice = d; this.bindingSlot = 0; this.bindingNotice = ""; this.audio.uiMove();
+    };
+    if (!capture) {
+      if (inp.hit("back")) { this.audio.uiSelect(); this.openSettings(2); return; }
+      if (inp.hit("up")) { this.bindingFocus = (this.bindingFocus + 11) % 12; this.audio.uiMove(); }
+      if (inp.hit("down")) { this.bindingFocus = (this.bindingFocus + 1) % 12; this.audio.uiMove(); }
+      if (this.bindingFocus >= 1 && this.bindingFocus <= 6) this.bindingAction = this.bindingFocus - 1;
+      let dir = inp.hit("left") ? -1 : inp.hit("right") ? 1 : 0;
+      tabs.forEach((r, i) => { if (this.tapped(taps, r)) { changeDevice(devices[i]); this.bindingFocus = 0; } });
+      if (this.bindingFocus === 0 && dir) changeDevice(this.bindingDevice === "keyboard" ? "gamepad" : "keyboard");
+      rows.forEach((r, i) => {
+        if (this.tapped(taps, r)) {
+          if (i !== this.bindingAction) this.bindingSlot = 0;
+          this.bindingAction = i; this.bindingFocus = i + 1;
+        }
+      });
+      if (this.tapped(taps, prev)) dir = -1;
+      if (this.tapped(taps, next)) dir = 1;
+      const list = inp.bindings.get(this.bindingDevice, DRIVE_ACTIONS[this.bindingAction]);
+      if (dir && this.bindingFocus >= 1 && this.bindingFocus <= 6) this.bindingSlot = (this.bindingSlot + dir + list.length) % list.length;
+      this.bindingSlot = Math.min(this.bindingSlot, list.length - 1);
+      let go = inp.hit("confirm") ? this.bindingFocus : -1;
+      buttons.forEach((r, i) => { if (this.tapped(taps, r)) { this.bindingFocus = i + 7; go = i + 7; } });
+      if (go === 0) changeDevice(this.bindingDevice === "keyboard" ? "gamepad" : "keyboard");
+      else if (go >= 1 && go <= 8) {
+        this.bindingNotice = ""; this.captureSavedAt = -1;
+        inp.startCapture(this.bindingDevice, DRIVE_ACTIONS[this.bindingAction], go === 8 ? null : this.bindingSlot);
+      } else if (go === 9) {
+        const result = inp.bindings.remove(this.bindingDevice, DRIVE_ACTIONS[this.bindingAction], this.bindingSlot);
+        this.bindingNotice = t(result.ok ? "bind.removed" : "bind.last");
+        this.bindingSlot = Math.max(0, this.bindingSlot - 1);
+      } else if (go === 10) {
+        inp.bindings.reset(this.bindingDevice); this.bindingSlot = 0; this.bindingNotice = t("bind.reset");
+      } else if (go === 11) { this.audio.uiSelect(); this.openSettings(2); return; }
+    }
+    tabs.forEach((r, i) => button(fb, r, t(`bind.${devices[i]}`), this.bindingDevice === devices[i]));
+    const labelIds = ["bind.left", "bind.right", "ctl.gas", "ctl.brake", "ctl.pause", "bind.signal"];
+    rows.forEach((r, i) => {
+      const list = inp.bindings.get(this.bindingDevice, DRIVE_ACTIONS[i]);
+      const selected = i === this.bindingAction;
+      const slot = selected ? Math.min(this.bindingSlot, list.length - 1) : 0;
+      if (selected) fb.rectA(r.x, r.y, r.w, r.h, C.pink, 0.3);
+      drawText(fb, t(labelIds[i]), 14, r.y + 3, selected ? C.yellow : C.white, { outline: C.ink, maxW: 104 });
+      drawText(fb, fit(`${bindingLabel(list[slot])} ${slot + 1}/${list.length}`, 141), 121, r.y + 3, C.cyan, { outline: C.ink });
+    });
+    button(fb, prev, "<", false); button(fb, next, ">", false);
+    buttons.forEach((r, i) => button(fb, r, t(actions[i]), this.bindingFocus === i + 7));
+    const note = this.bindingNotice || (this.bindingDevice === "gamepad" && !inp.gamepadName ? t("bind.connect") : t("bind.hint"));
+    drawText(fb, fit(note, W - 20), W / 2, 163, C.grey, { align: "center", outline: C.ink });
+    if (inp.capture) {
+      const c = inp.capture;
+      fb.rectA(0, 0, W, H, C.ink, 0.78);
+      panel(fb, 20, 50, W - 40, 91);
+      const key = c.status === "saved" ? "bind.saved" : c.status === "release" ? "bind.release" : "bind.listen";
+      para(fb, t(key), W / 2, 61, C.yellow, W - 54);
+      if (c.result && !c.result.ok) para(fb, t(c.result.reason === "conflict" ? "bind.conflict" : "bind.invalid", { a: t(labelIds[DRIVE_ACTIONS.indexOf(c.result.action ?? DRIVE_ACTIONS[this.bindingAction])]) }), W / 2, 82, C.pink, W - 54);
+      else if (c.device === "gamepad" && !inp.gamepadName) para(fb, t("bind.connect"), W / 2, 83, C.white, W - 54);
+      const cancel = { x: 110, y: 117, w: 100, h: 16 };
+      button(fb, cancel, t("bind.cancel"), true);
+      if (capture && this.tapped(taps, cancel)) inp.cancelCapture();
+      if (c.status === "saved") {
+        if (this.captureSavedAt < 0) this.captureSavedAt = this.time2;
+        if (this.time2 - this.captureSavedAt > 0.6) { inp.cancelCapture(); this.bindingNotice = t("bind.saved"); }
+      }
+    }
   }
 
   // ----------------------------------------------------------- credits
@@ -609,8 +741,7 @@ class MainScene extends Phaser.Scene {
     }
     if (leave) {
       this.audio.uiSelect();
-      this.setMode("title");
-      this.menuSel = 5;
+      this.openSettings(4);
     }
   }
 
@@ -693,8 +824,7 @@ class MainScene extends Phaser.Scene {
       this.demo.skin = this.car.skin;
       this.audio.uiSelect();
       analytics.event("car_pick", { name: this.car.id });
-      this.setMode("title");
-      this.menuSel = 0;
+      this.openSettings(0);
     }
   }
 
@@ -730,14 +860,14 @@ class MainScene extends Phaser.Scene {
       drawText(fb, t("ctl.detected", { d: dev }), W / 2, 96 + lines * 9 + 3, C.yellow, { align: "center", outline: C.ink, maxW: w - 10 });
     }
     const next: Rect = { x: W / 2 - 40, y: 160, w: 80, h: 15 };
-    button(fb, next, t("diff.next"), Math.floor(this.time2 * 3) % 2 === 0);
+    button(fb, next, t("menu.apply"), Math.floor(this.time2 * 3) % 2 === 0);
     if (!inp.touchMode) para(fb, t("diff.hint"), W / 2, 146, C.grey, w - 8, true);
-    if (inp.hit("back")) { this.audio.uiSelect(); this.setMode("title"); return; }
+    if (inp.hit("back")) { this.audio.uiSelect(); this.openSettings(1); return; }
     if (inp.hit("confirm") || this.tapped(taps, next)) {
       if (p !== inp.pref) analytics.event("controls_set", { name: p });
       inp.setPref(p);
       this.audio.uiSelect();
-      this.toDifficulty();
+      this.openSettings(1);
     }
   }
 
@@ -796,29 +926,27 @@ class MainScene extends Phaser.Scene {
     const next: Rect = { x: W / 2 - 40, y: 160, w: 80, h: 15 };
     button(fb, next, t("diff.next"), Math.floor(this.time2 * 3) % 2 === 0);
     if (!inp.touchMode) para(fb, t("diff.hint"), W / 2, 146, C.grey, w - 8, true);
-    if (inp.hit("back")) { this.audio.uiSelect(); this.toControls(); return; }
+    if (inp.hit("back")) { this.audio.uiSelect(); this.setMode("title"); this.menuSel = 0; return; }
     if (inp.hit("confirm") || this.tapped(taps, next)) {
       this.diff = d;
       try { localStorage.setItem(DIFF_KEY, d.id); } catch { /* storage blocked */ }
       this.audio.uiSelect();
-      this.toRadio();
+      this.race = null;
+      this.startRace();
     }
   }
 
   // ------------------------------------------------------------- radio
   private toRadio(): void {
-    this.race = this.newRace();
-    this.race.skin = this.car.skin;
-    if (WARP > 0) this.race.warp(WARP - 1, Number((/at=(\d+)/.exec(HASH) || [])[1] || 60));
     this.setMode("radio");
     this.requestSong(this.station);
     this.audio.playSong(SONG_KEYS[this.station]);
   }
 
-  private radio(_dt: number, taps: { x: number; y: number }[]): void {
+  private radio(dt: number, taps: { x: number; y: number }[]): void {
     const inp = this.input2;
-    const race = this.race!;
-    this.painter.render(race);
+    this.demo.update(dt, { steer: 0, throttle: 0, brake: 0 });
+    this.painter.render(this.demo);
     const fb = this.fb;
     fb.rectA(0, 0, W, H, rgb(0x100820), 0.25);
 
@@ -868,15 +996,16 @@ class MainScene extends Phaser.Scene {
       drawText(fb, t("radio.loading"), W / 2, by + 12, rgb(0x6a2a10), { align: "center" });
     }
     const drive: Rect = { x: W / 2 - 40, y: by + bh + 5 + 3 * 14 + 3, w: 80, h: 15 };
-    button(fb, drive, t("radio.drive"), Math.floor(this.time2 * 3) % 2 === 0);
+    button(fb, drive, t("rank.back"), Math.floor(this.time2 * 3) % 2 === 0);
     fb.rectA(0, H - 12, W, 12, rgb(0x100820), 0.6);
-    para(fb, inp.touchMode ? t("radio.hint_tap") : t("radio.hint"), W / 2, H - 9, C.white, W - 10, true);
+    para(fb, inp.touchMode ? t("music.hint_tap") : t("music.hint"), W / 2, H - 9, C.white, W - 10, true);
 
     const tiltBtn = this.tiltToggle(H - 46);
     // test hook: which songs are in memory and which one is on air
     if (RADIOTEST) (window as unknown as Record<string, unknown>).__radio = { station: this.station, ready, on: this.audio.currentSong, held: SONG_KEYS.filter((k) => this.audio.buffers.has(k)), loading: [...this.songLoading] };
-    if (inp.hit("back")) { this.audio.stopSong(0.4); this.toDifficulty(); return; }
-    if (inp.hit("confirm") || (this.tapped(taps, drive) && !(tiltBtn && this.tapped(taps, tiltBtn)))) this.startRace();
+    if (inp.hit("back") || inp.hit("confirm") || (this.tapped(taps, drive) && !(tiltBtn && this.tapped(taps, tiltBtn)))) {
+      this.audio.stopSong(0.2); this.audio.setStatic(false); this.openSettings(3);
+    }
   }
 
   private tune(i: number): void {
@@ -915,10 +1044,12 @@ class MainScene extends Phaser.Scene {
   // -------------------------------------------------------------- race
   private startRace(): void {
     if (!carUnlocked(this.car, this.carGoals())) this.car = CARS[0];
-    const race = this.race ?? this.newRace();
+    const race = this.newRace();
+    if (WARP > 0) race.warp(WARP - 1, Number((/at=(\d+)/.exec(HASH) || [])[1] || 60));
     race.skin = this.car.skin;
     this.race = race;
-    this.requestSong(this.station); // in case Drive was pressed while the dial was still moving
+    this.requestSong(this.station); // loading never delays the countdown
+    this.audio.playSong(SONG_KEYS[this.station]);
     this.hud = new Hud();
     this.lady = new Passenger();
     this.lady.onSpeak = (m) => this.audio.voice(m);
@@ -1094,10 +1225,11 @@ class MainScene extends Phaser.Scene {
     const race = this.race!;
     const fb = this.fb;
     const pauseTap = inp.touchMode && this.tapped(taps, TOUCH.pause);
-    if (!this.paused && (inp.hit("pause") || inp.hit("back") || pauseTap) && (race.state === "race" || race.state === "countdown")) {
+    if (!this.paused && (inp.hit("pause") || pauseTap) && (race.state === "race" || race.state === "countdown")) {
       this.paused = true;
       this.pauseSel = 0;
       this.audio.uiMove();
+      inp.endFrame(); // a custom Pause key may also be a fixed menu key
       taps = [];
     }
     if (!this.paused) {
@@ -1207,7 +1339,8 @@ class MainScene extends Phaser.Scene {
     para(fb,t('ctl.signal_hint'),W/2,hasTilt?153:136,C.white,230);
     let act = -1;
     if (inp.hit("confirm")) act = this.pauseSel;
-    if (inp.hit("pause") || inp.hit("back")) act = 0;
+    const resume = inp.hit("pause") || inp.hit("back");
+    if (act < 0 && resume) act = 0;
     if (hasTilt) {
       const r: Rect = { x: W / 2 - 70, y: 120, w: 140, h: 13 };
       inp.tiltRect = r;
@@ -1951,6 +2084,7 @@ class MainScene extends Phaser.Scene {
   private openBadges(): void {
     this.badges.refresh();
     this.badgeSel = DIFFS.indexOf(this.diff) * BADGE_TYPES.length;
+    this.badgeFrom = "records";
     this.setMode("badges");
   }
 
@@ -2047,8 +2181,7 @@ class MainScene extends Phaser.Scene {
     if (!inp.touchMode) para(fb, t("badge.hint"), W / 2, 146, rgb(0x8a7aa8), w - 8, true);
     if (inp.hit("back") || inp.hit("confirm") || this.tapped(taps, back)) {
       this.audio.uiSelect();
-      this.setMode("title");
-      this.menuSel = 4;
+      this.openRecords(1);
     }
   }
 
@@ -2152,8 +2285,8 @@ class MainScene extends Phaser.Scene {
     if (!inp.touchMode) para(fb, t("rank.hint"), W / 2, 146, C.grey, w - 8, true);
     if (inp.hit("back") || inp.hit("confirm") || this.tapped(taps, back)) {
       this.audio.uiSelect();
-      this.setMode(this.rankFrom === "title" ? "title" : this.rankFrom);
-      if (this.mode === "title") this.menuSel = 3;
+      if (this.rankFrom === "records") this.openRecords(0);
+      else { this.setMode(this.rankFrom); if (this.mode === "title") this.menuSel = 3; }
     }
   }
 }

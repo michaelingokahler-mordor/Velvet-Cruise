@@ -23,6 +23,7 @@ const reportName=process.argv.includes('--finale-only')?'finale-validation.json'
    await page.waitForFunction(()=>typeof window.__trackBench==='function');
    await page.keyboard.press('ArrowDown');await page.waitForTimeout(120);
    await page.keyboard.press('Enter');await page.waitForTimeout(300);
+   await page.keyboard.press('Enter');await page.waitForTimeout(300); // Settings > Garage
    await page.keyboard.press('ArrowRight');await page.waitForTimeout(120);
    await page.keyboard.press('Enter');await page.waitForTimeout(120);
    assert.equal(await page.evaluate(()=>localStorage.getItem('sunset-coast-run.car')),null,'Locked car must not be selected');

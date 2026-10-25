@@ -51,12 +51,14 @@ const stages = COLUMN_NODES.flatMap((nodes, column) => nodes.map(node => ({
     await page.waitForTimeout(100);
     await page.keyboard.press('Enter');
     await page.waitForTimeout(250);
+    await page.keyboard.press('Enter'); // Settings > Garage
+    await page.waitForTimeout(250);
     await page.keyboard.press('ArrowRight');
     await page.waitForTimeout(500);
     await page.locator('#game canvas').screenshot({ path: path.join(destination, 'velvet-cruise-garage.png') });
     await page.keyboard.press('Escape');
     await page.waitForTimeout(150);
-    await page.keyboard.press('ArrowDown');
+    await page.keyboard.press('Escape'); // Garage > Settings > title (Settings selected)
     await page.waitForTimeout(100);
     await page.keyboard.press('ArrowDown');
     await page.waitForTimeout(100);
