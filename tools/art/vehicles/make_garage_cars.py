@@ -5,6 +5,8 @@ Run after make_vehicles.py / make_hero_cars.py / make_tumble.py, before pack_ass
 Every roof phase shares the original body pixels and a bounded, documented mask.
 """
 import json
+import argparse
+from contextlib import contextmanager
 from pathlib import Path
 
 import numpy as np
@@ -17,7 +19,7 @@ HERE = Path(__file__).resolve().parent
 OUT = HERE / 'out'
 C, Canvas = mv.C, mv.Canvas
 VIEWS = ['straight', 'left', 'right']
-STATES = ['', '_roof1', '_roof2', '_closed']
+STATES = ['', '_roof1', '_roof2', '_roof3', '_roof4', '_roof5', '_roof6', '_closed']
 CARS = [
     ('player', 'Rosso Spider', ['#171620', '#292832', '#41414e', '#62626e']),
     ('player_yellow', 'Giallo Toro', ['#11131c', '#222630', '#343b46', '#565e6b']),
@@ -135,86 +137,222 @@ def brake_for(cv):
     return brake
 
 
-def roof_mask(view):
-    mask = Canvas(88, 48)
-    shift = -5 if view == 'left' else 5 if view == 'right' else 0
-    mask.rect(16 + shift, 0, 71 + shift, 15, C('#ffffff'))
+# Final-frame coordinates follow the original generators' crop and steering shear.
+# Legacy views narrow in a turn; Silver/Azure retain their original rigid cabin shift.
+LEGACY_POSES = {'straight': (23, 64, 10, 67), 'left': (24, 59, 11, 62), 'right': (28, 63, 15, 66)}
+PROFILES = {
+    'player': dict(outline=[(-1,14),(-.96,10),(-.86,5),(-.72,2),(-.58,1),(.60,1),(.78,2),(.91,6),(1,11),(1,14)], window=[(-.65,6),(.65,6),(.80,12),(-.80,12)], seam=3),
+    'player_yellow': dict(outline=[(-1,14),(-.95,6),(-.80,1),(.76,1),(.95,5),(1,14)], window=[(-.65,4),(.62,4),(.80,11),(-.80,11)], seam=2),
+    'player_green': dict(outline=[(-1,14),(-.98,10),(-.87,5),(-.67,2),(-.43,0),(.43,0),(.67,2),(.87,5),(.98,10),(1,14)], window=[(-.54,5),(.54,5),(.72,8),(.78,12),(-.78,12),(-.72,8)], seam=3),
+    'player_blue': dict(outline=[(-1,14),(-1,9),(-.91,4),(-.73,1),(-.50,0),(.56,0),(.81,2),(.96,6),(1,11),(1,14)], window=[(-.66,5),(.66,5),(.83,11),(.80,12),(-.80,12),(-.83,11)], seam=3),
+    'player_silver': dict(outline=[(-1,14),(-.94,9),(-.85,4),(-.65,2),(.66,2),(.86,4),(.97,10),(1,14)], window=[(-.73,7),(.73,7),(.86,12),(-.86,12)], seam=4),
+    'player_azure': dict(outline=[(-1,14),(-.97,9),(-.84,4),(-.62,1),(-.32,0),(.32,0),(.62,1),(.84,4),(.97,9),(1,14)], window=[(-.37,5),(.37,5),(.57,7),(.61,10),(.51,12),(-.51,12),(-.61,10),(-.57,7)], seam=3),
+}
+
+
+def geometry(prefix, view):
+    if prefix in ['player_silver', 'player_azure']:
+        shift = {'straight': 0, 'left': -5, 'right': 5}[view]
+        return 23 + shift, 64 + shift, 8 + shift, 73 + shift
+    return LEGACY_POSES[view]
+
+
+@contextmanager
+def without_people():
+    driver, passenger = mv.draw_driver, mv.draw_passenger
+    mv.draw_driver = mv.draw_passenger = lambda *args, **kwargs: None
+    try:
+        yield
+    finally:
+        mv.draw_driver, mv.draw_passenger = driver, passenger
+
+
+def clean_cabin(prefix, view):
+    if prefix == 'player':
+        with without_people():
+            return mv.draw_player(view, 0)[0]
+    if prefix in ['player_yellow', 'player_green', 'player_blue']:
+        return hg.draw_hero(prefix.split('_')[1], view, 0, people=False)[0]
+    return new_car(prefix, view, 0, people=False)
+
+
+def foreground_mask(prefix, view):
+    """Body shoulders, rear cockpit rim, mirrors and wings are never roof-owned."""
+    lo, hi, ml, mr = geometry(prefix, view)
+    protect = np.zeros((48, 88), bool)
+    protect[15:] = True
+    protect[9:15, :lo] = True
+    protect[9:15, hi+1:] = True
+    if prefix in ['player_silver', 'player_azure']:
+        for x in [ml, mr]:
+            protect[4:9, x:x+7] = True
+    else:
+        protect[3:8, ml:ml+8] = True
+        protect[6:8, ml+8:ml+11] = True
+        protect[3:8, mr+3:mr+11] = True
+        # The passenger's open-roof hair overlaps the inner end of this stem.
+        # Those three human pixels are replaceable; closing reveals the clean stem below.
+        protect[6, mr+1:mr+3] = True
+        protect[7, mr+2] = True
+    if prefix == 'player_yellow':
+        x0, x1 = {'straight': (8,79), 'left': (10,75), 'right': (12,77)}[view]
+        protect[9:13, x0:x1+1] = True
+    return protect
+
+
+def roof_mask(prefix, view, base, clean):
+    lo, hi, *_ = geometry(prefix, view)
+    allowed = np.any(base.a != clean.a, axis=2)
+    allowed[:15, max(0,lo-3):min(88,hi+4)] = True
+    allowed &= ~foreground_mask(prefix, view)
+    mask = Canvas(88,48)
+    mask.a[allowed] = C('#ffffff')
     return mask
 
 
+def canopy(prefix, view, phase, frame, colors, empty):
+    """Authored folded bows (1..3), unfolding sheet (4..6), tensioned cloth (7)."""
+    lo, hi, *_ = geometry(prefix, view)
+    center = (lo + hi) / 2
+    half = (hi - lo) / 2
+    profile = PROFILES[prefix]
+    layer = Image.new('RGBA', (88,48))
+    draw = ImageDraw.Draw(layer)
+    dark, mid, light, highlight = [C(c) for c in colors]
+    X = lambda t: int(round(center + t * half))
+    if phase <= 3:
+        # The rear bow lifts and the doubled fabric opens around its hinge.
+        folds = {
+            1: [(-.80,14),(-.63,12),(.60,12),(.83,14)],
+            2: [(-.88,14),(-.64,8),(-.48,8),(-.25,11),(.22,11),(.49,8),(.67,8),(.89,14)],
+            3: [(-.94,14),(-.77,5),(-.51,3),(.50,3),(.78,6),(.94,14),(.52,10),(-.53,10)],
+        }[phase]
+        pts = [(X(x),y) for x,y in folds]
+        draw.polygon(pts, fill=dark)
+        draw.line(pts+[pts[0]], fill=light, width=1)
+        if phase == 1:
+            draw.line([(X(-.65),13),(X(.65),13)],fill=highlight)
+        elif phase == 2:
+            draw.line([(X(-.64),9),(X(-.25),12),(X(.22),12),(X(.65),9)],fill=highlight)
+            draw.line([(X(-.70),12),(X(.72),12)],fill=mid)
+        else:
+            draw.line([(X(-.51),4),(X(.50),4),(X(.72),7)],fill=highlight)
+            draw.line([(X(-.72),7),(X(-.38),10),(X(.40),10),(X(.73),8)],fill=mid)
+        return np.array(layer)
+
+    spread = {4:.73,5:.89,6:.97,7:1.0}[phase]
+    Y = lambda y: int(round(14 - (14-y)*spread))
+    pts = [(X(x),Y(y)) for x,y in profile['outline']]
+    draw.polygon(pts,fill=dark)
+    inner = [(int(round(center+(x-center)*.94)),min(14,y+1)) for x,y in pts]
+    draw.polygon(inner,fill=mid)
+    # A softly lit top surface and two stitched seams give cloth volume without a box edge.
+    top = min(y for _,y in pts)
+    draw.line([(X(-.56),top+1),(X(.55),top+1),(X(.76),top+2)],fill=light)
+    draw.line([(X(-.82),Y(6)),(X(-.92),13)],fill=dark)
+    draw.line([(X(.83),Y(6)),(X(.93),13)],fill=light)
+    if phase < 7:
+        # A diagonal fold straightens as the front rail reaches the windshield.
+        draw.line([(X(-.60),top+2),(X(-.18),top+3),(X(.58),top+2)],fill=highlight)
+    else:
+        draw.point((X(.47),top+1),fill=highlight)
+    window_pts = [(X(x),Y(y)) for x,y in profile['window']]
+    window = Image.new('1',(88,48))
+    ImageDraw.Draw(window).polygon(window_pts,fill=1)
+    glass = Image.new('RGBA',(88,48))
+    gd = ImageDraw.Draw(glass)
+    wy = min(y for _,y in window_pts)
+    for y in range(wy,14):
+        gd.line([(lo,y),(hi,y)], fill=('#3f5668' if y==wy else '#2e4053' if y<wy+3 else '#263548'))
+    if not empty:
+        # Back-of-head silhouettes, tinted through glass, stay within the rear window.
+        head_y = max(wy+1, Y(7))
+        for i, hx in enumerate([X(-.43)+(frame if phase>=5 else 0), X(.43)]):
+            hair = '#655045' if i==0 else '#b6a16b'
+            shade = '#423f42' if i==0 else '#80734e'
+            gd.polygon([(hx-2,head_y),(hx+1,head_y),(hx+2,head_y+1),(hx+2,head_y+3),(hx,head_y+4),(hx-2,head_y+3)],fill=shade)
+            gd.line([(hx-1,head_y),(hx+1,head_y),(hx+1,head_y+2)],fill=hair,width=1)
+            gd.line([(hx-4,head_y+5),(hx+4,head_y+5)],fill='#40506a' if i==0 else '#71654d')
+    gd.line([(X(.53),wy+1),(X(.66),wy+3)],fill='#6e8599')
+    layer.paste(glass,(0,0),window)
+    draw = ImageDraw.Draw(layer)
+    draw.line(window_pts+[window_pts[0]],fill=dark,width=1)
+    if prefix=='player_azure':
+        draw.line([(X(-.48),Y(13)),(X(.48),Y(13))],fill=C('#c8c8ba'))
+    # Sealed rear edge, only one pixel deep, seated directly on the original cockpit rim.
+    draw.line([(X(-.9),14),(X(.9),14)],fill=dark)
+    return np.array(layer)
+
+
 def with_roof(base, prefix, view, frame, phase, colors, empty=False):
-    cv = Canvas(88, 48)
-    cv.a[:] = base.a
-    shift = -5 if view == 'left' else 5 if view == 'right' else 0
-    center = 43 + shift
-    R = [C(h) for h in colors]
-    top = [16, 10, 5, 0][phase]
-    if phase == 3:
-        # Remove windblown hair and windshield only in the declared cockpit mask.
-        cv.a[roof_mask(view).mask()] = mv.CLEAR
-    cv.poly([(center - 17, top), (center + 17, top), (center + 24, 15), (center - 24, 15)], R[0])
-    cv.poly([(center - 16, top + 1), (center + 16, top + 1), (center + 22, 14), (center - 22, 14)], R[1])
-    cv.hl(center - 16, center + 16, top + 1, R[3])
-    cv.hl(center - 18, center + 18, 14, R[2])
-    if phase >= 2:
-        cv.poly([(center - 15, top + 4), (center + 15, top + 4), (center + 18, 12), (center - 18, 12)], C('#34475f'))
-        cv.hl(center - 14, center + 14, top + 4, C('#7690aa'))
-        if not empty:
-            # Heads move a pixel in the calm cabin; hair never streams through the roof.
-            for x, colors in [(center - 10 + frame, ['#383d49', '#665044', '#8d7660']),
-                              (center + 10, ['#6e6959', '#ac9b65', '#cebd87'])]:
-                head = ['..aa..', '.abba.', 'abccba', 'abccba', '.abba.', '..aa..']
-                for yy, line in enumerate(head):
-                    for xx, ch in enumerate(line):
-                        if ch != '.' and top + 5 + yy <= 12:
-                            cv.px(x - 3 + xx, top + 5 + yy, C(colors['abc'.index(ch)]))
-                cv.hl(x - 5, x + 4, 12, C('#45536d'))
-        cv.px(center + 14, top + 5, C('#c3d6e4'))
-        cv.px(center + 15, top + 6, C('#7690aa'))
-    if prefix == 'player_yellow':
-        # This wing stands IN FRONT of the rear window. Its pixels must never change.
-        cv.a[9:13] = base.a[9:13]
-    if prefix == 'player_green':
-        cv.a[15] = base.a[15]
-    # Invariant enforced even when future roof styling is edited.
-    outside = ~roof_mask(view).mask()
-    cv.a[outside] = base.a[outside]
+    clean = clean_cabin(prefix, view)
+    cv = Canvas(88,48)
+    cv.a[:] = base.a if phase <= 3 else clean.a
+    if phase >= 4:
+        # The open car's windshield belongs to the replaceable cabin, not the body.
+        # Remove its exact ink strokes so they cannot stick out around the canvas.
+        lo, hi, *_ = geometry(prefix,view)
+        cv.hl(lo+2 if prefix in ['player_silver','player_azure'] else lo+3,
+              hi-2 if prefix in ['player_silver','player_azure'] else hi-3, 1, mv.CLEAR)
+        if prefix in ['player_silver','player_azure']:
+            for x in [lo,hi]:
+                cv.vl(x,2,8,mv.CLEAR)
+                cv.vl(x+(1 if x==lo else -1),2,7,mv.CLEAR)
+        else:
+            cv.hl(lo+4,hi-4,2,mv.CLEAR)
+            center=(lo+hi)//2
+            cv.hl(center-3,center+4,3,mv.CLEAR)
+            cv.hl(center-2,center+3,4,mv.CLEAR)
+            for i in range(7):
+                y=7-i;d=(i+1)//2
+                for x,side in [(lo-1+d,-1),(hi+1-d,1)]:
+                    cv.px(x,y,mv.CLEAR);cv.px(x-side,y,mv.CLEAR)
+    layer = canopy(prefix,view,phase,frame,colors,empty)
+    cv.a[layer[:,:,3]>0] = layer[layer[:,:,3]>0]
+    allowed = roof_mask(prefix,view,base,clean).mask()
+    cv.a[~allowed] = base.a[~allowed]
+    # Foreground is restored by exact source pixels, including transparent exterior gaps.
+    foreground = foreground_mask(prefix,view)
+    cv.a[foreground] = base.a[foreground]
     return cv
 
 
 def main():
-    OUT.mkdir(exist_ok=True)
-    sheet = Image.new('RGBA', (96 * 4, 64 * 6), '#262b3a')
-    paint = ImageDraw.Draw(sheet)
-    count = 0
-    for row, (prefix, title, colors) in enumerate(CARS):
-        new = prefix in ['player_silver', 'player_azure']
+    parser=argparse.ArgumentParser()
+    parser.add_argument('--cars',nargs='+',choices=[p for p,_,_ in CARS])
+    args=parser.parse_args()
+    selected=[c for c in CARS if not args.cars or c[0] in args.cars]
+    sheet=Image.new('RGBA',(96*8,64*len(selected)),'#262b3a')
+    paint=ImageDraw.Draw(sheet)
+    count=0
+    for row,(prefix,title,colors) in enumerate(selected):
         for view in VIEWS:
-            roof_mask(view).image().save(OUT / f'{prefix}_roof_mask_{view}.png')
-            bases = [new_car(prefix, view, fr) if new else read(f'{prefix}_{view}_{fr}') for fr in [0, 1]]
-            brake = brake_for(bases[0]) if new else read(f'{prefix}_brake_{view}')
-            for phase, state in enumerate(STATES):
-                if phase == 0 and not new:
-                    continue
-                for fr, base in enumerate(bases):
-                    cv = with_roof(base, prefix, view, fr, phase, colors) if phase else base
-                    cv.image().save(OUT / f'{prefix}{state}_{view}_{fr}.png')
-                    count += 1
-                brake.image().save(OUT / f'{prefix}{state}_brake_{view}.png')
-        empty = new_car(prefix, 'straight', 0, False) if new else read(f'{prefix}_empty')
-        for phase, state in enumerate(STATES):
-            if phase or new:
-                cv = with_roof(empty, prefix, 'straight', 0, phase, colors, empty=True) if phase else empty
-                cv.image().save(OUT / f'{prefix}{state}_empty.png')
-            cv = read(f'{prefix}{state}_straight_0')
-            x, y = phase * 96 + 4, row * 64 + 15
-            sheet.paste(cv.image(), (x, y), cv.image())
-            paint.text((phase * 96 + 3, row * 64 + 2), [title, 'Closing 1', 'Closing 2', 'Closed'][phase], fill='#e6edf7')
-    sheet.save(HERE / 'garage-weather-native.png')
-    sheet.resize((sheet.width * 3, sheet.height * 3), Image.Resampling.NEAREST).save(HERE / 'preview_garage_weather.png')
-    (HERE / 'garage-weather-manifest.json').write_text(json.dumps({'frame': [88, 48], 'states': STATES, 'views': VIEWS, 'cars': [p for p, _, _ in CARS], 'mask': 'roof_mask_<view>; only rows 0..15', 'framesWritten': count}, indent=2))
-    print(f'Generated {count} animated frames; original open cars retained byte for byte.')
+            bases=[read(f'{prefix}_{view}_{fr}') for fr in [0,1]]
+            clean=clean_cabin(prefix,view)
+            mask=roof_mask(prefix,view,bases[0],clean)
+            mask.a[roof_mask(prefix,view,bases[1],clean).mask()]=C('#ffffff')
+            mask.image().save(OUT/f'{prefix}_roof_mask_{view}.png')
+            brake=read(f'{prefix}_brake_{view}')
+            for phase,state in enumerate(STATES[1:],1):
+                for fr,base in enumerate(bases):
+                    with_roof(base,prefix,view,fr,phase,colors).image().save(OUT/f'{prefix}{state}_{view}_{fr}.png')
+                    count+=1
+                brake.image().save(OUT/f'{prefix}{state}_brake_{view}.png')
+        empty=read(f'{prefix}_empty')
+        for phase,state in enumerate(STATES):
+            if phase:
+                with_roof(empty,prefix,'straight',0,phase,colors,empty=True).image().save(OUT/f'{prefix}{state}_empty.png')
+            cv=read(f'{prefix}{state}_straight_0')
+            x,y=phase*96+4,row*64+15
+            sheet.paste(cv.image(),(x,y),cv.image())
+            paint.text((phase*96+3,row*64+2),title if not phase else 'Closed' if phase==7 else f'Fold {phase}',fill='#e6edf7')
+    name='garage-weather' if not args.cars else 'garage-reference'
+    sheet.save(HERE/(name+'-native.png'))
+    sheet.resize((sheet.width*3,sheet.height*3),Image.Resampling.NEAREST).save(HERE/('preview_'+name.replace('-','_')+'.png'))
+    if not args.cars:
+        (HERE/'garage-weather-manifest.json').write_text(json.dumps({'frame':[88,48],'states':STATES,'views':VIEWS,'cars':[p for p,_,_ in CARS],'mask':'semantic cabin with protected foreground; independent test fixtures','framesWritten':count,'duration':.65},indent=2))
+    print(f'Generated {count} occupied frames; all 60 open input PNGs retained byte for byte.')
 
 
-if __name__ == '__main__':
+if __name__=='__main__':
     main()

@@ -41,12 +41,28 @@ test('roof moves through intermediate frames, with hysteresis and no tunnel reop
   const roof = r.roof; roof.reset(0);
   const phases = new Set([roof.phase]);
   for (let i = 0; i < 45; i++) { roof.update(1, 1/60); phases.add(roof.phase); }
-  assert.deepEqual([...phases], [0, 1, 2, 3]);
-  roof.update(.10, 1); assert.equal(roof.phase, 3, 'weak remaining rain must not flap the roof');
+  assert.deepEqual([...phases], [0, 1, 2, 3, 4, 5, 6, 7]);
+  roof.update(.10, 1); assert.equal(roof.phase, 7, 'weak remaining rain must not flap the roof');
   roof.update(.03, 1); assert.equal(roof.phase, 0);
   r.warp(1, 500); r.state = 'race'; r.timer = 200; r.tunnelAmt = 1;
   for (let i=0;i<45;i++) r.update(1/60, { steer:0, throttle:0, brake:0 });
-  assert.equal(r.roof.phase, 3);
+  assert.equal(r.roof.phase, 7);
+});
+
+test('eight roof poses reverse continuously and finish in 0.65 seconds', () => {
+  const roof = new Race(track).roof;
+  roof.reset(0); roof.update(1, .325);
+  assert.equal(roof.position, .5);
+  const before = roof.position;
+  roof.update(0, 1/60);
+  assert.ok(roof.position < before && roof.position > before - .03);
+  roof.update(1, .65); assert.equal(roof.phase, 7); assert.equal(roof.suffix, '_closed');
+  const phases = [roof.phase];
+  for (let i=0;i<39;i++) { roof.update(0, 1/60); if (phases.at(-1)!==roof.phase) phases.push(roof.phase); }
+  assert.deepEqual(phases,[7,6,5,4,3,2,1,0]);
+  for (const [position,suffix] of [[0,''],[1/7,'_roof1'],[6/7,'_roof6'],[1,'_closed']]) {
+    roof.position=position; assert.equal(roof.suffix,suffix);
+  }
 });
 test('weather roof changes neither car position nor handling', () => {
   const a = new Race(track), b = new Race(track); assert.ok(a.roof, 'Missing weather roof state');

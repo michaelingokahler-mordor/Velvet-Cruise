@@ -7,6 +7,10 @@
     "",
     "_roof1",
     "_roof2",
+    "_roof3",
+    "_roof4",
+    "_roof5",
+    "_roof6",
     "_closed"
   ],
   "views": [
@@ -22,6 +26,7 @@
     "player_silver",
     "player_azure"
   ],
-  "mask": "roof_mask_<view>; only rows 0..15",
-  "framesWritten": 120
+  "mask": "semantic cabin with protected foreground; independent test fixtures",
+  "framesWritten": 252,
+  "duration": 0.65
 }

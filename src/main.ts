@@ -359,6 +359,10 @@ class MainScene extends Phaser.Scene {
       if (typeof mood === "number") this.lady.mood = mood;
       this.startEnding(DEMO_A ? "A" : letter);
     };
+    if (ENDTEST) (window as unknown as Record<string, unknown>).__endingState = () => ({
+      mode: this.mode, time: this.modeT, roof: this.race?.roof.phase,
+      position: this.race?.roof.position, peopleOut: this.mode === "ending" && this.modeT > 2,
+    });
     // test hook: window.__name(score, diff) opens the name entry as if a run had just ended
     if (NAMETEST) (window as unknown as Record<string, unknown>).__name = (score: number, diff: DiffId) => {
       const res = this.result;
@@ -1103,9 +1107,10 @@ class MainScene extends Phaser.Scene {
       for (let k = 0; k < SIM; k++) {
         const ctl = AUTOPILOT && race.state === "race" ? race.autopilot(dt, 0.997) : { steer: inp.steer, throttle: inp.throttle, brake: inp.brake };
         race.update(dt, ctl);
+        // Test observers need each accelerated simulation step, not only the final frame.
+        if (AUTOPILOT || TUMBLETEST) (window as unknown as Record<string, unknown>).__race = { state: race.state, timer: race.timer, stage: race.stage, times: race.stageTimes, score: race.score, crash: race.crashT, kmh: race.kmh, run: race.runTime, near: this.nearRun, clean: this.runClean, tumble: race.tumbleT, crashes: this.tumbleCount, ice: race.iceAmt, x: race.playerX, z: race.position, car: this.car.id, skin: race.visualSkin, roof: race.roof.phase, roofPosition: race.roof.position, rain: race.weatherAmt("rain"), snow: race.weatherAmt("snow") };
       }
       if (AUTOPILOT) (window as unknown as Record<string, unknown>).__trk = race.track;
-      if (AUTOPILOT || TUMBLETEST) (window as unknown as Record<string, unknown>).__race = { state: race.state, timer: race.timer, stage: race.stage, times: race.stageTimes, score: race.score, crash: race.crashT, kmh: race.kmh, run: race.runTime, near: this.nearRun, clean: this.runClean, tumble: race.tumbleT, crashes: this.tumbleCount, ice: race.iceAmt, x: race.playerX, z: race.position, car: this.car.id, skin: race.visualSkin, roof: race.roof.phase, roofPosition: race.roof.position, rain: race.weatherAmt("rain"), snow: race.weatherAmt("snow") };
       this.hud.update(dt);
       // countdown beeps
       if (race.state === "countdown" || (race.state === "race" && race.countdown > 0)) {

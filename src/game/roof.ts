@@ -16,6 +16,6 @@ export class WeatherRoof {
     this.position = this.close ? Math.min(1, this.position + step) : Math.max(0, this.position - step);
   }
 
-  get phase(): number { return Math.round(this.position * 3); }
-  get suffix(): string { return ['', '_roof1', '_roof2', '_closed'][this.phase]; }
+  get phase(): number { return Math.round(this.position * 7); }
+  get suffix(): string { return ['', '_roof1', '_roof2', '_roof3', '_roof4', '_roof5', '_roof6', '_closed'][this.phase]; }
 }
