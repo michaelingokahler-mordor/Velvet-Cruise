@@ -86,14 +86,14 @@ Alle Masken werden auf fünf zulässige Bits begrenzt; beschädigte Einzelwerte 
 Die bestehenden Exporte `W=320` und `H=180` bleiben vorerst logische Layoutkonstanten. Native Routinen lesen `fb.w` und `fb.h`.
 Die niedrigstufigen FB-Blits verwenden native Pixelmaße. Ihre Aufrufer berücksichtigen die Sprite-Dichte genau einmal.
 
-- [ ] **Step 1:** Prüfe beide Größen, Rand-Clipping, Polygonspannen, additive Blits, Drehung und transparente Rechtecke über einem detaillierten Hintergrund.
-- [ ] **Step 2:** Ergänze einen Test mit density-1- und density-2-Sprites gleicher logischer Größe. Beide müssen denselben Anker und Fußabdruck besitzen.
-- [ ] **Step 3:** Führe `node tools/qa/check-graphics-surfaces.mjs` aus. Die neuen Größen und Schnittstellen müssen zunächst fehlschlagen.
-- [ ] **Step 4:** Stelle FB-Zeilenbreiten, Puffer, Clipping und Defaultgrenzen auf Instanzgrößen um. Ergänze `ScaledSurface` und die Dichtemetadaten.
-- [ ] **Step 5:** Stelle Schrift, HUD, Passagierblasen, Badges, Karte und Menüs auf `DrawSurface` um. Erhalte die vorhandenen Pixelmotive und Textmaße.
-- [ ] **Step 6:** Halte Rotation, Spiegelung, Quellbildhöhe und Leuchtmasken logisch konsistent. Prüfe interne Alpha-254-Pixel und normale Alpha-0/255-Quellen.
-- [ ] **Step 7:** Führe die neue Prüfung und `npm run check` aus. Vergleiche festgehaltene Classic-Bilder vor und nach dem Umbau; die bestehenden Motive müssen identisch bleiben.
-- [ ] **Step 8:** Committe ausschließlich die geprüften Dateien dieses Schritts.
+- [x] **Step 1:** Prüfe beide Größen, Rand-Clipping, Polygonspannen, additive Blits, Drehung und transparente Rechtecke über einem detaillierten Hintergrund.
+- [x] **Step 2:** Ergänze einen Test mit density-1- und density-2-Sprites gleicher logischer Größe. Beide müssen denselben Anker und Fußabdruck besitzen.
+- [x] **Step 3:** Führe `node tools/qa/check-graphics-surfaces.mjs` aus. Die neuen Größen und Schnittstellen müssen zunächst fehlschlagen.
+- [x] **Step 4:** Stelle FB-Zeilenbreiten, Puffer, Clipping und Defaultgrenzen auf Instanzgrößen um. Ergänze `ScaledSurface` und die Dichtemetadaten.
+- [x] **Step 5:** Stelle Schrift, HUD, Passagierblasen, Badges, Karte und Menüs auf `DrawSurface` um. Erhalte die vorhandenen Pixelmotive und Textmaße.
+- [x] **Step 6:** Halte Rotation, Spiegelung, Quellbildhöhe und Leuchtmasken logisch konsistent. Prüfe interne Alpha-254-Pixel und normale Alpha-0/255-Quellen.
+- [x] **Step 7:** Führe die neue Prüfung und `npm run check` aus. Vergleiche festgehaltene Classic-Bilder vor und nach dem Umbau; die bestehenden Motive müssen identisch bleiben.
+- [x] **Step 8:** Committe ausschließlich die geprüften Dateien dieses Schritts.
 
 **Acceptance:** Plus-UI schreibt in ein natives 640×360-Bild und mischt direkt mit diesem Hintergrund. Keine separate Vergrößerung eines fertigen Classic-Bildes.
 

@@ -1,7 +1,8 @@
+import type { DrawSurface } from "../core/draw-surface";
 // The course map: the fifteen stages as a painted patchwork with the roads
 // between them. Browsed from the title screen, and shown after every run with
 // the route that was driven drawn on in red, Out Run style.
-import { FB, W, H, Col, rgb, mix } from "../core/fb";
+import { W, H, Col, rgb, mix } from "../core/fb";
 import { SpriteBank } from "../core/assets";
 import { drawText } from "../core/font";
 import { t } from "../platform/tesana";
@@ -52,7 +53,7 @@ export class CourseMap {
   }
 
   /** Thick red line along a polyline, up to fraction `upto` of its length. Returns the end point. */
-  private route(fb: FB, pts: [number, number][], upto: number): [number, number] {
+  private route(fb: DrawSurface, pts: [number, number][], upto: number): [number, number] {
     let total = 0;
     for (let i = 1; i < pts.length; i++) total += Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]);
     let left = total * Math.max(0, Math.min(1, upto));
@@ -88,7 +89,7 @@ export class CourseMap {
    * Draw the map. `path` = the stages driven (the route), `progress` = how much of it is drawn
    * (in edges, fractional), `hi` = the stage to highlight (blinking marker), or -1.
    */
-  draw(fb: FB, bank: SpriteBank, time: number, path: number[], progress: number, hi: number): void {
+  draw(fb: DrawSurface, bank: SpriteBank, time: number, path: number[], progress: number, hi: number): void {
     const bg = DEMO_A ? undefined : bank.get("course_map");
     const nodes = DEMO_A ? GOAL_A_PATH : Array.from({ length: NODE_COUNT }, (_v, n) => n);
     if (bg) fb.layer(bg, 0, 0, true);
@@ -162,7 +163,7 @@ export class CourseMap {
   }
 
   /** A goal letter in a little white sign (red when it is the goal this run reached). */
-  private letter(fb: FB, ch: string, x: number, y: number, hit: boolean): void {
+  private letter(fb: DrawSurface, ch: string, x: number, y: number, hit: boolean): void {
     fb.rect(x - 1, y, 12, 11, C.ink);
     fb.rect(x, y - 1, 10, 13, C.ink);
     fb.rect(x, y, 10, 11, hit ? RED : rgb(0xf4f0e8));
@@ -170,13 +171,13 @@ export class CourseMap {
     drawText(fb, ch, x + 5, y + 2, hit ? C.white : rgb(0x2a5ad8), { align: "center" });
   }
 
-  private line(fb: FB, a: [number, number], b: [number, number], c: Col): void {
+  private line(fb: DrawSurface, a: [number, number], b: [number, number], c: Col): void {
     const n = Math.max(1, Math.ceil(Math.hypot(b[0] - a[0], b[1] - a[1])));
     for (let k = 0; k <= n; k++) fb.rect(Math.round(a[0] + ((b[0] - a[0]) * k) / n) - 1, Math.round(a[1] + ((b[1] - a[1]) * k) / n) - 1, 3, 3, c);
   }
 
   /** Two rows keep road character, time and weather separate from the record. */
-  caption(fb: FB, bank: SpriteBank, node: number, bestMs: number, extra?: string): void {
+  caption(fb: DrawSurface, bank: SpriteBank, node: number, bestMs: number, extra?: string): void {
     const y0 = H - 30;
     fb.rectA(4, y0, W - 8, 28, rgb(0x140a26), 0.90);
     fb.frame(4, y0, W - 8, 28, rgb(0xff9a3c));
