@@ -26,6 +26,7 @@ import type { Car } from "./game/race";
 import { CARS, CarDef, carById, carUnlocked, rememberCarGoals } from "./game/cars";
 import { ArcadeEntry, ARCADE_SIZE, NAME_MAX, arcadeTable, arcadeRank, arcadeInsert, nameChar, cleanName, lastName, saveName } from "./game/arcade";
 import { Badges, BADGES, BADGE_TYPES, BADGE_ROWS, GOAL_BASES, TIERS, TIER_RIM, NEAR_MISS_RUN, drawMedal, badgeName, badgeDesc, badgeId, statId, tierName } from "./game/badges";
+import { GoalProgressStore, GOAL_PROGRESS_KEY, GOAL_LETTERS, goalCount, type GoalLetter } from './game/goal-progress';
 
 type Mode = "title" | "garage" | "rankings" | "badges" | "controls" | "difficulty" | "radio" | "race" | "ending" | "results" | "name" | "map" | "credits";
 
@@ -154,6 +155,7 @@ class MainScene extends Phaser.Scene {
   private tumbleCount = 0;
   // road-trip badges: this run's clean driving and near misses
   private badges = new Badges();
+  private goalProgress = new GoalProgressStore(undefined, GOAL_PROGRESS_KEY, !TEST_HOOKS);
   private badgeSel = 0;
   private stageClean = true;
   private runClean = true;
@@ -285,10 +287,14 @@ class MainScene extends Phaser.Scene {
     // desktop builds read them from this computer instead)
     this.badges.enabled = !TEST_HOOKS;
     this.badges.onShow = () => this.audio.badge();
+    this.badges.goalProgress = () => this.goalProgress.current;
+    this.badges.onChange = () => this.syncGoalProgress();
+    this.syncGoalProgress();
     onTesanaReady(() => {
       for (const d of DIFFS) myBest(boardId("score", d.id)).then((b) => { if (b !== null) this.bestScore.set(d.id, Math.max(b, this.bestScore.get(d.id) ?? b)); });
       // a bot-driven test run must never earn the player a badge
       this.badges.enabled = !TEST_HOOKS || isTestSdk();
+      this.syncGoalProgress();
       if (this.badges.state !== "ok") { this.badges.state = "idle"; this.badges.refresh(); }
     });
 
@@ -1916,6 +1922,9 @@ class MainScene extends Phaser.Scene {
   private badgeGoal(node: number): void {
     const letter = goalLetter(node);
     if (!letter) return;
+    this.goalProgress.enabled = !TEST_HOOKS || isTestSdk();
+    this.goalProgress.record(this.tier, letter as GoalLetter);
+    this.syncGoalProgress();
     const b = this.badges, mine = `goal-${letter.toLowerCase()}`;
     b.unlock(mine);
     let seen = new Set<string>();
@@ -1930,6 +1939,17 @@ class MainScene extends Phaser.Scene {
     // goals earned on another device count too
     for (const g of GOAL_BASES) if (g === mine || b.has(g)) seen.add(g);
     if (GOAL_BASES.every((g) => seen.has(g))) b.unlock("goal-all");
+  }
+
+  /** Merge proven difficulty-specific finishes; old tier-less goal rewards stay separate. */
+  private syncGoalProgress(): void {
+    this.goalProgress.enabled = !TEST_HOOKS || isTestSdk();
+    const cleared = Object.fromEntries(TIERS.map(tier => [tier, [...this.stagesCleared(tier)]]));
+    const completed = new Set(TIERS.filter(tier => this.badges.has(badgeId('all-goals', tier))));
+    this.goalProgress.merge(cleared, completed);
+    for (const tier of TIERS) if (goalCount(this.goalProgress.current, tier) === 5) {
+      this.badges.unlock(badgeId('all-goals', tier));
+    }
   }
 
   /** Report this run's near misses so far (once per checkpoint, never per pass). */
@@ -1989,7 +2009,7 @@ class MainScene extends Phaser.Scene {
       this.badgeSel = rowStart[r2] + c2;
       this.audio.uiMove();
     }
-    const SP = 21, PITCH = 17, TOP = 40;
+    const SP = Math.min(21, Math.floor((w - 12) / Math.max(...BADGE_ROWS))), PITCH = 17, TOP = 40;
     BADGES.forEach((def, i) => {
       const r = rowStart.findIndex((st, k) => i >= st && i < st + BADGE_ROWS[k]);
       const cx = Math.round(W / 2 + ((i - rowStart[r]) - (BADGE_ROWS[r] - 1) / 2) * SP), cy = TOP + r * PITCH;
@@ -2015,6 +2035,11 @@ class MainScene extends Phaser.Scene {
     drawText(fb, fit(name, w - 12 - textWidth(tierTxt)), nx, 103, earned ? C.yellow : C.white, { outline: C.ink });
     drawText(fb, tierTxt, nx + Math.min(textWidth(name), w - 12 - textWidth(tierTxt)), 103, TIER_RIM[def.tier][1], { outline: C.ink });
     para(fb, badgeDesc(def), W / 2, 114, C.grey, w - 16);
+    if (def.base === 'all-goals' && def.tier !== 'goal') {
+      const mask = bd.has(def.id) ? 31 : this.goalProgress.current.masks[def.tier];
+      GOAL_LETTERS.forEach((letter, i) => drawText(fb, letter, W / 2 + (i - 2) * 17, 125,
+        mask & (1 << i) ? C.green : C.grey, { align: 'center', outline: C.ink }));
+    }
     const sy = 135;
     if (earned) {
       // pixel tick + "Earned"

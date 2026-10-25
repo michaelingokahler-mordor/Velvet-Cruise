@@ -60,13 +60,13 @@ Die Funktionen sind rein und ändern ihre Eingaben nicht. Speichern und Kontomel
 Alle Masken werden auf fünf zulässige Bits begrenzt; beschädigte Einzelwerte werden nicht als Abschluss behandelt.
 `plusUnlocked` bleibt nach bestätigter Freischaltung wahr.
 
-- [ ] **Step 1:** Schreibe die Prüfungen `distinctGoals`, `tiersStaySeparate`, `legacyFinalNodes`, `legacyGoalBadgesDoNotQualify`, `accountCompletion`, `storageBlocked` und `testHooksDoNotPersist`.
-- [ ] **Step 2:** Führe `node tools/qa/check-goal-progress.mjs` aus. Neue Schnittstellen fehlen; die Prüfungen müssen zunächst fehlschlagen.
-- [ ] **Step 3:** Implementiere die Zielmengen und die Migration. A=10, B=12, C=13, D=14, E=4. Verwende `${SAVE_PREFIX}.goal-progress.v1`.
-- [ ] **Step 4:** Ergänze `all-goals-easy`, `all-goals` und `all-goals-hard` in allen Badge-Definitionen. Ergänze `Badges.progressOf()` und die Badge-Anzeige um den Zielmengen-Pfad ohne serverseitigen `stat`-Zähler. Zeige je Schwierigkeit den berechneten Zähler und die erreichten Buchstaben. Prüfe Anzeige und Navigation mit der zusätzlichen Badge-Spalte.
-- [ ] **Step 5:** Melde vollständige Sammelbadges idempotent über `unlockBadge`. Verwende keine inkrementierenden Netzwerkstatistiken für unterschiedliche Ziele. Ergänze später eintreffende vollständige Konto-Badges.
-- [ ] **Step 6:** Prüfe echte Zieleinläufe, Wiederholungen, 4/5→5/5, Neustart, beschädigte Daten und Offline-Betrieb. `node tools/qa/check-goal-progress.mjs`, `npm run qa:local-services` und `npm run check` müssen bestehen.
-- [ ] **Step 7:** Committe ausschließlich die geprüften Dateien dieses Schritts.
+- [x] **Step 1:** Schreibe die Prüfungen `distinctGoals`, `tiersStaySeparate`, `legacyFinalNodes`, `legacyGoalBadgesDoNotQualify`, `accountCompletion`, `storageBlocked` und `testHooksDoNotPersist`.
+- [x] **Step 2:** Führe `node tools/qa/check-goal-progress.mjs` aus. Neue Schnittstellen fehlen; die Prüfungen müssen zunächst fehlschlagen.
+- [x] **Step 3:** Implementiere die Zielmengen und die Migration. A=10, B=12, C=13, D=14, E=4. Verwende `${SAVE_PREFIX}.goal-progress.v1`.
+- [x] **Step 4:** Ergänze `all-goals-easy`, `all-goals` und `all-goals-hard` in allen Badge-Definitionen. Ergänze `Badges.progressOf()` und die Badge-Anzeige um den Zielmengen-Pfad ohne serverseitigen `stat`-Zähler. Zeige je Schwierigkeit den berechneten Zähler und die erreichten Buchstaben. Prüfe Anzeige und Navigation mit der zusätzlichen Badge-Spalte.
+- [x] **Step 5:** Melde vollständige Sammelbadges idempotent über `unlockBadge`. Verwende keine inkrementierenden Netzwerkstatistiken für unterschiedliche Ziele. Ergänze später eintreffende vollständige Konto-Badges.
+- [x] **Step 6:** Prüfe echte Zieleinläufe, Wiederholungen, 4/5→5/5, Neustart, beschädigte Daten und Offline-Betrieb. `node tools/qa/check-goal-progress.mjs`, `npm run qa:local-services` und `npm run check` müssen bestehen.
+- [x] **Step 7:** Committe ausschließlich die geprüften Dateien dieses Schritts.
 
 **Acceptance:** Easy 5/5 und Hard 5/5 lassen Normal unverändert. Normal 5/5 setzt die dauerhafte Freischaltung. Alte Fahrzeuge und Rekorde bleiben verfügbar.
 

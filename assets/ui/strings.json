@@ -13,6 +13,8 @@
   "ko"
  ],
  "strings": [
+  {"id": "badge.all_goals", "text": "Five Goals"},
+  {"id": "badge.all_goals_desc", "text": "Reach all five goals on this difficulty."},
   { "id": "time.afternoon", "text": "Afternoon" },
   { "id": "time.sunset", "text": "Sunset" },
   { "id": "time.dusk", "text": "Dusk" },
