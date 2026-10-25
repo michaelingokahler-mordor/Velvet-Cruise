@@ -30,7 +30,8 @@ const bank={get:name=>sprites.get(name),has:name=>sprites.has(name)};
 function save(fb,name){const p=new PNG({width:320,height:180});p.data=Buffer.from(fb.img.data);writeFileSync(resolve(out,name),PNG.sync.write(p));return p;}
 function copy(source,dest,dx,dy){for(let y=0;y<source.height;y++)source.data.copy(dest.data,((dy+y)*dest.width+dx)*4,y*source.width*4,(y+1)*source.width*4);}
 const track=new m.Track([0,5,6,11,13]);
-let comparisons=0,bodyPixelDifferences=0;
+const protection=JSON.parse(readFileSync('tools/qa/fixtures/garage-roof-protected.json')).cars;
+let comparisons=0,bodyPixelDifferences=0,protectedPixelDifferences=0;
 for(const car of m.CARS)for(const [view,steer]of [['straight',0],['left',-1],['right',1]])for(const frame of [0,1])for(const brake of [false,true])for(const night of [false,true]){
   const race=new m.Race(track);race.skin=car.skin;race.steer=steer;race.hairT=frame;race.braking=brake;
   race.stageBlend={from:night?5:0,to:night?5:0,t:0};
@@ -39,22 +40,25 @@ for(const car of m.CARS)for(const [view,steer]of [['straight',0],['left',-1],['r
   const capture=position=>{race.roof.position=position;const fb=new m.FB();fb.clear(m.rgb(0x757585));race.drawPlayer(fb,bank,[.8,.8,.8]);return fb;};
   const original=capture(0),cx=race.carScreenX(),by=race.carScreenY();
   const x0=Math.ceil(cx-44-.5),y0=Math.ceil(by-48-.5);
-  for(const position of [1/3,2/3,1]){
+  for(const position of [1/7,2/7,3/7,4/7,5/7,6/7,1]){
     const other=capture(position);
     for(let y=0;y<180;y++)for(let x=0;x<320;x++){
       const sx=x-x0,sy=y-y0;
       const allowed=sx>=0&&sx<88&&sy>=0&&sy<48&&(nativeMask.data[sy*88+sx]>>>24)>0;
       if(!allowed&&original.data[y*320+x]!==other.data[y*320+x])bodyPixelDifferences++;
+      const protectedPixel=protection[car.skin][view].some(([l,t,r,b])=>sx>=l&&sx<=r&&sy>=t&&sy<=b);
+      if(protectedPixel&&original.data[y*320+x]!==other.data[y*320+x])protectedPixelDifferences++;
     }
     comparisons++;
   }
 }
 assert.equal(bodyPixelDifferences,0,'Actual renderer moved or recolored pixels outside the cockpit');
+assert.equal(protectedPixelDifferences,0,'Actual renderer erased independently protected chassis/mirror pixels');
 const sceneGallery=new PNG({width:320*4,height:180*6});
 const scenes=[];
 for(let row=0;row<m.CARS.length;row++)for(const [col,stage,closed]of [[0,0,false],[1,1,true],[2,3,true],[3,4,false]]){
   const car=m.CARS[row],r=new m.Race(track);r.skin=car.skin;r.warp(stage,600);r.speed=12000;r.hairT=1;
-  assert.equal(r.roof.phase,closed?3:0);
+  assert.equal(r.roof.phase,closed?7:0);
   const fb=new m.FB(),renderer=new m.Renderer(fb,bank);renderer.time=12;renderer.render(r);
   const file=car.id+'-'+['dry','rain','snow','dry-return'][col]+'.png';
   copy(save(fb,file),sceneGallery,col*320,row*180);scenes.push({car:car.id,stage,roof:r.roof.phase,file});
@@ -74,19 +78,23 @@ for(const car of m.CARS)for(const col of [1,2,3,4]){
     r.update(1/60,{steer:0,throttle:0,brake:0});
     if(samples.at(-1)?.phase!==r.roof.phase)samples.push({i,phase:r.roof.phase,position:r.roof.position,x:r.carScreenX(),y:r.carScreenY()});
   }
-  assert.equal(r.roof.phase,expectedClose?3:0);
-  assert.deepEqual(samples.map(s=>s.phase),expectedClose?[0,1,2,3]:[3,2,1,0]);
+  assert.equal(r.roof.phase,expectedClose?7:0);
+  assert.deepEqual(samples.map(s=>s.phase),expectedClose?[0,1,2,3,4,5,6,7]:[7,6,5,4,3,2,1,0]);
   boundaries.push({car:car.id,column:col,samples});
 }
 // Actual crash event must retain the couple under a closed roof.
-for(const car of m.CARS)for(const closed of [false,true]){
+for(const car of m.CARS)for(const phase of [0,1,2,3,4,5,6,7]){
+  const closed=phase>0;
   const r=new m.Race(track);r.skin=car.skin;r.warp(closed?1:2,500);r.state='race';r.timer=1000;
+  r.roof.position=phase/7;
+  const frozen=r.roof.position;
   const land=[];r.events.tumbleLand=who=>land.push(who);r.forceTumble();
   for(let i=0;i<100;i++)r.update(1/60,{steer:0,throttle:0,brake:0});
+  assert.equal(r.roof.position,frozen,'Tumble must freeze current folding pose');
   assert.equal(land.includes('people'),!closed,'People must not eject through closed canvas');
   assert.equal(r.ladyHead()===null,closed);
-  const fb=new m.FB();new m.Renderer(fb,bank).render(r);save(fb,car.id+(closed?'-crash-closed.png':'-crash-open.png'));
+  const fb=new m.FB();new m.Renderer(fb,bank).render(r);save(fb,car.id+'-crash-phase'+phase+'.png');
 }
-const report={status:'PASS',renderComparisons:comparisons,bodyPixelDifferences,scenes,boundaries,crash:'open ejection retained; closed occupants stay inside'};
+const report={status:'PASS',renderComparisons:comparisons,bodyPixelDifferences,protectedPixelDifferences,scenes,boundaries,crash:'all 48 car/pose combinations: frozen pose; open ejection retained; enclosed occupants stay inside'};
 writeFileSync(resolve(out,'render-validation.json'),JSON.stringify(report,null,2));
-console.log(JSON.stringify({status:'PASS',renderComparisons:comparisons,bodyPixelDifferences,boundaries:boundaries.length,scenes:scenes.length}));
+console.log(JSON.stringify({status:'PASS',renderComparisons:comparisons,bodyPixelDifferences,protectedPixelDifferences,boundaries:boundaries.length,scenes:scenes.length}));
