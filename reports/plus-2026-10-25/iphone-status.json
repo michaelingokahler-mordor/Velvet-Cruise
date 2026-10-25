@@ -1,0 +1,21 @@
+{
+  "status": "deferred-by-user",
+  "date": "2026-10-25",
+  "reportedDevice": {
+    "model": "iPhone 14",
+    "os": "iOS 27.0.1",
+    "source": "user statement"
+  },
+  "functionalSmoke": "User confirmed Plus active and running on the physical device.",
+  "rainAfterOptimization": "User reports improved speed, still slower than PC.",
+  "latestUserInstruction": "Auf dem Iphone ist es nun etwas schneller aber immer noch langsamer als auf dem PC. Ich denke wir optimieren das später, mit weiteren Iphone optimierungen.",
+  "numericPerformancePassed": null,
+  "fullControlAcceptancePassed": null,
+  "remaining": [
+    "Further iPhone rain/performance optimization",
+    "Ten measured minutes per profile on physical iPhone",
+    "Full physical-device input, pause/resume and orientation acceptance",
+    "Touch-control redesign"
+  ],
+  "scope": "These device tasks are deferred by explicit user instruction, not passed. Desktop and browser emulation do not certify the iPhone."
+}

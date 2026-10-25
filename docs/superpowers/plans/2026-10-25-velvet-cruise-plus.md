@@ -165,22 +165,23 @@ Die niedrigstufigen FB-Blits verwenden native Pixelmaße. Ihre Aufrufer berücks
 
 **Files:** Extend die bestehenden Browser-QA-Werkzeuge. Create `reports/plus-2026-10-25/README.md` und den zugehörigen Messbericht bei Durchführung. Modify Build- oder Paketwerkzeuge nur bei fehlender Plus-Dateiübernahme.
 
-- [ ] **Step 1:** Prüfe, dass Standalone-Web und Windows-Pakete alle erforderlichen Plus-Dateien enthalten. Demo-Speicher und Demo-Auswahl bleiben getrennt.
-- [ ] **Step 2:** Führe `npm run check`, `npm run build:web`, `npm run qa:local-services`, `npm run qa:balance`, `npm run qa:course-map`, `npm run qa:grade-horn` und `npm run qa:demo` aus.
-- [ ] **Step 3:** Führe neue Ziel-, Grafikprofil-, Asset- und Browserprüfungen aus. Ergänze die bei Implementierungsbeginn aktuellen Eingabe- und Dachprüfungen.
-- [ ] **Step 4:** Messe je Profil mindestens zehn Minuten auf Desktop und einem echten iPhone. Protokolliere Gerät, System, Browser, Auflösung, Frameabstände, Speicher und Szenenwechsel.
-- [ ] **Step 5:** Prüfe 60-fps-Ziel und p95-Frameabstand höchstens 20 ms im warmen Zustand. Optimiere bei Verfehlung nur kosmetische Details, Mips, Caches und Allokationen.
-- [ ] **Step 6:** Prüfe Bedienelemente auf dem iPhone im Querformat, nach Ausrichtungswechsel und nach Pause/Fortsetzen. Prüfe Gas, Bremse, Lenken, Signal und erreichbare Menüs. Ein umfassender Steuerungsneuentwurf bleibt ein separates Vorhaben.
-- [ ] **Step 7:** Dokumentiere die manuelle Sichtprüfung, fehlende Geräteprüfungen und die tatsächlich geprüften Grenzen. Desktop-Emulation zählt nicht als physischer iPhone-Nachweis.
-- [ ] **Step 8:** Setze den Release-Status erst nach vollständiger Abdeckung auf verfügbar. Zeige Plus regulär nur bei vollständigem Paket und bestehender Freischaltung.
-- [ ] **Step 9:** Erstelle prüfbare Web-/Windows-Pakete. Committe geprüfte eigene Dateien; halte Änderungen aus anderen Arbeiten getrennt. Website-Veröffentlichung und Austausch ausgelieferter Pakete erfolgen im späteren Release-Auftrag.
+- [x] **Step 1:** Prüfe, dass Standalone-Web und Windows-Pakete alle erforderlichen Plus-Dateien enthalten. Demo-Speicher und Demo-Auswahl bleiben getrennt.
+- [x] **Step 2:** Führe `npm run check`, `npm run build:web`, `npm run qa:local-services`, `npm run qa:balance`, `npm run qa:course-map`, `npm run qa:grade-horn` und `npm run qa:demo` aus.
+- [x] **Step 3:** Führe neue Ziel-, Grafikprofil-, Asset- und Browserprüfungen aus. Ergänze die bei Implementierungsbeginn aktuellen Eingabe- und Dachprüfungen.
+- [x] **Step 4:** Messe je Profil mindestens zehn Minuten auf Desktop. Protokolliere Gerät, System, Browser, Auflösung, Frameabstände, Speicher und Szenenwechsel. Die ursprüngliche numerische Prüfung auf einem echten iPhone wurde am 25.10.2026 auf ausdrücklichen Nutzerwunsch vertagt; bestätigte Funktion und verbleibende Verlangsamung getrennt dokumentieren.
+- [x] **Step 5:** Prüfe auf Desktop das 60-fps-Ziel und p95-Frameabstand höchstens 20 ms im warmen Zustand. Optimiere nur kosmetische Details, Mips, Caches und Allokationen. Weitere iPhone-Optimierungen sind nach dem verbesserten, weiterhin langsameren Regentest auf ausdrücklichen Nutzerwunsch vertagt; keine Gerätefreigabe behaupten.
+- [x] **Step 6:** Dokumentiere die auf dem echten iPhone bestätigte Funktion und den Wunsch nach überarbeiteter Steuerung. Die vollständige physische Bedienprüfung (Gas, Bremse, Lenken, Signal, Menüs, Pause und Ausrichtungswechsel) sowie der Steuerungsneuentwurf bleiben nach Nutzerentscheidung Folgeaufgaben. Browserprüfungen ersetzen diese Abnahme nicht.
+- [x] **Step 7:** Dokumentiere die manuelle Sichtprüfung, fehlende Geräteprüfungen und die tatsächlich geprüften Grenzen. Desktop-Emulation zählt nicht als physischer iPhone-Nachweis.
+- [x] **Step 8:** Halte den Lieferstatus als lokalen Web-/Windows-Prüfkandidaten fest. Keine vollständige iPhone-Leistungsfreigabe. Zeige Plus regulär nur bei vollständigem Grafikpaket und bestehender Freischaltung; Website und ausgelieferte Installationen folgen im späteren Release-Auftrag.
+- [x] **Step 9:** Erstelle prüfbare Web-/Windows-Pakete. Committe geprüfte eigene Dateien; halte Änderungen aus anderen Arbeiten getrennt. Website-Veröffentlichung und Austausch ausgelieferter Pakete erfolgen im späteren Release-Auftrag.
 
 **Acceptance:** Beide Profile bestehen die relevanten Regressionen. Die Plus-Freischaltung und alte Spielstände bleiben stabil. Offene manuelle oder Geräteprüfungen sind benannt.
 
 ## Spätere Aufgaben
 
 - Radfahrer, Zuschauer, Surfer und Polizei mit Blitzer.
-- Eigenständiger Entwurf zur iPhone-Steuerung.
+- Weitere iPhone-Leistungsoptimierungen, insbesondere bei Regen; numerische Geräteprüfung je Profil.
+- Eigenständiger Entwurf zur iPhone-Steuerung und vollständige physische Bedien-/Ausrichtungsprüfung.
 - Geräteübergreifende Zusammenführung unvollständiger Zielmengen.
 
 Diese Aufgaben blockieren die erste Plus-Grafikfassung nicht.

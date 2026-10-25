@@ -252,3 +252,12 @@ Veröffentlichung auf der Website oder ein Austausch ausgelieferter Pakete gehö
 - Geräteübergreifender Abgleich unvollständiger Zielmengen.
 
 Diese Erweiterungen sind für die erste Plus-Grafikfassung nicht erforderlich.
+
+## Umfangsänderung nach dem iPhone-Test am 25.10.2026
+
+Der Nutzer bestätigt die Verbesserung im Regen, meldet weiterhin geringere
+Geschwindigkeit als auf dem PC und vertagt weitere iPhone-Optimierungen.
+Die erste Plus-Fassung wird deshalb mit offener numerischer iPhone-Abnahme
+und offener vollständiger Bedienprüfung abgeschlossen. Die Verbesserung ist
+keine 60-fps-Gerätefreigabe. iPhone-Steuerung und Leistungsarbeit bleiben
+Folgeaufgaben; Desktop- und Browserprüfungen werden gesondert ausgewiesen.

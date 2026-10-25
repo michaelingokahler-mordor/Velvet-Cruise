@@ -1,8 +1,9 @@
 # Velvet Cruise Plus – Prüfstand
 
-Stand: Pakete 1–5 sind umgesetzt. Paket 6 ist in Prüfung. Diese Fassung ist ein
-lokaler Prüfkandidat; sie wurde weder veröffentlicht noch in bestehende
-Windows-Installationen kopiert.
+Stand: Alle sechs Softwarepakete sind umgesetzt und technisch geprüft.
+Weitere iPhone-Optimierungen und die vollständige Geräteabnahme wurden auf
+ausdrücklichen Nutzerwunsch vom 25.10.2026 vertagt. Diese Fassung ist ein
+lokaler Prüfkandidat. Web und Windows sind zur Prüfung paketiert.
 
 ## Darstellung und Freischaltung
 
@@ -63,8 +64,19 @@ Der Desktop-Dauertest misst nacheinander je Profil zehn Minuten nach 30 Sekunden
 Aufwärmen. Ziel sind 60 fps und p95-Frameabstände bis 20 ms. Die Messung erfasst
 Browser-RAF-Zeitstempel, native Größe, Szenenwechsel und verfügbaren
 JavaScript-Heap. Sie misst keinen vollständigen Prozess- oder Gerätespeicher.
-Der Bericht unter `output/plus/benchmark/report.json` ist während des Laufs
-vorläufig; abgeschlossene Ergebnisse werden hier abgelegt.
+Der abgeschlossene Bericht liegt in `desktop-after-rain-fix.json`.
+
+| Profil | Messdauer | fps | p95 | Fortschreitende Fahrt | Fahrt im Regen |
+| --- | --- | --- | --- | --- | --- |
+| Classic | 600,01 s | 59,99 | 17,0 ms | 559,62 s | 120,14 s |
+| Plus | 600,02 s | 59,99 | 16,9 ms | 564,68 s | 120,29 s |
+
+Gemessen wurde mit Chrome 155 im Headless-Modus auf Windows 11 mit einem
+Intel Core i9-14900HX. Die Ergebnisse gelten für diesen Desktop. Einzelne
+Frameabstände erreichten rund 116 ms; ein p95 unter 20 ms bedeutet keine
+vollständig ruckelfreie Fahrt. Beide Profile zeigten echte Fahrt, Regen,
+Streckenwechsel und Menü-/Zielübergänge. Das geladene Laufzeitmodul war
+`index-BgK9JsxI.js`.
 
 Der Nutzer bestätigt auf einem **iPhone 14 mit iOS 27.0.1**: Das Spiel läuft
 mit „Plus aktiv“. Das ist eine menschlich bestätigte Funktionsprüfung. Die
@@ -73,16 +85,24 @@ zehn Minuten pro Profil sowie eine vollständige Rückmeldung zu Gas, Bremse,
 Lenkung, Signal, Pause/Fortsetzen, Menüs und Ausrichtungswechsel stehen noch aus.
 Desktop-Emulation zählt nicht als Nachweis für dieses Gerät.
 
-Danach meldet der Nutzer deutliche Verlangsamung bei Regen; getestet wurde
-bisher nur Plus. Dieser Befund hat Vorrang vor den bestandenen Desktopwerten.
-Die erste Desktopmessung beider Profile liegt unter
-`desktop-before-rain-fix.json` und bezeichnet ausdrücklich den Stand vor der
-Regenoptimierung. Der optimierte Stand muss erneut geprüft werden.
+Zunächst meldete der Nutzer deutliche Verlangsamung bei Regen; auf dem
+iPhone wurde nur Plus getestet. Die erste Desktopmessung beider Profile
+liegt separat unter `desktop-before-rain-fix.json`.
 
 Die Profilierung fand hohe Kosten bei kalten Rücklicht-Glows und nativen
 Hintergrundkopien sowie unnötige Lichtberechnungen ohne sichtbare Pixelzeile.
-Die Korrekturen behalten alle 264 Streckenbilder bytegenau bei. Der lokale
-optimierte Regentest ist bereit; eine Rückmeldung vom iPhone steht noch aus.
+Die Korrekturen behalten alle 264 Streckenbilder bytegenau bei. Der Nutzer
+bestätigte nach dem Regentest zunächst „Deutlich flüssiger“ und anschließend:
+
+> Auf dem Iphone ist es nun etwas schneller aber immer noch langsamer als auf
+> dem PC. Ich denke wir optimieren das später, mit weiteren Iphone optimierungen.
+
+Damit sind weitere iPhone-Optimierungen, die numerische Zehn-Minuten-Messung
+je Profil und die vollständige Bedien-/Ausrichtungsprüfung Folgeaufgaben.
+Das ersetzt keine bestandene iPhone-Leistungsabnahme. Der zuvor offene
+Geräteblocker blockiert auf diese ausdrückliche Umfangsänderung hin den
+Abschluss der ersten Plus-Fassung nicht mehr. Der Bericht
+`iphone-status.json` hält Bestätigung und Grenzen getrennt fest.
 Die beiden wichtigen Befunde der unabhängigen Softwareprüfung und ihre
 Regressionen sind in `code-review.md` festgehalten.
 
@@ -103,11 +123,43 @@ Die Dateien liegen im isolierten Checkout unter `output/plus/`:
 - `weather-browser/coverage.json`: erfolgreiche Wetter-, Überschlag- und
   Zielabdeckung. Die erfolgreichen Wetter- und Schlussläufe liefen getrennt.
 - `native-desktop/report.json`: Nachweis aus dem gestarteten Windows-Paket.
-- `packages-20261025/`: erster Web-/Windows-Prüfkandidat mit Prüfsummen.
-- `benchmark/`: laufende Desktop-Messung.
+- `packages-rainfix-20261025/`: abschließende Web-/Windows-Prüfkandidaten mit
+  Prüfsummen; die älteren Pakete wurden dadurch abgelöst.
+- `benchmark/`: abgeschlossene Desktop-Messung des optimierten Stands.
+
+Die finalen ZIP-Dateien heißen `Velvet-Cruise-Plus-Web.zip` und
+`Velvet-Cruise-Plus-Windows.zip`. `package-report.json` enthält ihre SHA-256-
+Werte und Größen. `native-windows.json` enthält den Start- und Bediennachweis
+aus dem optimierten Windows-Paket. Die einfache Testadresse
+`http://192.168.178.66:4191/regen-v2.html` setzt die Regenflags vor dem
+Spielstart; „Drive“ startet Plus auf Thunder Highway. Die Testseite vergibt
+keine echten Erfolge.
 
 Die Sichtprüfung umfasst statische Szenen, Bewegungsstichproben und native
 Windows-Ausgaben. Durchgehendes menschliches Ansehen aller Fahrclips, physische
 Gamepads und der vollständige iPhone-Test sind dadurch nicht ersetzt.
 Die Website und ausgelieferte Pakete wurden nicht verändert. Die umfassende
-Steuerungsüberarbeitung bleibt ein eigenes Folgevorhaben.
+Steuerungsüberarbeitung bleibt ein eigenes Folgevorhaben. Die Entscheidungen
+zur Ausführung und ihre möglichen Kosten stehen vollständig in
+`decisions.md`. Eine kleine offene Prüflücke betrifft zusätzliche
+Tunnel-/Stufen-/Zielsegmentfelder im Erhaltungsvertrag; siehe `code-review.md`.
+
+## Abschließender Prüflauf
+
+`verification.txt` enthält den vollständigen bestandenen letzten Prüflauf.
+Er umfasst TypeScript, Ziele und Migration, Zeichenflächen, Grafikprofile,
+Lieferdateien, Licht-/Kopierverfahren, Eingaben, Menüs, Dächer, Streckenverträge,
+Balance, Karte, Signal, Demo sowie die realen lokalen Browserfassungen.
+Die archivierten Dauer-/Native-Nachweise und finalen Paketprüfsummen werden
+zusätzlich auf Vollständigkeit geprüft.
+
+Lokale Wiederholung mit laufenden Prüffassungen auf Port 4191/4192:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File reports/plus-2026-10-25/verify.ps1 -PythonExe D:\Python314\python.exe
+```
+
+Die bereits bestandenen Web-/Demo-/Windows-Builds und der 20-minütige
+Desktop-Dauertest werden durch diesen Regressionseintritt nicht neu erzeugt.
+Der Ausführungsverlauf ist in `execution-ledger.md` archiviert. Der Stand
+bleibt auf dem Zweig `codex/velvet-cruise-plus` im isolierten Checkout erhalten.

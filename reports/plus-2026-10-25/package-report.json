@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "scope": "Package contents and ZIP CRC/SHA256 only; native launch and physical device checks are separate.",
+  "plusFiles": {
+    "web": 45,
+    "windows": 45
+  },
+  "nativeExecutableSha256": "946c28577f600b39c8e78dcaa5e25fb6af2c8c80397ea2bad86d138f1cd60333",
+  "packages": [
+    {
+      "file": "Velvet-Cruise-Plus-Web.zip",
+      "bytes": 11158052,
+      "sha256": "8cf73006bab15a2e59576a2124c1099e1df9fbb5608bffe7106e37bf6f5e5417"
+    },
+    {
+      "file": "Velvet-Cruise-Plus-Windows.zip",
+      "bytes": 132653026,
+      "sha256": "6b55b6f1f51868e24911c4182d8c9852d3d39e62d38bd92bd60ae515cec08948"
+    }
+  ]
+}

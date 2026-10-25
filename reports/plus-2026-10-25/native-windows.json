@@ -1,0 +1,28 @@
+{
+  "status": "PASS",
+  "native": {
+    "mode": "plus",
+    "screen": "title",
+    "busy": false,
+    "error": null,
+    "nativeSprites": 715,
+    "width": 640,
+    "height": 360,
+    "textureWidth": 640,
+    "textureHeight": 360,
+    "canvasWidth": 640,
+    "canvasHeight": 360,
+    "drawingWidth": 640,
+    "drawingHeight": 360
+  },
+  "tests": [
+    "native custom-protocol asset loading",
+    "640x360 native drawingBuffer",
+    "715 native sprite/background sources",
+    "race keyboard/menu navigation",
+    "pause/resume simulation",
+    "native garage",
+    "native Exit closes only the review window"
+  ],
+  "errors": []
+}
