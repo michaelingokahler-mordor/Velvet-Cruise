@@ -10,7 +10,7 @@
 - [x] 1. Rote Tests für freie Tastatur-/Gamepad-Belegung, Persistenz, Konflikte, Achsen und Erfassung; dann Modell und Input anbinden und grün prüfen.
 - [x] 2. Rote Tests für Menüzustände, Rückwege, frischen Direktstart und Exit; dann Einstellungen, Belegungsansicht, Rankings-Hub und Musikvorschau ergänzen.
 - [x] 3. Relevante Regressionen, alle Buildvarianten, echte Rendererbilder und Windows-Integration einschließlich Exit prüfen.
-- [ ] 4. Unabhängige Schlussprüfung, wichtige Befunde korrigieren; getrenntes Windows-Paket erstellen und ZIP/Dateihashes prüfen.
+- [x] 4. Unabhängige Schlussprüfung, wichtige Befunde korrigieren; getrenntes Windows-Paket erstellen und ZIP/Dateihashes prüfen.
 
 ## Entscheidungen und Nachweise
 - Ruling: Aktuellen sauberen Checkout wiederverwenden und Branch `codex/menu-input-settings` anlegen — isoliert die neue Entwicklung vom veröffentlichten main ohne zusätzliches Arbeitsverzeichnis.
@@ -31,3 +31,7 @@
 - Task 3: complete — TypeScript, Full-/Standalone-/Demo-Build PASS. 16 Eingabe-, 15 Menütests und sechs Browser-Bedienfolgen PASS. Native Windows-Menüwege, Eingabeerfassung, Musikvorschau, Direktstart, Pause und echtes `app.quit` über Exit PASS. Keine JavaScript-/Native-Fehler.
 - Schlussprüfung: keine offenen wichtigen oder kritischen Befunde. Drei Befunde (Back/Fahraktion, Touch-Add/Cancel, Neutralstellung generischer Gamepads) mit beobachtetem Rot-grün-Test korrigiert.
 - Paket wird aus diesem geprüften Code-Commit erstellt; Paket-/ZIP- und Auslieferungsnachweise liegen getrennt unter `output/menu-completion/`. Physisches Gamepad und subjektive Audio-/Spielgefühl-Abnahme sind nicht durch Automatisierung abgedeckt.
+
+- Task 4: complete — unabhängige Prüfung ohne offene wichtige/kritische Befunde. Windows-Paket `Velvet-Cruise-Windows-2026-10-25-b89f627-menu.zip`: 169 ZIP-Dateien, CRC und sämtliche Dateihashes PASS. Native Laufzeitdateien unverändert.
+- Auslieferung: Spielcode `b89f627` auf `main`; Web-Veröffentlichung `f5085b5` mit Release `2026-10-25-b89f627-menu`. Alle 79 live ausgelieferten Release-Dateien gegen die Git-Blobs geprüft. Die vorhandene Online-Anbindung bleibt enthalten.
+- Gemeinsamer Arbeitsordner: alle zehn Menüdateien entsprechen dem gepushten Code; die parallele Plus-Planung und ihr Branch bleiben erhalten.
