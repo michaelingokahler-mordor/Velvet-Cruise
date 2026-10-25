@@ -1245,6 +1245,23 @@ export class Renderer {
         band(k,.15,.15+(a.meadow-.5)*1.3,.15,.15+(b.meadow-.5)*1.3,mix(st.mid,st.high,.4));
       }
       if (k===1 || k===2) {
+        if(this.scale===2 && th.id==='palm-cove') {
+          // Close grass has a few smaller leaf clusters on the native grid.
+          // Cell identity and shape depend only on world distance, never time.
+          const cell=Math.floor(s.i/13), at=s.i-cell*13;
+          for(let detail=0;detail<3;detail++) {
+            const seed=731+k*29+detail*7;
+            const center=3+cellRand(cell,seed)*7,radius=1.6+cellRand(cell,seed+1)*2.8;
+            const width=.012+cellRand(cell,seed+2)*.017;
+            const shape=(t:number)=>Math.max(0,1-Math.abs(t-center)/radius);
+            const wa=shape(at)*width,wb=shape(at+1)*width,u=.12+cellRand(cell,seed+3)*.75;
+            const projected=Math.abs(a.points[k+1].x-a.points[k].x)*s.S1;
+            if(Math.max(wa,wb)*projected>1.3) {
+              band(k,u-wa,u+wa,u-wb,u+wb,mix(colors[k],st.shade,.24));
+              band(k,u-wa*.3,u+wa*.65,u-wb*.3,u+wb*.65,mix(colors[k],st.light2,.3));
+            }
+          }
+        }
         // Broad angular grass clusters, with a cool base and a warm lit edge.
         // World-space patches span several slices and taper at both ends;
         // they never continue as a stripe along the whole roadside.

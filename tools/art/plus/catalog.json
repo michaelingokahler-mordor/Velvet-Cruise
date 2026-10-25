@@ -1,0 +1,1067 @@
+{
+  "sprites": {
+    "palm_a": {
+      "file": "palm_a.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "palm",
+      "emissive": false
+    },
+    "palm_g": {
+      "file": "palm_g.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "palm",
+      "emissive": false
+    },
+    "palm_b": {
+      "file": "palm_b.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "palm",
+      "emissive": false
+    },
+    "palm_f": {
+      "file": "palm_f.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "palm",
+      "emissive": false
+    },
+    "palm_d": {
+      "file": "palm_d.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "palm",
+      "emissive": false
+    },
+    "palm_h": {
+      "file": "palm_h.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "palm",
+      "emissive": false
+    },
+    "truck_white": {
+      "file": "truck_white.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "gate": {
+      "file": "gate.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "scenery",
+      "emissive": false
+    },
+    "gate_goal": {
+      "file": "gate_goal.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "scenery",
+      "emissive": false
+    },
+    "palm_c": {
+      "file": "palm_c.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "palm",
+      "emissive": false
+    },
+    "stone_pine": {
+      "file": "stone_pine.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "scenery",
+      "emissive": false
+    },
+    "cove_chapel": {
+      "file": "cove_chapel.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "scenery",
+      "emissive": false
+    },
+    "cove_villa_b": {
+      "file": "cove_villa_b.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "scenery",
+      "emissive": false
+    },
+    "cove_villa_a": {
+      "file": "cove_villa_a.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "scenery",
+      "emissive": false
+    },
+    "cove_row": {
+      "file": "cove_row.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "scenery",
+      "emissive": false
+    },
+    "cove_cube": {
+      "file": "cove_cube.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "scenery",
+      "emissive": false
+    },
+    "cove_cottage": {
+      "file": "cove_cottage.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "scenery",
+      "emissive": false
+    },
+    "fork_sign": {
+      "file": "fork_sign.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "scenery",
+      "emissive": false
+    },
+    "sea_stack": {
+      "file": "sea_stack.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "scenery",
+      "emissive": false
+    },
+    "house": {
+      "file": "house.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "scenery",
+      "emissive": false
+    },
+    "house_lit": {
+      "file": "house_lit.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "scenery",
+      "emissive": true
+    },
+    "palm_e": {
+      "file": "palm_e.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "palm",
+      "emissive": false
+    },
+    "cove_village_a": {
+      "file": "cove_village_a.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "scenery",
+      "emissive": false
+    },
+    "cove_village_b": {
+      "file": "cove_village_b.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "scenery",
+      "emissive": false
+    },
+    "cove_rock_b": {
+      "file": "cove_rock_b.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "scenery",
+      "emissive": false
+    },
+    "van_blue": {
+      "file": "van_blue.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "van_orange": {
+      "file": "van_orange.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "cove_rock_d": {
+      "file": "cove_rock_d.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "scenery",
+      "emissive": false
+    },
+    "bus_stop_lit": {
+      "file": "bus_stop_lit.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": true
+    },
+    "umbrella_a": {
+      "file": "umbrella_a.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "scenery",
+      "emissive": false
+    },
+    "umbrella_b": {
+      "file": "umbrella_b.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "scenery",
+      "emissive": false
+    },
+    "bush_d": {
+      "file": "bush_d.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "scenery",
+      "emissive": false
+    },
+    "cove_rock_a": {
+      "file": "cove_rock_a.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "scenery",
+      "emissive": false
+    },
+    "player_brake_left": {
+      "file": "player_brake_left.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": true
+    },
+    "player_brake_right": {
+      "file": "player_brake_right.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": true
+    },
+    "player_brake_straight": {
+      "file": "player_brake_straight.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": true
+    },
+    "player_closed_brake_left": {
+      "file": "player_closed_brake_left.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": true
+    },
+    "player_closed_brake_right": {
+      "file": "player_closed_brake_right.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": true
+    },
+    "player_closed_brake_straight": {
+      "file": "player_closed_brake_straight.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": true
+    },
+    "player_closed_empty": {
+      "file": "player_closed_empty.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_closed_left_0": {
+      "file": "player_closed_left_0.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_closed_left_1": {
+      "file": "player_closed_left_1.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_closed_right_0": {
+      "file": "player_closed_right_0.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_closed_right_1": {
+      "file": "player_closed_right_1.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_closed_straight_0": {
+      "file": "player_closed_straight_0.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_closed_straight_1": {
+      "file": "player_closed_straight_1.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_empty": {
+      "file": "player_empty.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_left_0": {
+      "file": "player_left_0.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_left_1": {
+      "file": "player_left_1.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_right_0": {
+      "file": "player_right_0.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_right_1": {
+      "file": "player_right_1.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_roof1_brake_left": {
+      "file": "player_roof1_brake_left.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": true
+    },
+    "player_roof1_brake_right": {
+      "file": "player_roof1_brake_right.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": true
+    },
+    "player_roof1_brake_straight": {
+      "file": "player_roof1_brake_straight.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": true
+    },
+    "player_roof1_empty": {
+      "file": "player_roof1_empty.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_roof1_left_0": {
+      "file": "player_roof1_left_0.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_roof1_left_1": {
+      "file": "player_roof1_left_1.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_roof1_right_0": {
+      "file": "player_roof1_right_0.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_roof1_right_1": {
+      "file": "player_roof1_right_1.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_roof1_straight_0": {
+      "file": "player_roof1_straight_0.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_roof1_straight_1": {
+      "file": "player_roof1_straight_1.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_roof2_brake_left": {
+      "file": "player_roof2_brake_left.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": true
+    },
+    "player_roof2_brake_right": {
+      "file": "player_roof2_brake_right.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": true
+    },
+    "player_roof2_brake_straight": {
+      "file": "player_roof2_brake_straight.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": true
+    },
+    "player_roof2_empty": {
+      "file": "player_roof2_empty.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_roof2_left_0": {
+      "file": "player_roof2_left_0.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_roof2_left_1": {
+      "file": "player_roof2_left_1.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_roof2_right_0": {
+      "file": "player_roof2_right_0.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_roof2_right_1": {
+      "file": "player_roof2_right_1.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_roof2_straight_0": {
+      "file": "player_roof2_straight_0.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_roof2_straight_1": {
+      "file": "player_roof2_straight_1.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_roof3_brake_left": {
+      "file": "player_roof3_brake_left.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": true
+    },
+    "player_roof3_brake_right": {
+      "file": "player_roof3_brake_right.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": true
+    },
+    "player_roof3_brake_straight": {
+      "file": "player_roof3_brake_straight.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": true
+    },
+    "player_roof3_empty": {
+      "file": "player_roof3_empty.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_roof3_left_0": {
+      "file": "player_roof3_left_0.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_roof3_left_1": {
+      "file": "player_roof3_left_1.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_roof3_right_0": {
+      "file": "player_roof3_right_0.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_roof3_right_1": {
+      "file": "player_roof3_right_1.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_roof3_straight_0": {
+      "file": "player_roof3_straight_0.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_roof3_straight_1": {
+      "file": "player_roof3_straight_1.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_roof4_brake_left": {
+      "file": "player_roof4_brake_left.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": true
+    },
+    "player_roof4_brake_right": {
+      "file": "player_roof4_brake_right.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": true
+    },
+    "player_roof4_brake_straight": {
+      "file": "player_roof4_brake_straight.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": true
+    },
+    "player_roof4_empty": {
+      "file": "player_roof4_empty.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_roof4_left_0": {
+      "file": "player_roof4_left_0.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_roof4_left_1": {
+      "file": "player_roof4_left_1.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_roof4_right_0": {
+      "file": "player_roof4_right_0.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_roof4_right_1": {
+      "file": "player_roof4_right_1.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_roof4_straight_0": {
+      "file": "player_roof4_straight_0.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_roof4_straight_1": {
+      "file": "player_roof4_straight_1.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_roof5_brake_left": {
+      "file": "player_roof5_brake_left.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": true
+    },
+    "player_roof5_brake_right": {
+      "file": "player_roof5_brake_right.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": true
+    },
+    "player_roof5_brake_straight": {
+      "file": "player_roof5_brake_straight.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": true
+    },
+    "player_roof5_empty": {
+      "file": "player_roof5_empty.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_roof5_left_0": {
+      "file": "player_roof5_left_0.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_roof5_left_1": {
+      "file": "player_roof5_left_1.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_roof5_right_0": {
+      "file": "player_roof5_right_0.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_roof5_right_1": {
+      "file": "player_roof5_right_1.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_roof5_straight_0": {
+      "file": "player_roof5_straight_0.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_roof5_straight_1": {
+      "file": "player_roof5_straight_1.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_roof6_brake_left": {
+      "file": "player_roof6_brake_left.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": true
+    },
+    "player_roof6_brake_right": {
+      "file": "player_roof6_brake_right.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": true
+    },
+    "player_roof6_brake_straight": {
+      "file": "player_roof6_brake_straight.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": true
+    },
+    "player_roof6_empty": {
+      "file": "player_roof6_empty.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_roof6_left_0": {
+      "file": "player_roof6_left_0.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_roof6_left_1": {
+      "file": "player_roof6_left_1.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_roof6_right_0": {
+      "file": "player_roof6_right_0.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_roof6_right_1": {
+      "file": "player_roof6_right_1.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_roof6_straight_0": {
+      "file": "player_roof6_straight_0.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_roof6_straight_1": {
+      "file": "player_roof6_straight_1.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_roof_mask_left": {
+      "file": "player_roof_mask_left.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_roof_mask_right": {
+      "file": "player_roof_mask_right.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_roof_mask_straight": {
+      "file": "player_roof_mask_straight.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_straight_0": {
+      "file": "player_straight_0.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "player_straight_1": {
+      "file": "player_straight_1.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "pickup_brown": {
+      "file": "pickup_brown.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "pickup_white": {
+      "file": "pickup_white.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "beetle_teal": {
+      "file": "beetle_teal.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "beetle_yellow": {
+      "file": "beetle_yellow.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "cove_rock_c": {
+      "file": "cove_rock_c.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "scenery",
+      "emissive": false
+    },
+    "crowd": {
+      "file": "crowd.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "scenery",
+      "emissive": false
+    },
+    "sign_left": {
+      "file": "sign_left.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "scenery",
+      "emissive": false
+    },
+    "sign_right": {
+      "file": "sign_right.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "scenery",
+      "emissive": false
+    },
+    "bush_e": {
+      "file": "bush_e.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "scenery",
+      "emissive": false
+    },
+    "coupe_blue": {
+      "file": "coupe_blue.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "coupe_green": {
+      "file": "coupe_green.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "coupe_white": {
+      "file": "coupe_white.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "coupe_yellow": {
+      "file": "coupe_yellow.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "sports_black": {
+      "file": "sports_black.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "sports_silver": {
+      "file": "sports_silver.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "vehicle",
+      "emissive": false
+    },
+    "rock_dark": {
+      "file": "rock_dark.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "scenery",
+      "emissive": false
+    },
+    "crash_lady_fly": {
+      "file": "crash_lady_fly.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "scenery",
+      "emissive": false
+    },
+    "rock_a": {
+      "file": "rock_a.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "scenery",
+      "emissive": false
+    },
+    "crash_driver_fly": {
+      "file": "crash_driver_fly.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "scenery",
+      "emissive": false
+    },
+    "crash_lady_sit_0": {
+      "file": "crash_lady_sit_0.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "scenery",
+      "emissive": false
+    },
+    "crash_lady_sit_1": {
+      "file": "crash_lady_sit_1.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "scenery",
+      "emissive": false
+    },
+    "bush_b": {
+      "file": "bush_b.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "scenery",
+      "emissive": false
+    },
+    "crash_driver_sit_0": {
+      "file": "crash_driver_sit_0.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "scenery",
+      "emissive": false
+    },
+    "crash_driver_sit_1": {
+      "file": "crash_driver_sit_1.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "scenery",
+      "emissive": false
+    },
+    "bush_a": {
+      "file": "bush_a.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "scenery",
+      "emissive": false
+    },
+    "bush_c": {
+      "file": "bush_c.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "scenery",
+      "emissive": false
+    },
+    "rock_b": {
+      "file": "rock_b.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "scenery",
+      "emissive": false
+    },
+    "bush_f": {
+      "file": "bush_f.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "scenery",
+      "emissive": false
+    },
+    "cove_wall_b": {
+      "file": "cove_wall_b.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "scenery",
+      "emissive": false
+    },
+    "cove_tuft_a": {
+      "file": "cove_tuft_a.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "scenery",
+      "emissive": false
+    },
+    "cove_wall_a": {
+      "file": "cove_wall_a.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "scenery",
+      "emissive": false
+    },
+    "cove_wall_c": {
+      "file": "cove_wall_c.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "scenery",
+      "emissive": false
+    },
+    "cove_tuft_b": {
+      "file": "cove_tuft_b.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "scenery",
+      "emissive": false
+    },
+    "grass_a": {
+      "file": "grass_a.png",
+      "density": 2,
+      "anchor": "bottom-center",
+      "category": "scenery",
+      "emissive": false
+    }
+  },
+  "images": {
+    "sky_s1": {
+      "file": "sky_s1.png",
+      "density": 2,
+      "opaque": true
+    },
+    "far_s1": {
+      "file": "far_s1.png",
+      "density": 2,
+      "opaque": false
+    }
+  },
+  "scope": "pilot"
+}

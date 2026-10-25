@@ -336,6 +336,7 @@ class MainScene extends Phaser.Scene {
       w.__graphicsInfo=()=>{
         const gl=(this.game.renderer as Phaser.Renderer.WebGL.WebGLRenderer).gl;
         return {mode:this.graphicsChoice.mode,screen:this.mode,busy:this.graphicsChoice.busy,error:this.graphicsChoice.error,
+          nativeSprites:this.bank.names().filter(name=>this.bank.get(name)?.density===2).length,
           width:this.renderContext.fb.w,height:this.renderContext.fb.h,textureWidth:this.screenTex.width,textureHeight:this.screenTex.height,
           canvasWidth:this.game.canvas.width,canvasHeight:this.game.canvas.height,
           drawingWidth:gl?.drawingBufferWidth??this.game.canvas.width,drawingHeight:gl?.drawingBufferHeight??this.game.canvas.height};

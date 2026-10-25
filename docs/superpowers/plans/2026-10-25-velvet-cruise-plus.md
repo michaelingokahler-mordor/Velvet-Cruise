@@ -134,15 +134,15 @@ Die niedrigstufigen FB-Blits verwenden native Pixelmaße. Ihre Aufrufer berücks
 - `python tools/pack_plus_assets.py` schreibt ausschließlich nach `assets/plus/`. Classic-Quellen und Classic-Packer bleiben getrennt.
 - Grafikquellen verwenden gemeinsame Karosserie-, Dach- und Materialmasken. Die Vorlage liegt unter `docs/superpowers/specs/assets/velvet-cruise-plus/`.
 
-- [ ] **Step 1:** Erfasse alle tatsächlich benötigten Motive aus Atlas, Referenzen, Fahrzeugdefinitionen und dynamisch erzeugten Sprite-Namen. Trenne Motive von Varianten und Animationsbildern.
-- [ ] **Step 2:** Schreibe Manifest-, Alpha-, Dichte-, Anker- und Materialprüfungen. Führe `node tools/qa/check-plus-assets.mjs --pilot` aus; fehlende Plus-Quellen müssen zunächst sichtbar fehlschlagen.
-- [ ] **Step 3:** Implementiere den getrennten Packer. Zeichne den Starterwagen samt vorhandenen Zuständen im nativen Plus-Raster aus.
-- [ ] **Step 4:** Ergänze Palm-Cove-Palmen, Sträucher, Felsen, Gebäude-/Terrassenmodule, Küste und Hintergründe. Kleine Paletten und klare Pixelcluster folgen dem bestätigten Entwurf.
-- [ ] **Step 5:** Ergänze nur kosmetische Landschaftsformen und weltgebundene Materialdetails. Erhalte Kollisionsdaten, Straßengeometrie, Zufallsstrom und Platzierung aller aktiven Hindernisse.
-- [ ] **Step 6:** Erzeuge echte native Aufnahmen an Start, offener Küste, Links- und Rechtskurve, Terrasse und Gabelung. Ergänze kurze Fahrclips mit voller Bewegungsgeschwindigkeit.
-- [ ] **Step 7:** Prüfe Mip-Wechsel, Verdeckung und Flimmern in Bewegung. Vergleiche Classic/Plus bei identischer Szene und gleicher sichtbarer Bildgröße.
-- [ ] **Step 8:** Führe `node tools/qa/check-plus-assets.mjs --pilot`, die neue Palm-Cove-Aufnahme, `npm run qa:palm-cove` und die Profil-Paritätsprüfung aus.
-- [ ] **Step 9:** Committe ausschließlich die geprüften Dateien dieses Schritts.
+- [x] **Step 1:** Erfasse alle tatsächlich benötigten Motive aus Atlas, Referenzen, Fahrzeugdefinitionen und dynamisch erzeugten Sprite-Namen. Trenne Motive von Varianten und Animationsbildern.
+- [x] **Step 2:** Schreibe Manifest-, Alpha-, Dichte-, Anker- und Materialprüfungen. Führe `node tools/qa/check-plus-assets.mjs --pilot` aus; fehlende Plus-Quellen müssen zunächst sichtbar fehlschlagen.
+- [x] **Step 3:** Implementiere den getrennten Packer. Zeichne den Starterwagen samt vorhandenen Zuständen im nativen Plus-Raster aus.
+- [x] **Step 4:** Ergänze Palm-Cove-Palmen, Sträucher, Felsen, Gebäude-/Terrassenmodule, Küste und Hintergründe. Kleine Paletten und klare Pixelcluster folgen dem bestätigten Entwurf.
+- [x] **Step 5:** Ergänze nur kosmetische Landschaftsformen und weltgebundene Materialdetails. Erhalte Kollisionsdaten, Straßengeometrie, Zufallsstrom und Platzierung aller aktiven Hindernisse.
+- [x] **Step 6:** Erzeuge echte native Aufnahmen an Start, offener Küste, Links- und Rechtskurve, Terrasse und Gabelung. Ergänze kurze Fahrclips mit voller Bewegungsgeschwindigkeit.
+- [x] **Step 7:** Prüfe Mip-Wechsel, Verdeckung und Flimmern in Bewegung. Vergleiche Classic/Plus bei identischer Szene und gleicher sichtbarer Bildgröße.
+- [x] **Step 8:** Führe `node tools/qa/check-plus-assets.mjs --pilot`, die neue Palm-Cove-Aufnahme, `npm run qa:palm-cove` und die Profil-Paritätsprüfung aus.
+- [x] **Step 9:** Committe ausschließlich die geprüften Dateien dieses Schritts.
 
 **Acceptance:** Der echte 640×360-Renderer zeigt zusätzliche Auto- und Landschaftsdetails im bestätigten Stil. Der Bildentwurf allein erfüllt diesen Schritt nicht.
 
