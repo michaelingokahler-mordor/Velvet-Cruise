@@ -1,0 +1,7 @@
+{
+  "status": "PASS",
+  "runtimeModule": "index-BgK9JsxI.js",
+  "sha256": "b16af8663e3487272bbc9d514d5e64fc459d8e580243371996a33163a4367f58",
+  "bytes": 1526563,
+  "scope": "Integrated current main and reviewed Plus runtime are byte-identical; the capture helper and test coordinates are development tooling."
+}

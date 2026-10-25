@@ -5,6 +5,9 @@ Weitere iPhone-Optimierungen und die vollständige Geräteabnahme wurden auf
 ausdrücklichen Nutzerwunsch vom 25.10.2026 vertagt. Diese Fassung ist ein
 lokaler Prüfkandidat. Web und Windows sind zur Prüfung paketiert.
 
+Die Übernahme ins Hauptprojekt und die zusätzlichen Prüfungen stehen in
+[integration.md](integration.md).
+
 ## Darstellung und Freischaltung
 
 | Eigenschaft | Classic | Plus |

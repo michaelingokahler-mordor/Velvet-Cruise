@@ -1,0 +1,13 @@
+{
+  "status": "FAIL",
+  "tests": [
+    "all five settings children return to their selected parent",
+    "keyboard capture rejects conflict, retries, saves without navigation leakage",
+    "Course Map, rankings and badges retain correct parents",
+    "direct start remembers music; custom Enter pauses once; restart creates a fresh race",
+    "virtual axis mapping, disconnect, stored bindings and unrelated saves survive"
+  ],
+  "error": "page.waitForFunction: Timeout 30000ms exceeded.\n    at C:\\Users\\micha\\.codex\\worktrees\\velvet-cruise-plus\\Code\\tools\\qa\\menu-settings-browser.cjs:101:33",
+  "errors": [],
+  "badResponses": []
+}

@@ -1,4 +1,8 @@
-param([string]$PythonExe = 'python')
+param(
+    [string]$PythonExe = 'python',
+    [string]$WebBaseURL = 'http://127.0.0.1:4191/',
+    [string]$DemoBaseURL = 'http://127.0.0.1:4192/'
+)
 $ErrorActionPreference = 'Stop'
 Set-Location -LiteralPath (Resolve-Path (Join-Path $PSScriptRoot '../..'))
 if (-not $env:NODE_PATH) {
@@ -26,10 +30,10 @@ foreach ($suite in @(
 Invoke-PlusCheck -Program $PythonExe -Arguments @('tools/qa/check-garage-sprites.py')
 Invoke-PlusCheck -Program 'node' -Arguments @('tools/qa/check-stage-refresh.mjs','output/stage-depth','--graphics-only')
 Invoke-PlusCheck -Program 'node' -Arguments @('tools/qa/check-stage-depth.mjs','--graphics-only')
-foreach ($suite in @('graphics-profiles-browser.cjs','check-goal-progress-browser.cjs','plus-native-browser.cjs','check-plus-device-page.cjs','check-rain-entry.cjs')) {
-    Invoke-PlusCheck -Program 'node' -Arguments @("tools/qa/$suite",'http://127.0.0.1:4191/')
+foreach ($suite in @('graphics-profiles-browser.cjs','check-goal-progress-browser.cjs','plus-native-browser.cjs','menu-settings-browser.cjs','check-plus-device-page.cjs','check-rain-entry.cjs')) {
+    Invoke-PlusCheck -Program 'node' -Arguments @("tools/qa/$suite",$WebBaseURL)
 }
-Invoke-PlusCheck -Program 'node' -Arguments @('tools/qa/plus-demo-browser.cjs','http://127.0.0.1:4192/')
+Invoke-PlusCheck -Program 'node' -Arguments @('tools/qa/plus-demo-browser.cjs',$DemoBaseURL)
 $benchmark = Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'desktop-after-rain-fix.json') | ConvertFrom-Json
 if ($benchmark.status -ne 'PASS' -or $benchmark.profiles.Count -ne 2) { throw 'Missing passing desktop benchmark' }
 foreach ($profile in $benchmark.profiles) {
