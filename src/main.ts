@@ -32,10 +32,10 @@ import { loadPlusBank, type PlusManifest } from './core/plus-assets';
 
 type Mode = "title" | "settings" | "graphics" | "records" | "bindings" | "garage" | "rankings" | "badges" | "controls" | "difficulty" | "radio" | "race" | "ending" | "results" | "name" | "map" | "credits";
 
-/** The credits page: its two web addresses (shown exactly as written, opened in a new tab). */
+/** The credits page's studio and prototype links, opened in a new tab. */
 const CREDIT_LINKS = [
   { text: "sabnockworks.com", href: "https://sabnockworks.com" },
-  { text: "tesana.com", href: "https://tesana.com" },
+  { text: "Tesana", href: "https://tesana.com" },
 ];
 
 /** Every difficulty has its own rankings: a shared high score and full-run board (online, under
@@ -161,7 +161,6 @@ class MainScene extends Phaser.Scene {
   private shouts = new Shouts();
   private cleanT = 0;
   private roughT = 0;
-  private wasOffroad = false;
   private calmT = 0;
   private passTotal = 0;
   private tumbleCount = 0;
@@ -822,12 +821,13 @@ class MainScene extends Phaser.Scene {
       fb.rect(W / 2 - tw / 2, y + 8, tw, 1, sel ? C.yellow : C.cyan);
       this.links.place(L.href, L.text, r);
     };
-    let y = 25;
-    y += para(fb, t("credits.copyright"), W / 2, y, rgb(0xffd8a0), w - 16) * 9 + 6;
-    role("credits.idea", y); name("credits.idea_by", y + 10); y += 25;
-    role("credits.studio", y); name("credits.studio_name", y + 10); link(0, y + 21); y += 37;
-    role("credits.producer", y); name("credits.producer_name", y + 10); y += 25;
-    role("credits.made", y); link(1, y + 11);
+    let y = 24;
+    y += para(fb, t("credits.copyright"), W / 2, y, rgb(0xffd8a0), w - 16) * 9 + 3;
+    role("credits.idea", y); name("credits.idea_by", y + 9); y += 20;
+    role("credits.studio", y); name("credits.studio_name", y + 9); link(0, y + 19); y += 30;
+    role("credits.producer", y); name("credits.producer_name", y + 9); y += 20;
+    role("credits.made", y); name("credits.programming_name", y + 9); y += 20;
+    role("credits.prototype", y); link(1, y + 10);
     const back: Rect = { x: W / 2 - 40, y: 162, w: 80, h: 14 };
     button(fb, back, t("credits.back"), this.menuSel === n);
     let leave = inp.hit("back") || this.tapped(taps, back);
@@ -1178,6 +1178,7 @@ class MainScene extends Phaser.Scene {
     analytics.levelStart(race.theme.id, 0);
     analytics.event("run_start", { name: race.diff.id, value: race.diff.score });
     race.events = {
+      surface: (kind, speed) => { if (kind === 'strip') this.audio.stripKick(speed); else this.audio.dirtKick(speed); },
       gate: (g, r) => this.onGate(g, r),
       crash: (hard, car, tumble) => {
         this.audio.crash(hard);
@@ -1385,11 +1386,8 @@ class MainScene extends Phaser.Scene {
         if (pick) this.rivalYell(pick, passTurn ? "pass" : "hit", true);
         (window as unknown as Record<string, unknown>).__yell = { pick: pick ? { x: pick.x, z: pick.z - pz, seen: pick.seen, frame: this.painter.frame } : null, behind: !!behind, kind: pick === ahead ? "hit" : "pass" };
       }
-      const quiet = race.state === "over";
+      const quiet = race.state === "over" || race.crashT > 0;
       this.audio.engine(race.rpm, race.throttle, race.speed / MAX_SPEED, race.skid, race.offroad, quiet, race.seaAmt, race.offDepth, race.edge);
-      // swerving off the tarmac at speed: a squeal as the tyres lose grip
-      if (race.offroad && !this.wasOffroad && race.speed / MAX_SPEED > 0.3 && race.crashT <= 0) this.audio.dirtKick(race.speed / MAX_SPEED);
-      this.wasOffroad = race.offroad;
       const dry = 1 - race.tunnelAmt; // the storm goes quiet inside a tunnel
       this.audio.weather(race.weatherAmt("rain") * dry, Math.max(race.weatherAmt("sand"), race.weatherAmt("snow") * 0.55) * dry, race.gustAmt * dry);
       this.audio.tunnel(race.tunnelAmt);

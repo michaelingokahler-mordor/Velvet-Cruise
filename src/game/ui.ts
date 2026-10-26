@@ -140,8 +140,32 @@ export class Hud {
     }
 
     drawSignalIndicator(fb, race);
+    drawWindIndicator(fb, race, time);
     if (touch) drawTouch(fb, tilt, race.steer,race.nightSignal);
   }
+}
+
+/** Winds travel relative to the car: right is right, up is tailwind. */
+export function drawWindIndicator(fb: DrawSurface, race: Race, time: number): void {
+  const weather = race.weatherAmt('sand');
+  if (weather < .02 || race.tunnelAmt > .95 || race.playerSeg.tunnel || (race.state !== 'race' && race.state !== 'countdown')) return;
+  const side = race.gust / .46, forward = race.windForward;
+  const strength = Math.min(1, Math.hypot(side, forward));
+  const px = W - 22, py = 85;
+  fb.rectA(W - 41, 71, 36, 38, C.ink, .48 * weather);
+  fb.rect(px - 1, py - 4, 2, 26, rgb(0xc8ccd0));
+  fb.rect(px - 5, py + 21, 10, 2, rgb(0x7a7c8c));
+  const len = 4 + 12 * strength, inv = strength > .02 ? 1 / Math.hypot(side, forward) : 0;
+  const dx = side * inv, dy = strength > .02 ? -forward * inv : 1;
+  const wave = Math.sin(time * 12) * 1.2 * strength;
+  for (let band = 0; band < 5; band++) {
+    const a = band / 5, b = (band + 1) / 5;
+    const ax = px + dx * len * a + wave * a * dy, ay = py + dy * len * a - wave * a * dx;
+    const bx = px + dx * len * b + wave * b * dy, by = py + dy * len * b - wave * b * dx;
+    const aw = 3 - a * 1.7, bw = 3 - b * 1.7;
+    fb.poly([ax-dy*aw,ay+dx*aw,ax+dy*aw,ay-dx*aw,bx+dy*bw,by-dx*bw,bx-dy*bw,by+dx*bw],band%2 ? C.white : rgb(0xee4b3c));
+  }
+  if (Math.abs(forward) > .08) drawText(fb, forward > 0 ? '↑' : '↓', W-11, forward > 0 ? 73 : 99, C.yellow, {outline:C.ink,align:'center'});
 }
 
 /** A persistent H hint, with a bright confirmation even when no car can yield. */

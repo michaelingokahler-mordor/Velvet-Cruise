@@ -61,22 +61,13 @@ test('wind expires to zero and does not act on a tunnel road', () => {
   r.gustT = 1; r.gustDur = 2; r.updateWeather(0);
   near(r.gust, 0, 'tunnel side wind'); near(r.windForward, 0, 'tunnel forward wind'); s.tunnel = saved;
 });
-test('the dust renderer draws front, rear, diagonal and calm wind consistently', () => {
-  const renderer = new Renderer(new FB(), { get: () => undefined, has: () => false });
-  const moves = [];
-  for (const [gust, windForward] of [[0, 0], [.46, 0], [-.46, 0], [0, -1], [0, 1], [.32, .7]]) {
-    renderer.dust = [{ x: 210, y: 110, v: 100, len: 3, near: false, col: rgb(0xe4bc80) }];
-    renderer.sandstorm(1, { gust, windForward }, .01, 0, rgb(0xc07840));
-    moves.push({ x: renderer.dust[0].x - 210, y: renderer.dust[0].y - 110 });
-  }
-  near(moves[0].x, 0, 'calm horizontal'); near(moves[0].y, 0, 'calm vertical');
-  assert.ok(moves[1].x > 0 && moves[2].x < 0);
-  assert.ok(moves[3].x > 0 && moves[3].y > 0, 'headwind expands from horizon');
-  assert.ok(moves[4].x < 0 && moves[4].y < 0, 'tailwind converges toward horizon');
-  assert.ok(moves[5].x > 0 && moves[5].y < 0, 'diagonal combines both components');
-  measurements.dust = moves;
-});
-
+ test('sand haze remains visible without moving particles across the road', () => {
+  const fb = new FB(), renderer = new Renderer(fb, { get: () => undefined, has: () => false });
+  fb.clear(rgb(0)); renderer.sandstorm(1, rgb(0xc07840)); const first = [...fb.data];
+  renderer.time = 2; fb.clear(rgb(0)); renderer.sandstorm(1, rgb(0xc07840));
+  assert.ok(first.every(p => p !== rgb(0))); assert.deepEqual([...fb.data], first);
+  measurements.hazePixels = first.length;
+ });
 function npcTrial(kind, diff = DIFFS[1], { ice = false, wind = false, curve = 0, ticks = 120, startX = .25 } = {}) {
   const r = setup(kind, diff), z = r.playerZ + 20 * SEG_LEN;
   const c = { ...r.makeCar(z), z, x: startX, targetX: startX, base: MAX_SPEED * .65, speed: MAX_SPEED * .65, yieldUntil: 100 };

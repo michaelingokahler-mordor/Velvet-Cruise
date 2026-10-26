@@ -20,9 +20,11 @@ assert.ok(!scratch.data.some(reflected),'inland background must not receive sea 
 // A sun column entirely behind the shore must be fully hidden. It must not
 // be translated onto the first visible water pixel when clipping the dashes.
 fb.clear(sentinel);
+renderer.seaTrap(80,290,115,290,th.seaA,th.glitter,th.glitter2,100,0,0);
+const wavesWithoutReflection = fb.data.slice();
 renderer.seaTrap(80,290,115,290,th.seaA,th.glitter,th.glitter2,100,1,0);
 for(let y=80;y<115;y++) for(let x=0;x<320;x++)
-  assert.equal(fb.data[y*320+x],x<290?sentinel:th.seaA,'hidden reflection leaked onto the shore');
+  assert.equal(fb.data[y*320+x],wavesWithoutReflection[y*320+x],'hidden reflection leaked onto the shore');
 
 let clippingCases=0;
 for(const sun of [-10,235,325]) for(const time of [0,3,7]) {

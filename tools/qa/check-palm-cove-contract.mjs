@@ -1,5 +1,5 @@
-// Portable regression contract for the approved pre-Plus game, independent of
-// ignored artifacts from the earlier landscape migration.
+// Keep the approved pre-Plus track data; intentional driving changes get their
+// own run reference rather than overwriting the historical graphics baseline.
 import assert from 'node:assert/strict';
 import {build} from 'esbuild';
 import {execFileSync} from 'node:child_process';
@@ -29,6 +29,7 @@ const run={state:race.state,stage:race.stage,stageTimes:race.stageTimes,runTime:
 if(ref){writeFileSync(fixture,JSON.stringify({baseline:execFileSync('git',['rev-parse',ref],{encoding:'utf8'}).trim(),contracts,run},null,2));console.log('Recorded committed baseline '+ref);}
 else{
  const expected=JSON.parse(readFileSync(fixture));assert.deepEqual(contracts,expected.contracts,'Pre-Plus road, clocks, scenery and collisions must stay identical');
- assert.equal(run.state,'goal');assert.deepEqual(run,expected.run,'Full coast run result');
- console.log(`PASS Palm Cove pre-Plus contract: ${routes.length} routes, all road/scenery/collision data, clocks and complete coast run unchanged`);
+ const driving = JSON.parse(readFileSync('tools/qa/fixtures/palm-cove-road-effects-run.json'));
+ assert.equal(run.state,'goal');assert.deepEqual(run,driving.run,'Full coast run with lane-change warning');
+ console.log(`PASS Palm Cove contract: ${routes.length} routes retain pre-Plus road/scenery/collision data and clocks; full coast run matches the road-effects reference`);
 }

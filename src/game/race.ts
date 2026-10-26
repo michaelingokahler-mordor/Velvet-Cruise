@@ -29,11 +29,14 @@ export interface Car {
   yieldLane?: number; yieldWait?: number; yieldUntil?: number; yieldFromX?: number;
   /** Smoothed lane intent and lateral ice momentum; all NPC weather uses Easy. */
   laneX?: number; lateralV?: number; iceAmt?: number;
+  /** Intentional lane changes only; weather drift never changes the signal side. */
+  turnDir?: number; turnTime?: number; turnTarget?: number; turnSettle?: number;
 }
 
 export interface Controls { steer: number; throttle: number; brake: number }
 
 export interface RaceEvents {
+  surface?(kind: 'strip' | 'sand', speedPct: number): void;
   gate?(g: Gate, race: Race): void;
   /** `tumble` = a big roadside crash that flips the car and throws the couple onto the sand. */
   crash?(hard: boolean, car?: Car, tumble?: boolean): void;
@@ -109,6 +112,11 @@ export class Race {
   /** How deep in the sand/earth beside the road (0 = on the road; ~1 = 0.6 road half-widths out). */
   offDepth = 0;
   skid = 0;          // 0..1 tyre squeal amount
+  private steerHeld = 0;
+  private steerSign = 0;
+  private tyreSurface: 'road' | 'strip' | 'sand' = 'road';
+  private stripSoundT = 0;
+  private sandSoundT = 0;
   /** 0..1: how much of the car is on glazed road right now (eases in and out). */
   iceAmt = 0;
   private iceV = 0;      // sideways velocity the car keeps while the tyres have no grip
@@ -186,6 +194,10 @@ export class Race {
       if(car && !car.yieldUntil) {
         car.yieldFromX=this.playerX;car.yieldWait=.18;car.yieldUntil=6;
         car.yieldLane=this.yieldTarget(car, this.playerX);
+        if (car.yieldLane !== undefined) {
+          car.turnDir = Math.sign(car.yieldLane - (car.laneX ?? car.x));
+          car.turnTarget = car.yieldLane; car.turnTime = 0; car.turnSettle = 0;
+        }
       }
     }
     return this.signalKind;
@@ -584,8 +596,25 @@ export class Race {
       // Move the intended lane slowly; a separate bounded driver corrects weather drift.
       c.laneX ??= c.x;
       const laneDelta = c.targetX - c.laneX;
+      const pending = c.yieldFromX !== undefined && c.yieldLane !== undefined && this.yieldSafe(c, c.yieldLane);
+      const turnTarget = pending ? c.yieldLane! : c.targetX;
+      const turnDelta = turnTarget - c.laneX;
       const laneRate = c.yieldUntil && c.yieldFromX===undefined ? .52 * (1 - .4 * hazard) : .28 * (1 - .5 * hazard);
-      c.laneX += Math.sign(laneDelta) * Math.min(Math.abs(laneDelta), laneRate * dt);
+      if (Math.abs(turnDelta) > 1e-6) {
+        const dir = Math.sign(turnDelta);
+        if (c.turnTarget !== turnTarget || c.turnDir !== dir) { c.turnDir = dir; c.turnTime = 0; c.turnTarget = turnTarget; c.turnSettle = 0; }
+        c.turnTime = (c.turnTime ?? 0) + dt;
+        if (!pending && c.turnTime >= .18) c.laneX += dir * Math.min(Math.abs(laneDelta), laneRate * dt);
+      } else {
+        c.laneX = c.targetX;
+        c.turnSettle = (c.turnSettle ?? 0) + dt;
+        c.turnTime = (c.turnTime ?? 0) + dt;
+        // Keep signalling while the car catches its steering target. Persistent
+        // weather drift cannot hold a completed intentional signal forever.
+        if (c.turnTarget !== c.targetX || Math.abs(c.x-c.targetX) < .02 || c.turnSettle >= .65) {
+          c.turnDir = 0; c.turnTime = 0; c.turnTarget = c.targetX;
+        }
+      }
       const sp = c.speed / MAX_SPEED;
       const dryPull = sp * sp * seg.curve * CENTRIFUGAL * easy.cornering;
       const steerLimit = STEER * Math.min(1, sp * 2.2);
@@ -817,9 +846,26 @@ export class Race {
 
     // tyres: squeal when cornering hard at speed
     const corner = Math.abs(seg.curve) * sp * sp + Math.abs(ctl.steer) * sp * 0.6;
-    this.skid += ((corner > 2.2 || (this.braking && sp > 0.5) ? Math.min(1, corner / 3.5 + (this.braking ? 0.5 : 0)) : 0) - this.skid) * Math.min(1, dt * 6);
+    const driving = this.state === 'race' && this.crashT <= 0 && sp >= .35;
+    const steerSign = Math.sign(ctl.steer);
+    if (driving && !this.offroad && Math.abs(ctl.steer) >= .55) {
+      this.steerHeld = this.steerSign === steerSign ? this.steerHeld + dt : dt;
+    } else this.steerHeld = 0;
+    this.steerSign = steerSign;
+    const heldSqueal = this.steerHeld >= .5 ? Math.min(1, .55 + (this.steerHeld - .5) * .9) : 0;
+    const cornerSqueal = corner > 2.2 || (this.braking && sp > .5) ? Math.min(1, corner / 3.5 + (this.braking ? .5 : 0)) : 0;
+    this.skid += ((driving ? Math.max(heldSqueal, cornerSqueal) : 0) - this.skid) * Math.min(1, dt * 6);
     if (this.iceAmt > 0.1 && sp > 0.25) this.skid = Math.max(this.skid, this.iceAmt * 0.8 * Math.min(1, Math.abs(this.iceV) / 0.3 + Math.abs(ctl.steer)));
     if (this.offroad) this.skid *= 0.5;
+    if (this.crashT > 0 || this.state === 'over' || sp < .02) this.skid = 0;
+    this.stripSoundT = Math.max(0, this.stripSoundT - dt);
+    this.sandSoundT = Math.max(0, this.sandSoundT - dt);
+    const surface = this.offroad ? 'sand' : this.edge > (this.tyreSurface === 'strip' ? .03 : .08) ? 'strip' : 'road';
+    if (surface !== this.tyreSurface && this.state === 'race' && this.crashT <= 0 && sp > .08) {
+      if (surface === 'strip' && !this.stripSoundT) { this.events.surface?.('strip', sp); this.stripSoundT = .35; }
+      if (surface === 'sand' && !this.sandSoundT) { this.events.surface?.('sand', sp); this.sandSoundT = .35; }
+    }
+    this.tyreSurface = surface;
 
     // engine: automatic two-speed box like the arcade original
     if (this.gear === 0 && sp > 0.5) this.gear = 1;
@@ -1026,7 +1072,7 @@ export class Race {
     this.gustT -= dt;
     if (this.gustT <= 0) {
       if (this.gustDur > 0) { this.gustDur = 0; this.gustT = 2.4 + windRand() * 3.2; }
-      else { this.gustDur = 1.2 + windRand() * 0.8; this.gustT = this.gustDur; this.gustAngle = windRand() * Math.PI * 2; }
+      else { this.gustDur = 4 + windRand() * 2; this.gustT = this.gustDur; this.gustAngle = windRand() * Math.PI * 2; }
     }
     const env = this.gustDur > 0 ? Math.sin(Math.PI * Math.max(0, Math.min(1, 1 - this.gustT / this.gustDur))) : 0;
     this.windSide = Math.sin(this.gustAngle) * env;

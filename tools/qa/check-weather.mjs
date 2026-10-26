@@ -61,24 +61,25 @@ function windPulse(diff, speed = .8, countersteer = false) {
   r.updateWeather(1 / 60);
   r.gustAngle = Math.PI / 2; r.updateWeather(0); // same duration, a pure crosswind
   const duration = r.gustDur, direction = Math.sign(Math.sin(r.gustAngle));
-  let peakLanesPerSecond = 0, elapsed = 0;
-  while (r.gustDur > 0 && elapsed < 3) {
+  let peakLanesPerSecond = 0, elapsed = 0, drift = 0;
+  while (r.gustDur > 0 && elapsed < 7) {
     r.position = position; r.speed = MAX_SPEED * speed;
-    const before = r.playerX;
+    r.playerX = 0; const before = r.playerX;
     const ctl = countersteer ? r.autopilot(1 / 60, speed) : { steer: 0, throttle: 1, brake: 0 };
-    r.update(1 / 60, ctl); elapsed += 1 / 60;
+    r.update(1 / 60, ctl); elapsed += 1 / 60; drift += r.playerX - before;
     peakLanesPerSecond = Math.max(peakLanesPerSecond, Math.abs(r.playerX - before) * 120);
   }
-  const result = { difficulty: diff.id, kmh: Math.round(speed * 293), duration, direction, driftLanes: r.playerX * 2, peakLanesPerSecond, countersteer };
+  const result = { difficulty: diff.id, kmh: Math.round(speed * 293), duration, direction, driftLanes: drift * 2, peakLanesPerSecond, countersteer };
   s.curve = curve; return result;
 }
 const wind = DIFFS.flatMap(d => [windPulse(d), windPulse(d, .2)]);
 for (let i = 0; i < 3; i++) check(`${DIFFS[i].id}: real wind pulse and low-speed attenuation`, () => {
   const [fast, slow] = wind.slice(i * 2, i * 2 + 2);
-  assert.ok(fast.duration >= 1.2 && fast.duration <= 2);
+  assert.ok(fast.duration >= 4 && fast.duration <= 6);
   assert.ok(Math.abs(fast.driftLanes) > .55, 'pulse must move the unsteered car appreciably');
   near(slow.driftLanes / fast.driftLanes, .5, 'half force at 20% of top speed');
-  near(Math.abs(fast.driftLanes), [1, 1.45, 1.85][i], 'reference gust displacement', .003);
+  assert.ok(Math.abs(fast.driftLanes) > 2.3 * [1,1.45,1.85][i] && Math.abs(fast.driftLanes) < 3.6 * [1,1.45,1.85][i], 'longer gust adds displacement');
+  near(fast.peakLanesPerSecond, [.92,1.334,1.702][i], 'unchanged peak force', .003);
 });
 
 // Load the same RGBA pixels as the game. A present light switch is insufficient
@@ -100,15 +101,8 @@ check('every NPC model has drawable rear-light lenses', () => {
   assert.equal(carNames.length, 13);
   for (const name of carNames) assert.ok(carLights(bank, name)?.tail.data.some(p => p !== 0), name);
 });
-const sandRenderer = new Renderer(new FB(), bank);
-const visualWind = [0, .46, -.46].map(gust => {
-  sandRenderer.dust = [{ x: 160, y: 50, v: 100, len: 3, near: false, col: rgb(0xe4bc80) }];
-  sandRenderer.sandstorm(1, { gust, windForward: 0 }, .01, .8, rgb(0xc07840));
-  return { gust, particleDirection: Math.sign(sandRenderer.dust[0].x - 160) };
-});
-check('sand direction matches wind, including calm without a fake left gust', () => {
-  assert.deepEqual(visualWind.map(x => x.particleDirection), [0, 1, -1]);
-});
+const visualWind = 'windsock directions covered by check-road-effects.mjs';
+
 const lighting = [];
 const lightingPaths = [[0, 1, 2, 3, 4], [0, 5, 8, 9, 10], [0, 5, 6, 11, 12], [0, 1, 6, 7, 13], [0, 1, 2, 7, 14]];
 const lightingTracks = lightingPaths.map(path => new Track(path));

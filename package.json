@@ -8,6 +8,7 @@
     "build:web": "vite build --mode standalone",
     "preview": "vite preview",
     "check": "tsc --noEmit",
+    "qa:road-effects": "node tools/qa/check-road-effects-all.mjs",
     "qa:local-services": "node tools/qa/check-local-services.mjs",
     "qa:elevation": "node tools/qa/check-elevation.mjs",
     "qa:course-map": "node tools/qa/check-course-map.mjs",

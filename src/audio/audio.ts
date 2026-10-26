@@ -246,7 +246,7 @@ export class GameAudio {
     this.engFilter.frequency.setTargetAtTime(260 + rpm * 1500 + throttle * 700, t, 0.05);
     const vol = quiet ? 0.05 : 0.075 + throttle * 0.06 + rpm * 0.03;
     this.engGain.gain.setTargetAtTime(vol, t, 0.06);
-    this.skidGain.gain.setTargetAtTime(quiet ? 0 : Math.max(0, skid - 0.35) * 0.22, t, 0.04);
+    this.skidGain.gain.setTargetAtTime(quiet || offroad || speedPct < .08 ? 0 : Math.max(0, skid - 0.25) * 0.25, t, 0.04);
     this.skidFilter.frequency.setTargetAtTime(950 + skid * 500 + Math.sin(t * 31) * 80, t, 0.02);
     const dirt = offroad && speedPct > 0.05 && !quiet;
     this.roughGain.gain.setTargetAtTime(dirt ? (0.12 + Math.random() * 0.1) * (0.6 + 0.4 * Math.min(1, depth)) : 0, t, 0.03);
@@ -255,7 +255,7 @@ export class GameAudio {
     this.crunchFilter.frequency.setTargetAtTime(1300 + speedPct * 1800 + Math.random() * 900, t, 0.02);
     // the red/white strip: a buzzing rumble through the wheels
     const onStrip = !offroad && !quiet && edge > 0.05 && speedPct > 0.08;
-    this.buzzGain.gain.setTargetAtTime(onStrip ? 0.07 * Math.min(1, edge * 1.5) * Math.min(1, speedPct * 3) : 0, t, 0.025);
+    this.buzzGain.gain.setTargetAtTime(onStrip ? 0.1 * Math.min(1, edge * 1.5) * Math.min(1, speedPct * 3) : 0, t, 0.025);
     this.buzzOsc.frequency.setTargetAtTime(34 + speedPct * 70, t, 0.04);
     this.windGain.gain.setTargetAtTime(quiet ? 0 : speedPct * speedPct * 0.05, t, 0.2);
     this.windFilter.frequency.setTargetAtTime(500 + speedPct * 900, t, 0.2);
@@ -364,12 +364,19 @@ export class GameAudio {
     if (hard) { this.burst(0.4, "bandpass", 1400, 600, 0.2, 3, 0.25); this.tone(60, 0.4, "sine", 0.4, 0.3, 30); }
   }
   bump(): void { this.tone(110, 0.18, "sine", 0.45, 0, 50); this.burst(0.18, "lowpass", 1800, 200, 0.35); }
-  /** The car leaves the tarmac fast: tyres squeal for a moment, then bite into the sand. */
+  /** A short rhythmic tyre strike on the painted kerb, distinct from loose sand. */
+  stripKick(speedPct: number): void {
+    const k = Math.max(.2, Math.min(1, speedPct));
+    for (let i = 0; i < 4; i++) {
+      this.tone(95 + speedPct * 85, .035, 'square', .065 * k, i * .038, 65);
+      this.burst(.03, 'lowpass', 900, 220, .07 * k, .7, i * .038);
+    }
+  }
+  /** Loose sand: a coarse low thud followed by a falling grainy scrape. */
   dirtKick(speedPct: number): void {
     const k = Math.max(0.3, Math.min(1, speedPct));
-    this.tone(2100, 0.15, "sawtooth", 0.035 * k, 0, 1250);
-    this.tone(1650, 0.12, "square", 0.02 * k, 0.04, 980);
-    this.burst(0.25, "bandpass", 2800, 900, 0.12 * k, 1.2);
+    this.burst(.3, 'lowpass', 1100, 220, .2 * k, .8);
+    this.burst(.4, 'bandpass', 2600, 700, .18 * k, .8, .025);
   }
   scrape(): void { this.burst(0.09, "bandpass", 3200 + Math.random() * 1500, 2600, 0.12, 4); }
   whoosh(): void { this.burst(0.45, "bandpass", 500, 2200, 0.16, 1.4); }

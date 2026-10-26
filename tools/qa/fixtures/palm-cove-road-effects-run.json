@@ -1,0 +1,23 @@
+{
+  "reason": "2026-10-26 approved intentional NPC lane changes wait 0.18 seconds with an indicator. Road/scenery/collision data and clocks still use palm-cove-pre-plus.json.",
+  "run": {
+    "state": "goal",
+    "stage": 4,
+    "stageTimes": [
+      77.64999999999688,
+      82.13333333332996,
+      89.16666666666289,
+      96.14999999999583,
+      94.34999999999593
+    ],
+    "runTime": 439.449999999929,
+    "score": 1300852.1333331547,
+    "path": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ]
+  }
+}

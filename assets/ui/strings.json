@@ -1027,7 +1027,15 @@
   },
   {
    "id": "credits.made",
-   "text": "Programming, Asset & Music"
+   "text": "Programming"
+  },
+  {
+   "id": "credits.programming_name",
+   "text": "OpenAI ChatGPT"
+  },
+  {
+   "id": "credits.prototype",
+   "text": "Game Prototype"
   },
   {
    "id": "credits.back",

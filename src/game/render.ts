@@ -79,9 +79,9 @@ export class Renderer {
   private race: Race | null = null;
   private rainAmt = 0;
   private drops: Streak[] = [];
-  private dust: Streak[] = [];
   private flakes: { x: number; y: number; v: number; ph: number; big: boolean }[] = [];
   private lastT = 0;
+  private boatZ = -1;
   private row: Uint32Array;
   private tc: TowerCols = { body: 0, far: 0, litA: 0, litB: 0, shop: 0, dark: 0, trim: 0, litP: 0.4 };
   private headSources:{z:number;x:number;slope:number;br:number;from:number;to:number;gain:number}[]=[];
@@ -185,7 +185,7 @@ export class Renderer {
   }
 
   // ------------------------------------------------------------- sea ground
-  private seaTrap(yT: number, lT: number, yB: number, lB: number, c: Col, glA: Col, glB: Col, sunX: number, glow: number, fogT: number): void {
+  private seaTrap(yT: number, lT: number, yB: number, lB: number, c: Col, glA: Col, glB: Col, sunX: number, glow: number, fogT: number, lake = false): void {
     if (yB <= yT) return;
     const fb = this.fb, d = fb.data;
     let r0 = Math.ceil(yT - 0.5), r1 = Math.ceil(yB - 0.5);
@@ -201,10 +201,23 @@ export class Renderer {
       if (x0 >= this.fb.w) continue;
       const o = r * this.fb.w;
       d.fill(c, o + x0, o + this.fb.w);
+      // Sparse broken crests, independent of sunlight, clipped to this water row.
+      const depth = (r - this.horizon) / this.scale;
+      const row = Math.floor(depth / (lake ? 8 : 5));
+      const phase = depth + Math.sin(this.time * (lake ? .5 : 1.3) + row * .7) * (lake ? .6 : 1.8);
+      if (Math.floor(phase) % (lake ? 8 : 5) === 0) {
+        const spacing = Math.round((lake ? 31 : 22) * this.scale);
+        const drift = Math.floor(this.time * (lake ? 1 : 4) * this.scale + row * 13 * this.scale);
+        const crest = mix(c, glA, (lake ? .10 : .24) * (1 - fogT * .75));
+        const width = Math.max(this.scale, Math.round((2 + Math.max(0, depth) * .05) * this.scale));
+        for (let xx = -spacing + drift % spacing; xx < this.fb.w; xx += spacing) {
+          const a = Math.max(x0, xx), b = Math.min(this.fb.w, xx + width);
+          if (b > a) d.fill(crest, o + a, o + b);
+        }
+      }
       if (gl <= 0) continue;
-      const depth = r - this.horizon;
-      const half = 8 + depth * 2.1;
-      this.glints(fb, r, sunX, half, gl, glA, glB, tt, depth, x0);
+      const half = (8 + depth * 2.1) * this.scale;
+      this.glints(fb, r, sunX, half, gl, glA, glB, tt, depth * this.scale, x0);
     }
   }
 
@@ -414,9 +427,9 @@ export class Renderer {
         this.fb.blitAdd(l.glow, x, by, scale, 0.95 * (1 - fogT * 0.5));
       }
     }
-    // A requested, safe lane change has a rear indicator even in daylight.
-    const turn=(c.yieldLane ?? c.targetX)-c.x;
-    if(c.yieldUntil && Math.abs(turn)>.05 && sw>4 && Math.floor(this.time*3)%2===0) {
+    // Every intentional lane change signals; drifting across the lane does not.
+    const turn = c.turnDir ?? 0;
+    if(turn && sw>4 && Math.floor((c.turnTime ?? 0)*3)%2===0) {
       const bw=Math.max(1,4*nativeScale),bh=Math.max(1,2*nativeScale);
       const bx=x+Math.sign(turn)*sw*.39-bw*.5,by=y-spr.h*scale*.22;
       this.fb.rectA(bx-bw,by-bh,bw*3,bh*3,rgb(0xffac28),.32*(1-fogT*.5));
@@ -436,6 +449,18 @@ export class Renderer {
     const track = race.track;
     const segs = track.segs;
     const camZ = race.position;
+    this.boatZ = -1;
+    // World anchors are 900 segments apart: at most one can enter a 270-segment view.
+    for (const stage of track.stages) {
+      const theme = THEMES[stage.node];
+      if (!theme || theme.side === 'land' || theme.id === 'crystal-lake') continue;
+      const first = stage.startSeg + 450;
+      const travel = Math.sin(this.time * .12) * 18;
+      const anchor = first + Math.ceil((camZ / SEG_LEN + 55 - first - travel) / 900) * 900;
+      const z = (anchor + travel) * SEG_LEN;
+      if (anchor < first || anchor >= stage.endSeg - 80 || z < camZ + 55 * SEG_LEN || z > camZ + (DRAW_DIST-15) * SEG_LEN) continue;
+      if (this.boatZ < 0 || z < this.boatZ) this.boatZ = z;
+    }
     const camX = race.camWorldX;
     this.camX = camX;
     const rain = race.weatherAmt("rain"), fogW = race.weatherAmt("fog"), sandW = race.weatherAmt("sand"), snowW = race.weatherAmt("snow");
@@ -542,8 +567,7 @@ export class Renderer {
     const rain = race.weatherAmt("rain") * dry, fog = race.weatherAmt("fog") * dry, sand = race.weatherAmt("sand") * dry, heat = race.weatherAmt("heat") * dry;
     const sp = race.speed / MAX_SPEED;
     if (fog > 0.01) this.fogBanks(fog, haze);
-    if (sand > 0.01) this.sandstorm(sand, race, dt, sp, haze);
-    else this.dust.length = 0;
+    if (sand > 0.01) this.sandstorm(sand, haze);
     if (rain > 0.01) this.rain(rain, race, dt, sp);
     else this.drops.length = 0;
     const snow = race.weatherAmt("snow") * dry;
@@ -588,38 +612,9 @@ export class Renderer {
     }
   }
 
-  /** A dust storm: a brown haze and streaks of sand blowing across. */
-  private sandstorm(k: number, race: Race, dt: number, sp: number, haze: Col): void {
-    const fb = this.logical;
-    const side = race.gust / .46, forward = race.windForward;
-    const strength = Math.min(1, Math.hypot(side, forward));
-    fb.rectA(0, 0, W, H, mix(haze, rgb(0xc07840), 0.4), 0.1 * k + strength * .083);
-    const want = Math.round(72 * k * (1 + strength * .6));
-    const cols = [rgb(0xf0d8a8), rgb(0xe4bc80), rgb(0xd09a5c), rgb(0xfff0c8)];
-    while (this.dust.length < want) {
-      this.dust.push({ x: Math.random() * W, y: 18 + Math.random() * (H - 18), v: 220 + Math.random() * 260, len: 2 + Math.random() * 5, near: Math.random() < 0.22, col: cols[(Math.random() * 4) | 0] });
-    }
-    if (this.dust.length > want) this.dust.length = want;
-    for (const p of this.dust) {
-      const radial = -forward * p.v / 85;
-      const vx = side * p.v * 1.3 + (p.x - W / 2) * radial;
-      const vy = (p.y - (HORIZON - 10)) * radial + sp * (p.near ? 35 : 15);
-      p.x += vx * dt; p.y += vy * dt;
-      if (p.x < -12 || p.x > W + 12 || p.y < 18 || p.y >= H || forward > .1 && Math.hypot(p.x - W / 2, p.y - (HORIZON - 10)) < 5) {
-        if (forward < -.1) { p.x = W / 2 + (Math.random() - .5) * 80; p.y = HORIZON - 10 + (Math.random() - .5) * 20; }
-        else if (forward > .1) { p.x = Math.random() * W; p.y = H - 1; }
-        else { p.x = side > 0 ? -10 : W + 10; p.y = 18 + Math.random() * (H - 18); }
-      }
-      const len = Math.round(p.near ? p.len * 1.6 : p.len);
-      const speed = Math.hypot(vx, vy), dx = speed > .01 ? vx / speed : 0, dy = speed > .01 ? vy / speed : 0;
-      for (let q = 0; q < len; q++) {
-        const xx = (p.x - dx * q) | 0, row = (p.y - dy * q) | 0;
-        if (xx < 0 || xx >= W || row < 0 || row >= H) continue;
-        const o = row * W + xx;
-        this.mixLogicalPixel(xx,row,p.col,p.near ? 0.75 : 0.45);
-        if (p.near && row + 1 < H) this.mixLogicalPixel(xx,row+1,p.col,0.35);
-      }
-    }
+  /** Sand haze stays cheap; the HUD windsock carries direction and strength. */
+  private sandstorm(k: number, haze: Col): void {
+    this.logical.rectA(0, 0, W, H, mix(haze, rgb(0xc07840), .4), .1 * k);
   }
 
   /** Snowfall: big soft flakes close by, small ones far off, all swaying and drifting with the steering. */
@@ -778,7 +773,33 @@ export class Renderer {
     }
   }
 
+  /** A world-space boat is painted in the same depth pass as roadside scenery. */
+  private sailboat(s: Seg, camX: number, camY: number, camZ: number, fogT: number, haze: Col): void {
+    const th = THEMES[s.theme];
+    if (th.side === 'land' || th.id === 'crystal-lake') return;
+    const z = this.boatZ - camZ, S = this.focal / z;
+    const pct = (this.boatZ / SEG_LEN) - s.i;
+    const cx = s.cx1 + (s.cx2 - s.cx1) * pct, wy = s.y1 + (s.y2 - s.y1) * pct;
+    const off = this.race?.laneOff(this.boatZ / SEG_LEN, 1) ?? 0;
+    const lateral = (1.14 + s.beach + 4 + Math.sin(this.time * .18) * .7) * ROAD_W;
+    const x = this.fb.w/2 + (cx + off + lateral - camX) * S;
+    const u = 300 * S, y = this.horizon + (camY - wy) * S + Math.sin(this.time * 1.8) * u * .18;
+    const fade = Math.min(1, Math.max(0, (z/SEG_LEN-55)/25), Math.max(0, (DRAW_DIST-15-z/SEG_LEN)/25));
+    const fog = Math.max(fogT, 1-fade), col = (c:Col) => mix(c, haze, fog);
+    if (u < .3 || x < -12*u || x > this.fb.w+12*u || fade < .03) return;
+    const lean = Math.sin(this.time * 1.3) * .35;
+    const poly = (pts:number[], c:Col) => this.fb.poly(pts.map((v,i)=>i%2 ? y+v*u : x+(v+lean)*u),col(c));
+    // A broken wake behind the hull rather than a bright solid platform.
+    this.fb.rectA(x-9*u,y+.5*u,8*u,Math.max(1,this.scale),th.foam,.3*fade*(1-fogT));
+    this.fb.rectA(x-12*u,y+1.3*u,5*u,Math.max(1,this.scale),th.foam,.18*fade*(1-fogT));
+    poly([-4,0,4.5,0,3,1.2,-2.5,1.2],mix(rgb(0x98543a),th.seaN,.35));
+    this.fb.rect(x+lean*u,y-10*u,Math.max(1,.4*u),10*u,col(rgb(0x6a5044)));
+    poly([-.4,-9.7,-.4,-.7,-4,-.7],mix(rgb(0xfff4d0),th.haze,.2+(th.dark??0)*.5));
+    poly([.6,-8.7,.6,-.7,4.3,-.7],mix(rgb(0xf49759),th.haze,.22+(th.dark??0)*.5));
+  }
+
   private segSprites(s: Seg, cars: Car[] | undefined, camX: number, camY: number, camZ: number, tint: number[], fogT: number, haze: Col, props = true): void {
+    if (this.boatZ >= s.i * SEG_LEN && this.boatZ < (s.i + 1) * SEG_LEN && !s.tunnel) this.sailboat(s, camX, camY, camZ, fogT, haze);
     const sp = s.sprites;
     let over = false;
     for (let i = 0; i < (props ? sp.length : 0); i++) {
@@ -821,12 +842,17 @@ export class Renderer {
         fb.trap(Y2, 0, xR2, Y1, 0, xR1, ground);
         const sea = mix(((s.i / 5) | 0) & 1 ? th.seaA : th.seaB, th.seaH, Math.min(1, fogT * 1.2 + 0.08 * fogT));
         const beachOut = 1.12 + 0.02 + s.beach;
-        this.seaTrap(Y2, xR2 + W2 * beachOut, Y1, xR1 + W1 * beachOut, sea, cur.glitter, cur.glitter2, sunX, cur.sunGlow*(cur.id==='crystal-lake'?.48:1), fogT);
+        this.seaTrap(Y2, xR2 + W2 * beachOut, Y1, xR1 + W1 * beachOut, sea, cur.glitter, cur.glitter2, sunX, cur.sunGlow*(cur.id==='crystal-lake'?.48:1), fogT, th.id==='crystal-lake');
         // beach / shoulder on the sea side, foam at the water's edge
         fb.trap(Y2, xR2, xR2 + W2 * beachOut, Y1, xR1, xR1 + W1 * beachOut, shoulder);
         const lake=th.id==='crystal-lake';
         const foamW = lake ? .008+.004*Math.sin(s.i*.07+this.time*.7) : 0.05 + 0.03 * Math.sin(s.i * 0.15 + this.time * 2.2);
         fb.trap(Y2, xR2 + W2 * beachOut, xR2 + W2 * (beachOut + foamW), Y1, xR1 + W1 * beachOut, xR1 + W1 * (beachOut + foamW), f(th.foam));
+        if (!lake) {
+          const wash = .5 + .5 * Math.sin(s.i * .055 - this.time * 1.7);
+          const crest = beachOut + .06 + wash * .13;
+          if (((s.i / 9) | 0) % 4 !== 0) fb.trap(Y2, xR2 + W2 * crest, xR2 + W2 * (crest + .012 + wash * .018), Y1, xR1 + W1 * crest, xR1 + W1 * (crest + .012 + wash * .018), f(mix(th.seaA, th.foam, .35 + wash * .35)));
+        }
       }
       const roads: [number, number][] = two ? [[xL1, xL2], [xR1, xR2]] : [[xC1, xC2]];
       // shoulders: the land side of every road, both sides inland and along the median
