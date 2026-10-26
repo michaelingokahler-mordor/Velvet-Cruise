@@ -1,17 +1,17 @@
 {
-  "reason": "2026-10-26 approved intentional NPC lane changes wait 0.18 seconds with an indicator. Road/scenery/collision data and clocks still use palm-cove-pre-plus.json.",
+  "reason": "2026-10-26 removal of horn/flash requests; corrected following/contact separation and earlier unassisted test-driver overtaking. Track/scenery/collision geometry and clocks still use palm-cove-pre-plus.json.",
   "run": {
     "state": "goal",
     "stage": 4,
     "stageTimes": [
-      77.64999999999688,
-      82.13333333332996,
-      89.16666666666289,
-      96.14999999999583,
-      94.34999999999593
+      79.83333333333009,
+      82.93333333332991,
+      88.44999999999627,
+      91.54999999999609,
+      94.04999999999595
     ],
-    "runTime": 439.449999999929,
-    "score": 1300852.1333331547,
+    "runTime": 436.81666666659805,
+    "score": 1300836.3666664788,
     "path": [
       0,
       1,

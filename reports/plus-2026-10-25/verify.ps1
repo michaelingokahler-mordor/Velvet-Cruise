@@ -14,7 +14,7 @@ function Invoke-PlusCheck {
     & $Program @Arguments
     if ($LASTEXITCODE -ne 0) { throw "Verification failed: $Program $Arguments" }
 }
-foreach ($suite in @('check','qa:local-services','qa:balance','qa:course-map','qa:grade-horn','qa:demo')) {
+foreach ($suite in @('check','qa:local-services','qa:balance','qa:course-map','qa:grade','qa:demo')) {
     Invoke-PlusCheck -Program 'npm.cmd' -Arguments @('run',$suite)
 }
 foreach ($suite in @(

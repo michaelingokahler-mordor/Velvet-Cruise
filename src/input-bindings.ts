@@ -1,6 +1,6 @@
 import { SAVE_PREFIX } from './game/edition';
 
-export const DRIVE_ACTIONS = ['left', 'right', 'throttle', 'brake', 'pause', 'signal'] as const;
+export const DRIVE_ACTIONS = ['left', 'right', 'throttle', 'brake', 'pause'] as const;
 export type DriveAction = typeof DRIVE_ACTIONS[number];
 export type BindingDevice = 'keyboard' | 'gamepad';
 export type Binding = { kind: 'key'; code: string } | { kind: 'button'; index: number } |
@@ -14,8 +14,8 @@ const buttons = (...indices: number[]): Binding[] => indices.map(index => ({ kin
 const axis = (index: number, direction: -1 | 1): Binding => ({ kind: 'axis', index, direction, neutral: 0 });
 function defaults(): Config {
   return {
-    keyboard: { left: key('ArrowLeft', 'KeyA'), right: key('ArrowRight', 'KeyD'), throttle: key('ArrowUp', 'KeyW', 'Space', 'KeyX', 'ShiftLeft'), brake: key('ArrowDown', 'KeyS', 'KeyZ'), pause: key('KeyP'), signal: key('KeyH') },
-    gamepad: { left: [axis(0, -1), ...buttons(14)], right: [axis(0, 1), ...buttons(15)], throttle: buttons(0, 7), brake: buttons(1, 6), pause: buttons(9), signal: buttons(3, 10) },
+    keyboard: { left: key('ArrowLeft', 'KeyA'), right: key('ArrowRight', 'KeyD'), throttle: key('ArrowUp', 'KeyW', 'Space', 'KeyX', 'ShiftLeft'), brake: key('ArrowDown', 'KeyS', 'KeyZ'), pause: key('KeyP') },
+    gamepad: { left: [axis(0, -1), ...buttons(14)], right: [axis(0, 1), ...buttons(15)], throttle: buttons(0, 7), brake: buttons(1, 6), pause: buttons(9) },
   };
 }
 function valid(device: BindingDevice, binding: Binding): boolean {
@@ -52,7 +52,7 @@ export class InputBindings {
           if (!valid(device, b) || seen.has(identity(b))) return false;
           seen.add(identity(b)); return true;
         }))) continue;
-        this.config[device] = structuredClone(data[device]);
+        this.config[device] = Object.fromEntries(DRIVE_ACTIONS.map(action => [action, structuredClone(data[device][action])])) as Config[typeof device];
       }
     } catch { /* missing, blocked or malformed storage keeps the defaults */ }
   }

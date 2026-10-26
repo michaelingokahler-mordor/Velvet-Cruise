@@ -36,25 +36,6 @@ for(const path of runs){
 }
 
 const r=new Race(new Track());r.warp(0,500);r.state='race';r.speed=MAX_SPEED*.8;r.playerX=-.25;
-const sample={...r.cars[0],z:r.playerZ+8000,x:-.25,targetX:-.25,speed:MAX_SPEED*.45,base:MAX_SPEED*.45,br:undefined,yieldLane:undefined,yieldUntil:0};
-const reset=(cars=[{...sample}])=>{r.cars=cars;r.signalCooldown=0;r.signalT=0;r.stageBlend={from:0,to:0,t:1};r.state='race';return cars[0];};
-let car=reset();assert.equal(r.signal(),'horn');assert.equal(car.yieldLane,.25);assert.equal(r.signal(),undefined,'cooldown prevents repeat');
-const firstX=car.x;r.updateTraffic(.1);assert.equal(car.x,firstX,'driver reacts after a delay');
-for(let i=0;i<150;i++)r.updateTraffic(1/60);
-assert.ok(car.x>.22,'driver changes lane gradually');
-assert.ok(car.x<=.25,'driver stays on the road');
-car=reset([{...sample},{...sample,x:.25,targetX:.25,z:sample.z+500},{...sample,x:-.75,targetX:-.75,z:sample.z-300}]);
-r.signal();assert.equal(car.yieldLane,undefined,'occupied lanes prevent an unsafe request');
-car=reset([{...sample},{...sample,x:.25,targetX:.25,z:sample.z-9000,speed:MAX_SPEED}]);
-r.signal();assert.equal(car.yieldLane,-.75,'fast approaching traffic blocks the preferred lane');
-car=reset();r.signal();r.cars.push({...sample,x:.25,targetX:.25,z:sample.z+400,yieldUntil:10},{...sample,x:-.75,targetX:-.75,z:sample.z+400,yieldUntil:10});for(let i=0;i<105;i++)r.updateTraffic(1/60);
-assert.equal(car.targetX,-.25,'driver cancels when the requested lane becomes blocked');
-car=reset();r.stageBlend={from:4,to:4,t:1};assert.equal(r.signal(),'flash');assert.equal(r.signalFlash,true);
-r.signalT=.46;assert.equal(r.signalFlash,false);r.signalT=.34;assert.equal(r.signalFlash,true);r.signalT=0;assert.equal(r.signalFlash,false);
-reset();r.state='goal';assert.equal(r.signal(),undefined,'no signal after finish');
-reset();r.stageBlend={from:5,to:5,t:1};assert.equal(r.signal(),'horn','daylight storm keeps the horn');
-reset();r.crashT=1;assert.equal(r.signal(),undefined,'no signal during a crash');r.crashT=0;
-r.warp(0,r.track.forks[0].start-70);r.state='race';car=reset([{...sample,z:r.playerZ+8000}]);r.signal();assert.equal(car.yieldLane,undefined,'no lane changes across forks');
 
 for(const name of ['lamp_lit','hwy_lamp_lit','city_lamp_lit'])for(const x of [-1.6,1.6]){
  const p=lampPose(name,x);assert.ok(Math.sign(p.head*(p.flip?-1:1))===-Math.sign(x),'lamp head points over road: '+name);
@@ -69,6 +50,5 @@ const far=track.segs[i+44];const beamX=axis.x+axis.slope*(far.i*SEG_LEN-axis.z);
 assert.ok(Math.abs(beamX-(far.cx1+race.playerX*ROAD_W))>ROAD_W,'beam remains straight when road curves away');
 
 writeFileSync('output/stage-depth/after/depth-validation.json',JSON.stringify({status:'PASS',stages:evidence,
-  signals:'delay, cooldown, safe gaps including fast rear traffic, blocked-lane cancellation, fork/crash/goal guards, day/night double flash',
   lighting:'lamp arms point inward; headlight axis independent of future road curvature'},null,2));
-console.log(JSON.stringify({status:'PASS',stages:evidence.length,signals:'PASS',lighting:'PASS'}));
+console.log(JSON.stringify({status:'PASS',stages:evidence.length,lighting:'PASS'}));

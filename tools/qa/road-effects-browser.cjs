@@ -36,6 +36,16 @@ function wav(name,channels,rate){
    await page.evaluate(()=>{__review.paused=false;__review.race.crashT=10;__review.race.skid=1;__review.audio.engine(.8,1,.8,1,false);});
    await page.waitForTimeout(450);assert.ok(await page.evaluate(()=>__review.audio.skidGain.gain.value<.0001),'crash must silence the tyre channel');
    checks.push(mode+': actual game pause and crash silence active tyre squeal');
+   await page.evaluate(async()=>{
+    const {Race}=await import('/src/game/race.ts'),{Track}=await import('/src/game/track.ts');
+    const r=new Race(new Track([0,5,8,9,10]));r.warp(2,1200);r.state='race';r.gust=.46;r.windForward=0;r.cars=[];r.carsBySeg.clear();r.update=()=>{};
+    __review.race=r;__review.paused=false;__review.input2.setPref('touch');
+   });
+   await page.waitForTimeout(150);
+   assert.ok(await page.evaluate(()=>{const fb=__review.renderContext.fb,s=fb.w/320;let red=0;for(let y=71*s;y<109*s;y++)for(let x=279*s;x<315*s;x++)red+=Number(fb.data[y*fb.w+x]===0xff3c4bee);return red>10;}),'touch HUD must preserve the visible windsock');
+   await page.locator('#game canvas').screenshot({path:path.join(out,mode+'-touch-windsock.png')});
+   const actions=await page.evaluate(async()=>[...(await import('/src/input-bindings.ts')).DRIVE_ACTIONS]);assert.deepEqual(actions,['left','right','throttle','brake','pause']);
+   checks.push(mode+': touch windsock visible, only five remaining driving actions');
    if(mode==='classic'){
     for(const kind of ['strip','sand','driving']){
      const rendered=await page.evaluate(async kind=>{

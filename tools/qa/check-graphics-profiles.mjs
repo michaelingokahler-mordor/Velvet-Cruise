@@ -19,7 +19,7 @@ test('trafficGeometryDoesNotDependOnSourceDensity',()=>{
  const highBank={get:name=>carName(name)?highCar:undefined,has:carName};
  const ra=new Race(new Track()),rb=new Race(new Track());ra.warp(0,600);rb.warp(0,600);
  for(const r of [ra,rb]){r.cars.length=0;assert.equal(r.spawnAhead(2,.5),true);r.carsBySeg.clear();r.carsBySeg.set(Math.floor(r.cars[0].z/m.SEG_LEN),[r.cars[0]]);}
- for(const r of [ra,rb]){r.cars[0].yieldUntil=100;r.cars[0].targetX=r.cars[0].x+.5;}
+ for(const r of [ra,rb]){r.cars[0].turnDir=1;r.cars[0].turnTime=.1;r.cars[0].targetX=r.cars[0].x+.5;}
  assert.ok(bank.has(ra.cars[0].sprite),'Missing fixture for '+ra.cars[0].sprite);
  const pa=new Renderer(a,bank),pb=new Renderer(b,highBank);pa.render(ra);pb.render(rb);
  assert.equal(ra.cars[0].seen,1);assert.equal(rb.cars[0].seen,1);

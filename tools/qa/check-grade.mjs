@@ -4,7 +4,7 @@ import {createRequire} from 'node:module';
 import {mkdirSync,writeFileSync} from 'node:fs';
 import {resolve} from 'node:path';
 
-const out=resolve('output/grade-horn-2026-10-25');mkdirSync(out,{recursive:true});
+const out=resolve('output/grade-2026-10-26');mkdirSync(out,{recursive:true});
 await build({stdin:{contents:['game/race','game/track','game/config','game/difficulty','game/render','core/fb'].map(p=>`export * from './src/${p}';`).join('\n'),resolveDir:process.cwd(),loader:'ts'},bundle:true,platform:'node',format:'cjs',outfile:resolve(out,'current.cjs')});
 globalThis.ImageData=class{constructor(w,h){this.data=new Uint8ClampedArray(w*h*4);}};
 const {Race,Track,DIFFS,MAX_SPEED,SEG_LEN,Renderer,FB,rgb}=createRequire(import.meta.url)(resolve(out,'current.cjs'));
@@ -50,52 +50,6 @@ function npcRun(grade,diff=DIFFS[1],local=false){
 test('NPCs use the local slope on every difficulty',()=>{
  measurements.npc=DIFFS.map(d=>({difficulty:d.id,up:npcRun(.04,d,true),flat:npcRun(0,d),down:npcRun(-.04,d,true)}));
  for(const m of measurements.npc){near(m.up,.65*.9,'NPC uphill',.00002);near(m.down,.65*1.1,'NPC downhill',.00002);}
-});
-function hornRun({snow=false,blocked=false,release=Infinity,repeat=false,seconds=3}={}){
- const r=setup(0,DIFFS[1],snow),c=car(r),z=c.z;r.cars=[c];
- const blockers=blocked?[car(r,z,.25),car(r,z,-.75)]:[];r.cars.push(...blockers);
- const kind=r.signal(),accepted={until:c.yieldUntil,lane:c.yieldLane};let firstMove=null;const samples=[];
- for(let i=0;i<seconds*60;i++){
-  if(i/60>=release)r.cars=[c];
-  if(repeat&&i===48){r.signalCooldown=0;r.signal();}
-  for(const o of r.cars)o.z=z;
-  r.updateTraffic(1/60);if(firstMove===null&&Math.abs(c.x+.25)>.03)firstMove=(i+1)/60;
-  if(i%30===29)samples.push({t:(i+1)/60,x:c.x,target:c.targetX});
- }
- return{r,c,kind,accepted,firstMove,samples};
-}
-test('a signalled NPC visibly starts moving within 0.6 seconds and clears the lane promptly',()=>{
- const h=hornRun();assert.equal(h.kind,'horn');assert.ok(h.firstMove<=.6,'reaction starts within 0.6 s');assert.ok(h.samples[2].x>.17,'lane cleared within 1.5 s');measurements.hornDry=h.samples;
-});
-test('snow retains a slower but perceptible signalled lane change',()=>{
- const dry=hornRun(),snow=hornRun({snow:true});assert.ok(snow.samples[4].x>.17,'snow clears lane within 2.5 s');assert.ok(snow.samples[1].x<dry.samples[1].x);measurements.hornSnow=snow.samples;
-});
-test('a request waits for a safe gap that opens after the horn',()=>{
- const h=hornRun({blocked:true,release:.7,seconds:3});assert.ok(h.accepted.until>0,'blocked driver remembers request');assert.ok(h.c.x>.17,'takes the later gap');measurements.laterGap=h.samples;
-});
-test('a permanently blocked NPC stays in its lane and expires the request',()=>{
- const h=hornRun({blocked:true,seconds:7});near(h.c.x,-.25,'blocked car');assert.equal(h.c.yieldUntil,0);
-});
-test('a delayed request does not merge into a player who entered the target lane',()=>{
- for(const playerX of [.25,0,-.1]){
-  const r=setup(),c=car(r,r.playerZ+3500),right=car(r,c.z,.25),left=car(r,c.z,-.75);r.cars=[c,right,left];r.signal();
-  r.playerX=playerX;r.cars=[c,left];const z=c.z;
-  for(let i=0;i<60;i++){c.z=z;left.z=z;r.updateTraffic(1/60);}
-  near(c.targetX,-.25,`player occupies swept path at ${playerX}`);near(c.x,-.25,'no movement across player');
- }
-});
-test('repeated honking does not restart a lane change',()=>{
- const normal=hornRun(),repeat=hornRun({repeat:true});near(repeat.c.x,normal.c.x,'repeated signal movement');
-});
-test('fork approach keeps the signal lane-change exclusion',()=>{
- const r=setup(),f=r.fork;r.position=(f.start-50)*SEG_LEN-1522;const c=car(r);r.cars=[c];r.signal();assert.ok(!c.yieldUntil);
-});
-test('accepted NPC lane changes have a visible amber indicator',()=>{
- const r=setup(),c=car(r,r.playerZ+5000),fb=new FB(),sprite={w:72,h:36,data:new Uint32Array(72*36).fill(rgb(0x3050c0))};r.cars=[c];
- const renderer=new Renderer(fb,{get:()=>sprite,has:()=>true});renderer.race=r;renderer.time=.1;const s=r.track.seg(c.z);
- const draw=()=>{fb.clear(rgb(0));renderer.car(c,s,0,1000,r.position,[1,1,1],0,rgb(0));return Uint32Array.from(fb.data);};
- const before=draw();r.signal();const after=draw();let changed=0;for(let i=0;i<after.length;i++)if(before[i]!==after[i])changed++;
- assert.ok(changed>=2,'the real car renderer must show the signal');measurements.indicatorChangedPixels=changed;
 });
 const report={status:failures.length?'FAIL':'PASS',checks,failures,measurements};
 writeFileSync(resolve(out,process.argv.includes('--baseline')?'red-tests.json':'validation.json'),JSON.stringify(report,null,2));console.log(JSON.stringify(report,null,2));if(failures.length)process.exitCode=1;

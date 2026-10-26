@@ -49,14 +49,14 @@ const tests = [], errors = [], badResponses = [];
     }
     tests.push('all six settings children, including Graphics, return to their selected parent');
     await page.evaluate(() => { __menuQA.menuSel = 2; }); await press('Enter');
-    // Signal row, then replace; capture must not bind its activation key.
-    await page.evaluate(() => { __menuQA.bindingFocus = 6; }); await press('Enter');
+    // Pause row, then replace; capture must not bind its activation key.
+    await page.evaluate(() => { __menuQA.bindingFocus = 5; }); await press('Enter');
     assert.equal(await page.evaluate(() => __menuQA.input2.capture?.status), 'listening');
     await press('KeyW');
-    assert.equal(await page.evaluate(() => __menuQA.input2.bindings.get('keyboard','signal')[0].code), 'KeyH');
+    assert.equal(await page.evaluate(() => __menuQA.input2.bindings.get('keyboard','pause')[0].code), 'KeyP');
     await shot('binding-conflict');
     await press('KeyQ'); await page.waitForTimeout(700);
-    assert.equal(await page.evaluate(() => __menuQA.input2.bindings.get('keyboard','signal')[0].code), 'KeyQ');
+    assert.equal(await page.evaluate(() => __menuQA.input2.bindings.get('keyboard','pause')[0].code), 'KeyQ');
     await press('Escape'); await mode('settings', 2);
     tests.push('keyboard capture rejects conflict, retries, saves without navigation leakage');
     await page.evaluate(() => { __menuQA.menuSel = 3; }); await press('Enter'); await press('ArrowDown');
@@ -79,14 +79,14 @@ const tests = [], errors = [], badResponses = [];
     await press('Enter'); await press('Enter'); await mode('race');
     assert.equal(await page.evaluate(() => __menuQA.race !== window.__firstRace), true);
     tests.push('direct start remembers music; custom Enter pauses once; restart creates a fresh race');
-    await page.evaluate(() => { __menuQA.input2.bindings.set('gamepad','signal',0,{kind:'axis',index:2,direction:-1,neutral:0}); window.__pads=[{id:'QA pad',index:0,connected:true,mapping:'standard',axes:[0,0,0,0],buttons:Array.from({length:17},()=>({pressed:false,value:0}))}]; });
+    await page.evaluate(() => { __menuQA.input2.bindings.set('gamepad','pause',0,{kind:'axis',index:2,direction:-1,neutral:0}); window.__pads=[{id:'QA pad',index:0,connected:true,mapping:'standard',axes:[0,0,0,0],buttons:Array.from({length:17},()=>({pressed:false,value:0}))}]; });
     await page.waitForTimeout(100);
     await page.evaluate(() => { __pads[0].buttons[1] = { pressed: true, value: 1 }; }); await page.waitForTimeout(100);
     assert.equal(await page.evaluate(() => __menuQA.paused), false, 'Gamepad B brakes during the race');
     assert.equal(await page.evaluate(() => __menuQA.input2.brake), 1);
     await page.evaluate(() => { __pads[0].buttons[1] = { pressed: false, value: 0 }; });
     await page.evaluate(() => { __pads[0].axes[2] = -.7; }); await page.waitForTimeout(100);
-    assert.equal(await page.evaluate(() => __menuQA.input2.bindings.gamepad('signal',__pads[0])), .7);
+    assert.equal(await page.evaluate(() => __menuQA.input2.bindings.gamepad('pause',__pads[0])), .7);
     await page.evaluate(() => { __pads=[]; }); await page.waitForTimeout(100);
     assert.equal(await page.evaluate(() => __menuQA.input2.gamepadName), '');
     assert.equal(await page.evaluate(() => localStorage.getItem('menu-qa-unrelated')), 'unchanged');

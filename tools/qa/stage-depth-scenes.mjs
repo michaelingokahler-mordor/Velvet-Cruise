@@ -48,8 +48,8 @@ for(const spec of specs){
 }
 const rec=data.stages.find(s=>s.node===4),t=new current.Track(rec.path),r=new current.Race(t),fb=new current.FB(),ren=new current.Renderer(fb,banks.after);
 r.warp(4,rec.shots.find(p=>p.tag==='view-07').segment-rec.startSeg);r.state='race';r.stageBlend={from:4,to:4,t:1};r.cars=[];
-r.signal();for(const[label,time]of [['normal',0],['pulse-1',.65],['gap',.46],['pulse-2',.34]]){
- r.signalT=time;ren.time=30;ren.render(r);const p=new PNG({width:320,height:180});p.data=Buffer.from(fb.img.data);writeFileSync(resolve(root,'after/details',`headlights-${label}.png`),PNG.sync.write(p));
+for(const label of ['normal']){
+ ren.time=30;ren.render(r);const p=new PNG({width:320,height:180});p.data=Buffer.from(fb.img.data);writeFileSync(resolve(root,'after/details',`headlights-${label}.png`),PNG.sync.write(p));
 }
 writeFileSync(resolve(root,'details.json'),JSON.stringify(shots,null,2));
 console.log(JSON.stringify({pairedDetails:shots.length,headlightFrames:4}));

@@ -723,6 +723,7 @@ class MainScene extends Phaser.Scene {
     const prev = { x: 266, y: 46 + this.bindingAction * 13, w: 19, h: 12 };
     const next = { ...prev, x: 288 };
     const actions = ["bind.replace", "bind.add", "bind.remove", "bind.defaults", "rank.back"];
+    const firstButton = DRIVE_ACTIONS.length + 1, focusCount = firstButton + actions.length;
     const buttons = actions.map((_, i) => i < 3
       ? { x: 10 + i * 102, y: 127, w: 96, h: 14 }
       : { x: 10 + (i - 3) * 153, y: 144, w: 147, h: 14 });
@@ -732,9 +733,9 @@ class MainScene extends Phaser.Scene {
     };
     if (!capture) {
       if (inp.hit("back")) { this.audio.uiSelect(); this.openSettings(2); return; }
-      if (inp.hit("up")) { this.bindingFocus = (this.bindingFocus + 11) % 12; this.audio.uiMove(); }
-      if (inp.hit("down")) { this.bindingFocus = (this.bindingFocus + 1) % 12; this.audio.uiMove(); }
-      if (this.bindingFocus >= 1 && this.bindingFocus <= 6) this.bindingAction = this.bindingFocus - 1;
+      if (inp.hit("up")) { this.bindingFocus = (this.bindingFocus + focusCount - 1) % focusCount; this.audio.uiMove(); }
+      if (inp.hit("down")) { this.bindingFocus = (this.bindingFocus + 1) % focusCount; this.audio.uiMove(); }
+      if (this.bindingFocus >= 1 && this.bindingFocus < firstButton) this.bindingAction = this.bindingFocus - 1;
       let dir = inp.hit("left") ? -1 : inp.hit("right") ? 1 : 0;
       tabs.forEach((r, i) => { if (this.tapped(taps, r)) { changeDevice(devices[i]); this.bindingFocus = 0; } });
       if (this.bindingFocus === 0 && dir) changeDevice(this.bindingDevice === "keyboard" ? "gamepad" : "keyboard");
@@ -747,24 +748,24 @@ class MainScene extends Phaser.Scene {
       if (this.tapped(taps, prev)) dir = -1;
       if (this.tapped(taps, next)) dir = 1;
       const list = inp.bindings.get(this.bindingDevice, DRIVE_ACTIONS[this.bindingAction]);
-      if (dir && this.bindingFocus >= 1 && this.bindingFocus <= 6) this.bindingSlot = (this.bindingSlot + dir + list.length) % list.length;
+      if (dir && this.bindingFocus >= 1 && this.bindingFocus < firstButton) this.bindingSlot = (this.bindingSlot + dir + list.length) % list.length;
       this.bindingSlot = Math.min(this.bindingSlot, list.length - 1);
       let go = inp.hit("confirm") ? this.bindingFocus : -1;
-      buttons.forEach((r, i) => { if (this.tapped(taps, r)) { this.bindingFocus = i + 7; go = i + 7; } });
+      buttons.forEach((r, i) => { if (this.tapped(taps, r)) { this.bindingFocus = i + firstButton; go = i + firstButton; } });
       if (go === 0) changeDevice(this.bindingDevice === "keyboard" ? "gamepad" : "keyboard");
-      else if (go >= 1 && go <= 8) {
+      else if (go >= 1 && go <= firstButton + 1) {
         this.bindingNotice = ""; this.captureSavedAt = -1;
-        inp.startCapture(this.bindingDevice, DRIVE_ACTIONS[this.bindingAction], go === 8 ? null : this.bindingSlot);
-      } else if (go === 9) {
+        inp.startCapture(this.bindingDevice, DRIVE_ACTIONS[this.bindingAction], go === firstButton + 1 ? null : this.bindingSlot);
+      } else if (go === firstButton + 2) {
         const result = inp.bindings.remove(this.bindingDevice, DRIVE_ACTIONS[this.bindingAction], this.bindingSlot);
         this.bindingNotice = t(result.ok ? "bind.removed" : "bind.last");
         this.bindingSlot = Math.max(0, this.bindingSlot - 1);
-      } else if (go === 10) {
+      } else if (go === firstButton + 3) {
         inp.bindings.reset(this.bindingDevice); this.bindingSlot = 0; this.bindingNotice = t("bind.reset");
-      } else if (go === 11) { this.audio.uiSelect(); this.openSettings(2); return; }
+      } else if (go === firstButton + 4) { this.audio.uiSelect(); this.openSettings(2); return; }
     }
     tabs.forEach((r, i) => button(fb, r, t(`bind.${devices[i]}`), this.bindingDevice === devices[i]));
-    const labelIds = ["bind.left", "bind.right", "ctl.gas", "ctl.brake", "ctl.pause", "bind.signal"];
+    const labelIds = ["bind.left", "bind.right", "ctl.gas", "ctl.brake", "ctl.pause"];
     rows.forEach((r, i) => {
       const list = inp.bindings.get(this.bindingDevice, DRIVE_ACTIONS[i]);
       const selected = i === this.bindingAction;
@@ -774,7 +775,7 @@ class MainScene extends Phaser.Scene {
       drawText(fb, fit(`${bindingLabel(list[slot])} ${slot + 1}/${list.length}`, 141), 121, r.y + 3, C.cyan, { outline: C.ink });
     });
     button(fb, prev, "<", false); button(fb, next, ">", false);
-    buttons.forEach((r, i) => button(fb, r, t(actions[i]), this.bindingFocus === i + 7));
+    buttons.forEach((r, i) => button(fb, r, t(actions[i]), this.bindingFocus === i + firstButton));
     const note = this.bindingNotice || (this.bindingDevice === "gamepad" && !inp.gamepadName ? t("bind.connect") : t("bind.hint"));
     drawText(fb, fit(note, W - 20), W / 2, 163, C.grey, { align: "center", outline: C.ink });
     if (inp.capture) {
@@ -1115,12 +1116,10 @@ class MainScene extends Phaser.Scene {
     else this.audio.stopSong(0.15); // the radio screen fetches it once the dial rests
   }
 
-  /** A rival driver shouts at you (with an angry honk from his side of the road). */
+  /** A rival driver shouts at you. */
   private rivalYell(car: Car, kind: "hit" | "pass", force: boolean): boolean {
     const r = this.race;
     if (!r || !this.shouts.say(car, kind, r.playerX, force)) return false;
-    const horn = car.sprite.startsWith("truck") ? "truck" : car.sprite.startsWith("beetle") ? "small" : "car";
-    this.audio.honk(horn, (car.x - r.playerX) * 1.5, true);
     return true;
   }
 
@@ -1331,9 +1330,6 @@ class MainScene extends Phaser.Scene {
       taps = [];
     }
     if (!this.paused) {
-      if(inp.hit('signal')||(inp.touchMode&&this.tapped(taps,TOUCH.signal))) {
-        if(race.signal()==='horn')this.audio.horn();
-      }
       for (let k = 0; k < SIM; k++) {
         const ctl = AUTOPILOT && race.state === "race" ? race.autopilot(dt, 0.997) : { steer: inp.steer, throttle: inp.throttle, brake: inp.brake };
         race.update(dt, ctl);
@@ -1431,7 +1427,6 @@ class MainScene extends Phaser.Scene {
     if (inp.hit("up") || inp.hit("down")) { this.pauseSel ^= 1; this.audio.uiMove(); }
     button(fb, b1, t("pause.resume"), this.pauseSel === 0);
     button(fb, b2, t("pause.quit"), this.pauseSel === 1);
-    para(fb,t('ctl.signal_hint'),W/2,hasTilt?153:136,C.white,230);
     let act = -1;
     if (inp.hit("confirm")) act = this.pauseSel;
     const resume = inp.hit("pause") || inp.hit("back");

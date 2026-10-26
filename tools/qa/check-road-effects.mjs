@@ -44,10 +44,6 @@ test('indicator stays on until the actual car settles, but not indefinitely in c
   assert.ok(finished,'weather drift must not hold an indicator indefinitely');
  }
 });
-test('blocked horn requests do not signal a nonexistent manoeuvre',()=>{
- const {r,c}=setup();r.playerX=c.x;r.cars.push({...c,x:.25,targetX:.25},{...c,x:-.75,targetX:-.75});r.signal();r.updateTraffic(1/60);
- assert.equal(c.turnDir??0,0);assert.equal(c.x,-.25);
-});
 for(const mode of ['classic','plus'])test(`${mode}: all 13 NPC models signal both sides in daylight and at night`,()=>{
  const context=m.createRenderContext(mode),renderer=new m.Renderer(context,banks[mode]);
  const names=banks[mode].names().filter(n=>/^(coupe_|sports_|beetle_|pickup_|van_|truck_)/.test(n));assert.equal(names.length,13);

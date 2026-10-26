@@ -37,7 +37,6 @@
   {"id": "bind.gamepad", "text": "Gamepad"},
   {"id": "bind.left", "text": "Steer Left"},
   {"id": "bind.right", "text": "Steer Right"},
-  {"id": "bind.signal", "text": "Horn / Lights"},
   {"id": "bind.replace", "text": "Replace"},
   {"id": "bind.add", "text": "Add"},
   {"id": "bind.remove", "text": "Remove"},
@@ -102,10 +101,6 @@
    "text": "Pause"
   },
   {
-   "id": "ctl.signal_hint",
-   "text": "H / Pad Y or L3: horn by day, flash at night. Drivers move aside when a lane is clear."
-  },
-  {
    "id": "ctl.space",
    "text": "Space"
   },
@@ -131,11 +126,11 @@
   },
   {
    "id": "ctl.keyboard_desc",
-   "text": "Arrows or WASD to steer. Up or Space for gas, Down to brake, P to pause. H: horn by day, flash headlights at night. Gamepad: Y."
+   "text": "Arrows or WASD to steer. Up or Space for gas, Down to brake, P to pause. Keyboard and gamepad controls can be reassigned in Settings."
   },
   {
    "id": "ctl.touch_desc",
-   "text": "Big on-screen pads to steer, brake and hit the gas. H: horn by day, L: flash at night. Tilt steering can be switched on before you drive."
+   "text": "Big on-screen pads to steer, brake and hit the gas. Tilt steering can be switched on before you drive."
   },
   {
    "id": "ctl.detected",

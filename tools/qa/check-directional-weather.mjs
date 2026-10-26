@@ -70,7 +70,7 @@ test('wind expires to zero and does not act on a tunnel road', () => {
  });
 function npcTrial(kind, diff = DIFFS[1], { ice = false, wind = false, curve = 0, ticks = 120, startX = .25 } = {}) {
   const r = setup(kind, diff), z = r.playerZ + 20 * SEG_LEN;
-  const c = { ...r.makeCar(z), z, x: startX, targetX: startX, base: MAX_SPEED * .65, speed: MAX_SPEED * .65, yieldUntil: 100 };
+  const c = { ...r.makeCar(z), z, x: startX, targetX: startX, base: MAX_SPEED * .65, speed: MAX_SPEED * .65 };
   r.cars = [c]; r.rand = () => .999;
   const nearby = Array.from({ length: 50 }, (_, i) => r.track.seg(z + i * SEG_LEN));
   const saved = nearby.map(s => ({ curve: s.curve, ice: s.ice, iceL: s.iceL, iceR: s.iceR }));
@@ -135,7 +135,7 @@ test('NPC weather comes from its own position beyond a stage transition', () => 
   const r = setup('rain'), boundary = r.track.themeStart(2);
   r.position = (boundary - 20) * SEG_LEN - PLAYER_Z;
   r.stageBlend = { from: 5, to: 5, t: 1 }; r.rand = () => .999;
-  const make = z => ({ ...r.makeCar(z), z, x: .25, targetX: .25, base: MAX_SPEED * .6, speed: MAX_SPEED * .6, yieldUntil: 100 });
+  const make = z => ({ ...r.makeCar(z), z, x: .25, targetX: .25, base: MAX_SPEED * .6, speed: MAX_SPEED * .6 });
   const wet = make((boundary - 10) * SEG_LEN), dry = make((boundary + 250) * SEG_LEN);
   const start = [wet.z, dry.z]; r.cars = [wet, dry];
   for (let i = 0; i < 180; i++) { wet.z = start[0]; dry.z = start[1]; r.updateTraffic(1 / 60); }
@@ -148,7 +148,7 @@ test('slower traffic is followed without NPC overlap in ice and fog', () => {
   for (const kind of ['snow', 'fog']) {
     const r = setup(kind); r.rand = () => .999;
     const z = r.playerZ + 6000;
-    const rear = { ...r.makeCar(z), z, x: .25, targetX: .25, base: MAX_SPEED * .75, speed: MAX_SPEED * .75, yieldUntil: 100 };
+    const rear = { ...r.makeCar(z), z, x: .25, targetX: .25, base: MAX_SPEED * .75, speed: MAX_SPEED * .75 };
     const front = { ...rear, z: z + 14000, base: MAX_SPEED * .25, speed: MAX_SPEED * .25 };
     r.cars = [rear, front];
     let minGap = Infinity;

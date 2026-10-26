@@ -25,8 +25,6 @@ export interface Car {
   lightAt: number;
   /** Inside a fork: which of the two roads the car drives on (-1 left, 1 right). */
   br?: number;
-  /** A signalled driver waits for a safe adjacent lane, then holds it briefly. */
-  yieldLane?: number; yieldWait?: number; yieldUntil?: number; yieldFromX?: number;
   /** Smoothed lane intent and lateral ice momentum; all NPC weather uses Easy. */
   laneX?: number; lateralV?: number; iceAmt?: number;
   /** Intentional lane changes only; weather drift never changes the signal side. */
@@ -142,7 +140,7 @@ export class Race {
   private seed = 12345;
   private aiLane = 1;
   private aiThink = 0;
-  private aiYieldCruise = Infinity;
+  private aiTrafficCruise = Infinity;
   /** The fork ahead / being driven through (index into track.forks, -1 = none left). */
   forkI = -1;
   /** The road picked at that fork's nose: -1 left, 1 right, 0 = not picked yet. */
@@ -177,42 +175,8 @@ export class Race {
   /** How far the camera is inside a tunnel (0..1, eases in and out): lamps, echo, no weather. */
   tunnelAmt = 0;
   private inTunnel = false;
-  signalT = 0;
-  signalKind: 'horn'|'flash' = 'horn';
-  private signalCooldown = 0;
-
-  /** H / pad Y or L3: one polite request to the nearest driver ahead. */
-  signal(): 'horn'|'flash'|undefined {
-    if(this.state!=='race'||this.crashT>0||this.signalCooldown>0)return;
-    this.signalCooldown=1.2;this.signalT=.7;
-    this.signalKind=this.nightSignal?'flash':'horn';
-    const f=this.fork,pz=this.playerZ;
-    const nearFork=(z:number)=>!!f&&z>(f.start-120)*SEG_LEN&&z<(f.end+25)*SEG_LEN;
-    if(!nearFork(pz)) {
-      const car=this.cars.filter(c=>c.z>pz+CAR_LEN&&c.z<pz+95*SEG_LEN&&Math.abs(c.x-this.playerX)<.36&&!nearFork(c.z)&&
-        (c.br===undefined||c.br===(this.forkSide||this.viewSide))).sort((a,b)=>a.z-b.z)[0];
-      if(car && !car.yieldUntil) {
-        car.yieldFromX=this.playerX;car.yieldWait=.18;car.yieldUntil=6;
-        car.yieldLane=this.yieldTarget(car, this.playerX);
-        if (car.yieldLane !== undefined) {
-          car.turnDir = Math.sign(car.yieldLane - (car.laneX ?? car.x));
-          car.turnTarget = car.yieldLane; car.turnTime = 0; car.turnSettle = 0;
-        }
-      }
-    }
-    return this.signalKind;
-  }
-
-  private yieldTarget(car: Car, fromX: number): number | undefined {
-    const lane=LANE_X.reduce((a,x,k)=>Math.abs(x-car.x)<Math.abs(LANE_X[a]-car.x)?k:a,0);
-    const choices=[lane+1,lane-1].filter(k=>k>=0&&k<4&&Math.abs(LANE_X[k]-fromX)>.4);
-    const target=choices.find(k=>this.yieldSafe(car,LANE_X[k]));
-    return target===undefined ? undefined : LANE_X[target];
-  }
-
-  private yieldSafe(car:Car,target:number):boolean {
-    // A deferred request may find the player in its former gap. Moving out of
-    // the player's lane is allowed; merging toward an occupied lane must wait.
+  private laneChangeSafe(car:Car,target:number):boolean {
+    // Moving out of the player's lane is allowed; merging across the player must wait.
     const sameRoad=car.br===undefined || car.br===(this.forkSide||this.viewSide);
     const fromPlayer=car.x-this.playerX,toPlayer=target-this.playerX;
     // Near-aligned cars can leave the current lane despite normal spawn jitter.
@@ -225,22 +189,15 @@ export class Race {
     }
     return this.cars.every(o=>{
       if(o===car||(o.br!==undefined&&car.br!==undefined&&o.br!==car.br))return true;
-      // Reserve the whole swept path, including an already accepted signal request.
+      // Reserve the whole swept path of an intentional lane change.
       const lo = Math.min(car.x, target) - car.hw - .06, hi = Math.max(car.x, target) + car.hw + .06;
-      const otherLo = Math.min(o.x, o.targetX, o.yieldLane ?? o.targetX) - o.hw - .06;
-      const otherHi = Math.max(o.x, o.targetX, o.yieldLane ?? o.targetX) + o.hw + .06;
+      const otherLo = Math.min(o.x, o.targetX) - o.hw - .06;
+      const otherHi = Math.max(o.x, o.targetX) + o.hw + .06;
       if(hi < otherLo || lo > otherHi)return true;
       const dz=o.z-car.z,predicted=dz+(o.speed-car.speed)*1.8;
       return Math.min(dz,predicted)>CAR_LEN*4||Math.max(dz,predicted)<-CAR_LEN*3;
     });
   }
-
-  get signalFlash():boolean {
-    const t=.7-this.signalT;
-    return this.signalKind==='flash'&&this.signalT>0&&(t<.20||t>.34&&t<.60);
-  }
-  /** Rain and fog can turn driving lights on during the day; they keep the horn. */
-  get nightSignal():boolean {return this.night>=.65;}
 
   readonly diff: Difficulty;
   /** Which car the player drives: the sprite name prefix ("player", "player_yellow", ...). */
@@ -553,16 +510,6 @@ export class Race {
       // cars driving into a split keep to the road on their side
       if (f && c.br === undefined && c.z >= f.start * SEG_LEN && c.z < f.end * SEG_LEN) c.br = this.forkSide || (c.x < 0 ? -1 : 1);
       const nearFork = !!f && c.z > (f.start - 80) * SEG_LEN && c.z < f.end * SEG_LEN;
-      if(c.yieldUntil) {
-        c.yieldUntil=Math.max(0,c.yieldUntil-dt);
-        c.yieldWait=Math.max(0,(c.yieldWait??0)-dt);
-        if(nearFork||!c.yieldUntil){c.yieldLane=undefined;c.yieldFromX=undefined;c.yieldUntil=0;}
-        else if(c.yieldFromX!==undefined&&!c.yieldWait) {
-          const target=c.yieldLane!==undefined&&this.yieldSafe(c,c.yieldLane) ? c.yieldLane : this.yieldTarget(c,c.yieldFromX);
-          c.yieldLane=target;
-          if(target!==undefined){c.targetX=target;c.yieldLane=undefined;c.yieldFromX=undefined;}
-        }
-      }
       // follow the car ahead in the same lane
       let speed = c.base * npcSpeedFactor(w, ice) * windSpeedFactor(wind.forward) * grade.speedFactor;
       // Brake before a wet/icy bend; NPCs keep their own Easy force level on every difficulty.
@@ -584,27 +531,26 @@ export class Race {
         }
       }
       // occasional lane changes (never across the middle while the road splits)
-      if (!nearFork && !c.yieldUntil && this.rand() < th.lanesChange * this.diff.lanes * (1 - .8 * hazard) * dt) {
+      if (!nearFork && this.rand() < th.lanesChange * this.diff.lanes * (1 - .8 * hazard) * dt) {
         const lane = LANE_X.reduce((best, lx, i) => (Math.abs(lx - c.targetX) < Math.abs(LANE_X[best] - c.targetX) ? i : best), 0);
         const nl = Math.max(keepRight ? 1 : 0, Math.min(3, lane + (this.rand() < 0.5 ? -1 : 1)));
-        if (this.yieldSafe(c, LANE_X[nl])) c.targetX = LANE_X[nl];
+        if (this.laneChangeSafe(c, LANE_X[nl])) c.targetX = LANE_X[nl];
       }
-      if (keepRight && !nearFork && !c.yieldUntil && c.targetX < -.5 && this.yieldSafe(c, LANE_X[1])) c.targetX = LANE_X[1];
-      if (Math.abs(c.targetX - (c.laneX ?? c.x)) > .02 && !this.yieldSafe(c, c.targetX)) {
+      if (keepRight && !nearFork && c.targetX < -.5 && this.laneChangeSafe(c, LANE_X[1])) c.targetX = LANE_X[1];
+      if (Math.abs(c.targetX - (c.laneX ?? c.x)) > .02 && !this.laneChangeSafe(c, c.targetX)) {
         c.targetX = LANE_X.reduce((best, lane) => Math.abs(lane - c.x) < Math.abs(best - c.x) ? lane : best);
       }
       // Move the intended lane slowly; a separate bounded driver corrects weather drift.
       c.laneX ??= c.x;
       const laneDelta = c.targetX - c.laneX;
-      const pending = c.yieldFromX !== undefined && c.yieldLane !== undefined && this.yieldSafe(c, c.yieldLane);
-      const turnTarget = pending ? c.yieldLane! : c.targetX;
+      const turnTarget = c.targetX;
       const turnDelta = turnTarget - c.laneX;
-      const laneRate = c.yieldUntil && c.yieldFromX===undefined ? .52 * (1 - .4 * hazard) : .28 * (1 - .5 * hazard);
+      const laneRate = .28 * (1 - .5 * hazard);
       if (Math.abs(turnDelta) > 1e-6) {
         const dir = Math.sign(turnDelta);
         if (c.turnTarget !== turnTarget || c.turnDir !== dir) { c.turnDir = dir; c.turnTime = 0; c.turnTarget = turnTarget; c.turnSettle = 0; }
         c.turnTime = (c.turnTime ?? 0) + dt;
-        if (!pending && c.turnTime >= .18) c.laneX += dir * Math.min(Math.abs(laneDelta), laneRate * dt);
+        if (c.turnTime >= .18) c.laneX += dir * Math.min(Math.abs(laneDelta), laneRate * dt);
       } else {
         c.laneX = c.targetX;
         c.turnSettle = (c.turnSettle ?? 0) + dt;
@@ -631,9 +577,19 @@ export class Race {
       // The automatic driver compensates gravity at cruise, but shares its force limits.
       c.speed += Math.max((BRAKE * (1 - .55 * ice * iceScale) + grade.acceleration) * dt, Math.min((MAX_SPEED * .34 + grade.acceleration) * dt, speedDelta));
       c.speed = Math.max(0, c.speed);
+      // The player is a lead vehicle too. Do not let a rear NPC consume the
+      // remaining gap while the player brakes, even on an icy road.
+      const playerGap = this.playerZ - c.z, playerLaneX = this.carX(c);
+      const wasBehind = c.z < this.playerZ - this.speed * dt - CAR_LEN * .4;
+      if (wasBehind && playerLaneX !== null && playerGap > 0 && playerGap < CAR_LEN * (3 + hazard * 3) &&
+        Math.abs(playerLaneX - this.playerX) < c.hw + PLAYER_HW + .06) {
+        c.speed = Math.min(c.speed, Math.max(0, this.speed * .98), Math.max(0, (playerGap - CAR_LEN * 1.6) / Math.max(dt, .001)));
+      }
       c.z += c.speed * dt;
       if (c.bounce > 0) c.bounce = Math.max(0, c.bounce - dt * 12);
     }
+    // Clear stale keys before inserting current cars, never after filling the map.
+    if (this.carsBySeg.size > 400) this.carsBySeg.clear();
     // bucket by segment for the renderer
     for (const arr of this.carsBySeg.values()) arr.length = 0;
     for (const c of this.cars) {
@@ -642,7 +598,6 @@ export class Race {
       if (!arr) { arr = []; this.carsBySeg.set(i, arr); }
       arr.push(c);
     }
-    if (this.carsBySeg.size > 400) this.carsBySeg.clear();
   }
 
   // -------------------------------------------------------------- driver AI
@@ -663,7 +618,7 @@ export class Race {
     };
     if (this.aiThink <= 0) {
       this.aiThink = 0.12;
-      this.aiYieldCruise = Infinity;
+      this.aiTrafficCruise = Infinity;
       // The attract/test driver looks far enough ahead to finish a lane change,
       // and checks approaching rear traffic instead of jumping into its path.
       const gap = (lane:number) => this.cars.reduce((best,c) => {
@@ -672,7 +627,7 @@ export class Race {
       },Infinity);
       const safe = (lane:number) => !this.cars.some(c=>{
         const cx=laneCarX(c),dz=c.z-pz;
-        const nextX = cx === null ? null : cx + (c.yieldLane ?? c.targetX) - c.x;
+        const nextX = cx === null ? null : cx + c.targetX - c.x;
         const crossTime = .45 + Math.abs(LANE_X[lane] - this.playerX) / STEER;
         const crossingSpeed = Math.min(MAX_SPEED * windSpeedFactor(this.windForward), this.speed + MAX_SPEED * .17 * crossTime);
         const predicted = dz + (c.speed - crossingSpeed) * crossTime;
@@ -680,19 +635,19 @@ export class Race {
           Math.min(dz,predicted)<CAR_LEN*1.6&&Math.max(dz,predicted)>-CAR_LEN*1.4;
       });
       const currentGap=gap(this.aiLane);
-      if (currentGap < 70*SEG_LEN) {
+      // With no horn-assisted clearing, plan the pass before reaching slow traffic.
+      if (currentGap < 90*SEG_LEN) {
         const currentLane = LANE_X.reduce((best, x, i) => Math.abs(x - this.playerX) < Math.abs(LANE_X[best] - this.playerX) ? i : best, 0);
         const opts = [0,1,2,3].filter(l=>l!==this.aiLane&&gap(l)>currentGap+10*SEG_LEN&&
           [0,1,2,3].every(k=>k===currentLane||k<Math.min(currentLane,l)||k>Math.max(currentLane,l)||safe(k)));
         opts.sort((a,b)=>gap(b)-gap(a));
         if(opts.length)this.aiLane=opts[0];
         else {
-          this.signal();
           // Let an adjacent parallel car get ahead, then cross behind it into a clear lane.
           for (const c of this.cars) {
             const x = laneCarX(c), dz = c.z - pz;
             if (currentGap < 35 * SEG_LEN && x !== null && dz > -CAR_LEN * 1.4 && dz < 35 * SEG_LEN && Math.abs(x - this.playerX) > .35 && Math.abs(x - this.playerX) < .9)
-              this.aiYieldCruise = Math.min(this.aiYieldCruise, Math.max(.2, c.speed / MAX_SPEED - .12));
+              this.aiTrafficCruise = Math.min(this.aiTrafficCruise, Math.max(.2, c.speed / MAX_SPEED - .12));
           }
         }
       }
@@ -709,7 +664,7 @@ export class Race {
     const grip = (ice:number) => this.diff.cornering * weatherBend(this.diff, this.weatherAmt("rain"), this.weatherAmt("snow"), ice) * windBendFactor(this.windForward);
     const steer = Math.max(-1, Math.min(1, (target - this.playerX) * 4 +
       seg.curve * sp * sp * CENTRIFUGAL * grip(this.iceAmt) / STEER - this.gust * this.diff.wind * Math.min(1, sp * 2.5) / (STEER * Math.min(1, sp * 2.2) || 1)));
-    let cruise = Math.min(this.aiYieldCruise, this.state === "goal" ? 0.45 : cruiseSpeed * windSpeedFactor(this.windForward));
+    let cruise = Math.min(this.aiTrafficCruise, this.state === "goal" ? 0.45 : cruiseSpeed * windSpeedFactor(this.windForward));
     // A capable driver brakes for a wet/icy bend before reaching it. This is
     // only the attract/test AI; player inputs are never assisted.
     for (let k = 0; k <= 44; k += 4) {
@@ -734,8 +689,6 @@ export class Race {
   update(dt: number, input: Controls): void {
     dt = Math.min(dt, 1 / 20);
     if (this.tumbleT < 0) this.roof.update(this.roofWet, dt);
-    this.signalT=Math.max(0,this.signalT-dt);
-    this.signalCooldown=Math.max(0,this.signalCooldown-dt);
     const track = this.track;
     track.step(); // after a re-route, the rest of the road is laid a stage per frame
     let ctl = input;
@@ -976,12 +929,27 @@ export class Race {
             this.speed = c.speed * 0.4;
           } else {
             this.speed = c.speed * 0.72;
-            this.position = c.z - PLAYER_Z - CAR_LEN * 0.02;
+            this.position = c.z - PLAYER_Z - CAR_LEN * 1.02;
             this.playerX += this.playerX > cx ? 0.06 : -0.06;
             this.shake = 0.7;
             this.events.bump?.(c);
           }
           c.speed = Math.min(MAX_SPEED * 0.8, c.speed * 1.08);
+        } else if (c.speed > this.speed) {
+          // A lateral merge can contact a faster vehicle already alongside.
+          // Rear following prevents normal tailgating; this resolves contact
+          // from the other closing direction instead of silently ghosting.
+          if (dz >= 0) this.position = c.z - PLAYER_Z - CAR_LEN * 1.02;
+          else {
+            this.position = c.z - PLAYER_Z + CAR_LEN * .42;
+            c.speed = this.speed * .72;
+          }
+          c.passed = true;
+          if (c.bounce <= 0) {
+            this.shake = .7;
+            this.events.bump?.(c);
+          }
+          c.bounce = 3;
         }
       }
     }

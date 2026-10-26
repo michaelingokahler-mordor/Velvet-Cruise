@@ -382,36 +382,6 @@ export class GameAudio {
   whoosh(): void { this.burst(0.45, "bandpass", 500, 2200, 0.16, 1.4); }
   beep(go = false): void { this.tone(go ? 1320 : 660, go ? 0.6 : 0.16, "square", 0.1); if (go) this.tone(1980, 0.6, "square", 0.04); }
   tick(): void { this.tone(1250, 0.05, "square", 0.06); }
-  /** The player's horn holds its volume above the engine and radio. */
-  horn(): void {
-    const ctx = this.ctx;
-    if (!ctx) return;
-    const t = ctx.currentTime, gain = ctx.createGain();
-    gain.gain.setValueAtTime(0.0001, t);
-    gain.gain.linearRampToValueAtTime(0.095, t + 0.012);
-    gain.gain.setValueAtTime(0.095, t + 0.27);
-    gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.36);
-    const filter = ctx.createBiquadFilter();
-    filter.type = "lowpass";
-    filter.frequency.value = 2400;
-    filter.connect(gain);
-    gain.connect(this.sfxBus);
-    for (const frequency of [392, 494]) {
-      const oscillator = ctx.createOscillator();
-      oscillator.type = "square";
-      oscillator.frequency.value = frequency;
-      oscillator.connect(filter);
-      oscillator.start(t);
-      oscillator.stop(t + 0.38);
-    }
-    // Preserve an existing voice/jingle's longer radio duck.
-    if (t >= this.duckUntil) {
-      this.duckUntil = t + 0.55;
-      this.musicBus.gain.cancelScheduledValues(t);
-      this.musicBus.gain.setTargetAtTime(this.musicVolume * 0.35, t, 0.025);
-      this.musicBus.gain.setTargetAtTime(this.musicVolume, t + 0.4, 0.12);
-    }
-  }
   uiMove(): void { this.tone(740, 0.05, "square", 0.06); }
   uiSelect(): void { this.tone(880, 0.07, "square", 0.08); this.tone(1320, 0.12, "square", 0.08, 0.07); }
   closePass(): void { this.whoosh(); this.tone(1568, 0.09, "triangle", 0.08, 0.05); this.tone(2093, 0.12, "triangle", 0.08, 0.12); }
@@ -517,40 +487,6 @@ export class GameAudio {
     return buf.duration;
   }
 
-  /** An angry car horn, panned toward the honking car. Trucks honk low and long. */
-  honk(kind: "car" | "truck" | "small", pan = 0, angry = true): void {
-    const ctx = this.ctx;
-    if (!ctx) return;
-    const f = kind === "truck" ? [196, 247] : kind === "small" ? [523, 659] : [370, 466];
-    const len = kind === "truck" ? 0.5 : 0.17;
-    const reps = angry ? 2 : 1;
-    const p = ctx.createStereoPanner ? ctx.createStereoPanner() : null;
-    const out: AudioNode = p ?? this.sfxBus;
-    if (p) { p.pan.value = Math.max(-1, Math.min(1, pan)); p.connect(this.sfxBus); }
-    for (let r = 0; r < reps; r++) {
-      const t = ctx.currentTime + r * (len + 0.07);
-      const g = ctx.createGain();
-      g.gain.setValueAtTime(0.0001, t);
-      g.gain.linearRampToValueAtTime(0.07, t + 0.01);
-      g.gain.setValueAtTime(0.07, t + len - 0.03);
-      g.gain.exponentialRampToValueAtTime(0.0001, t + len);
-      const flt = ctx.createBiquadFilter();
-      flt.type = "lowpass";
-      flt.frequency.value = 2200;
-      flt.connect(g);
-      g.connect(out);
-      for (const fr of f) {
-        const o = ctx.createOscillator();
-        o.type = "square";
-        o.frequency.value = fr;
-        o.connect(flt);
-        o.start(t);
-        o.stop(t + len + 0.02);
-      }
-    }
-  }
-
-  /** The passenger's little voice blip under her speech bubble. */
   voice(mood: "love" | "scared" | "hurry" | "sad"): void {
     if (mood === "love") { this.tone(988, 0.09, "sine", 0.09, 0, 1318); this.tone(1318, 0.14, "sine", 0.08, 0.1, 1760); }
     else if (mood === "scared") { this.tone(1500, 0.16, "triangle", 0.09, 0, 820); this.tone(1400, 0.12, "triangle", 0.06, 0.15, 900); }

@@ -733,7 +733,7 @@ export class Renderer {
       const a=axis(z,x,br);this.headSources.push({z,x:a.x,slope:a.slope,br,from,to,gain});
     };
     if(race.lightsOn&&race.tumbleT<0)head(race.playerZ,race.playerX,race.forkSide,
-      race.signalFlash?2:3,race.signalFlash?78:48,race.signalFlash?1.05:.29);
+      3,48,.29);
     for(const c of race.cars)if(race.carLightsOn(c))head(c.z,c.x,c.br??0,2,27,.19);
     if(this.night<.25)return;
     for(const s of this.visible)for(const p of s.sprites) {

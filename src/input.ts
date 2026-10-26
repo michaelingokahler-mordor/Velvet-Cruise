@@ -14,7 +14,6 @@ export const TOUCH = {
   brake: { x: W - 97, y: 128, w: 42, h: 46 },
   gas: { x: W - 51, y: 128, w: 46, h: 46 },
   pause: { x: W / 2 - 9, y: 24, w: 18, h: 16 },
-  signal: { x: W - 34, y: 82, w: 28, h: 20 },
 };
 
 /** Pads used while steering by tilting the device: brake under the left thumb, gas under the right. */
@@ -36,7 +35,7 @@ export function inRect(r: Rect, x: number, y: number): boolean {
   return x >= r.x && y >= r.y && x < r.x + r.w && y < r.y + r.h;
 }
 
-type Btn = "left" | "right" | "up" | "down" | "confirm" | "back" | "pause" | "signal";
+type Btn = "left" | "right" | "up" | "down" | "confirm" | "back" | "pause";
 
 const KEYMAP: Record<string, Btn> = {
   ArrowLeft: "left", KeyA: "left", ArrowRight: "right", KeyD: "right",
@@ -53,7 +52,7 @@ export class Input {
   capture: { device: BindingDevice; action: DriveAction; index: number | null; status: 'release' | 'listening' | 'saved' | 'conflict'; result?: BindingResult; neutral: number[]; padId: string } | null = null;
   private releaseGate = false;
   private padNeutral: number[] = [];
-  private drivePrev = { pause: false, signal: false };
+  private drivePrev = { pause: false };
   private held = new Set<string>();
   private pressed = new Set<Btn>();
   private taps: { x: number; y: number }[] = [];
@@ -104,8 +103,8 @@ export class Input {
         this.onGesture?.();
         return;
       }
-      // Some embedded keyboard backends omit `code`; keep H usable there too.
-      const code = e.code && e.code !== "Unidentified" ? e.code : e.key?.toLowerCase() === "h" ? "KeyH" : e.key;
+      // Embedded keyboard backends can omit code.
+      const code = e.code && e.code !== "Unidentified" ? e.code : e.key;
       if (this.capture) {
         e.preventDefault();
         if (code === 'Escape') { this.held.add(code); this.cancelCapture(); return; }
@@ -122,13 +121,13 @@ export class Input {
       if (!this.releaseGate && fresh && b) this.pressed.add(b);
       if (!this.releaseGate && fresh && code === 'Escape') this.pressed.add('pause');
       this.held.add(code);
-      if (!this.releaseGate && fresh) for (const a of ['pause', 'signal'] as const) if (this.bindings.keyboard(a, new Set([code]))) this.pressed.add(a);
+      if (!this.releaseGate && fresh) for (const a of ['pause'] as const) if (this.bindings.keyboard(a, new Set([code]))) this.pressed.add(a);
       this.lastInput = performance.now();
       this.onGesture?.();
     });
     window.addEventListener("keyup", (e) => {
       this.held.delete(e.code);
-      if (!e.code || e.code === "Unidentified") this.held.delete(e.key?.toLowerCase() === "h" ? "KeyH" : e.key);
+      if (!e.code || e.code === "Unidentified") this.held.delete(e.key);
     });
     window.addEventListener("blur", () => { this.held.clear(); this.pointers.clear(); });
     const down = (e: PointerEvent) => {
@@ -269,7 +268,7 @@ export class Input {
   poll(): void {
     const g = this.pad();
     const id = g ? `${g.index}:${g.id}` : '';
-    if (this.padId !== id) { this.padPrev = []; this.padId = id; this.drivePrev = { pause: false, signal: false }; this.padNeutral = g ? g.axes.map(v => g.mapping === 'standard' ? 0 : Math.abs(v) > .85 ? Math.sign(v) : 0) : []; }
+    if (this.padId !== id) { this.padPrev = []; this.padId = id; this.drivePrev = { pause: false }; this.padNeutral = g ? g.axes.map(v => g.mapping === 'standard' ? 0 : Math.abs(v) > .85 ? Math.sign(v) : 0) : []; }
     const c = this.capture;
     if (c) {
       this.pressed.clear();
@@ -283,7 +282,7 @@ export class Input {
       }
       return;
     }
-    if (this.releaseGate) { this.pressed.clear(); if (this.neutral(g)) { this.releaseGate = false; this.padPrev = []; this.drivePrev = { pause: false, signal: false }; } else return; }
+    if (this.releaseGate) { this.pressed.clear(); if (this.neutral(g)) { this.releaseGate = false; this.padPrev = []; this.drivePrev = { pause: false }; } else return; }
     if (!g) return;
     const b = (i: number) => !!g.buttons[i]?.pressed;
     const now = [b(0), b(1), b(12), b(13), b(14), b(15), (g.axes[0] ?? 0) < -0.6, (g.axes[0] ?? 0) > 0.6, (g.axes[1] ?? 0) < -0.6, (g.axes[1] ?? 0) > 0.6];
@@ -292,7 +291,7 @@ export class Input {
       if (now[i] && !this.padPrev[i]) { this.pressed.add(map[i]); this.lastInput = performance.now(); this.onGesture?.(); }
     }
     this.padPrev = now;
-    for (const action of ['pause', 'signal'] as const) {
+    for (const action of ['pause'] as const) {
       const value = this.bindings.gamepad(action, g), active = value > (this.drivePrev[action] ? .35 : .55);
       if (!this.textMode && active && !this.drivePrev[action]) this.pressed.add(action);
       this.drivePrev[action] = active;
@@ -324,7 +323,7 @@ export class Input {
 
   /** Edge-triggered press, consumed on read. */
   hit(b: Btn): boolean {
-    if (this.capture || this.releaseGate || this.textMode && (b === 'pause' || b === 'signal')) return false;
+    if (this.capture || this.releaseGate || this.textMode && b === 'pause') return false;
     if (this.pressed.has(b)) { this.pressed.delete(b); return true; }
     return false;
   }
