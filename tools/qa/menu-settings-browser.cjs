@@ -42,12 +42,12 @@ const tests = [], errors = [], badResponses = [];
     assert.deepEqual(await page.evaluate(() => __menuQA.mainMenuItems().map(i => i.id)), ['drive', 'settings', 'map', 'records']);
     await shot('title');
     await press('ArrowDown'); await press('Enter'); await mode('settings'); await shot('settings');
-    for (const [index, child] of [[0, 'garage'], [1, 'controls'], [2, 'bindings'], [3, 'radio'], [4, 'credits'], [5, 'graphics']]) {
+    for (const [index, child] of [[0, 'garage'], [1, 'controls'], [2, 'bindings'], [3, 'radio'], [4, 'credits'], [5, 'graphics'], [6, 'audio']]) {
       await page.evaluate(i => { __menuQA.menuSel = i; }, index);
       await press('Enter'); await mode(child); await shot(child);
       await press('Escape'); await mode('settings', index);
     }
-    tests.push('all six settings children, including Graphics, return to their selected parent');
+    tests.push('all seven settings children, including Audio and Graphics, return to their selected parent');
     await page.evaluate(() => { __menuQA.menuSel = 2; }); await press('Enter');
     // Pause row, then replace; capture must not bind its activation key.
     await page.evaluate(() => { __menuQA.bindingFocus = 5; }); await press('Enter');

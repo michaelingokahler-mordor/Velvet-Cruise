@@ -15,6 +15,7 @@ export class GameAudio {
   private engGain!: GainNode;
   private skidGain!: GainNode;
   private skidFilter!: BiquadFilterNode;
+  private skidTone!: OscillatorNode;
   private roughGain!: GainNode;
   private crunchGain!: GainNode;
   private crunchFilter!: BiquadFilterNode;
@@ -32,7 +33,8 @@ export class GameAudio {
   private songGain: GainNode | null = null;
   private songKey = "";
   private duckUntil = 0;
-  musicVolume = 0.8;
+  private musicLevel = 0.6;
+  private effectsLevel = 0.8;
   buffers = new Map<string, AudioBuffer>();
   music: MusicJson | null = null;
 
@@ -46,7 +48,7 @@ export class GameAudio {
     this.musicBus.gain.value = this.musicVolume;
     this.musicBus.connect(this.master);
     this.sfxBus = ctx.createGain();
-    this.sfxBus.gain.value = 0.8;
+    this.sfxBus.gain.value = this.effectsLevel;
     this.sfxBus.connect(this.master);
     const len = ctx.sampleRate * 2;
     this.noiseBuf = ctx.createBuffer(1, len, ctx.sampleRate);
@@ -55,6 +57,33 @@ export class GameAudio {
   }
 
   get ready(): boolean { return !!this.ctx && this.ctx.state === "running"; }
+
+  get musicVolume(): number { return this.musicLevel; }
+  set musicVolume(value: number) {
+    if (!Number.isFinite(value)) return;
+    this.musicLevel = Math.max(0, Math.min(1, value));
+    if (this.musicLevel === 0) { this.stopSong(.06); this.setStatic(false); }
+    this.updateMusicGain();
+  }
+  get effectsVolume(): number { return this.effectsLevel; }
+  set effectsVolume(value: number) {
+    if (!Number.isFinite(value)) return;
+    this.effectsLevel = Math.max(0, Math.min(1, value));
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    this.sfxBus.gain.cancelScheduledValues(t);
+    this.sfxBus.gain.setTargetAtTime(this.effectsLevel, t, .025);
+    if (this.effectsLevel === 0 && this.duckUntil > t) {
+      this.duckUntil = 0; this.updateMusicGain();
+    }
+  }
+  private updateMusicGain(): void {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime, ducked = this.duckUntil > t;
+    this.musicBus.gain.cancelScheduledValues(t);
+    this.musicBus.gain.setTargetAtTime(this.musicLevel * (ducked ? .25 : 1), t, .025);
+    if (ducked) this.musicBus.gain.setTargetAtTime(this.musicLevel, this.duckUntil, .2);
+  }
 
   private noise(loop = true): AudioBufferSourceNode {
     const s = this.ctx!.createBufferSource();
@@ -98,13 +127,20 @@ export class GameAudio {
     this.skidFilter = ctx.createBiquadFilter();
     this.skidFilter.type = "bandpass";
     this.skidFilter.frequency.value = 1100;
-    this.skidFilter.Q.value = 6;
+    this.skidFilter.Q.value = 3;
     this.skidGain = ctx.createGain();
     this.skidGain.gain.value = 0;
     sk.connect(this.skidFilter);
     this.skidFilter.connect(this.skidGain);
     this.skidGain.connect(this.sfxBus);
     sk.start();
+    // A quiet rubber tone gives the scrape a recognisable pitched squeal.
+    this.skidTone = ctx.createOscillator();
+    this.skidTone.type = 'triangle';
+    this.skidTone.frequency.value = 1100;
+    const rubber = ctx.createGain(); rubber.gain.value = .18;
+    this.skidTone.connect(rubber); rubber.connect(this.skidGain);
+    this.skidTone.start();
     // gravel rumble
     const rg = this.noise();
     const rf = ctx.createBiquadFilter();
@@ -246,8 +282,9 @@ export class GameAudio {
     this.engFilter.frequency.setTargetAtTime(260 + rpm * 1500 + throttle * 700, t, 0.05);
     const vol = quiet ? 0.05 : 0.075 + throttle * 0.06 + rpm * 0.03;
     this.engGain.gain.setTargetAtTime(vol, t, 0.06);
-    this.skidGain.gain.setTargetAtTime(quiet || offroad || speedPct < .08 ? 0 : Math.max(0, skid - 0.25) * 0.25, t, 0.04);
+    this.skidGain.gain.setTargetAtTime(quiet || offroad || speedPct < .08 ? 0 : Math.max(0, Math.min(1, skid)) * .38, t, 0.04);
     this.skidFilter.frequency.setTargetAtTime(950 + skid * 500 + Math.sin(t * 31) * 80, t, 0.02);
+    this.skidTone.frequency.setTargetAtTime(1050 + skid * 380 + Math.sin(t * 29) * 45, t, .03);
     const dirt = offroad && speedPct > 0.05 && !quiet;
     this.roughGain.gain.setTargetAtTime(dirt ? (0.12 + Math.random() * 0.1) * (0.6 + 0.4 * Math.min(1, depth)) : 0, t, 0.03);
     // crunchy gravel: louder and brighter with speed and depth, crackling because the level jumps every frame
@@ -255,7 +292,7 @@ export class GameAudio {
     this.crunchFilter.frequency.setTargetAtTime(1300 + speedPct * 1800 + Math.random() * 900, t, 0.02);
     // the red/white strip: a buzzing rumble through the wheels
     const onStrip = !offroad && !quiet && edge > 0.05 && speedPct > 0.08;
-    this.buzzGain.gain.setTargetAtTime(onStrip ? 0.1 * Math.min(1, edge * 1.5) * Math.min(1, speedPct * 3) : 0, t, 0.025);
+    this.buzzGain.gain.setTargetAtTime(onStrip ? .14 * Math.min(1, edge * 1.5) * Math.min(1, speedPct * 3) : 0, t, 0.025);
     this.buzzOsc.frequency.setTargetAtTime(34 + speedPct * 70, t, 0.04);
     this.windGain.gain.setTargetAtTime(quiet ? 0 : speedPct * speedPct * 0.05, t, 0.2);
     this.windFilter.frequency.setTargetAtTime(500 + speedPct * 900, t, 0.2);
@@ -368,15 +405,15 @@ export class GameAudio {
   stripKick(speedPct: number): void {
     const k = Math.max(.2, Math.min(1, speedPct));
     for (let i = 0; i < 4; i++) {
-      this.tone(95 + speedPct * 85, .035, 'square', .065 * k, i * .038, 65);
-      this.burst(.03, 'lowpass', 900, 220, .07 * k, .7, i * .038);
+      this.tone(95 + speedPct * 85, .035, 'square', .14 * k, i * .038, 65);
+      this.burst(.03, 'lowpass', 900, 220, .12 * k, .7, i * .038);
     }
   }
   /** Loose sand: a coarse low thud followed by a falling grainy scrape. */
   dirtKick(speedPct: number): void {
     const k = Math.max(0.3, Math.min(1, speedPct));
-    this.burst(.3, 'lowpass', 1100, 220, .2 * k, .8);
-    this.burst(.4, 'bandpass', 2600, 700, .18 * k, .8, .025);
+    this.burst(.3, 'lowpass', 1100, 220, .3 * k, .8);
+    this.burst(.4, 'bandpass', 2600, 700, .27 * k, .8, .025);
   }
   scrape(): void { this.burst(0.09, "bandpass", 3200 + Math.random() * 1500, 2600, 0.12, 4); }
   whoosh(): void { this.burst(0.45, "bandpass", 500, 2200, 0.16, 1.4); }
@@ -389,7 +426,7 @@ export class GameAudio {
   // --------------------------------------------------------------- music
   playSong(key: string, fadeIn = 0.6): void {
     const ctx = this.ctx;
-    if (!ctx) return;
+    if (!ctx || this.musicLevel === 0) return;
     const buf = this.buffers.get(key);
     if (!buf) return;
     if (this.songKey === key && this.song) return;
@@ -430,7 +467,7 @@ export class GameAudio {
   get currentSong(): string { return this.songKey; }
 
   /** A quick crackle of static as the dial moves. */
-  tuneStatic(): void { this.burst(0.2, "bandpass", 900, 3400, 0.07, 0.7); }
+  tuneStatic(): void { if (this.musicLevel > 0) this.burst(0.2, "bandpass", 900, 3400, 0.07, 0.7); }
 
   private staticSrc: AudioBufferSourceNode | null = null;
   private staticGain: GainNode | null = null;
@@ -438,6 +475,7 @@ export class GameAudio {
   /** Soft radio hiss while a station is still coming in. */
   setStatic(on: boolean): void {
     const ctx = this.ctx;
+    on = on && this.musicLevel > 0;
     if (!ctx || on === !!this.staticSrc) return;
     const t = ctx.currentTime;
     if (on) {
@@ -476,14 +514,14 @@ export class GameAudio {
     const g = ctx.createGain();
     g.gain.value = 0.95;
     src.connect(g);
-    g.connect(this.master);
+    g.connect(this.sfxBus);
     src.start();
     // duck the radio under the jingle
     const t = ctx.currentTime;
-    this.duckUntil = t + buf.duration;
-    this.musicBus.gain.cancelScheduledValues(t);
-    this.musicBus.gain.setTargetAtTime(this.musicVolume * 0.25, t, 0.05);
-    this.musicBus.gain.setTargetAtTime(this.musicVolume, t + buf.duration - 0.2, 0.3);
+    if (this.effectsLevel > 0) {
+      this.duckUntil = t + buf.duration;
+      this.updateMusicGain();
+    }
     return buf.duration;
   }
 

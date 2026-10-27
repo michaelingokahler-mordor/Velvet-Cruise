@@ -13,6 +13,7 @@ import { LinkLayer, LinkRect } from "./game/links";
 import { COLS, COAST_PATH, GOAL_A_PATH, COLUMN_NODES, NEXT, NODE_COUNT, completePath, goalLetter, validPath } from "./game/routes";
 import { DEMO_A, SAVE_PREFIX } from "./game/edition";
 import { GameAudio, MusicJson } from "./audio/audio";
+import { AudioSettings, type AudioChannel } from './audio/settings';
 import { initTesana, onTesanaReady, servicesOnline, t, onLocaleChange, locale, track as analytics, submitScore, topScores, myBest, fmtNum, BoardEntry, isTestSdk } from "./platform/tesana";
 import { Input, TOUCH, inRect, Rect, CONTROL_PREFS, ControlPref, DRIVE_ACTIONS, bindingLabel, BindingDevice } from "./input";
 import { THEMES } from "./game/themes";
@@ -30,7 +31,7 @@ import { GoalProgressStore, GOAL_PROGRESS_KEY, GOAL_LETTERS, goalCount, type Goa
 import { createRenderContext, GraphicsSelection, type GraphicsMode } from './game/graphics';
 import { loadPlusBank, type PlusManifest } from './core/plus-assets';
 
-type Mode = "title" | "settings" | "graphics" | "records" | "bindings" | "garage" | "rankings" | "badges" | "controls" | "difficulty" | "radio" | "race" | "ending" | "results" | "name" | "map" | "credits";
+type Mode = "title" | "settings" | "audio" | "graphics" | "records" | "bindings" | "garage" | "rankings" | "badges" | "controls" | "difficulty" | "radio" | "race" | "ending" | "results" | "name" | "map" | "credits";
 
 /** The credits page's studio and prototype links, opened in a new tab. */
 const CREDIT_LINKS = [
@@ -184,6 +185,8 @@ class MainScene extends Phaser.Scene {
   /** Clickable web links over the credits page. */
   private links!: LinkLayer;
   private station = 0;
+  private audioSettings = new AudioSettings();
+  private audioPreviewAt = -9;
   private paused = false;
   private pauseSel = 0;
   private lastBeep = 99;
@@ -293,6 +296,7 @@ class MainScene extends Phaser.Scene {
       return { x: ((cx - r.left) / r.width) * W, y: ((cy - r.top) / r.height) * H };
     });
     const snd = this.sound as Phaser.Sound.WebAudioSoundManager;
+    this.applyAudioSettings();
     this.audio.attach(snd.context);
     this.input2.onGesture = () => {
       const c = this.audio.ctx;
@@ -434,7 +438,7 @@ class MainScene extends Phaser.Scene {
       if (!SONG_KEYS.includes(key)) return;
       this.dropSpareSongs(key);
       const racing = this.mode === "race" && this.race && (this.race.state === "race" || this.race.state === "countdown");
-      if (key === SONG_KEYS[this.station] && (this.mode === "radio" || racing)) this.audio.playSong(key);
+      if (key === SONG_KEYS[this.station] && (this.mode === "radio" || this.mode === 'audio' || racing)) this.audio.playSong(key);
     });
     this.load.on(Phaser.Loader.Events.FILE_LOAD_ERROR, (file: Phaser.Loader.File) => {
       if (this.songLoading.delete(file.key)) this.songFailed.add(file.key);
@@ -446,6 +450,7 @@ class MainScene extends Phaser.Scene {
 
   /** Start streaming a station's song if it isn't in memory (or on its way) yet. */
   private requestSong(i: number, start = true): void {
+    if (this.audio.musicVolume === 0) return;
     const key = SONG_KEYS[i], file = this.songFiles[i];
     if (!key || !file || this.audio.buffers.has(key) || this.songLoading.has(key)) return;
     this.songFailed.delete(key);
@@ -510,6 +515,7 @@ class MainScene extends Phaser.Scene {
     switch (this.mode) {
       case "title": this.title(dt, taps); break;
       case "settings": this.settings(dt, taps); break;
+      case "audio": this.audioScreen(dt, taps); break;
       case "graphics": this.graphicsScreen(dt,taps); break;
       case "records": this.records(dt, taps); break;
       case "bindings": this.bindingScreen(dt, taps); break;
@@ -628,8 +634,8 @@ class MainScene extends Phaser.Scene {
     fb.rectA(0, 0, W, H, rgb(0x0c0618), 0.55);
     panel(fb, 36, 8, W - 72, 164);
     big(fb, t(heading), W / 2, 16, 2, GRAD_SUN, "center", W - 84);
-    const top = labels.length > 6 ? 40 : labels.length > 4 ? 46 : 65;
-    const pitch = labels.length > 6 ? 17 : 19;
+    const top = labels.length > 7 ? 36 : labels.length > 6 ? 40 : labels.length > 4 ? 46 : 65;
+    const pitch = labels.length > 7 ? 16 : labels.length > 6 ? 17 : 19;
     const rows = labels.map((_, i) => ({ x: 62, y: top + i * pitch, w: W - 124, h: 16 }));
     if (inp.hit("up")) { this.menuSel = (this.menuSel + labels.length - 1) % labels.length; this.audio.uiMove(); }
     if (inp.hit("down")) { this.menuSel = (this.menuSel + 1) % labels.length; this.audio.uiMove(); }
@@ -642,14 +648,77 @@ class MainScene extends Phaser.Scene {
   }
 
   private settings(dt: number, taps: { x: number; y: number }[]): void {
-    const go = this.submenu(dt, taps, "menu.settings", ["title.garage", "menu.input", "menu.bindings", "menu.music", "title.credits", "graphics.title", "rank.back"]);
+    const go = this.submenu(dt, taps, "menu.settings", ["title.garage", "menu.input", "menu.bindings", "menu.music", "title.credits", "graphics.title", "audio.title", "rank.back"]);
     if (go === 0) this.openGarage();
     else if (go === 1) this.toControls();
     else if (go === 2) { this.setMode("bindings"); this.bindingFocus = 1; this.bindingNotice = ""; }
     else if (go === 3) this.toRadio();
     else if (go === 4) { this.setMode("credits"); this.menuSel = CREDIT_LINKS.length; }
     else if (go === 5) { this.setMode('graphics');this.menuSel=this.graphicsChoice.mode==='plus'?1:0; }
-    else if (go === 6) { this.setMode("title"); this.menuSel = 1; }
+    else if (go === 6) this.toAudio();
+    else if (go === 7) { this.setMode("title"); this.menuSel = 1; }
+  }
+
+  private applyAudioSettings(): void {
+    this.audio.musicVolume = this.audioSettings.levels.music / 100;
+    this.audio.effectsVolume = this.audioSettings.levels.effects / 100;
+  }
+
+  private previewMusic(): void {
+    if (this.audio.musicVolume === 0) return;
+    this.requestSong(this.station);
+    this.audio.playSong(SONG_KEYS[this.station]);
+  }
+
+  private toAudio(): void { this.setMode('audio'); this.previewMusic(); }
+
+  private changeAudio(channel: AudioChannel, value: number): void {
+    const previous = this.audioSettings.levels[channel];
+    const next = this.audioSettings.set(channel, value);
+    if (previous === next) return;
+    this.applyAudioSettings();
+    if (channel === 'music') this.previewMusic();
+    else if (this.time2 - this.audioPreviewAt > .2) {
+      this.audio.stripKick(.85); this.audioPreviewAt = this.time2;
+    }
+  }
+
+  private audioScreen(dt: number, taps: { x: number; y: number }[]): void {
+    const inp = this.input2, fb = this.fb;
+    this.demo.update(dt, { steer: 0, throttle: 0, brake: 0 });
+    this.painter.render(this.demo); fb.rectA(0, 0, W, H, rgb(0x0c0618), .6);
+    panel(fb, 28, 8, W - 56, 164);
+    big(fb, t('audio.title'), W / 2, 17, 2, GRAD_SUN);
+    if (inp.hit('up')) this.menuSel = (this.menuSel + 2) % 3;
+    if (inp.hit('down')) this.menuSel = (this.menuSel + 1) % 3;
+    const channels: AudioChannel[] = ['music', 'effects'];
+    const dir = inp.hit('left') ? -1 : inp.hit('right') ? 1 : 0;
+    if (dir && this.menuSel < 2) {
+      const channel = channels[this.menuSel]; this.changeAudio(channel, this.audioSettings.levels[channel] + dir * 10);
+    }
+    channels.forEach((channel, i) => {
+      const y = 44 + i * 50, minus = { x: 44, y: y + 14, w: 30, h: 20 }, plus = { x: 246, y: y + 14, w: 30, h: 20 };
+      const slider = { x: 83, y: y + 15, w: 155, h: 20 };
+      if (this.tapped(taps, minus)) { this.menuSel = i; this.changeAudio(channel, this.audioSettings.levels[channel] - 10); }
+      if (this.tapped(taps, plus)) { this.menuSel = i; this.changeAudio(channel, this.audioSettings.levels[channel] + 10); }
+      for (const tap of taps) if (inRect(slider, tap.x, tap.y)) {
+        this.menuSel = i; this.changeAudio(channel, Math.round((tap.x - slider.x) / (slider.w - 1) * 10) * 10);
+      }
+      const level = this.audioSettings.levels[channel];
+      if (this.menuSel === i) fb.frame(39, y - 5, 242, 44, C.yellow);
+      drawText(fb, t(`audio.${channel}`), 47, y, C.white, { outline: C.ink });
+      drawText(fb, level ? `${level}%` : t('audio.off'), 273, y, level ? C.cyan : C.pink, { align: 'right', outline: C.ink });
+      button(fb, minus, '-', false); button(fb, plus, '+', false);
+      fb.rect(slider.x, y + 23, slider.w, 5, rgb(0x291c42));
+      fb.rect(slider.x, y + 23, Math.round(slider.w * level / 100), 5, C.cyan);
+      fb.rect(slider.x + Math.round((slider.w - 3) * level / 100), y + 20, 3, 11, C.white);
+    });
+    const back = { x: 100, y: 144, w: 120, h: 16 };
+    button(fb, back, t('rank.back'), this.menuSel === 2);
+    drawText(fb, t(inp.touchMode ? 'audio.hint_tap' : 'audio.hint'), W / 2, 163, C.grey, { align: 'center', maxW: W - 70 });
+    if (inp.hit('back') || (inp.hit('confirm') && this.menuSel === 2) || this.tapped(taps, back)) {
+      this.audio.stopSong(.15); this.audio.setStatic(false); this.openSettings(6);
+    }
   }
 
   private loadGraphicsBank(mode: GraphicsMode): Promise<SpriteBank> {
@@ -1036,8 +1105,7 @@ class MainScene extends Phaser.Scene {
   // ------------------------------------------------------------- radio
   private toRadio(): void {
     this.setMode("radio");
-    this.requestSong(this.station);
-    this.audio.playSong(SONG_KEYS[this.station]);
+    this.previewMusic();
   }
 
   private radio(dt: number, taps: { x: number; y: number }[]): void {
@@ -1066,7 +1134,8 @@ class MainScene extends Phaser.Scene {
     const slot = (i: number) => bx + (0.08 + (i * 0.84) / (n - 1)) * bw;
     // preset marks along the bottom of the band
     for (let i = 0; i < n; i++) fb.rect(Math.round(slot(i)) - 1, by + bh - 3, 3, 3, rgb(0x6a2a10));
-    const ready = this.songReady(this.station);
+    const musicOff = this.audio.musicVolume === 0;
+    const ready = musicOff || this.songReady(this.station);
     // fetch the song once the dial rests on a station (flicking past stations downloads nothing)
     if (!ready && this.time2 - this.tunedAt > 0.35) this.requestSong(this.station);
     const nx = Math.round(slot(this.station) + Math.sin(this.time2 * 9) * (ready ? 0 : 1.5));
@@ -1089,6 +1158,8 @@ class MainScene extends Phaser.Scene {
         const h = 2 + Math.abs(Math.sin(this.time2 * (6 + (i % 18) * 0.7) + i * 1.3)) * 8;
         fb.rect(bx + 6 + i * 4, by + bh - 2 - h, 2, h, rgb(0x8a3a10));
       }
+    } else if (musicOff) {
+      drawText(fb, t('audio.music_off'), W / 2, by + 12, rgb(0x6a2a10), { align: 'center' });
     } else if (!ready) {
       drawText(fb, t("radio.loading"), W / 2, by + 12, rgb(0x6a2a10), { align: "center" });
     }
@@ -1383,7 +1454,7 @@ class MainScene extends Phaser.Scene {
         (window as unknown as Record<string, unknown>).__yell = { pick: pick ? { x: pick.x, z: pick.z - pz, seen: pick.seen, frame: this.painter.frame } : null, behind: !!behind, kind: pick === ahead ? "hit" : "pass" };
       }
       const quiet = race.state === "over" || race.crashT > 0;
-      this.audio.engine(race.rpm, race.throttle, race.speed / MAX_SPEED, race.skid, race.offroad, quiet, race.seaAmt, race.offDepth, race.edge);
+      this.audio.engine(race.rpm, race.throttle, race.speed / MAX_SPEED, race.tyreSqueal, race.offroad, quiet, race.seaAmt, race.offDepth, race.edge);
       const dry = 1 - race.tunnelAmt; // the storm goes quiet inside a tunnel
       this.audio.weather(race.weatherAmt("rain") * dry, Math.max(race.weatherAmt("sand"), race.weatherAmt("snow") * 0.55) * dry, race.gustAmt * dry);
       this.audio.tunnel(race.tunnelAmt);

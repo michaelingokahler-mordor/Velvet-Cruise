@@ -51,7 +51,7 @@ function wav(name,channels,rate){
      const rendered=await page.evaluate(async kind=>{
       const {GameAudio}=await import('/src/audio/audio.ts'),duration=kind==='driving'?12:1,rate=44100,ctx=new OfflineAudioContext(2,duration*rate,rate),a=new GameAudio();a.attach(ctx);
       if(kind==='strip')a.stripKick(.8);else if(kind==='sand')a.dirtKick(.8);else{
-       a.musicVolume=.38;a.buffers.set('music_coastline',await ctx.decodeAudioData(await(await fetch('/assets/audio/music_coastline.mp3')).arrayBuffer()));a.playSong('music_coastline',.05);a.startEngine();a.engine(.82,1,.8,0,false);
+       a.buffers.set('music_coastline',await ctx.decodeAudioData(await(await fetch('/assets/audio/music_coastline.mp3')).arrayBuffer()));a.playSong('music_coastline',.05);a.startEngine();a.engine(.82,1,.8,0,false);
        for(let i=1;i<240;i++){
         const time=i*.05;ctx.suspend(time).then(()=>{
          const skid=time>=2&&time<4?Math.min(1,(time-2)*2):0,off=time>=6&&time<8,strip=time>=4.5&&time<6;

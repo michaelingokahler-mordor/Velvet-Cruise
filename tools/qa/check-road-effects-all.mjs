@@ -5,6 +5,7 @@ const out=resolve('output/road-effects');mkdirSync(out,{recursive:true});
 const checks=[
  ['types',['node_modules/typescript/bin/tsc','--noEmit']],
  ['road-effects',['tools/qa/check-road-effects.mjs']],
+ ['audio-controls',['tools/qa/check-audio-controls.mjs']],
  ['grade',['tools/qa/check-grade.mjs']],
  ['weather',['tools/qa/check-weather.mjs']],
  ['directional-weather',['tools/qa/check-directional-weather.mjs']],

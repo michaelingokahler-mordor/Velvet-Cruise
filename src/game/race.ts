@@ -109,7 +109,9 @@ export class Race {
   edge = 0;
   /** How deep in the sand/earth beside the road (0 = on the road; ~1 = 0.6 road half-widths out). */
   offDepth = 0;
-  skid = 0;          // 0..1 tyre squeal amount
+  skid = 0;          // 0..1 slip intensity used by the existing tyre smoke
+  /** Earlier audible warning; never feeds tyre-smoke randomness or traffic. */
+  tyreSqueal = 0;
   private steerHeld = 0;
   private steerSign = 0;
   private tyreSurface: 'road' | 'strip' | 'sand' = 'road';
@@ -811,6 +813,13 @@ export class Race {
     if (this.iceAmt > 0.1 && sp > 0.25) this.skid = Math.max(this.skid, this.iceAmt * 0.8 * Math.min(1, Math.abs(this.iceV) / 0.3 + Math.abs(ctl.steer)));
     if (this.offroad) this.skid *= 0.5;
     if (this.crashT > 0 || this.state === 'over' || sp < .02) this.skid = 0;
+    // Full lock reaches sand in under half a second. Warn earlier, but preserve
+    // the existing skid/smoke RNG so an audio change cannot alter future traffic.
+    const steerThreshold = .5 - Math.min(1, Math.max(0, (Math.abs(ctl.steer) - .55) / .45)) * .22;
+    const heldWarning = this.steerHeld >= steerThreshold ? Math.min(1, .65 + (this.steerHeld - steerThreshold) * 1.2) : 0;
+    this.tyreSqueal += ((driving && !this.offroad ? heldWarning : 0) - this.tyreSqueal) * Math.min(1, dt * 6);
+    this.tyreSqueal = Math.max(this.tyreSqueal, this.skid);
+    if (this.crashT > 0 || this.state === 'over' || sp < .02) this.tyreSqueal = 0;
     this.stripSoundT = Math.max(0, this.stripSoundT - dt);
     this.sandSoundT = Math.max(0, this.sandSoundT - dt);
     const surface = this.offroad ? 'sand' : this.edge > (this.tyreSurface === 'strip' ? .03 : .08) ? 'strip' : 'road';
