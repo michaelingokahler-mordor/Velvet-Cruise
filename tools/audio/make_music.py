@@ -3,7 +3,8 @@
 """
 Velvet Cruise -- original surf-rock radio soundtrack + jingles.
 
-Everything is synthesised from scratch with numpy (no samples):
+Generated tracks are synthesised from scratch with numpy (no samples).
+Imported tracks listed in imported_music.json are preserved instead:
 
   guitars / bass  Karplus-Strong strings: Lagrange fractional delay, per-period
                   loss filter tuned for a high-frequency T60, pick-position and
@@ -17,7 +18,7 @@ Everything is synthesised from scratch with numpy (no samples):
   mix / master    FFT EQ, tanh drive, constant-power pan, spring + room sends,
                   gentle RMS compressor and look-ahead brick-wall limiter.
 
-Songs are written as [intro][body][first 3 s of body again].  The body is
+Synthesised songs are written as [intro][body][first 3 s of body again].  The body is
 rendered *cyclically* (tails of the last bar wrap into the first bar, reverbs
 are circular convolutions, the master runs on a wrapped signal), so looping
 loopStart = end of intro -> loopEnd = end of body is sample exact.  The intro's
@@ -48,6 +49,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 GAME = os.path.abspath(os.path.join(HERE, '..', '..'))
 OUT = os.path.join(GAME, 'assets', 'audio')
 WORK = os.path.join(HERE, 'build')
+with open(os.path.join(HERE, 'imported_music.json'), encoding='utf-8') as fh:
+    IMPORTED_SONGS = json.load(fh)
 
 SONG_LUFS = -15.1        # internal meter target (reads ~ -16.0 LUFS in ffmpeg ebur128 on the mp3)
 JINGLE_LUFS = -14.5      # jingles ~1 LU hotter (game-over a bit softer, see its builder)
@@ -1963,7 +1966,8 @@ def song_twist():
 
 
 # =============================================================================
-#  SONG 5 -- "Highway One"   A major, 112 BPM, laid-back cruising rock, singing clean lead
+#  Legacy SONG 5 recipe -- the radio now preserves imported "Coast Drive" instead.
+#  "Highway One": A major, 112 BPM, laid-back cruising rock, singing clean lead
 # =============================================================================
 def song_highway():
     S = Song('highway', 'Highway One', 112, intro_bars=2, body_bars=32, seed=6606,
@@ -2278,6 +2282,11 @@ JINGLES = {'checkpoint': jingle_checkpoint, 'stage': jingle_stage, 'gameover': j
 
 
 def _job(name):
+    if name in IMPORTED_SONGS:
+        info = dict(IMPORTED_SONGS[name]['song'], stems={})
+        if not os.path.isfile(os.path.join(GAME, info['file'])):
+            raise FileNotFoundError('Imported radio track is missing: ' + info['file'])
+        return ('song', name, info)
     if name in SONGS:
         return ('song', name, build_song(SONGS[name]))
     return ('jingle', name, build_jingle(JINGLES[name]))
@@ -2286,8 +2295,11 @@ def _job(name):
 def write_music_json():
     songs = []
     for k in SONGS:            # radio order
-        with open(os.path.join(WORK, 'music_%s.json' % k)) as fh:
-            info = json.load(fh)
+        if k in IMPORTED_SONGS:
+            info = IMPORTED_SONGS[k]['song']
+        else:
+            with open(os.path.join(WORK, 'music_%s.json' % k)) as fh:
+                info = json.load(fh)
         songs.append({'file': info['file'], 'title': info['title'], 'bpm': info['bpm'],
                       'loopStart': info['loopStart'], 'loopEnd': info['loopEnd']})
     doc = {'songs': songs,
@@ -2306,7 +2318,7 @@ def main():
         for kind, name, info in ex.map(_job, names):
             print(kind, name, json.dumps({k: v for k, v in info.items() if k != 'stems'}))
             print('   stems LUFS:', info['stems'])
-    if all(os.path.exists(os.path.join(WORK, 'music_%s.json' % k)) for k in SONGS):
+    if all(k in IMPORTED_SONGS or os.path.exists(os.path.join(WORK, 'music_%s.json' % k)) for k in SONGS):
         print(json.dumps(write_music_json(), indent=1))
     print('done in %.1fs' % (time.time() - t0))
 

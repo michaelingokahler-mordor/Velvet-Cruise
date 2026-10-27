@@ -1,0 +1,27 @@
+{
+  "highway": {
+    "song": {
+      "file": "assets/audio/music_highway.mp3",
+      "title": "Coast Drive",
+      "bpm": 130,
+      "loopStart": 0.0,
+      "loopEnd": 174.968163
+    },
+    "source": {
+      "provider": "Runway",
+      "taskId": "284f2983-df5f-4491-8f66-e5383598fa60",
+      "filename": "04-Coast-Drive-Instrumental.mp3",
+      "sha256": "b20e503a3d9c0d0aa9cdbc379ff2aecfc26925d27cbee610db4acd6628f9d068"
+    },
+    "processing": {
+      "gainDb": -4,
+      "fadeInSeconds": 0.01,
+      "fadeOutSeconds": 0.3,
+      "sampleRate": 44100,
+      "channels": 2,
+      "mp3BitrateKbps": 192,
+      "loop": "Complete track, including intro and ending; repeat from the start."
+    },
+    "sha256": "a5447f541038453548c048dc06c30cc87711ea2376ae558d7d54ef99644464d8"
+  }
+}

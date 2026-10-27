@@ -30,10 +30,10 @@
     },
     {
       "file": "assets/audio/music_highway.mp3",
-      "title": "Highway One",
-      "bpm": 112,
-      "loopStart": 4.285714,
-      "loopEnd": 72.857143
+      "title": "Coast Drive",
+      "bpm": 130,
+      "loopStart": 0.0,
+      "loopEnd": 174.968163
     },
     {
       "file": "assets/audio/music_riptide.mp3",
