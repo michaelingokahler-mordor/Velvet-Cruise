@@ -1,0 +1,52 @@
+{
+  "verifiedAt": "2026-10-28T14:26:36.1416286Z",
+  "websiteCommit": "ef394aacdf918a0733bbb59281b9af5b4c75051f",
+  "gameCommit": "e07bc1564aa5f9b982fbacd7e51cb1c7fe8dca9b",
+  "release": "2026-10-28-e07bc15-statistics",
+  "workerVersion": "b36981d9-e09b-42b8-a890-559619a72b73",
+  "secretAbsentFromPublicBuild": true,
+  "files": [
+    {
+      "path": "index.html",
+      "status": 200,
+      "sha256": "8cad13ff3cda4922e287d268bd7c14abbabb108d50af4fe72316a7e72913fe48",
+      "verification": "identical after Git CRLF/LF normalization"
+    },
+    {
+      "path": "build-info.json",
+      "status": 200,
+      "sha256": "d52d8af1254ee53ceb053bb9e1ac7aa97e003d59d9bde9d4347c8aa7505b7626",
+      "verification": "identical after Git CRLF/LF normalization"
+    },
+    {
+      "path": "releases/2026-10-28-e07bc15-statistics/_app/index-CjqzIZuu.js",
+      "status": 200,
+      "sha256": "d4a4104831529452a6e130eb9e020ff587b678d109be293e5dfaf00b04cb7142",
+      "verification": "byte-identical"
+    },
+    {
+      "path": "releases/2026-10-28-e07bc15-statistics/assets/sprites/atlas.png",
+      "status": 200,
+      "sha256": "8ea8b7d43f74e19dba37188b54e3a10ff8eac07c4d7e7c4d6a8ae5da415891ed",
+      "verification": "byte-identical"
+    },
+    {
+      "path": "releases/2026-10-28-e07bc15-statistics/assets/audio/music.json",
+      "status": 200,
+      "sha256": "4f955d10605403fcc390ef14f55b1a0c159d9ca24511e8e40087d1f3b1318cec",
+      "verification": "identical after Git CRLF/LF normalization"
+    },
+    {
+      "path": "releases/2026-10-28-e07bc15-statistics/assets/plus/manifest.json",
+      "status": 200,
+      "sha256": "0d8e151f05d75febc03477c5f1cc34b1060802db5e3499ae82bf4318a8efb8fb",
+      "verification": "identical after Git CRLF/LF normalization"
+    },
+    {
+      "path": "releases/2026-10-28-e07bc15-statistics/online.json",
+      "status": 200,
+      "sha256": "c36799ce7e73298fedd0baaef28c9701eca7813722e33109ebe1631054094846",
+      "verification": "byte-identical"
+    }
+  ]
+}
