@@ -4,6 +4,7 @@
 import type { DiffId } from "./difficulty";
 import {ARCADE_KEY} from './rules';
 import {SAVE_PREFIX} from './edition';
+import { renameOnlinePlayer } from '../platform/online-scores';
 
 export interface ArcadeEntry {
   /** Name as entered (upper case). */
@@ -81,4 +82,5 @@ export function lastName(): string {
 
 export function saveName(n: string): void {
   try { localStorage.setItem(NAME_KEY, n); } catch { /* storage blocked */ }
+  void renameOnlinePlayer();
 }

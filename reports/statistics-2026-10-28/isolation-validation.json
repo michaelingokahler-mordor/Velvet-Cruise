@@ -1,0 +1,101 @@
+{
+  "status": "PASS",
+  "results": [
+    {
+      "scenario": "release",
+      "requests": 2
+    },
+    {
+      "scenario": "preview",
+      "requests": 0
+    },
+    {
+      "scenario": "desktop",
+      "requests": 0
+    },
+    {
+      "scenario": "demo",
+      "requests": 0
+    },
+    {
+      "scenario": "webdriver",
+      "requests": 0
+    },
+    {
+      "scenario": "native bridge",
+      "requests": 0
+    },
+    {
+      "scenario": "Steam rail",
+      "requests": 0
+    },
+    {
+      "scenario": "desktop metadata",
+      "requests": 0
+    },
+    {
+      "scenario": "test SDK",
+      "requests": 0
+    },
+    {
+      "scenario": "localhost",
+      "requests": 0
+    },
+    {
+      "scenario": "other path",
+      "requests": 0
+    },
+    {
+      "scenario": "autopilot",
+      "requests": 0
+    },
+    {
+      "scenario": "stage=1",
+      "requests": 0
+    },
+    {
+      "scenario": "sim=1",
+      "requests": 0
+    },
+    {
+      "scenario": "yelltest",
+      "requests": 0
+    },
+    {
+      "scenario": "radiotest",
+      "requests": 0
+    },
+    {
+      "scenario": "tumbletest",
+      "requests": 0
+    },
+    {
+      "scenario": "nametest",
+      "requests": 0
+    },
+    {
+      "scenario": "endtest",
+      "requests": 0
+    },
+    {
+      "scenario": "path=0,1",
+      "requests": 0
+    },
+    {
+      "scenario": "maptest",
+      "requests": 0
+    },
+    {
+      "scenario": "graphicstest",
+      "requests": 0
+    },
+    {
+      "scenario": "graphics=plus",
+      "requests": 0
+    },
+    {
+      "scenario": "oldslopes",
+      "requests": 0
+    }
+  ]
+}

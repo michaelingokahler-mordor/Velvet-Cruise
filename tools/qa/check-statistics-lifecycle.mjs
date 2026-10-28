@@ -1,0 +1,24 @@
+import assert from 'node:assert/strict';
+import { build } from 'esbuild';
+import { createRequire } from 'node:module';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+mkdirSync('output/statistics/tests',{recursive:true});
+let source=readFileSync('src/main.ts','utf8').split('async function boot():')[0];
+// Mutation mode proves this test detects the missing lifecycle hook.
+if(process.argv.includes('--without-hook'))source=source.replace("recordStatistic('game_loaded');",'');
+await build({stdin:{contents:source+'\nexport {MainScene};',resolveDir:resolve('src'),loader:'ts'},bundle:true,platform:'node',format:'cjs',outfile:resolve('output/statistics/tests/lifecycle.cjs'),define:{__DEMO_A__:'false','import.meta.env.VITE_LOCAL_SERVICES':'"false"','import.meta.env.VITE_STATISTICS_PRODUCTION':'"true"'},plugins:[{name:'headless-phaser',setup(b){b.onResolve({filter:/^phaser$/},()=>({path:'phaser',namespace:'test'}));b.onLoad({filter:/.*/,namespace:'test'},()=>({contents:'export default {Scene:class{}};'}));}}]});
+globalThis.ImageData=class{constructor(w,h){this.data=new Uint8ClampedArray(w*h*4);}};
+const canvas={width:320,height:180,addEventListener(){},getContext(){return{canvas:this};},getBoundingClientRect(){return{left:0,top:0,width:320,height:180};}};
+globalThis.document={createElement:()=>({...canvas}),getElementById:()=>null,addEventListener(){},hidden:false};
+globalThis.window={addEventListener(){}};globalThis.localStorage={getItem:()=>null,setItem(){}};globalThis.location={hash:'',href:'https://sabnockworks.com/games/more-projects/velvet-cruise/'};Object.defineProperty(globalThis,'navigator',{value:{language:'en',webdriver:false},configurable:true});
+const events=[];globalThis.fetch=async(url,options)=>{if(String(url).endsWith('/stats/events')){events.push(JSON.parse(options.body));return new Response(null,{status:202});}return Response.json({});};
+const {MainScene}=createRequire(import.meta.url)(resolve('output/statistics/tests/lifecycle.cjs'));
+const scene=new MainScene();scene.textures={exists:()=>false};scene.cache={json:{get:()=>null}};scene.load={off(){}};scene.game={canvas};scene.sound={context:null};scene.newDemo=()=>{};scene.loadAudio=()=>{};
+scene.create();await new Promise(r=>setTimeout(r,10));assert.deepEqual(events.map(e=>e.type),['game_loaded'],'actual scene-ready lifecycle sends game_loaded');
+scene.create();await new Promise(r=>setTimeout(r,10));assert.equal(events.length,1,'scene restart within a document does not count a second page');
+scene.audio=new Proxy({ctx:null},{get:(o,k)=>o[k]??(()=>{})});scene.requestSong=()=>{};let attempts=0;scene.newRace=()=>({fresh:++attempts,theme:{nameKey:'stage.test',id:'test'},diff:scene.diff});
+scene.startRace();scene.paused=true;scene.paused=false;scene.setMode('settings');scene.setMode('title');scene.openRecords(0);scene.toDifficulty();scene.startRace();
+await new Promise(r=>setTimeout(r,20));assert.deepEqual(events.map(e=>e.type),['game_loaded','run_start','run_start']);assert.equal(new Set(events.map(e=>e.id)).size,3);
+scene.graphicsChoice.busy=true;scene.startRace();await new Promise(r=>setTimeout(r,10));assert.equal(events.length,3,'blocked start creates no attempt');
+const result={status:'PASS',events:events.map(e=>e.type),checks:['actual create lifecycle','one load per document','actual startRace repeats','pause/menu/records/difficulty do not count','blocked start does not count']};writeFileSync('output/statistics/tests/lifecycle.json',JSON.stringify(result,null,2));console.log(JSON.stringify(result,null,2));

@@ -47,7 +47,7 @@ function standalone() {
   };
 }
 
-export default defineConfig(({ mode }) => ({
+export default defineConfig(({ mode, command }) => ({
   base: "./",
   plugins: [decoders(), gameAssets(), ...(mode === "standalone" ? [standalone()] : []), {
     name: "velvet-edition",
@@ -55,6 +55,7 @@ export default defineConfig(({ mode }) => ({
   }],
   define: {
     __DEMO_A__: JSON.stringify(mode === "demo"),
+    "import.meta.env.VITE_STATISTICS_PRODUCTION": JSON.stringify(command === "build" && mode === "standalone" && process.env.VELVET_PRODUCTION_STATISTICS === "1" ? "true" : "false"),
     "import.meta.env.VITE_LOCAL_SERVICES": JSON.stringify(mode === "standalone" ? "true" : "false"),
   },
   build: { target: "es2022", sourcemap: false, assetsDir: "_app" },

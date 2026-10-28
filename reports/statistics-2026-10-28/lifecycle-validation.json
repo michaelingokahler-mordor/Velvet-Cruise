@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "events": [
+    "game_loaded",
+    "run_start",
+    "run_start"
+  ],
+  "checks": [
+    "actual create lifecycle",
+    "one load per document",
+    "actual startRace repeats",
+    "pause/menu/records/difficulty do not count",
+    "blocked start does not count"
+  ]
+}

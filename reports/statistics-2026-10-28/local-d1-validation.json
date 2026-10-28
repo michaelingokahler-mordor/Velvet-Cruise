@@ -1,0 +1,68 @@
+[
+  {
+    "results": [],
+    "success": true,
+    "meta": {
+      "duration": 0
+    }
+  },
+  {
+    "results": [],
+    "success": true,
+    "meta": {
+      "duration": 0
+    }
+  },
+  {
+    "results": [],
+    "success": true,
+    "meta": {
+      "duration": 0
+    }
+  },
+  {
+    "results": [
+      {
+        "day": "2026-10-28",
+        "game_loaded": 1,
+        "run_start": 1
+      }
+    ],
+    "success": true,
+    "meta": {
+      "duration": 0
+    }
+  },
+  {
+    "results": [
+      {
+        "name": "_cf_METADATA"
+      },
+      {
+        "name": "d1_migrations"
+      },
+      {
+        "name": "limits"
+      },
+      {
+        "name": "profiles"
+      },
+      {
+        "name": "scores"
+      },
+      {
+        "name": "sqlite_sequence"
+      },
+      {
+        "name": "statistics_daily"
+      },
+      {
+        "name": "statistics_events"
+      }
+    ],
+    "success": true,
+    "meta": {
+      "duration": 0
+    }
+  }
+]

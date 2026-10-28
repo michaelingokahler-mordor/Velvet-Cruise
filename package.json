@@ -8,6 +8,8 @@
     "build:web": "vite build --mode standalone",
     "preview": "vite preview",
     "check": "tsc --noEmit",
+    "test": "node tools/qa/check-statistics.mjs && node tools/qa/check-statistics-lifecycle.mjs && node tools/qa/check-statistics-isolation.mjs && node tools/qa/check-statistics-concurrency.mjs && node tools/qa/check-online-worker.mjs && node tools/qa/check-online-client.mjs && node tools/qa/check-local-services.mjs && node tools/qa/check-menu-settings.mjs",
+    "qa:statistics": "node tools/qa/check-statistics.mjs && node tools/qa/check-statistics-lifecycle.mjs && node tools/qa/check-statistics-isolation.mjs && node tools/qa/check-statistics-concurrency.mjs",
     "qa:road-effects": "node tools/qa/check-road-effects-all.mjs",
     "qa:local-services": "node tools/qa/check-local-services.mjs",
     "qa:elevation": "node tools/qa/check-elevation.mjs",

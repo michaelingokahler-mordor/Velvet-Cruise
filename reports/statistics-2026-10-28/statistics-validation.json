@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "passed": [
+    "concurrent duplicates count once and distinct events count independently",
+    "strict ingest rejects identifiers, invalid types, malformed IDs and stale/future times",
+    "statistics origin policy excludes ranking localhost and absent origin",
+    "event time determines Berlin day and expired retries cannot count twice",
+    "report fails closed and returns inclusive zero days with correct totals",
+    "client retries same anonymous event at most three times and never stores data",
+    "client times out hanging requests and caps pending queue",
+    "loaded once per document client, run_start for every fresh attempt, no disabled fetch",
+    "permanent rejection is not retried and later queued events still send",
+    "production gating blocks every game automation mode, desktop, preview and non-release builds",
+    "Berlin days follow midnight and both DST transitions"
+  ],
+  "failures": []
+}

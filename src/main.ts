@@ -15,6 +15,7 @@ import { DEMO_A, SAVE_PREFIX } from "./game/edition";
 import { GameAudio, MusicJson } from "./audio/audio";
 import { AudioSettings, type AudioChannel } from './audio/settings';
 import { initTesana, onTesanaReady, servicesOnline, t, onLocaleChange, locale, track as analytics, submitScore, topScores, myBest, fmtNum, BoardEntry, isTestSdk } from "./platform/tesana";
+import { recordStatistic } from './platform/statistics';
 import { Input, TOUCH, inRect, Rect, CONTROL_PREFS, ControlPref, DRIVE_ACTIONS, bindingLabel, BindingDevice } from "./input";
 import { THEMES } from "./game/themes";
 import { STAGE_COUNT, MAX_SPEED } from "./game/config";
@@ -421,6 +422,7 @@ class MainScene extends Phaser.Scene {
       if (res.arcade >= 0) this.openName();
       return res.arcade;
     };
+    recordStatistic('game_loaded');
   }
 
   /** Jingles and the remembered station stream in after the first frame so the game starts

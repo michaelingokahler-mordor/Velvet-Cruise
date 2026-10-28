@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "connections": 8,
+  "parallelDeliveries": 160,
+  "sameLoadEventDeliveries": 120,
+  "duplicatesExcluded": 119,
+  "totals": {
+    "game_loaded": 1,
+    "run_start": 40
+  },
+  "database": "C:\\Users\\micha\\.codex\\worktrees\\velvet-statistics\\Code\\output\\statistics\\tests\\concurrent-48afe118-f3a2-4498-af78-f9a52fdcac27.sqlite"
+}

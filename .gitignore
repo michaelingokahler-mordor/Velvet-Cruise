@@ -50,3 +50,5 @@ Thumbs.db
 .env
 .env.*
 !.env.example
+server/.wrangler/
+server/.dev.vars

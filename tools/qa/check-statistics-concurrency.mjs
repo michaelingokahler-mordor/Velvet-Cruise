@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import { Worker } from 'node:worker_threads';
+import { DatabaseSync } from 'node:sqlite';
+import { readFileSync, writeFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { build } from 'esbuild';
+await build({entryPoints:['server/worker.ts'],outfile:'output/statistics/tests/concurrent-worker.mjs',bundle:true,platform:'node',format:'esm'});
+const database=resolve(`output/statistics/tests/concurrent-${crypto.randomUUID()}.sqlite`),db=new DatabaseSync(database);db.exec('PRAGMA journal_mode=WAL');db.exec(readFileSync('server/migrations/0001_rankings.sql','utf8')+readFileSync('server/migrations/0002_statistics.sql','utf8'));
+const shared={id:crypto.randomUUID(),timestamp:Date.now(),type:'game_loaded'};
+const threads=Array.from({length:8},()=>new Worker(new URL('./statistics-thread.mjs',import.meta.url),{workerData:{database,shared,bundle:resolve('output/statistics/tests/concurrent-worker.mjs')}}));
+await Promise.all(threads.map(thread=>new Promise((resolve,reject)=>{thread.once('message',resolve);thread.once('error',reject);})));const results=threads.map(thread=>new Promise((resolve,reject)=>{thread.once('message',resolve);thread.once('error',reject);}));threads.forEach(thread=>thread.postMessage('go'));
+const statuses=(await Promise.all(results)).flat();assert.equal(statuses.length,160);assert.ok(statuses.every(status=>status===202));const totals=db.prepare('SELECT SUM(game_loaded) AS game_loaded,SUM(run_start) AS run_start FROM statistics_daily').get();assert.deepEqual({...totals},{game_loaded:1,run_start:40});assert.equal(db.prepare('SELECT COUNT(*) AS n FROM statistics_events').get().n,41);
+db.close();const result={status:'PASS',connections:8,parallelDeliveries:160,sameLoadEventDeliveries:120,duplicatesExcluded:119,totals:{...totals},database};writeFileSync('output/statistics/tests/concurrency.json',JSON.stringify(result,null,2));console.log(JSON.stringify(result,null,2));
