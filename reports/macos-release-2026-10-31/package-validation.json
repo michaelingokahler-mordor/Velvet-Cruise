@@ -1,0 +1,36 @@
+{
+  "status": "PASS",
+  "sourceCommit": "bcb7343a9e2ff555885b14b42eed39fc0d8409da",
+  "nativeRun": "https://github.com/michaelingokahler-mordor/Velvet-Cruise/actions/runs/41225385048",
+  "testSuitesPerArchitecture": 21,
+  "packages": [
+    {
+      "status": "PASS",
+      "arch": "arm64",
+      "archive": "Velvet-Cruise-macOS-arm64-2026-10-31.zip",
+      "sha256": "82c1409d31165aa6197c58911a59ef3b1c28cae8c0bd514eabec392589d3a8ae",
+      "bytes": 135935694,
+      "minimumMacOS": "13.0",
+      "bundleId": "com.sabnockworks.velvetcruise",
+      "symlinks": 14,
+      "runtimeNoticesIncluded": true,
+      "signing": "ad-hoc",
+      "notarized": false,
+      "matchesNativeCIArchive": true
+    },
+    {
+      "status": "PASS",
+      "arch": "x64",
+      "archive": "Velvet-Cruise-macOS-x64-2026-10-31.zip",
+      "sha256": "0e05bd7aa9ca5667949c3bf9a1788a780a15cb80616c7749fdb119f55fd4ccbf",
+      "bytes": 141953344,
+      "minimumMacOS": "13.0",
+      "bundleId": "com.sabnockworks.velvetcruise",
+      "symlinks": 14,
+      "runtimeNoticesIncluded": true,
+      "signing": "ad-hoc",
+      "notarized": false,
+      "matchesNativeCIArchive": true
+    }
+  ]
+}

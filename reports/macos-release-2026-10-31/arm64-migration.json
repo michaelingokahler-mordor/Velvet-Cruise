@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "arch": "arm64",
+  "originalRetained": true,
+  "importedKeys": 4,
+  "activeSourceRejected": true,
+  "nativeRuntimeImport": true,
+  "productionRequests": 0
+}
