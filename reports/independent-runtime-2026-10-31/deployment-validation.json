@@ -1,0 +1,38 @@
+{
+  "status": "PASS",
+  "checkedAt": "2026-10-31T11:53:38.245Z",
+  "gameCommit": "2f73c2f624f84f27ccdb9c760143b9c2c7386d74",
+  "release": "2026-10-31-2f73c2f-independent-runtime",
+  "websiteCommit": "68cca8197293a34de87cc31a5de6f3a149f51d5b",
+  "webFilesVerified": 124,
+  "entrySha256": "063a5e57047ec4f665d6b17e29eb4d9122262e8910d4074b097603f7319268fb",
+  "nativeCodeAndAssetsVerified": 201,
+  "health": {
+    "ok": true,
+    "service": "velvet-cruise",
+    "version": 1
+  },
+  "rankingEntryCount": 1,
+  "reportUnauthorizedStatus": 401,
+  "reportAuthorizedStatus": 200,
+  "profilePreservation": {
+    "expectedKeys": 15,
+    "actualKeys": 15,
+    "missingKeys": 0,
+    "changedExistingValues": 0,
+    "originalProfilesUnchanged": true
+  },
+  "workerDeploymentChanged": false,
+  "databaseMigrationApplied": false,
+  "productionTestEventsSent": 0,
+  "browserSmoke": {
+    "url": "https://sabnockworks.com/games/more-projects/velvet-cruise/#graphicstest",
+    "normalRace": true,
+    "accelerate": true,
+    "pause": true,
+    "resume": true,
+    "consoleErrors": 0,
+    "statisticsTotalsUnchanged": true,
+    "rankingEntriesUnchanged": true
+  }
+}

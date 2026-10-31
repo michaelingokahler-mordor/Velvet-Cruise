@@ -1,6 +1,6 @@
-# Independent runtime candidate — 2026-10-31
+# Independent runtime release — 2026-10-31
 
-Status: prepared and tested locally. No push, publication, production API write, database migration or installed-package replacement occurred.
+Status: approved by the user, committed and pushed, published on the existing game URL, and installed in the existing Windows directory. See `deployment.md` and `deployment-validation.json` for the post-publication checks and actual-profile preservation proof. No production test events, test scores or database migrations were submitted.
 
 ## Changes
 
@@ -60,6 +60,6 @@ Only the final directories and archives are delivery candidates. Earlier numbere
 
 ## Publication boundary
 
-Wait for further user approval. The existing site and `D:/Velvet Cruise/WinExe` remain unchanged.
+The user granted publication and installation approval. The immutable web release is live and `D:/Velvet Cruise/WinExe` contains the owned runtime. The previous Windows package and original storage profile are retained.
 
-After approval, publish the new web directory as an immutable release and update the website wrapper and metadata. Keep the existing game URL, save keys, API configuration and previous release directories. This frontend/runtime change requires no Worker deployment, secret change or D1 migration. Replace the Windows distribution only after preserving its previous package. Keep both storage profiles if rollback is needed; do not delete newer progress while returning to an older launcher.
+The existing game URL, save keys, API configuration and previous release directories are preserved. This frontend/runtime change required no Worker deployment, secret change or D1 migration. The previous Windows package was preserved before replacement. Keep both storage profiles if rollback is needed; do not delete newer progress while returning to an older launcher.
