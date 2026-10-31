@@ -1,0 +1,23 @@
+### Result
+{"goalSelected":45,"parent":{"mode":"records","selected":1},"touch":true}
+### Ran Playwright code
+```js
+await (async (page) => {
+  await page.evaluate(() => { __badgeQA.openBadges(); __badgeQA.input2.setPref('touch'); });
+  await page.setViewportSize({ width: 844, height: 390 });
+  await page.waitForTimeout(150);
+  const canvas = page.locator('#game canvas');
+  const box = await canvas.boundingBox();
+  await canvas.click({ position: { x: 115 * box.width / 320, y: 99 * box.height / 180 } });
+  await page.waitForTimeout(100);
+  const goalSelected = await page.evaluate(() => __badgeQA.badgeSel);
+  if (goalSelected !== 45) throw Error('Goal-row touch selected ' + goalSelected);
+  await canvas.screenshot({ path: 'output/playwright/badges-layout-2026-10-31/after-plus-touch.png' });
+  await canvas.click({ position: { x: 160 * box.width / 320, y: 169 * box.height / 180 } });
+  await page.waitForTimeout(100);
+  const parent = await page.evaluate(() => ({ mode: __badgeQA.mode, selected: __badgeQA.menuSel }));
+  if (parent.mode !== 'records' || parent.selected !== 1) throw Error('Touch Back did not return to Badges in Records');
+  return { goalSelected, parent, touch: await page.evaluate(() => __badgeQA.input2.touchMode) };
+}
+)(page);
+```

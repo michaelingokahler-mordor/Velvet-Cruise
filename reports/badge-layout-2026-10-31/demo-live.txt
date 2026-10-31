@@ -1,0 +1,40 @@
+### Result
+{"edition":"demo-e","info":{"source":"michaelingokahler-mordor/Velvet-Cruise","edition":"demo-e","release":"2026-10-31-demo-e-badges-Cps_mrO3","ruleset":"tour2","route":[0,1,2,3,4],"destination":"E","onlineRankings":false,"statisticsEnabled":false,"contentNotice":true,"status":"published","entry":"releases/2026-10-31-demo-e-badges-Cps_mrO3/_app/index-Cps_mrO3.js","assetsBase":"releases/2026-10-31-demo-e-badges-Cps_mrO3/","commit":"da23919b0837020fe350c632bf161b97849bb3ff","trackedSourceClean":true,"publishedAt":"2026-10-31T20:07:27.719Z"},"mode":"badges","selected":15,"notice":true,"productionRequests":0,"errors":[]}
+### Ran Playwright code
+```js
+await (async (page) => {
+  await page.context().unroute('**/*');
+  const requests = [], errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.context().route('**/*', route => {
+    const url = new URL(route.request().url());
+    if (/workers\.dev|\/stats\//.test(url.href)) requests.push(url.href);
+    if (url.pathname === '/favicon.ico') return route.fulfill({ status: 204, body: '' });
+    return ['http://127.0.0.1:4225', 'https://sabnockworks.com'].includes(url.origin) || ['data:', 'blob:'].includes(url.protocol) ? route.continue() : route.abort();
+  });
+  await page.setViewportSize({ width: 1280, height: 720 });
+  const base = 'https://sabnockworks.com/games/more-projects/velvet-cruise/?badges=da23919';
+  await page.goto(base + '#graphicstest', { waitUntil: 'load' });
+  await page.getByRole('button', { name: 'Play the Demo', exact: true }).waitFor();
+  const notice = await page.locator('body').innerText();
+  if (!notice.includes('Ages 6 and up')) throw Error('Content notice missing');
+  await page.getByRole('button', { name: 'Play the Demo', exact: true }).click();
+  await page.waitForFunction(() => typeof window.__graphicsInfo === 'function');
+  const cdp = await page.context().newCDPSession(page);
+  const proto = await cdp.send('Runtime.evaluate', { expression: 'Phaser.Scene.prototype' });
+  const objects = await cdp.send('Runtime.queryObjects', { prototypeObjectId: proto.result.objectId });
+  await cdp.send('Runtime.callFunctionOn', { objectId: objects.objects.objectId, functionDeclaration: 'function(){window.__badgeQA=this.find(s=>s.input2&&s.demo)}' });
+  await page.evaluate(() => { __badgeQA.openRecords(1); __badgeQA.openBadges(); });
+  await page.waitForTimeout(180);
+  await page.locator('#game canvas').screenshot({ path: 'output/playwright/badges-layout-2026-10-31/live-badges.png' });
+  const result = await page.evaluate(async () => ({ edition: document.querySelector('meta[name="velvet-edition"]').content, info: await (await fetch('build-info.json')).json(), mode: __badgeQA.mode, selected: __badgeQA.badgeSel }));
+  if (result.info.commit !== 'da23919b0837020fe350c632bf161b97849bb3ff') throw Error('Stale deployed build');
+  if (result.edition !== 'demo-e' || result.info.destination !== 'E' || result.info.onlineRankings || result.info.statisticsEnabled) throw Error('Demo settings changed');
+  if (requests.length || errors.length) throw Error(JSON.stringify({ requests, errors }));
+  return { ...result, notice: true, productionRequests: requests.length, errors };
+}
+)(page);
+```
+### Page
+- Page URL: https://sabnockworks.com/games/more-projects/velvet-cruise/?badges=da23919#graphicstest
+- Page Title: Velvet Cruise

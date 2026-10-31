@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "version": "1.0.0",
+  "arch": "arm64",
+  "archive": "D:\\Velvet Cruise\\Code\\output\\badge-layout-release-2026-10-31\\native-artifacts\\arm64\\arm64\\Velvet-Cruise-macOS-arm64-1.0.0.zip",
+  "sha256": "a32887acc99f8be54eb4fb79132588b438577b83e3841d0c2a1cb865fbb8f79e",
+  "bytes": 135937141,
+  "minimumMacOS": "13.0",
+  "bundleId": "com.sabnockworks.velvetcruise",
+  "symlinks": 14,
+  "runtimeNoticesIncluded": true,
+  "signing": "ad-hoc",
+  "notarized": false
+}

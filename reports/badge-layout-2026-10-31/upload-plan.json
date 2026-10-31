@@ -1,0 +1,37 @@
+{
+  "dryRun": true,
+  "version": "1.0.0",
+  "project": "sabnockworks/velvet-cruise",
+  "commands": [
+    {
+      "executable": "D:\\Velvet Cruise\\Code\\output\\itch-tools\\butler\\butler.exe",
+      "args": [
+        "push",
+        "D:\\Velvet Cruise\\Itch\\1.0.0\\Velvet-Cruise-Windows-1.0.0.zip",
+        "sabnockworks/velvet-cruise:windows-x64",
+        "--userversion",
+        "1.0.0"
+      ]
+    },
+    {
+      "executable": "D:\\Velvet Cruise\\Code\\output\\itch-tools\\butler\\butler.exe",
+      "args": [
+        "push",
+        "D:\\Velvet Cruise\\Itch\\1.0.0\\Velvet-Cruise-macOS-arm64-1.0.0.zip",
+        "sabnockworks/velvet-cruise:macos-arm64",
+        "--userversion",
+        "1.0.0"
+      ]
+    },
+    {
+      "executable": "D:\\Velvet Cruise\\Code\\output\\itch-tools\\butler\\butler.exe",
+      "args": [
+        "push",
+        "D:\\Velvet Cruise\\Itch\\1.0.0\\Velvet-Cruise-macOS-x64-1.0.0.zip",
+        "sabnockworks/velvet-cruise:macos-x64",
+        "--userversion",
+        "1.0.0"
+      ]
+    }
+  ]
+}

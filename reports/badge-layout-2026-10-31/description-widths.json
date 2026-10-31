@@ -1,0 +1,308 @@
+[
+  {
+    "id": "stage-clear-easy",
+    "base": "stage-clear",
+    "lines": 1,
+    "description": "Clear your first stage."
+  },
+  {
+    "id": "clean-stage-easy",
+    "base": "clean-stage",
+    "lines": 2,
+    "description": "Clear a stage without crashing or bumping into another car."
+  },
+  {
+    "id": "clean-stages-10-easy",
+    "base": "clean-stages-10",
+    "lines": 2,
+    "description": "Clear 10 stages without crashing or bumping into another car."
+  },
+  {
+    "id": "clean-coast-easy",
+    "base": "clean-coast",
+    "lines": 2,
+    "description": "Finish the whole coast without a single crash or bump."
+  },
+  {
+    "id": "near-miss-1-easy",
+    "base": "near-miss-1",
+    "lines": 1,
+    "description": "Slip past a car at speed for a near miss."
+  },
+  {
+    "id": "near-miss-50-easy",
+    "base": "near-miss-50",
+    "lines": 1,
+    "description": "Pull off 50 near misses."
+  },
+  {
+    "id": "near-miss-250-easy",
+    "base": "near-miss-250",
+    "lines": 1,
+    "description": "Pull off 250 near misses."
+  },
+  {
+    "id": "near-miss-run-easy",
+    "base": "near-miss-run",
+    "lines": 1,
+    "description": "Pull off 20 near misses in a single run."
+  },
+  {
+    "id": "reach-twilight-easy",
+    "base": "reach-twilight",
+    "lines": 1,
+    "description": "Reach one of the five goal stages."
+  },
+  {
+    "id": "coast-complete-easy",
+    "base": "coast-complete",
+    "lines": 1,
+    "description": "Finish the whole coast."
+  },
+  {
+    "id": "coast-finishes-5-easy",
+    "base": "coast-finishes-5",
+    "lines": 1,
+    "description": "Finish the whole coast 5 times."
+  },
+  {
+    "id": "coast-love-easy",
+    "base": "coast-love",
+    "lines": 1,
+    "description": "Finish the whole coast with your passenger in love."
+  },
+  {
+    "id": "photo-finish-easy",
+    "base": "photo-finish",
+    "lines": 1,
+    "description": "Reach the goal with 5 seconds or less on the clock."
+  },
+  {
+    "id": "every-road-easy",
+    "base": "every-road",
+    "lines": 2,
+    "description": "Clear all fifteen stages. Take a different fork next time!"
+  },
+  {
+    "id": "all-goals-easy",
+    "base": "all-goals",
+    "lines": 1,
+    "description": "Reach all five goals on this difficulty."
+  },
+  {
+    "id": "stage-clear",
+    "base": "stage-clear",
+    "lines": 1,
+    "description": "Clear your first stage."
+  },
+  {
+    "id": "clean-stage",
+    "base": "clean-stage",
+    "lines": 2,
+    "description": "Clear a stage without crashing or bumping into another car."
+  },
+  {
+    "id": "clean-stages-10",
+    "base": "clean-stages-10",
+    "lines": 2,
+    "description": "Clear 10 stages without crashing or bumping into another car."
+  },
+  {
+    "id": "clean-coast",
+    "base": "clean-coast",
+    "lines": 2,
+    "description": "Finish the whole coast without a single crash or bump."
+  },
+  {
+    "id": "near-miss-1",
+    "base": "near-miss-1",
+    "lines": 1,
+    "description": "Slip past a car at speed for a near miss."
+  },
+  {
+    "id": "near-miss-50",
+    "base": "near-miss-50",
+    "lines": 1,
+    "description": "Pull off 50 near misses."
+  },
+  {
+    "id": "near-miss-250",
+    "base": "near-miss-250",
+    "lines": 1,
+    "description": "Pull off 250 near misses."
+  },
+  {
+    "id": "near-miss-run",
+    "base": "near-miss-run",
+    "lines": 1,
+    "description": "Pull off 20 near misses in a single run."
+  },
+  {
+    "id": "reach-twilight",
+    "base": "reach-twilight",
+    "lines": 1,
+    "description": "Reach one of the five goal stages."
+  },
+  {
+    "id": "coast-complete",
+    "base": "coast-complete",
+    "lines": 1,
+    "description": "Finish the whole coast."
+  },
+  {
+    "id": "coast-finishes-5",
+    "base": "coast-finishes-5",
+    "lines": 1,
+    "description": "Finish the whole coast 5 times."
+  },
+  {
+    "id": "coast-love",
+    "base": "coast-love",
+    "lines": 1,
+    "description": "Finish the whole coast with your passenger in love."
+  },
+  {
+    "id": "photo-finish",
+    "base": "photo-finish",
+    "lines": 1,
+    "description": "Reach the goal with 5 seconds or less on the clock."
+  },
+  {
+    "id": "every-road",
+    "base": "every-road",
+    "lines": 2,
+    "description": "Clear all fifteen stages. Take a different fork next time!"
+  },
+  {
+    "id": "all-goals",
+    "base": "all-goals",
+    "lines": 1,
+    "description": "Reach all five goals on this difficulty."
+  },
+  {
+    "id": "stage-clear-hard",
+    "base": "stage-clear",
+    "lines": 1,
+    "description": "Clear your first stage."
+  },
+  {
+    "id": "clean-stage-hard",
+    "base": "clean-stage",
+    "lines": 2,
+    "description": "Clear a stage without crashing or bumping into another car."
+  },
+  {
+    "id": "clean-stages-10-hard",
+    "base": "clean-stages-10",
+    "lines": 2,
+    "description": "Clear 10 stages without crashing or bumping into another car."
+  },
+  {
+    "id": "clean-coast-hard",
+    "base": "clean-coast",
+    "lines": 2,
+    "description": "Finish the whole coast without a single crash or bump."
+  },
+  {
+    "id": "near-miss-1-hard",
+    "base": "near-miss-1",
+    "lines": 1,
+    "description": "Slip past a car at speed for a near miss."
+  },
+  {
+    "id": "near-miss-50-hard",
+    "base": "near-miss-50",
+    "lines": 1,
+    "description": "Pull off 50 near misses."
+  },
+  {
+    "id": "near-miss-250-hard",
+    "base": "near-miss-250",
+    "lines": 1,
+    "description": "Pull off 250 near misses."
+  },
+  {
+    "id": "near-miss-run-hard",
+    "base": "near-miss-run",
+    "lines": 1,
+    "description": "Pull off 20 near misses in a single run."
+  },
+  {
+    "id": "reach-twilight-hard",
+    "base": "reach-twilight",
+    "lines": 1,
+    "description": "Reach one of the five goal stages."
+  },
+  {
+    "id": "coast-hard",
+    "base": "coast-complete",
+    "lines": 1,
+    "description": "Finish the whole coast."
+  },
+  {
+    "id": "coast-finishes-5-hard",
+    "base": "coast-finishes-5",
+    "lines": 1,
+    "description": "Finish the whole coast 5 times."
+  },
+  {
+    "id": "coast-love-hard",
+    "base": "coast-love",
+    "lines": 1,
+    "description": "Finish the whole coast with your passenger in love."
+  },
+  {
+    "id": "photo-finish-hard",
+    "base": "photo-finish",
+    "lines": 1,
+    "description": "Reach the goal with 5 seconds or less on the clock."
+  },
+  {
+    "id": "every-road-hard",
+    "base": "every-road",
+    "lines": 2,
+    "description": "Clear all fifteen stages. Take a different fork next time!"
+  },
+  {
+    "id": "all-goals-hard",
+    "base": "all-goals",
+    "lines": 1,
+    "description": "Reach all five goals on this difficulty."
+  },
+  {
+    "id": "goal-a",
+    "base": "goal-a",
+    "lines": 1,
+    "description": "Reach the goal in Neon City."
+  },
+  {
+    "id": "goal-b",
+    "base": "goal-b",
+    "lines": 1,
+    "description": "Reach the goal in Gold Rush Town."
+  },
+  {
+    "id": "goal-c",
+    "base": "goal-c",
+    "lines": 1,
+    "description": "Reach the goal at Crystal Lake."
+  },
+  {
+    "id": "goal-d",
+    "base": "goal-d",
+    "lines": 1,
+    "description": "Reach the goal at Starlight Summit."
+  },
+  {
+    "id": "goal-e",
+    "base": "goal-e",
+    "lines": 1,
+    "description": "Reach the goal at Twilight Bay."
+  },
+  {
+    "id": "goal-all",
+    "base": "goal-all",
+    "lines": 1,
+    "description": "Reach all five goals, on any difficulty."
+  }
+]

@@ -1,0 +1,48 @@
+### Result
+[{"graphics":{"mode":"classic","screen":"records","busy":false,"error":null,"nativeSprites":0,"width":320,"height":180,"textureWidth":320,"textureHeight":180,"canvasWidth":320,"canvasHeight":180,"drawingWidth":320,"drawingHeight":180},"right":16,"down":31,"back":{"mode":"records","selected":1},"storageKeys":[]},{"graphics":{"mode":"plus","screen":"records","busy":false,"error":null,"nativeSprites":715,"width":640,"height":360,"textureWidth":640,"textureHeight":360,"canvasWidth":640,"canvasHeight":360,"drawingWidth":640,"drawingHeight":360},"right":16,"down":31,"back":{"mode":"records","selected":1},"storageKeys":["sunset-coast-run.graphics-mode.v1"]}]
+### Ran Playwright code
+```js
+await (async (page) => {
+  await page.context().unroute('**/*');
+  await page.context().route('**/*', route => {
+    const url = new URL(route.request().url());
+    if (url.pathname === '/favicon.ico') return route.fulfill({ status: 204, body: '' });
+    return url.origin === 'http://127.0.0.1:4223' || ['data:', 'blob:'].includes(url.protocol) ? route.continue() : route.abort();
+  });
+  const attach = async () => {
+    await page.waitForFunction(() => typeof window.__graphicsInfo === 'function');
+    const cdp = await page.context().newCDPSession(page);
+    const proto = await cdp.send('Runtime.evaluate', { expression: 'Phaser.Scene.prototype' });
+    const objects = await cdp.send('Runtime.queryObjects', { prototypeObjectId: proto.result.objectId });
+    await cdp.send('Runtime.callFunctionOn', { objectId: objects.objects.objectId, functionDeclaration: 'function(){window.__badgeQA=this.find(s=>s.input2&&s.demo)}' });
+    await page.evaluate(() => { __badgeQA.openRecords(1); __badgeQA.openBadges(); });
+  };
+  const results = [];
+  for (const graphics of ['classic', 'plus']) {
+    await page.goto('http://127.0.0.1:4223/#graphicstest' + (graphics === 'plus' ? '&graphics=plus' : ''), { waitUntil: 'load' });
+    await page.reload({ waitUntil: 'load' });
+    await attach();
+    await page.waitForFunction(mode => __graphicsInfo().mode === mode && !__graphicsInfo().busy, graphics);
+    for (const [name, selected] of [['normal', 15], ['wrapped-description', 16], ['counted-progress', 17], ['five-goals', 29], ['goal', 50]]) {
+      await page.evaluate(selected => { __badgeQA.badgeSel = selected; }, selected);
+      await page.waitForTimeout(120);
+      await page.locator('#game canvas').screenshot({ path: `output/playwright/badges-layout-2026-10-31/after-${graphics}-${name}.png` });
+    }
+    await page.evaluate(() => { __badgeQA.badges.earned.add('stage-clear'); __badgeQA.badgeSel = 15; });
+    await page.waitForTimeout(120);
+    await page.locator('#game canvas').screenshot({ path: `output/playwright/badges-layout-2026-10-31/after-${graphics}-earned.png` });
+    await page.keyboard.press('ArrowRight'); await page.waitForTimeout(80);
+    const right = await page.evaluate(() => __badgeQA.badgeSel);
+    await page.keyboard.press('ArrowDown'); await page.waitForTimeout(80);
+    const down = await page.evaluate(() => __badgeQA.badgeSel);
+    await page.keyboard.press('Enter'); await page.waitForTimeout(80);
+    const back = await page.evaluate(() => ({ mode: __badgeQA.mode, selected: __badgeQA.menuSel }));
+    results.push({ graphics: await page.evaluate(() => __graphicsInfo()), right, down, back, storageKeys: await page.evaluate(() => Object.keys(localStorage)) });
+  }
+  return results;
+}
+)(page);
+```
+### Page
+- Page URL: http://127.0.0.1:4223/#graphicstest&graphics=plus
+- Page Title: Velvet Cruise
