@@ -5,7 +5,7 @@ import vm from 'node:vm';
 import { build } from 'esbuild';
 
 const source = fs.readFileSync('src/main.ts', 'utf8').split('async function boot():')[0];
-const built = await build({ stdin: { contents: source + '\nexport {MainScene}; export * from "./platform/services"; export * from "./platform/online-scores";', resolveDir: path.resolve('src'), loader: 'ts' }, write: false, bundle: true, platform: 'node', format: 'cjs', define: { __DEMO_A__: 'false', 'import.meta.env.PROD': 'false' }, plugins: [{ name: 'scene-without-renderer', setup(b) { b.onResolve({ filter: /^phaser$/ }, () => ({ path: 'phaser', namespace: 'fixture' })); b.onLoad({ filter: /.*/, namespace: 'fixture' }, () => ({ contents: 'export default {Scene:class{}};' })); } }] });
+const built = await build({ stdin: { contents: source + '\nexport {MainScene}; export * from "./platform/services"; export * from "./platform/online-scores";', resolveDir: path.resolve('src'), loader: 'ts' }, write: false, bundle: true, platform: 'node', format: 'cjs', define: { __DEMO__: 'false', 'import.meta.env.PROD': 'false' }, plugins: [{ name: 'scene-without-renderer', setup(b) { b.onResolve({ filter: /^phaser$/ }, () => ({ path: 'phaser', namespace: 'fixture' })); b.onLoad({ filter: /.*/, namespace: 'fixture' }, () => ({ contents: 'export default {Scene:class{}};' })); } }] });
 const storage = new Map([['sunset-coast-run.name', 'DRIVER'], ['sunset-coast-run.online-profile', JSON.stringify({ id: '11111111-1111-4111-8111-111111111111', token: 'a'.repeat(64), displayName: 'DRIVER' })]]);
 let remote = 3200, acknowledge, delayedRead;
 const readQueue = [];

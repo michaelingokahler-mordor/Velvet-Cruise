@@ -7,8 +7,8 @@
 import { SEG_LEN, ROAD_W, SPR_S } from "./config";
 import { THEMES, PROP_INFO, Theme, themeShape } from "./themes";
 import { vnoise, cellRand, slopeForms, leanOf, plotSpan, ZONE, NF, F_L0, F_L1, F_H0, F_H1, F_R0, F_R1 } from "./terrain";
-import { COLS, NEXT, COAST_PATH, GOAL_A_PATH, completePath, forks as nodeForks } from "./routes";
-import { DEMO_A } from "./edition";
+import { COLS, NEXT, COAST_PATH, completePath, forks as nodeForks } from "./routes";
+import { DEMO } from "./edition";
 import { dressCove, type CoveSection } from "./cove";
 import { dressBluffs, type BluffSection } from "./bluffs";
 import { dressLandscape, type Landscape } from "./landscape";
@@ -172,7 +172,7 @@ export class Track {
   get length(): number { return this.segs.length * SEG_LEN; }
 
   constructor(path: number[] = COAST_PATH, record = false) {
-    this.path = DEMO_A && !record ? GOAL_A_PATH.slice() : completePath(path);
+    this.path = DEMO ? COAST_PATH.slice() : completePath(path);
     this.sequential = record;
     if (!record && !coastSeeds) coastSeeds = new Track(COAST_PATH, true).recorded;
     this.build(0);
@@ -202,7 +202,7 @@ export class Track {
   /** The fork at the end of column col-1 was taken toward `node`: rebuild the road from there on
    *  (the next stage right away, later ones through `step`). */
   choose(col: number, node: number): void {
-    if (DEMO_A) return;
+    if (DEMO) return;
     while (this.pendingCol < COLS) this.step();
     if (col <= 0 || col >= COLS || this.path[col] === node) return;
     if (!(NEXT[this.path[col - 1]] ?? []).includes(node)) return;
@@ -338,7 +338,7 @@ export class Track {
       for (const [a, b] of spans) for (let i = a; i < b; i++) this.segs[i].tunnel = true;
     }
     if (c < COLS - 1) {
-      const split = nodeForks(node) && (!DEMO_A || this.sequential);
+      const split = nodeForks(node) && (!DEMO || this.sequential);
       // straight run after the gate (next column; it keeps this stage's look through a split);
       // a fork needs it long enough to finish splitting
       this.col = c + 1;

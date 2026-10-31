@@ -12,8 +12,8 @@ import { Renderer } from "./game/render";
 import { Hud, C, GRAD_SUN, GRAD_RED, GRAD_PINK, GRAD_CYAN, big, label, panel, button, fmtTime, fit, para, star, drawForkPanel } from "./game/ui";
 import { CourseMap } from "./game/coursemap";
 import { LinkLayer, LinkRect } from "./game/links";
-import { COLS, COAST_PATH, GOAL_A_PATH, COLUMN_NODES, NEXT, NODE_COUNT, completePath, goalLetter, validPath } from "./game/routes";
-import { DEMO_A, SAVE_PREFIX } from "./game/edition";
+import { COLS, COAST_PATH, COLUMN_NODES, NEXT, NODE_COUNT, completePath, goalLetter, validPath } from "./game/routes";
+import { DEMO, SAVE_PREFIX } from "./game/edition";
 import { GameAudio, MusicJson } from "./audio/audio";
 import { AudioSettings, type AudioChannel } from './audio/settings';
 import { initServices, onServicesReady, servicesOnline, t, onLocaleChange, locale, submitScore, topScores, myBest, fmtNum, BoardEntry } from "./platform/services";
@@ -88,7 +88,7 @@ const NAMETEST = HASH.includes("nametest");
 const ENDTEST = HASH.includes("endtest");
 // #path=0,5,8,9,4 plans the route (warps land on it, the autopilot takes it); #maptest opens the course map after a fake run
 const PATH_HASH = ((/path=([0-9,]+)/.exec(HASH) || [])[1] || "").split(",").filter(Boolean).map(Number);
-const PLAN = PATH_HASH.length ? (DEMO_A ? GOAL_A_PATH.slice() : completePath(PATH_HASH)) : null;
+const PLAN = PATH_HASH.length ? (DEMO ? COAST_PATH.slice() : completePath(PATH_HASH)) : null;
 const MAPTEST = HASH.includes("maptest");
 const TEST_HOOKS = AUTOPILOT || WARP > 0 || SIM > 1 || YELLTEST || TUMBLETEST || NAMETEST || ENDTEST || !!PLAN || MAPTEST || GRAPHICS_TEST;
 /** What she says at the finish, by her mood level (terrified … in love). */
@@ -412,7 +412,7 @@ class MainScene extends Phaser.Scene {
       return out;
     };
     if (MAPTEST) (window as unknown as Record<string, unknown>).__map = (path: number[], goal = true) => {
-      const p = DEMO_A ? GOAL_A_PATH.slice() : validPath(completePath(path)) ? completePath(path) : COAST_PATH;
+      const p = DEMO ? COAST_PATH.slice() : validPath(completePath(path)) ? completePath(path) : COAST_PATH;
       const n = goal ? COLS : Math.max(1, Math.min(COLS, path.length));
       Object.assign(this.result, { goal, path: p.slice(0, n), stage: n - 1, stageTimes: p.slice(0, goal ? COLS : n - 1).map((_v, i) => 52 + i * 3.3), diff: this.diff.id });
       this.openMap(true);
@@ -420,7 +420,7 @@ class MainScene extends Phaser.Scene {
     if (ENDTEST) (window as unknown as Record<string, unknown>).__ending = (letter?: string, mood?: number) => {
       if (!this.race) { this.race = new Race(this.track, false, 0, this.diff); this.race.skin = this.car.skin; }
       if (typeof mood === "number") this.lady.mood = mood;
-      this.startEnding(DEMO_A ? "A" : letter);
+      this.startEnding(DEMO ? "E" : letter);
     };
     if (ENDTEST) (window as unknown as Record<string, unknown>).__endingState = () => ({
       mode: this.mode, time: this.modeT, roof: this.race?.roof.phase,
@@ -495,7 +495,7 @@ class MainScene extends Phaser.Scene {
   private newDemo(): void {
     // attract mode shows a random stage of a random route
     const path = [0];
-    for (let c = 1; c < COLS; c++) { const nx = NEXT[path[c - 1]]; path.push(DEMO_A ? GOAL_A_PATH[c] : nx[Math.floor(Math.random() * nx.length)]); }
+    for (let c = 1; c < COLS; c++) { const nx = NEXT[path[c - 1]]; path.push(DEMO ? COAST_PATH[c] : nx[Math.floor(Math.random() * nx.length)]); }
     this.track = new Track(path);
     const st = Math.floor(Math.random() * COLS);
     this.demo = new Race(this.track, true, st);
@@ -587,7 +587,7 @@ class MainScene extends Phaser.Scene {
     const bob = Math.round(Math.sin(this.time2 * 2) * 1.5);
     big(fb, t("game.title"), W / 2, 12 + bob, 3, GRAD_SUN);
     for (let i = 0; i < 4; i++) fb.rect(W / 2 - 110 + i * 3, 38 + bob + i * 2, 220 - i * 6, 1, [rgb(0xff4a7a), rgb(0xff7a4a), rgb(0xffa040), rgb(0xffd050)][i]);
-    para(fb, t(DEMO_A ? "demo.tagline" : "title.tagline"), W / 2, 49 + bob, C.pink, W - 10);
+    para(fb, t(DEMO ? "demo.tagline" : "title.tagline"), W / 2, 49 + bob, C.pink, W - 10);
     const best = this.bestScore.get(this.diff.id);
     if (best !== undefined) drawText(fb, t("title.best", { d: t(this.diff.nameKey), n: fmtNum(best) }), W / 2, 61, C.yellow, { align: "center", outline: C.ink, maxW: W - 10 });
 
@@ -746,7 +746,7 @@ class MainScene extends Phaser.Scene {
   }
 
   private async selectGraphics(mode: GraphicsMode): Promise<void> {
-    const allowed=!DEMO_A && (GRAPHICS_TEST || (this.goalProgress.current.plusUnlocked && this.plusAvailable));
+    const allowed=!DEMO && (GRAPHICS_TEST || (this.goalProgress.current.plusUnlocked && this.plusAvailable));
     await this.graphicsChoice.select(mode,allowed);
   }
 
@@ -2508,7 +2508,7 @@ class MainScene extends Phaser.Scene {
       // every stage, by where it comes in a run (coast first in each column)
       // (two columns: the first eight stages on the left, the rest on the right)
       const rows: { col: number; node: number; first: boolean }[] = [];
-      (DEMO_A ? GOAL_A_PATH.map(n => [n]) : COLUMN_NODES).forEach((list, col) => list.slice().reverse().forEach((node, k) => rows.push({ col, node, first: k === 0 })));
+      (DEMO ? COAST_PATH.map(n => [n]) : COLUMN_NODES).forEach((list, col) => list.slice().reverse().forEach((node, k) => rows.push({ col, node, first: k === 0 })));
       const half = Math.ceil(rows.length / 2), cw = (w - 8) / 2;
       rows.forEach((row, i) => {
         const cx = x0 + 4 + (i < half ? 0 : cw), ry = 60 + (i % half) * 9;

@@ -5,7 +5,7 @@ import {mkdirSync,readFileSync,writeFileSync} from 'node:fs';
 import {resolve} from 'node:path';
 const out=resolve('output/menu-input-2026-10-25');mkdirSync(out,{recursive:true});
 const source=readFileSync('src/main.ts','utf8').split('async function boot():')[0];
-await build({stdin:{contents:source+'\nexport {MainScene};',resolveDir:resolve('src'),loader:'ts'},bundle:true,platform:'node',format:'cjs',outfile:resolve(out,'menus.cjs'),define:{__DEMO_A__:'false','import.meta.env.VITE_LOCAL_SERVICES':'"false"'},plugins:[{name:'headless-phaser',setup(b){b.onResolve({filter:/^phaser$/},()=>({path:'phaser',namespace:'test'}));b.onLoad({filter:/.*/,namespace:'test'},()=>({contents:'export default {Scene:class{}};'}));}}]});
+await build({stdin:{contents:source+'\nexport {MainScene};',resolveDir:resolve('src'),loader:'ts'},bundle:true,platform:'node',format:'cjs',outfile:resolve(out,'menus.cjs'),define:{__DEMO__:'false','import.meta.env.VITE_LOCAL_SERVICES':'"false"'},plugins:[{name:'headless-phaser',setup(b){b.onResolve({filter:/^phaser$/},()=>({path:'phaser',namespace:'test'}));b.onLoad({filter:/.*/,namespace:'test'},()=>({contents:'export default {Scene:class{}};'}));}}]});
 globalThis.ImageData=class{constructor(w,h){this.data=new Uint8ClampedArray(w*h*4);}};
 globalThis.document={createElement:()=>({getContext:()=>({})})};
 globalThis.window={};globalThis.localStorage={getItem:()=>null,setItem:()=>{}};globalThis.location={hash:''};Object.defineProperty(globalThis,'navigator',{value:{language:'en'},configurable:true});

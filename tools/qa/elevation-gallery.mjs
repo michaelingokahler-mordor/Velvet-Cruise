@@ -9,7 +9,7 @@ import { buildBaseline } from './helpers/baseline.mjs';
 const out = resolve('output/elevation/gallery'); mkdirSync(out, { recursive: true });
 const require = createRequire(import.meta.url), { PNG } = require('pngjs');
 const contents = ['core/fb', 'core/materials', 'core/font', 'game/track', 'game/race', 'game/render', 'game/themes', 'game/coursemap', 'game/ui'].map(p => `export * from './src/${p}';`).join('\n');
-await build({ stdin: { contents, resolveDir: process.cwd(), loader: 'ts' }, bundle: true, platform: 'node', format: 'cjs', outfile: resolve(out, 'current.cjs'), define: { __DEMO_A__: 'false', 'import.meta.env.VITE_LOCAL_SERVICES': '"false"' } });
+await build({ stdin: { contents, resolveDir: process.cwd(), loader: 'ts' }, bundle: true, platform: 'node', format: 'cjs', outfile: resolve(out, 'current.cjs'), define: { __DEMO__: 'false', 'import.meta.env.VITE_LOCAL_SERVICES': '"false"' } });
 await buildBaseline('4536338', contents, resolve(out, 'baseline.cjs'));
 globalThis.ImageData = class { constructor(w, h) { this.data = new Uint8ClampedArray(w * h * 4); } };
 const current = require(resolve(out, 'current.cjs')), baseline = require(resolve(out, 'baseline.cjs'));

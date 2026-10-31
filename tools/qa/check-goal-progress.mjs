@@ -148,10 +148,10 @@ test('realSceneTestHooksDoNotPersist',()=>{
  assert.equal(bot.goalProgress.current.plusUnlocked,false);assert.equal(saved.size,0);
 });
 const demoFile=resolve(out,'demo.mjs');
-await build({entryPoints:['src/game/goal-progress.ts'],outfile:demoFile,bundle:true,platform:'node',format:'esm',define:{__DEMO_A__:'true'}});
+await build({entryPoints:['src/game/goal-progress.ts'],outfile:demoFile,bundle:true,platform:'node',format:'esm',define:{__DEMO__:'true'}});
 const demo=await import(pathToFileURL(demoFile));
 test('demoProgressHasSeparateNamespace',()=>{
- assert.equal(demo.GOAL_PROGRESS_KEY,'sunset-coast-run.demo-a.goal-progress.v1');
+ assert.equal(demo.GOAL_PROGRESS_KEY,'sunset-coast-run.demo-e.goal-progress.v1');
  assert.notEqual(demo.GOAL_PROGRESS_KEY,api.GOAL_PROGRESS_KEY);
 });
 console.log(`PASS ${passed} goal-progress checks`);

@@ -35,7 +35,7 @@ const server = http.createServer(async (req, res) => {
 await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
 const apiBase = `http://127.0.0.1:${server.address().port}`;
 fs.writeFileSync(path.join(game, 'online.json'), JSON.stringify({ apiBase }));
-await build({ stdin: { contents: "export * from './src/platform/services'; export * from './src/platform/online-scores';", resolveDir: process.cwd(), loader: 'ts' }, outfile: path.join(game, 'qa-api.js'), bundle: true, platform: 'browser', format: 'esm', define: { __DEMO_A__: 'false', 'import.meta.env.PROD': 'true', 'import.meta.env.VITE_DESKTOP_BUILD': '"true"', 'import.meta.env.VITE_DESKTOP_RANKINGS': '"true"' } });
+await build({ stdin: { contents: "export * from './src/platform/services'; export * from './src/platform/online-scores';", resolveDir: process.cwd(), loader: 'ts' }, outfile: path.join(game, 'qa-api.js'), bundle: true, platform: 'browser', format: 'esm', define: { __DEMO__: 'false', 'import.meta.env.PROD': 'true', 'import.meta.env.VITE_DESKTOP_BUILD': '"true"', 'import.meta.env.VITE_DESKTOP_RANKINGS': '"true"' } });
 const profile = path.join(out, 'profile');
 const previous = path.join(out, 'empty-legacy-root'); fs.mkdirSync(previous);
 async function launch() {

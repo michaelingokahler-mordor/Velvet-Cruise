@@ -9,7 +9,7 @@ import { buildBaseline } from './helpers/baseline.mjs';
 const out = resolve('output/elevation');
 mkdirSync(out, { recursive: true });
 const contents = "export * from './src/game/track'; export * from './src/game/themes'; export * from './src/game/routes';";
-await build({ stdin: { contents, resolveDir: process.cwd(), loader: 'ts' }, bundle: true, platform: 'node', format: 'cjs', outfile: resolve(out, 'current.cjs'), define: { __DEMO_A__: 'false' } });
+await build({ stdin: { contents, resolveDir: process.cwd(), loader: 'ts' }, bundle: true, platform: 'node', format: 'cjs', outfile: resolve(out, 'current.cjs'), define: { __DEMO__: 'false' } });
 await buildBaseline('4536338', contents, resolve(out, 'baseline.cjs'));
 const require = createRequire(import.meta.url), now = require(resolve(out, 'current.cjs')), old = require(resolve(out, 'baseline.cjs'));
 const tests = [], failures = [];

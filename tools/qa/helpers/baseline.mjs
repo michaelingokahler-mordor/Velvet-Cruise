@@ -8,7 +8,7 @@ export async function buildBaseline(ref, contents, outfile) {
   await build({
     stdin: { contents, resolveDir: process.cwd(), loader: 'ts' },
     bundle: true, platform: 'node', format: 'cjs', outfile: resolve(outfile),
-    define: { __DEMO_A__: 'false', 'import.meta.env.VITE_LOCAL_SERVICES': '"false"' },
+    define: { __DEMO__: 'false', 'import.meta.env.VITE_LOCAL_SERVICES': '"false"' },
     plugins: [{ name: 'committed-baseline', setup(api) {
       api.onResolve({ filter: /^\./ }, args => {
         const root = args.namespace === 'baseline' ? posix.dirname(args.importer) : '';

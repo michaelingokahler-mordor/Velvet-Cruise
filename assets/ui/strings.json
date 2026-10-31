@@ -1234,8 +1234,8 @@
   { "id": "car.azure", "text": "Azure Coast" },
   { "id": "car.azure_desc", "text": "A turquoise classic with chrome and ivory trim." },
   { "id": "garage.locked", "text": "Reach Goal" },
-  { "id": "demo.tagline", "text": "DEMO - ROUTE A" },
-  { "id": "demo.map_title", "text": "DEMO ROUTE A" },
+  { "id": "demo.tagline", "text": "DEMO - COAST ROUTE E" },
+  { "id": "demo.map_title", "text": "DEMO ROUTE E" },
   { "id": "demo.map_hint", "text": "FIVE STAGES - ONE DESTINATION" }
  ]
 }

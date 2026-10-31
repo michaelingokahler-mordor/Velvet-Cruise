@@ -32,14 +32,14 @@ function gameAssets() {
 }
 
 // The self-hosted edition loads only local files and uses device-local saves.
-function standalone() {
+function standalone(demo = false) {
   return {
     name: "velvet-standalone",
     transformIndexHtml(html: string) {
       return {
         html,
         tags: [
-          { tag: "meta", attrs: { name: "description", content: "Play Velvet Cruise, a pixel-art arcade driving game. Free to play while in development. Feedback appreciated." }, injectTo: "head" as const },
+          { tag: "meta", attrs: { name: "description", content: demo ? "Try Velvet Cruise in your browser. Drive the five coastal stages to Ending E in this free demo." : "Play Velvet Cruise, a pixel-art arcade driving game. Free to play while in development. Feedback appreciated." }, injectTo: "head" as const },
           { tag: "link", attrs: { rel: "canonical", href: "https://sabnockworks.com/games/more-projects/velvet-cruise/" }, injectTo: "head" as const },
         ],
       };
@@ -49,12 +49,12 @@ function standalone() {
 
 export default defineConfig(({ mode, command }) => ({
   base: "./",
-  plugins: [decoders(), gameAssets(), ...(mode === "standalone" ? [standalone()] : []), {
+  plugins: [decoders(), gameAssets(), ...(["standalone", "demo"].includes(mode) ? [standalone(mode === "demo")] : []), {
     name: "velvet-edition",
-    transformIndexHtml: () => [{ tag: "meta", attrs: { name: "velvet-edition", content: (mode === "demo" || mode === "demo-desktop") ? "demo-a" : "full" }, injectTo: "head" as const }],
+    transformIndexHtml: () => [{ tag: "meta", attrs: { name: "velvet-edition", content: (mode === "demo" || mode === "demo-desktop") ? "demo-e" : "full" }, injectTo: "head" as const }],
   }],
   define: {
-    __DEMO_A__: JSON.stringify(mode === "demo" || mode === "demo-desktop"),
+    __DEMO__: JSON.stringify(mode === "demo" || mode === "demo-desktop"),
     "import.meta.env.VITE_STATISTICS_PRODUCTION": JSON.stringify(command === "build" && mode === "standalone" && process.env.VELVET_PRODUCTION_STATISTICS === "1" ? "true" : "false"),
     "import.meta.env.VITE_DESKTOP_BUILD": JSON.stringify(mode === "desktop" || mode === "demo-desktop" ? "true" : "false"),
     "import.meta.env.VITE_DESKTOP_RANKINGS": JSON.stringify(command === "build" && mode === "desktop" ? "true" : "false"),

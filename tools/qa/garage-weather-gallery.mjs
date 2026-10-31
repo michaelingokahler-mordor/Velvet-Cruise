@@ -6,7 +6,7 @@ import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 const out = resolve('output/garage-weather'); mkdirSync(out,{recursive:true});
-await build({stdin:{contents:['core/fb','core/materials','game/track','game/race','game/render','game/cars','game/config'].map(p=>`export * from './src/${p}';`).join('\n'),resolveDir:process.cwd(),loader:'ts'},bundle:true,platform:'node',format:'cjs',outfile:resolve(out,'gallery.cjs'),define:{__DEMO_A__:'false','import.meta.env.VITE_LOCAL_SERVICES':'"false"'}});
+await build({stdin:{contents:['core/fb','core/materials','game/track','game/race','game/render','game/cars','game/config'].map(p=>`export * from './src/${p}';`).join('\n'),resolveDir:process.cwd(),loader:'ts'},bundle:true,platform:'node',format:'cjs',outfile:resolve(out,'gallery.cjs'),define:{__DEMO__:'false','import.meta.env.VITE_LOCAL_SERVICES':'"false"'}});
 globalThis.ImageData=class{constructor(w,h){this.data=new Uint8ClampedArray(w*h*4);}};
 const require=createRequire(import.meta.url),{PNG}=require('pngjs');
 const m=require(resolve(out,'gallery.cjs'));

@@ -18,7 +18,7 @@ const bundles = new Map();
 async function client({ desktop = true, demo = false, automation = false, debugNative = false, href = nativeOrigin + '/', production = true, values = new Map(), offline = false, stall = false } = {}) {
   const key = [desktop, demo, production].join('-');
   if (!bundles.has(key)) {
-    const built = await build({ stdin: { contents: "export * from './src/platform/services'; export * from './src/platform/online-scores'; export * from './src/game/arcade';", resolveDir: process.cwd(), loader: 'ts' }, bundle: true, platform: 'node', format: 'cjs', write: false, define: { __DEMO_A__: String(demo), 'import.meta.env.PROD': String(production), 'import.meta.env.VITE_DESKTOP_BUILD': JSON.stringify(String(desktop)), 'import.meta.env.VITE_DESKTOP_RANKINGS': JSON.stringify(String(desktop && !demo)) } });
+    const built = await build({ stdin: { contents: "export * from './src/platform/services'; export * from './src/platform/online-scores'; export * from './src/game/arcade';", resolveDir: process.cwd(), loader: 'ts' }, bundle: true, platform: 'node', format: 'cjs', write: false, define: { __DEMO__: String(demo), 'import.meta.env.PROD': String(production), 'import.meta.env.VITE_DESKTOP_BUILD': JSON.stringify(String(desktop)), 'import.meta.env.VITE_DESKTOP_RANKINGS': JSON.stringify(String(desktop && !demo)) } });
     bundles.set(key, built.outputFiles[0].text);
   }
   const events = new EventTarget(), timers = new Map(), requests = [];

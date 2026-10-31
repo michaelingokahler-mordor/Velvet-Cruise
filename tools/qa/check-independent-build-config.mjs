@@ -14,7 +14,7 @@ try{
  for(const[command,mode,flag,demo,desktop,statistics]of cases){
   process.env.VELVET_PRODUCTION_STATISTICS=flag;
   const{config}=await loadConfigFromFile({command,mode},'vite.config.ts');
-  assert.equal(config.define.__DEMO_A__,String(demo),mode+' edition');
+  assert.equal(config.define.__DEMO__,String(demo),mode+' edition');
   assert.equal(config.define['import.meta.env.VITE_DESKTOP_BUILD'],JSON.stringify(String(desktop)),mode+' native identity');
   assert.equal(config.define['import.meta.env.VITE_STATISTICS_PRODUCTION'],JSON.stringify(String(statistics)),command+' '+mode+' statistics');
  }

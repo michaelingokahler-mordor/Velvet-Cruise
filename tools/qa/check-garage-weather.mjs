@@ -5,7 +5,7 @@ import { mkdirSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 const out = resolve('output/garage-weather'); mkdirSync(out, { recursive: true });
-await build({ stdin: { contents: "export * from './src/game/race';export * from './src/game/track';export * from './src/game/cars';export * from './src/core/fb';", resolveDir: process.cwd(), loader: 'ts' }, bundle: true, platform: 'node', format: 'cjs', outfile: resolve(out, 'model.cjs'), define: { __DEMO_A__: 'false', 'import.meta.env.VITE_LOCAL_SERVICES': '"false"' } });
+await build({ stdin: { contents: "export * from './src/game/race';export * from './src/game/track';export * from './src/game/cars';export * from './src/core/fb';", resolveDir: process.cwd(), loader: 'ts' }, bundle: true, platform: 'node', format: 'cjs', outfile: resolve(out, 'model.cjs'), define: { __DEMO__: 'false', 'import.meta.env.VITE_LOCAL_SERVICES': '"false"' } });
 const model = createRequire(import.meta.url)(resolve(out, 'model.cjs'));
 const { Race, Track, CARS } = model;
 const tests = [], failures = [];

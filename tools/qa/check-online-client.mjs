@@ -31,14 +31,14 @@ globalThis.fetch = async (input, options = {}) => {
 };
 async function load(name, local = true, demo = false) {
   const outfile = resolve(`output/online-tests/${name}.mjs`);
-  await build({ stdin: { contents: "export * from './src/platform/services'; export * from './src/platform/online-scores'; export * from './src/game/arcade';", resolveDir: process.cwd(), loader: 'ts' }, outfile, bundle: true, platform: 'node', format: 'esm', define: { __DEMO_A__: String(demo), 'import.meta.env.VITE_LOCAL_SERVICES': JSON.stringify(String(local)) } });
+  await build({ stdin: { contents: "export * from './src/platform/services'; export * from './src/platform/online-scores'; export * from './src/game/arcade';", resolveDir: process.cwd(), loader: 'ts' }, outfile, bundle: true, platform: 'node', format: 'esm', define: { __DEMO__: String(demo), 'import.meta.env.VITE_LOCAL_SERVICES': JSON.stringify(String(local)) } });
   const api = await import(pathToFileURL(outfile));
   await api.initServices();
   return api;
 }
 // Bundle only the existing platform for the initial RED observation.
 const initialFile = resolve('output/online-tests/initial-client.mjs');
-await build({ entryPoints: ['src/platform/services.ts'], outfile: initialFile, bundle: true, platform: 'node', format: 'esm', define: { __DEMO_A__: 'false', 'import.meta.env.VITE_LOCAL_SERVICES': '"true"' } });
+await build({ entryPoints: ['src/platform/services.ts'], outfile: initialFile, bundle: true, platform: 'node', format: 'esm', define: { __DEMO__: 'false', 'import.meta.env.VITE_LOCAL_SERVICES': '"true"' } });
 const initial = await import(pathToFileURL(initialFile));
 await initial.initServices();
 assert.equal(initial.servicesOnline(), true, 'A configured standalone website must use the Cloudflare ranking service');

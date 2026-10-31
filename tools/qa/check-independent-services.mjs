@@ -26,7 +26,7 @@ globalThis.location={href:'http://127.0.0.1:5173/',hash:''};
 Object.defineProperty(globalThis,'navigator',{configurable:true,value:{language:'de-DE',webdriver:true}});
 globalThis.localStorage={getItem:k=>values.get(k)??null,setItem:(k,v)=>values.set(k,String(v))};
 const requests=[];globalThis.fetch=async(url)=>{requests.push(String(url));return Response.json({});};
-await build({entryPoints:[entry],outfile:resolve(out,'services.mjs'),bundle:true,platform:'node',format:'esm',define:{__DEMO_A__:'false','import.meta.env.VITE_LOCAL_SERVICES':'"false"','import.meta.env.VITE_DESKTOP_BUILD':'"false"','import.meta.env.PROD':'false'}});
+await build({entryPoints:[entry],outfile:resolve(out,'services.mjs'),bundle:true,platform:'node',format:'esm',define:{__DEMO__:'false','import.meta.env.VITE_LOCAL_SERVICES':'"false"','import.meta.env.VITE_DESKTOP_BUILD':'"false"','import.meta.env.PROD':'false'}});
 const api=await import(pathToFileURL(resolve(out,'services.mjs')));
 assert.equal(api.usesLocalServices(),true,'default web/dev must use local-first services without a host SDK');
 assert.equal(typeof api.initServices,'function','owned service initialization is available');

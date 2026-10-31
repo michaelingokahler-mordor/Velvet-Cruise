@@ -8,8 +8,8 @@ import { drawText } from "../core/font";
 import { t } from "../platform/services";
 import { THEMES } from "./themes";
 import { TIME_ICON, WEATHER_KEY, stageTimeOfDay, weatherIcon, roadFeatureKey } from './stage-info';
-import { COLUMN_NODES, NEXT, NODE_COUNT, GOAL_A_PATH, goalLetter } from "./routes";
-import { DEMO_A } from "./edition";
+import { COLUMN_NODES, NEXT, NODE_COUNT, COAST_PATH, goalLetter } from "./routes";
+import { DEMO } from "./edition";
 import { C, big, fit, fmtTime, GRAD_SUN } from "./ui";
 
 export interface MapData { w: number; h: number; nodes: Record<string, [number, number]>; edges: Record<string, [number, number][]> }
@@ -43,12 +43,12 @@ export class CourseMap {
   }
 
   node(n: number): [number, number] {
-    if (DEMO_A) return [32 + Math.max(0, GOAL_A_PATH.indexOf(n)) * 58, 104];
+    if (DEMO) return [32 + Math.max(0, COAST_PATH.indexOf(n)) * 58, 104];
     return this.data.nodes[String(n)] ?? fallback().nodes[String(n)];
   }
 
   private edge(a: number, b: number): [number, number][] {
-    if (DEMO_A) return [this.node(a), this.node(b)];
+    if (DEMO) return [this.node(a), this.node(b)];
     return this.data.edges[`${a}-${b}`] ?? [this.node(a), this.node(b)];
   }
 
@@ -90,28 +90,28 @@ export class CourseMap {
    * (in edges, fractional), `hi` = the stage to highlight (blinking marker), or -1.
    */
   draw(fb: DrawSurface, bank: SpriteBank, time: number, path: number[], progress: number, hi: number): void {
-    const bg = DEMO_A ? undefined : bank.get("course_map");
-    const nodes = DEMO_A ? GOAL_A_PATH : Array.from({ length: NODE_COUNT }, (_v, n) => n);
+    const bg = DEMO ? undefined : bank.get("course_map");
+    const nodes = DEMO ? COAST_PATH : Array.from({ length: NODE_COUNT }, (_v, n) => n);
     if (bg) fb.layer(bg, 0, 0, true);
     else {
       fb.clear(rgb(0xd8b888));
-      if (DEMO_A) {
-        for (let c = 0; c < GOAL_A_PATH.length; c++) {
-          const n = GOAL_A_PATH[c], [x, y] = this.node(n), th = THEMES[n];
+      if (DEMO) {
+        for (let c = 0; c < COAST_PATH.length; c++) {
+          const n = COAST_PATH[c], [x, y] = this.node(n), th = THEMES[n];
           fb.rect(x - 24, 49, 49, 43, C.ink);
           for (let row = 0; row < 40; row++) fb.rect(x - 23, 50 + row, 47, 1, row < 22 ? th.skyGrad[Math.min(th.skyGrad.length - 1, Math.floor(row / 5))] : th.groundA);
           const far = bank.get(th.icon ?? "icon_coast");
           if (far) fb.blit(far, x, 85, 2);
           drawText(fb, String(c + 1), x, y + 12, C.ink, { align: "center" });
-          if (c > 0) this.line(fb, this.node(GOAL_A_PATH[c - 1]), [x, y], rgb(0x6a6a74));
+          if (c > 0) this.line(fb, this.node(COAST_PATH[c - 1]), [x, y], rgb(0x6a6a74));
         }
         drawText(fb, t("demo.map_hint"), W / 2, 140, C.ink, { align: "center" });
       }
-      for (const [k, pts] of DEMO_A ? [] : Object.entries(this.data.edges)) {
+      for (const [k, pts] of DEMO ? [] : Object.entries(this.data.edges)) {
         void k;
         for (let i = 1; i < pts.length; i++) this.line(fb, pts[i - 1], pts[i], rgb(0x6a6a74));
       }
-      for (const n of DEMO_A ? [] : nodes) {
+      for (const n of DEMO ? [] : nodes) {
         const [x, y] = this.node(n);
         const ic = bank.get(THEMES[n].icon ?? "icon_coast");
         if (ic) fb.blit(ic, x, y + 8, 1);
@@ -135,7 +135,7 @@ export class CourseMap {
       fb.rect(x - 1, y - 1, 3, 3, done ? RED_L : rgb(0xc8c0b8));
     }
     // the five goals: a chequered flag on each (the painted map has its own) and its letter A-E
-    for (const g of DEMO_A ? [GOAL_A_PATH[GOAL_A_PATH.length - 1]] : COLUMN_NODES[COLUMN_NODES.length - 1]) {
+    for (const g of DEMO ? [COAST_PATH[COAST_PATH.length - 1]] : COLUMN_NODES[COLUMN_NODES.length - 1]) {
       const [x, y] = this.node(g);
       if (!bg) {
         fb.rect(x + 3, y - 15, 1, 13, C.ink);
@@ -159,7 +159,7 @@ export class CourseMap {
       fb.rect(x - 2, y - 7 + bob, 5, 2, C.ink);
       fb.rect(x - 1, y - 6 + bob, 3, 1, rgb(0xff8a6a));
     }
-    big(fb, t(DEMO_A ? "demo.map_title" : "map.title"), W / 2, 4, 2, GRAD_SUN);
+    big(fb, t(DEMO ? "demo.map_title" : "map.title"), W / 2, 4, 2, GRAD_SUN);
   }
 
   /** A goal letter in a little white sign (red when it is the goal this run reached). */
@@ -199,9 +199,9 @@ export class CourseMap {
 
   /** Browsing: move the selection with the arrow keys (columns left/right, stages up/down). */
   move(dx: number, dy: number): void {
-    if (DEMO_A) {
-      const i = Math.max(0, GOAL_A_PATH.indexOf(this.sel));
-      this.sel = GOAL_A_PATH[Math.max(0, Math.min(GOAL_A_PATH.length - 1, i + dx + dy))];
+    if (DEMO) {
+      const i = Math.max(0, COAST_PATH.indexOf(this.sel));
+      this.sel = COAST_PATH[Math.max(0, Math.min(COAST_PATH.length - 1, i + dx + dy))];
       return;
     }
     const col = COLUMN_NODES.findIndex((c) => c.includes(this.sel));
@@ -225,7 +225,7 @@ export class CourseMap {
   /** The stage marker nearest a tap (within reach), or -1. */
   hit(x: number, y: number): number {
     let best = -1, bd = 18 * 18;
-    for (const n of DEMO_A ? GOAL_A_PATH : Array.from({ length: NODE_COUNT }, (_v, n) => n)) {
+    for (const n of DEMO ? COAST_PATH : Array.from({ length: NODE_COUNT }, (_v, n) => n)) {
       const [nx, ny] = this.node(n);
       const d = (nx - x) ** 2 + (ny - y) ** 2;
       if (d < bd) { bd = d; best = n; }

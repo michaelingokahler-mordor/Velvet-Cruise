@@ -7,7 +7,7 @@ mkdirSync('output/statistics/tests',{recursive:true});
 let source=readFileSync('src/main.ts','utf8').split('async function boot():')[0];
 // Mutation mode proves this test detects the missing lifecycle hook.
 if(process.argv.includes('--without-hook'))source=source.replace("recordStatistic('game_loaded');",'');
-await build({stdin:{contents:source+'\nexport {MainScene};',resolveDir:resolve('src'),loader:'ts'},bundle:true,platform:'node',format:'cjs',outfile:resolve('output/statistics/tests/lifecycle.cjs'),define:{__DEMO_A__:'false','import.meta.env.VITE_LOCAL_SERVICES':'"false"','import.meta.env.VITE_STATISTICS_PRODUCTION':'"true"'},plugins:[{name:'headless-phaser',setup(b){b.onResolve({filter:/^phaser$/},()=>({path:'phaser',namespace:'test'}));b.onLoad({filter:/.*/,namespace:'test'},()=>({contents:'export default {Scene:class{}};'}));}}]});
+await build({stdin:{contents:source+'\nexport {MainScene};',resolveDir:resolve('src'),loader:'ts'},bundle:true,platform:'node',format:'cjs',outfile:resolve('output/statistics/tests/lifecycle.cjs'),define:{__DEMO__:'false','import.meta.env.VITE_LOCAL_SERVICES':'"false"','import.meta.env.VITE_STATISTICS_PRODUCTION':'"true"'},plugins:[{name:'headless-phaser',setup(b){b.onResolve({filter:/^phaser$/},()=>({path:'phaser',namespace:'test'}));b.onLoad({filter:/.*/,namespace:'test'},()=>({contents:'export default {Scene:class{}};'}));}}]});
 globalThis.ImageData=class{constructor(w,h){this.data=new Uint8ClampedArray(w*h*4);}};
 const canvas={width:320,height:180,addEventListener(){},getContext(){return{canvas:this};},getBoundingClientRect(){return{left:0,top:0,width:320,height:180};}};
 globalThis.document={createElement:()=>({...canvas}),getElementById:()=>null,addEventListener(){},hidden:false};
