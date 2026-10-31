@@ -1,6 +1,6 @@
 # itch.io Full Release Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Deliver Windows and native Mac Full 1.0.0 archives and repeatable Butler update commands.
 
@@ -35,10 +35,10 @@ tools/qa/check-macos-archive.py; .github/workflows/macos-release.yml.
 **Interfaces:** package.json version -> releaseVersion; packagers -> versioned archives,
 top-level .itch.toml and RELEASE-INFO.json; build metadata -> releaseVersion.
 
-- [ ] Add behavioral version/launch/source-preservation checks and watch them fail.
-- [ ] Implement shared version and package metadata, avoiding template logs/install records.
-- [ ] Check Mac archive version and launch metadata on native CI.
-- [ ] Run focused checks, typecheck and full suite; document pre-existing content-scan failure.
+- [x] Add behavioral version/launch/source-preservation checks and watch them fail.
+- [x] Implement shared version and package metadata, avoiding template logs/install records.
+- [x] Check Mac archive version and launch metadata on native CI.
+- [x] Run focused checks, typecheck and full suite; document pre-existing content-scan failure.
 
 ### Task 2: Release collection and Butler updates
 
@@ -48,18 +48,18 @@ tools/setup-butler.ps1; tools/qa/check-itch-release.py; docs/ITCH_RELEASE.md; pa
 **Interfaces:** three Full archives -> release.json + SHA256SUMS.txt; manifest ->
 dry-run commands, or explicit --push; --project sabnockworks/velvet-cruise.
 
-- [ ] Test missing/wrong/demo builds, exact Mac ZIP preservation, and corrupt batch rejection.
-- [ ] Implement collection, local Butler setup and all-before-any upload validation.
-- [ ] Document first setup, update steps, Mac selection and acceptance limitations.
-- [ ] Run tests and official Butler build validation.
+- [x] Test missing/wrong/demo builds, exact Mac ZIP preservation, and corrupt batch rejection.
+- [x] Implement collection, local Butler setup and all-before-any upload validation.
+- [x] Document first setup, update steps, Mac selection and acceptance limitations.
+- [x] Run tests and official Butler build validation.
 
 ### Task 3: Build and acceptance
 
 **Files:** reports/itch-release-2026-10-31/; native workflow artifacts; local delivery folder.
 
-- [ ] Build Windows; commit/push the working branch for native Mac CI.
-- [ ] Build, extract and verify both Mac architectures on native runners.
-- [ ] Collect exact ZIPs; check hashes and dry-run all stable channel commands.
-- [ ] Exercise a real local Butler diff/apply and native ranking/offline checks.
-- [ ] Obtain one independent final code review and address important findings.
-- [ ] Report actual artifacts and explicitly identify account-dependent checks still pending.
+- [x] Build Windows; commit/push the working branch for native Mac CI.
+- [x] Build, extract and verify both Mac architectures on native runners.
+- [x] Collect exact ZIPs; check hashes and dry-run all stable channel commands.
+- [x] Exercise a real local Butler diff/apply and native ranking/offline checks.
+- [x] Obtain one independent final code review and address important findings.
+- [x] Report actual artifacts and explicitly identify account-dependent checks still pending.

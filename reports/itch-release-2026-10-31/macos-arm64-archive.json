@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "version": "1.0.0",
+  "arch": "arm64",
+  "archive": "output\\itch-release\\downloads\\arm64\\arm64\\Velvet-Cruise-macOS-arm64-1.0.0.zip",
+  "sha256": "718836090fbe457176eb725c86ac88c4b2c8b64ab3aa7624d7b6df3135604996",
+  "bytes": 135937100,
+  "minimumMacOS": "13.0",
+  "bundleId": "com.sabnockworks.velvetcruise",
+  "symlinks": 14,
+  "runtimeNoticesIncluded": true,
+  "signing": "ad-hoc",
+  "notarized": false
+}

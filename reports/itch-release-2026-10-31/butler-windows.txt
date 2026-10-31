@@ -1,0 +1,21 @@
+
+∙ Validating build directory output/itch-release/build/windows
+For host 64-bit Windows (native) (use --platform and --arch to simulate others)
+
+∙ Validating 53 B manifest at (output\itch-release\build\windows\.itch.toml)
+
+√ Validating 1 actions...
+
+  → Action 'play' (Velvet Cruise.exe)
+(output\itch-release\build\windows\Velvet Cruise.exe) yielded 1 candidates when configured with dash
+(Velvet Cruise.exe) Does not require elevation
+    | (output\itch-release\build\windows\Velvet Cruise.exe) (native)
+    |-- 180.04 MiB Velvet Cruise.exe windows-amd64 win(arch=amd64)
+    |-- ↗ Will be launched as a native application
+
+√ No prereqs listed.
+
+If your application needs some libraries to pre-installed (.NET, Visual C++ Runtime, etc.),
+you can list them in the manifest.
+
+Visit https://itch.io/docs/itch/integrating/manifest.html for more information.

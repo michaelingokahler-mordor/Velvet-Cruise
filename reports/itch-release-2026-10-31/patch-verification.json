@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "files": 204,
+  "exactPatchedFiles": true,
+  "installedSource": "D:/Velvet Cruise/WinExe",
+  "candidate": "output/itch-release/build/windows",
+  "patched": "output/itch-release/patch/windows-updated-verified"
+}

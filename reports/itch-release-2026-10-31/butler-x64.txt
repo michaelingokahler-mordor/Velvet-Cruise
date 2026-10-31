@@ -1,0 +1,20 @@
+
+• Validating build directory output/macos-release/extracted
+For host 64-bit macOS (native) (use --platform and --arch to simulate others)
+
+• Validating 53 B manifest at (output/macos-release/extracted/.itch.toml)
+
+✓ Validating 1 actions...
+
+  → Action 'play' (Velvet Cruise.app)
+(output/macos-release/extracted/Velvet Cruise.app) is an app bundle, picking native strategy
+    | (output/macos-release/extracted/Velvet Cruise.app) (native)
+    |-- 0 B Velvet Cruise.app app-macos-
+    |-- ↗ Will be launched as a native application
+
+✓ No prereqs listed.
+
+If your application needs some libraries to pre-installed (.NET, Visual C++ Runtime, etc.),
+you can list them in the manifest.
+
+Visit https://itch.io/docs/itch/integrating/manifest.html for more information.

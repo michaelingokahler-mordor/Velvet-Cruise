@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "game": "Velvet Cruise",
+  "gameId": "game-20261009-93986676",
+  "version": "1.0.0",
+  "project": "sabnockworks/velvet-cruise",
+  "builds": [
+    {
+      "channel": "windows-x64",
+      "file": "Velvet-Cruise-Windows-1.0.0.zip",
+      "bytes": 132358220,
+      "sha256": "21d1bad244a37f3291c26b9442bc25e7d71ff4d5a4dd553d00c1b0dd0ad251e1"
+    },
+    {
+      "channel": "macos-arm64",
+      "file": "Velvet-Cruise-macOS-arm64-1.0.0.zip",
+      "bytes": 135937100,
+      "sha256": "718836090fbe457176eb725c86ac88c4b2c8b64ab3aa7624d7b6df3135604996"
+    },
+    {
+      "channel": "macos-x64",
+      "file": "Velvet-Cruise-macOS-x64-1.0.0.zip",
+      "bytes": 141954746,
+      "sha256": "a8be97550c99649f3c2e881c9c95449e8081fbe2a8eb9d475b0fcdb6122febe7"
+    }
+  ]
+}

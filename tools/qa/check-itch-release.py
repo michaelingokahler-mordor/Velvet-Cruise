@@ -87,6 +87,9 @@ assert collect(out).returncode != 0, 'Existing deliveries cannot be overwritten'
 bad = root / 'wrong-arch'
 assert collect(bad, intel).returncode != 0
 assert not bad.exists(), 'All inputs must be validated before creating delivery'
+missing = root / 'missing-archive'
+assert collect(missing, root / 'not-downloaded.zip').returncode != 0
+assert not missing.exists(), 'A missing architecture cannot create a partial delivery'
 payload = windows / 'resources/game/build_manifest.json'
 payload.write_text(json.dumps(dict(releaseVersion=version, edition='demo-e')))
 assert collect(root / 'demo').returncode != 0, 'Never sell a mislabeled demo'
