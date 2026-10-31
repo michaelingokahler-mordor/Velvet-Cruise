@@ -1,0 +1,215 @@
+{
+  "status": "PASS",
+  "edition": "demo-e",
+  "path": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "goal": "E",
+  "branchCount": 0,
+  "fullEditionRoutes": 16,
+  "geometry": "curves, heights, tunnels and distance preserved",
+  "clocks": "identical to full route E",
+  "saves": "separate keys; existing Full and route-A demo records preserved",
+  "map": "only five demo stages selectable",
+  "runs": [
+    {
+      "difficulty": "easy",
+      "state": "goal",
+      "path": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "runTime": 426.25,
+      "remaining": 51.13,
+      "gates": [
+        {
+          "kind": "check",
+          "stage": 0,
+          "remaining": 81.17
+        },
+        {
+          "kind": "stage",
+          "stage": 0,
+          "remaining": 91.37
+        },
+        {
+          "kind": "check",
+          "stage": 1,
+          "remaining": 99
+        },
+        {
+          "kind": "stage",
+          "stage": 1,
+          "remaining": 99
+        },
+        {
+          "kind": "check",
+          "stage": 2,
+          "remaining": 99
+        },
+        {
+          "kind": "stage",
+          "stage": 2,
+          "remaining": 99
+        },
+        {
+          "kind": "check",
+          "stage": 3,
+          "remaining": 99
+        },
+        {
+          "kind": "stage",
+          "stage": 3,
+          "remaining": 99
+        },
+        {
+          "kind": "check",
+          "stage": 4,
+          "remaining": 99
+        },
+        {
+          "kind": "goal",
+          "stage": 4,
+          "remaining": 51.13
+        }
+      ]
+    },
+    {
+      "difficulty": "normal",
+      "state": "goal",
+      "path": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "runTime": 426.42,
+      "remaining": 29.58,
+      "gates": [
+        {
+          "kind": "check",
+          "stage": 0,
+          "remaining": 63.17
+        },
+        {
+          "kind": "stage",
+          "stage": 0,
+          "remaining": 66.87
+        },
+        {
+          "kind": "check",
+          "stage": 1,
+          "remaining": 71.12
+        },
+        {
+          "kind": "stage",
+          "stage": 1,
+          "remaining": 73.85
+        },
+        {
+          "kind": "check",
+          "stage": 2,
+          "remaining": 72.33
+        },
+        {
+          "kind": "stage",
+          "stage": 2,
+          "remaining": 74.65
+        },
+        {
+          "kind": "check",
+          "stage": 3,
+          "remaining": 74.9
+        },
+        {
+          "kind": "stage",
+          "stage": 3,
+          "remaining": 76.85
+        },
+        {
+          "kind": "check",
+          "stage": 4,
+          "remaining": 77.47
+        },
+        {
+          "kind": "goal",
+          "stage": 4,
+          "remaining": 29.58
+        }
+      ]
+    },
+    {
+      "difficulty": "hard",
+      "state": "goal",
+      "path": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "runTime": 439.48,
+      "remaining": 16.52,
+      "gates": [
+        {
+          "kind": "check",
+          "stage": 0,
+          "remaining": 63.17
+        },
+        {
+          "kind": "stage",
+          "stage": 0,
+          "remaining": 65.08
+        },
+        {
+          "kind": "check",
+          "stage": 1,
+          "remaining": 69.2
+        },
+        {
+          "kind": "stage",
+          "stage": 1,
+          "remaining": 70.15
+        },
+        {
+          "kind": "check",
+          "stage": 2,
+          "remaining": 70.97
+        },
+        {
+          "kind": "stage",
+          "stage": 2,
+          "remaining": 74.22
+        },
+        {
+          "kind": "check",
+          "stage": 3,
+          "remaining": 66.63
+        },
+        {
+          "kind": "stage",
+          "stage": 3,
+          "remaining": 67.33
+        },
+        {
+          "kind": "check",
+          "stage": 4,
+          "remaining": 64.58
+        },
+        {
+          "kind": "goal",
+          "stage": 4,
+          "remaining": 16.52
+        }
+      ]
+    }
+  ]
+}

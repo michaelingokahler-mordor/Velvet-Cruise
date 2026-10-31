@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "demoSourceCommit": "740f01c0dabd776e9bfe2dbf3fb190ee5d14f0c3",
+  "cleanSourceTestSuites": 22,
+  "extraGoalProgressChecks": 18,
+  "extraAudioChecks": 11,
+  "demoDeliveredFiles": 123,
+  "windowsArchive": "Velvet-Cruise-Windows-Full-2026-10-31.zip",
+  "windowsSha256": "03adfb5d650b2418b504450a3b3ebc63918355c2add923773c24791eb8202ffe",
+  "installedWindowsFilesUnchanged": 202,
+  "published": false
+}

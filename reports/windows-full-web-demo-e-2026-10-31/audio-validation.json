@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "checks": [
+    "full steering produces a tyre warning before either road edge becomes sand",
+    "short taps and low-speed steering do not sustain tyre squeal",
+    "new profiles have separate music and effects levels",
+    "music mute survives a reload without altering effects or other saves",
+    "stored volumes validate each channel independently",
+    "Demo E audio preferences preserve Full and route-A audio levels",
+    "audio values clamp and blocked storage leaves session controls usable",
+    "audio menu keyboard adjusts independent levels and returns to its Settings row",
+    "touch slider endpoints fully mute and restore music",
+    "muted music does not request the station when opening the audio preview",
+    "muted station requests never reach the loader"
+  ],
+  "failures": []
+}

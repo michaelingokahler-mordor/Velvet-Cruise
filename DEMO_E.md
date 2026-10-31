@@ -39,5 +39,12 @@ Die Prüfung deckt auch Geometrie, Zeitboni, Kartenbegrenzung und unveränderte 
 `output/playwright/demo-e` enthält die Browser-Prüfung und Bildschirmfotos.
 Diese Prüfung verwendet lokale Daten und sendet keine produktiven Highscores oder Statistiken.
 
+Bei laufender Vorschau auf Port 4214 startet dieser Befehl die Browser-Prüfung:
+
+```powershell
+npx --yes --package @playwright/cli playwright-cli -s=velvet-demo-e open http://127.0.0.1:4214/ --browser chrome
+npx --yes --package @playwright/cli playwright-cli -s=velvet-demo-e run-code --filename tools/qa/demo-e-browser.js
+```
+
 Der Build allein ersetzt die veröffentlichte Web-Vollversion nicht.
 Manuelle Fahrgefühl- und Gamepad-Tests stehen noch aus.

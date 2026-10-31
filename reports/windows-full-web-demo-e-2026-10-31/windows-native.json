@@ -1,0 +1,77 @@
+{
+  "status": "PASS",
+  "productionForwarding": false,
+  "checks": [
+    "actual Electron custom origin",
+    "offline canvas",
+    "local-first score",
+    "queue across real Chromium relaunch",
+    "actual game auto-upload",
+    "native preflight and submission",
+    "shared web/native result",
+    "retained local arcade table",
+    "no statistics"
+  ],
+  "calls": [
+    {
+      "path": "/health",
+      "method": "GET",
+      "origin": "velvet-game://game-20261009-93986676"
+    },
+    {
+      "path": "/health",
+      "method": "GET",
+      "origin": "velvet-game://game-20261009-93986676"
+    },
+    {
+      "path": "/health",
+      "method": "GET",
+      "origin": "velvet-game://game-20261009-93986676"
+    },
+    {
+      "path": "/health",
+      "method": "GET",
+      "origin": "velvet-game://game-20261009-93986676"
+    },
+    {
+      "path": "/profiles",
+      "method": "OPTIONS",
+      "origin": "velvet-game://game-20261009-93986676"
+    },
+    {
+      "path": "/profiles",
+      "method": "POST",
+      "origin": "velvet-game://game-20261009-93986676"
+    },
+    {
+      "path": "/health",
+      "method": "GET",
+      "origin": "velvet-game://game-20261009-93986676"
+    },
+    {
+      "path": "/scores/score-normal-tour2",
+      "method": "OPTIONS",
+      "origin": "velvet-game://game-20261009-93986676"
+    },
+    {
+      "path": "/scores/score-normal-tour2",
+      "method": "POST",
+      "origin": "velvet-game://game-20261009-93986676"
+    },
+    {
+      "path": "/scores/score-normal-tour2?limit=7",
+      "method": "OPTIONS",
+      "origin": "velvet-game://game-20261009-93986676"
+    },
+    {
+      "path": "/scores/score-normal-tour2?limit=7",
+      "method": "GET",
+      "origin": "velvet-game://game-20261009-93986676"
+    }
+  ],
+  "screenshots": [
+    "offline-title.png",
+    "online-ranking.png",
+    "local-ranking.png"
+  ]
+}
