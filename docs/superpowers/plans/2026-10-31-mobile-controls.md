@@ -28,3 +28,5 @@ Review: independent read-only review found radio-return and sensor-retry defects
 Verification: final TypeScript check, all 14 npm test suites, standalone build, Chromium production browser run and WebKit production browser run passed. Details: docs/MOBILE_CONTROLS_2026-10-31.md.
 Ruling: Pause keeps at least 60% opacity even when driving controls use 20%; the emergency menu entry must remain visible.
 Remaining acceptance: physical iPhone Safari/Chrome and human tilt feel. No deployment or Windows update.
+
+Publication follow-up: the user explicitly authorized committing, pushing and publishing the web edition after implementation. Source f7dfdb5 was pushed to main and the feature branch. SabnockWorks publication 9a1e9ec is live. All 126 files, Chromium mobile flows and WebKit flows passed live checks. The initial no-publication constraint was superseded for the web edition. No Windows installation occurred. See reports/mobile-controls-2026-10-31/deployment.md.

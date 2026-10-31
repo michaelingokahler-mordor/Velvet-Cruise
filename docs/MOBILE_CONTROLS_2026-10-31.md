@@ -1,7 +1,9 @@
 # Mobile presentation and controls — 2026-10-31
 
-The changes are local on `codex/mobile-viewport-controls`, based on `1523e54`.
-The web build is in `dist/`. No publication or Windows installation occurred.
+The implementation commit is `f7dfdb55572c61292354dee6bd1e48fc95209f6e`, based on `1523e54`.
+The user subsequently authorized web publication. The release is live on SabnockWorks.
+See [the deployment record](../reports/mobile-controls-2026-10-31/deployment.md) for revisions and live checks.
+The installed Windows edition remains unchanged.
 
 ## Display correction
 
@@ -98,4 +100,4 @@ On the affected iPhone, open the candidate in Safari and Chrome.
 Check direct landscape load and both rotation directions before any Classic/Plus change.
 Allow motion access, calibrate a comfortable position and try all three modes.
 Check the forward/back speed direction, combined steering, pause access and return from the background.
-Publication remains a separate step.
+The published web edition is available for this physical device acceptance test.

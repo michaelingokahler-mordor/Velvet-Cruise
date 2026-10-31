@@ -1,0 +1,46 @@
+{
+  "status": "PASS",
+  "checkedAt": "2026-10-31T15:03:11.371Z",
+  "gameCommit": "f7dfdb55572c61292354dee6bd1e48fc95209f6e",
+  "websiteCommit": "9a1e9ec2690620261bd4343efa57866e7260c3af",
+  "release": "2026-10-31-f7dfdb5-mobile-controls",
+  "previousReleaseRetained": true,
+  "verifiedFiles": 126,
+  "entrySha256": "4596896ec890f82204f9d82e7ba4e48c976bb1a11e1e48ed0df55ddf885781eb",
+  "statisticsEnabled": true,
+  "workerDeploymentChanged": false,
+  "databaseMigrationApplied": false,
+  "productionTestEventsSent": 0,
+  "health": {
+    "ok": true,
+    "service": "velvet-cruise",
+    "version": 1
+  },
+  "pages": {
+    "status": "built",
+    "workflowRun": 41212809084,
+    "conclusion": "success"
+  },
+  "browserSmoke": {
+    "url": "https://sabnockworks.com/games/more-projects/velvet-cruise/#graphicstest",
+    "chromiumGroups": [
+      "canvas fits independently changing visible viewport",
+      "safe-area insets and pageshow refresh preserve complete canvas bounds",
+      "mobile settings reachable from device selection",
+      "full tilt permission is gesture-bound; calibrated steering and gas drive the real race",
+      "rotation pauses until recalibration; sensor timeout pauses and clears throttle",
+      "pause settings preserve the run; small button visuals retain full multitouch hit areas",
+      "tilt pedals work and background interruption pauses the live run",
+      "Classic and Plus fit four additional phone viewports",
+      "mobile preferences survive reload without an automatic sensor prompt",
+      "denied permission falls back to buttons and can be retried through a new gesture"
+    ],
+    "webkitGroups": [
+      "classic: four viewport transitions, touch settings, denied gesture-bound permission, saved preference and no reload prompt",
+      "plus: four viewport transitions, touch settings, denied gesture-bound permission, saved preference and no reload prompt"
+    ],
+    "webkitViewportCases": 8,
+    "javascriptErrors": 0,
+    "physicalIphoneTest": false
+  }
+}
