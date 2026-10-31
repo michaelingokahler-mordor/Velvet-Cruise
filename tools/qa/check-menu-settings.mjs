@@ -36,4 +36,10 @@ test('five driving actions have no phantom row and footer actions still work',()
  s.bindingFocus=7;pressed.add('confirm');s.bindingScreen(0,[]);assert.deepEqual(captured.at(-1),['keyboard','pause',null]);
  s.bindingFocus=10;pressed.add('confirm');s.bindingScreen(0,[]);assert.equal(s.mode,'settings');assert.equal(s.menuSel,2);
 });
+test('returning from mobile controls restores the radio preview at the same station',()=>{
+ const{s,calls}=scene();s.toRadio();calls.length=0;
+ s.input2.mobile={version:1,scheme:'buttons',size:.6,opacity:.2,sensitivity:24};s.input2.interruptMobile=()=>{};
+ s.openMobile('radio');s.mobileScreen(0,[{x:160,y:164}]);
+ assert.equal(s.mode,'radio');assert.ok(calls.some(c=>c[0]==='play'),'radio preview must restart');
+});
 const report={status:failures.length?'FAIL':'PASS',tests,failures};writeFileSync(resolve(out,process.argv.includes('--red')?'menus-red.json':'menus-validation.json'),JSON.stringify(report,null,2));console.log(JSON.stringify(report,null,2));if(failures.length)process.exitCode=1;

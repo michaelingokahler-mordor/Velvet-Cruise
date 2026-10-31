@@ -1,4 +1,6 @@
 import type { DrawSurface } from "../core/draw-surface";
+import { MOBILE_DEFAULTS, type MobileSettings } from '../mobile-controls';
+export interface MobilePresentation extends MobileSettings { throttle?: number; brake?: number }
 // Arcade HUD and menu drawing helpers (everything is pixel text in the framebuffer).
 import { W, H, Col, rgb } from "../core/fb";
 import { drawText, textWidth } from "../core/font";
@@ -88,7 +90,7 @@ export class Hud {
     this.flash += dt;
   }
 
-  draw(fb: DrawSurface, race: Race, touch: boolean, time: number, tilt = false): void {
+  draw(fb: DrawSurface, race: Race, touch: boolean, time: number, tilt = false, mobile?: MobilePresentation): void {
     // TIME
     label(fb, t("hud.time"), 7, 4, C.orange);
     const secs = Math.ceil(race.timer);
@@ -140,7 +142,7 @@ export class Hud {
     }
 
     drawWindIndicator(fb, race, time);
-    if (touch) drawTouch(fb, tilt, race.steer);
+    if (touch) drawTouch(fb, tilt, race.steer, mobile);
   }
 }
 
@@ -167,29 +169,55 @@ export function drawWindIndicator(fb: DrawSurface, race: Race, time: number): vo
   if (Math.abs(forward) > .08) drawText(fb, forward > 0 ? '↑' : '↓', W-11, forward > 0 ? 73 : 99, C.yellow, {outline:C.ink,align:'center'});
 }
 
-function pad(fb: DrawSurface, r: Rect, glyph: string, text?: string): void {
+function pad(fb: DrawSurface, target: Rect, glyph: string, size: number): void {
+  const w=Math.round(target.w*size), h=Math.round(target.h*size);
+  const r={x:Math.round(target.x+(target.w-w)/2),y:target.y+target.h-h,w,h};
   fb.rectA(r.x, r.y, r.w, r.h, rgb(0x100820), 0.38);
   fb.frame(r.x, r.y, r.w, r.h, rgb(0xfff0d0));
-  drawText(fb, glyph, r.x + r.w / 2, r.y + r.h / 2 - (text ? 9 : 7), C.white, { align: "center", scale: 2, outline: C.ink });
-  if (text) drawText(fb, text, r.x + r.w / 2, r.y + r.h - 11, C.yellow, { align: "center", outline: C.ink, maxW: r.w - 2 });
+  const scale=size<.8?1:2;
+  drawText(fb,glyph,r.x+r.w/2,r.y+r.h/2-3.5*scale,C.white,{align:'center',scale});
 }
 
-export function drawTouch(fb: DrawSurface, tilt = false, steer = 0): void {
-  if (tilt) {
-    pad(fb, TOUCH_TILT.brake, "↓", t("ctl.brake"));
-    pad(fb, TOUCH_TILT.gas, "↑", t("ctl.gas"));
+// Reuse the font surface/mask, blending the entire control including its glyph and border.
+const touchSurfaces = new WeakMap<DrawSurface,{surface:DrawSurface;opacity:number}>();
+export function drawTouch(fb: DrawSurface, tilt = false, steer = 0, mobile?: MobilePresentation): void {
+  const settings=mobile??{...MOBILE_DEFAULTS,scheme:tilt?'tilt-pedals':'buttons'};
+  let layer=touchSurfaces.get(fb);
+  if(!layer) {
+    layer={surface:Object.create(fb),opacity:settings.opacity};
+    const state=layer,target=fb;
+    state.surface.pset=(x,y,c)=>target.rectA(x,y,1,1,c,state.opacity);
+    state.surface.rect=(x,y,w,h,c)=>target.rectA(x,y,w,h,c,state.opacity);
+    state.surface.rectA=(x,y,w,h,c,a)=>target.rectA(x,y,w,h,c,a*state.opacity);
+    touchSurfaces.set(fb,state);
+  }
+  layer.opacity=settings.opacity;
+  fb=layer.surface;
+  if (settings.scheme !== 'buttons') {
+    if(settings.scheme==='tilt-pedals') {
+      pad(fb, TOUCH_TILT.brake, '↓',settings.size);
+      pad(fb, TOUCH_TILT.gas, '↑',settings.size);
+    }
     // little steering-wheel gauge showing the current tilt
     const cx = W / 2, cy = 46;
     fb.rectA(cx - 26, cy - 2, 52, 5, rgb(0x100820), 0.45);
     fb.rect(cx, cy - 3, 1, 7, rgb(0xfff0d0));
     const k = Math.round(cx + steer * 24);
     fb.rect(k - 2, cy - 1, 5, 3, C.yellow);
+    if(settings.scheme==='tilt-full') {
+      const pedal=(settings.throttle??0)-(settings.brake??0);
+      fb.rect(cx+31,cy-10,3,20,C.ink);
+      fb.rect(cx+30,cy,5,1,C.white);
+      fb.rect(cx+31,cy-Math.max(0,pedal)*9,3,Math.max(1,Math.abs(pedal)*9),pedal<0?C.pink:C.yellow);
+    }
   } else {
-    pad(fb, TOUCH.left, "←");
-    pad(fb, TOUCH.right, "→");
-    pad(fb, TOUCH.brake, "↓", t("ctl.brake"));
-    pad(fb, TOUCH.gas, "↑", t("ctl.gas"));
+    pad(fb, TOUCH.left, '←',settings.size);
+    pad(fb, TOUCH.right, '→',settings.size);
+    pad(fb, TOUCH.brake, '↓',settings.size);
+    pad(fb, TOUCH.gas, '↑',settings.size);
   }
+  // Pause must remain discoverable even with the faintest driving-control preference.
+  layer.opacity=Math.max(.6,settings.opacity);
   const r = TOUCH.pause;
   fb.rectA(r.x, r.y, r.w, r.h, rgb(0x100820), 0.38);
   fb.rect(r.x + 6, r.y + 4, 2, 8, C.white);

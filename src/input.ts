@@ -2,6 +2,7 @@
 // edge-triggered menu presses. Coordinates are framebuffer pixels (320x180).
 import { W, H } from "./core/fb";
 import { SAVE_PREFIX } from "./game/edition";
+import { loadMobile, normalizeMobile, MOBILE_KEY, TiltDrive, type MobileScheme, type MobileSettings } from './mobile-controls';
 import { InputBindings, DRIVE_ACTIONS, buttonValue, type Binding, type BindingDevice, type DriveAction, type BindingResult } from './input-bindings';
 export { DRIVE_ACTIONS, bindingLabel } from './input-bindings';
 export type { Binding, BindingDevice, DriveAction } from './input-bindings';
@@ -22,14 +23,11 @@ export const TOUCH_TILT = {
   gas: { x: W - 71, y: 116, w: 66, h: 58 },
 };
 
-const TILT_KEY = `${SAVE_PREFIX}.tilt`;
 const CONTROLS_KEY = `${SAVE_PREFIX}.controls`;
 
 /** How the player drives: picked on the "Choose your controls" screen. */
 export type ControlPref = "auto" | "keyboard" | "touch";
 export const CONTROL_PREFS: ControlPref[] = ["auto", "touch", "keyboard"];
-const TILT_DEAD = 3;   // degrees of free play around level
-const TILT_FULL = 24;  // degrees for full steering lock
 
 export function inRect(r: Rect, x: number, y: number): boolean {
   return x >= r.x && y >= r.y && x < r.x + r.w && y < r.y + r.h;
@@ -72,17 +70,22 @@ export class Input {
   lastInput = 0;
   // ---- tilt (motion) steering
   readonly tiltSupported = typeof window !== "undefined" && "DeviceOrientationEvent" in window;
-  tiltWanted = false;
-  tiltDenied = false;
+  mobile = loadMobile();
+  private motion = new TiltDrive();
+  private motionState: 'off' | 'permission' | 'waiting' | 'calibrate' | 'ready' | 'denied' | 'unavailable' = 'off';
+  private motionRequestedAt = 0;
+  private mobileSuspended = false;
+  private mobilePause = false;
+  motionDriving = false;
   /** Toggle button drawn this frame (hit-tested inside the tap itself, so iOS grants motion access). */
   tiltRect: Rect | null = null;
+  /** Permission and calibration are handled synchronously in the release gesture on iOS. */
+  motionActionRect: Rect | null = null;
   /** Set when a tap flipped the tilt setting (the scene plays a click and clears it). */
   tiltToggled = false;
   private tiltActive = false;
   private tiltPending = false;
-  private tiltSeen = false;
   private tiltListening = false;
-  private tiltSteer = 0;
   private tiltTapId = -1;
   /** Set by the scene so the first gesture can unlock audio. */
   onGesture: (() => void) | null = null;
@@ -90,8 +93,7 @@ export class Input {
 
   constructor(canvas: HTMLCanvasElement, toGame: (cx: number, cy: number) => { x: number; y: number }) {
     this.toGame = toGame;
-    try { this.tiltWanted = localStorage.getItem(TILT_KEY) === "1"; } catch { /* storage blocked */ }
-    if (this.tiltWanted && this.tiltSupported) this.requestTilt(false);
+    if (this.tiltWanted) this.motionState = 'calibrate';
     try { const p = localStorage.getItem(CONTROLS_KEY) as ControlPref | null; if (p && CONTROL_PREFS.includes(p)) this.pref = p; } catch { /* storage blocked */ }
     // auto-detect: phones and tablets (coarse pointer, no hover) start on touch, computers on the keyboard
     if (typeof matchMedia === "function" && (matchMedia("(pointer: coarse)").matches || matchMedia("(hover: none)").matches)) this.autoTouch = true;
@@ -129,12 +131,16 @@ export class Input {
       this.held.delete(e.code);
       if (!e.code || e.code === "Unidentified") this.held.delete(e.key);
     });
-    window.addEventListener("blur", () => { this.held.clear(); this.pointers.clear(); });
+    window.addEventListener('blur', () => { this.held.clear(); this.interruptMobile(false); });
+    if (typeof document !== 'undefined') document.addEventListener?.('visibilitychange', () => { if (document.hidden) { this.held.clear(); this.interruptMobile(false); } });
+    window.addEventListener('orientationchange', () => this.interruptMobile(true));
+    if (typeof screen !== 'undefined') screen.orientation?.addEventListener?.('change', () => this.interruptMobile(true));
     const down = (e: PointerEvent) => {
       if (e.pointerType === "touch") this.autoTouch = true;
       const p = this.toGame(e.clientX, e.clientY);
       // the tilt switch flips when the finger lifts: iOS only grants motion access from that gesture
       if (this.tiltRect && inRect(this.tiltRect, p.x, p.y)) this.tiltTapId = e.pointerId;
+      if (this.motionActionRect && inRect(this.motionActionRect, p.x, p.y)) this.tiltTapId = e.pointerId;
       this.pointers.set(e.pointerId, p);
       this.taps.push(p);
       this.lastInput = performance.now();
@@ -152,9 +158,12 @@ export class Input {
       if (e.type !== "pointerup") { if (this.tiltTapId === e.pointerId) this.tiltTapId = -1; return; }
       if (this.tiltTapId === e.pointerId) {
         this.tiltTapId = -1;
-        this.setTilt(!this.tiltWanted);
+        const p = this.toGame(e.clientX,e.clientY);
+        if (this.motionActionRect && inRect(this.motionActionRect,p.x,p.y)) {
+          this.performMotionAction();
+        } else if (this.tiltRect && inRect(this.tiltRect,p.x,p.y)) this.setTilt(!this.tiltWanted);
         this.tiltToggled = true;
-      } else if (this.tiltWanted && !this.tiltActive && !this.tiltDenied) this.requestTilt(true);
+      }
     };
     canvas.addEventListener("pointerdown", down);
     canvas.addEventListener("pointermove", move);
@@ -201,51 +210,82 @@ export class Input {
     return false;
   }
 
-  /** True once the device is actually reporting its tilt and the player switched it on. */
-  get tiltMode(): boolean { return this.tiltWanted && this.tiltActive && this.tiltSeen; }
-
-  setTilt(on: boolean): void {
-    this.tiltWanted = on;
-    this.tiltDenied = false;
-    try { localStorage.setItem(TILT_KEY, on ? "1" : "0"); } catch { /* storage blocked */ }
-    if (on) this.requestTilt(true);
+  get tiltWanted(): boolean { return this.mobile.scheme !== 'buttons'; }
+  get canCalibrateMotion(): boolean { return this.tiltActive && performance.now() - this.motion.lastSample <= 1000; }
+  performMotionAction(): void {
+    if(this.canCalibrateMotion) this.calibrateMotion();
+    else this.activateMotion();
   }
-
-  private requestTilt(fromGesture: boolean): void {
-    if (!this.tiltSupported || this.tiltActive || this.tiltPending) return;
-    const DOE = (window as unknown as { DeviceOrientationEvent: { requestPermission?: () => Promise<string> } }).DeviceOrientationEvent;
+  get tiltDenied(): boolean { return this.motionState === 'denied'; }
+  get motionStatus(): string {
+    if (!this.tiltWanted) return 'off';
+    if (!this.tiltSupported) return 'unavailable';
+    return this.motionState;
+  }
+  get tiltMode(): boolean {
+    return this.touchMode && this.tiltWanted && this.motionState === 'ready' && this.motion.calibrated && !this.mobileSuspended && performance.now() - this.motion.lastSample <= 1000;
+  }
+  get activeMobileScheme(): MobileScheme { return this.tiltMode ? this.mobile.scheme : 'buttons'; }
+  setMobile(value: Partial<MobileSettings>): void {
+    const old = this.mobile.scheme;
+    this.mobile = normalizeMobile({...this.mobile,...value});
+    try { localStorage.setItem(MOBILE_KEY,JSON.stringify(this.mobile)); } catch { /* storage blocked */ }
+    if (old !== this.mobile.scheme) {
+      this.pointers.clear();
+      this.motion.clear(true);
+      this.motionState = this.tiltWanted ? 'calibrate' : 'off';
+    }
+  }
+  setTilt(on: boolean): void {
+    this.setMobile({scheme:on ? 'tilt-pedals' : 'buttons'});
+    if (on) this.activateMotion();
+  }
+  activateMotion(): void {
+    if (!this.tiltWanted || !this.tiltSupported || this.tiltPending) return;
+    const DOE = (window as unknown as {DeviceOrientationEvent:{requestPermission?:()=>Promise<string>}}).DeviceOrientationEvent;
     const start = () => {
       this.tiltActive = true;
-      if (!this.tiltListening) { window.addEventListener("deviceorientation", this.onOrient); this.tiltListening = true; }
+      this.motionRequestedAt = performance.now();
+      this.motionState = 'waiting';
+      if (!this.tiltListening) { window.addEventListener('deviceorientation',this.onOrient); this.tiltListening = true; }
     };
-    if (typeof DOE.requestPermission === "function") {
-      if (!fromGesture) return; // iOS: wait for the player's next tap
-      this.tiltPending = true;
-      DOE.requestPermission()
-        .then((r) => { if (r === "granted") start(); else { this.tiltDenied = true; this.tiltWanted = false; } })
-        .catch(() => { this.tiltDenied = true; this.tiltWanted = false; })
-        .finally(() => { this.tiltPending = false; });
+    if (this.tiltActive) { start(); return; }
+    if (typeof DOE.requestPermission === 'function') {
+      this.tiltPending = true; this.motionState = 'permission';
+      try {
+        DOE.requestPermission().then(result => {
+          if (result === 'granted') start(); else this.motionState = 'denied';
+        }).catch(() => { this.motionState = 'denied'; }).finally(() => { this.tiltPending = false; });
+      } catch { this.tiltPending = false; this.motionState = 'denied'; }
     } else start();
   }
-
-  /** Device tilt → steering, holding the screen like a steering wheel (works upright or tipped back). */
+  calibrateMotion(): boolean {
+    if (!this.tiltActive || !this.motion.calibrate(performance.now())) return false;
+    this.motionState = 'ready';
+    // A paused race still needs its explicit Resume action.
+    if (!this.motionDriving) this.mobileSuspended = false;
+    return true;
+  }
+  resumeMobile(): boolean {
+    if (this.touchMode && this.tiltWanted && !['denied','unavailable'].includes(this.motionStatus) && !this.motion.calibrated) return false;
+    this.pointers.clear();
+    this.mobileSuspended = false;
+    return true;
+  }
+  consumeMobilePause(): boolean { const pause = this.mobilePause; this.mobilePause = false; return pause; }
+  interruptMobile(rotation: boolean): void {
+    this.pointers.clear(); this.taps.length = 0; this.tiltTapId = -1;
+    this.motion.clear(rotation);
+    if (rotation && this.tiltWanted) this.motionState = 'calibrate';
+    if (this.touchMode && this.tiltWanted && this.motionDriving) { this.mobileSuspended = true; this.mobilePause = true; }
+  }
   private onOrient = (e: DeviceOrientationEvent): void => {
-    if (e.beta === null || e.gamma === null || e.beta === undefined || e.gamma === undefined) return;
-    this.tiltSeen = true;
-    const d = Math.PI / 180;
-    const b = e.beta * d, g = e.gamma * d;
-    // world "up" in device coordinates
-    const ux = -Math.sin(g) * Math.cos(b), uy = Math.sin(b);
-    let ang = 0;
-    const so = (screen as unknown as { orientation?: { angle?: number } }).orientation;
-    const th = ((so && typeof so.angle === "number" ? so.angle : Number((window as unknown as { orientation?: number }).orientation) || 0) * d);
-    const sx = ux * Math.cos(th) - uy * Math.sin(th);
-    const sy = ux * Math.sin(th) + uy * Math.cos(th);
-    if (Math.hypot(sx, sy) > 0.35) ang = Math.atan2(-sx, Math.abs(sy)) / d;   // held up: wheel angle
-    else ang = Math.asin(Math.max(-1, Math.min(1, -sx))) / d;                  // lying flat: edge tilt
-    const mag = Math.max(0, Math.abs(ang) - TILT_DEAD) / (TILT_FULL - TILT_DEAD);
-    const target = Math.sign(ang) * Math.min(1, mag);
-    this.tiltSteer += (target - this.tiltSteer) * 0.45;
+    if (!this.tiltWanted || !this.tiltActive) return;
+    const angle = typeof screen !== 'undefined' && typeof screen.orientation?.angle === 'number'
+      ? screen.orientation.angle : Number((window as unknown as {orientation?:number}).orientation) || 0;
+    if (this.motion.sample(e.beta,e.gamma,angle,performance.now(),this.mobile.sensitivity)) {
+      if (!this.motion.calibrated) this.motionState = 'calibrate';
+    }
   };
 
   private touchHeld(r: Rect): boolean {
@@ -266,6 +306,12 @@ export class Input {
 
   /** Call once per frame before reading presses. */
   poll(): void {
+    if (this.tiltActive && this.tiltWanted && this.touchMode) {
+      const last = Math.max(this.motion.lastSample,this.motionRequestedAt);
+      if (performance.now() - last > 1000 && this.motionState !== 'unavailable') {
+        this.interruptMobile(true); this.motionState = 'unavailable';
+      }
+    }
     const g = this.pad();
     const id = g ? `${g.index}:${g.id}` : '';
     if (this.padId !== id) { this.padPrev = []; this.padId = id; this.drivePrev = { pause: false }; this.padNeutral = g ? g.axes.map(v => g.mapping === 'standard' ? 0 : Math.abs(v) > .85 ? Math.sign(v) : 0) : []; }
@@ -303,9 +349,9 @@ export class Input {
     if (this.blocked) return 0;
     let s = this.bindings.keyboard('right', this.held) - this.bindings.keyboard('left', this.held);
     const tilt = this.tiltMode;
-    if (!tilt && this.touchHeld(TOUCH.left)) s -= 1;
-    if (!tilt && this.touchHeld(TOUCH.right)) s += 1;
-    if (tilt) s += this.tiltSteer;
+    if (!this.mobileSuspended && !tilt && this.touchHeld(TOUCH.left)) s -= 1;
+    if (!this.mobileSuspended && !tilt && this.touchHeld(TOUCH.right)) s += 1;
+    if (tilt) s += this.motion.steer;
     const g = this.pad();
     s += this.bindings.gamepad('right', g) - this.bindings.gamepad('left', g);
     return Math.max(-1, Math.min(1, s));
@@ -313,12 +359,14 @@ export class Input {
 
   get throttle(): number {
     if (this.blocked) return 0;
-    return Math.max(this.bindings.keyboard('throttle', this.held), this.touchHeld(this.tiltMode ? TOUCH_TILT.gas : TOUCH.gas) ? 1 : 0, this.bindings.gamepad('throttle', this.pad()));
+    const mobile = this.mobileSuspended ? 0 : this.activeMobileScheme === 'tilt-full' ? Math.max(0,this.motion.pedal) : this.touchHeld(this.tiltMode ? TOUCH_TILT.gas : TOUCH.gas) ? 1 : 0;
+    return Math.max(this.bindings.keyboard('throttle', this.held),mobile,this.bindings.gamepad('throttle',this.pad()));
   }
 
   get brake(): number {
     if (this.blocked) return 0;
-    return Math.max(this.bindings.keyboard('brake', this.held), this.touchHeld(this.tiltMode ? TOUCH_TILT.brake : TOUCH.brake) ? 1 : 0, this.bindings.gamepad('brake', this.pad()));
+    const mobile = this.mobileSuspended ? 0 : this.activeMobileScheme === 'tilt-full' ? Math.max(0,-this.motion.pedal) : this.touchHeld(this.tiltMode ? TOUCH_TILT.brake : TOUCH.brake) ? 1 : 0;
+    return Math.max(this.bindings.keyboard('brake', this.held),mobile,this.bindings.gamepad('brake',this.pad()));
   }
 
   /** Edge-triggered press, consumed on read. */

@@ -1,6 +1,8 @@
 // Velvet Cruise — boot, screens and the frame loop. Every pixel is drawn by
 // the software renderer into the selected native framebuffer, presented 1:1 by Phaser.
 import Phaser from "phaser";
+import { GameViewport } from './viewport';
+import { MOBILE_SCHEMES } from './mobile-controls';
 import { W, H, rgb } from "./core/fb";
 import { SpriteBank, AtlasJson } from "./core/assets";
 import { drawText, setFontLocale, textWidth } from "./core/font";
@@ -32,7 +34,7 @@ import { GoalProgressStore, GOAL_PROGRESS_KEY, GOAL_LETTERS, goalCount, type Goa
 import { createRenderContext, GraphicsSelection, type GraphicsMode } from './game/graphics';
 import { loadPlusBank, type PlusManifest } from './core/plus-assets';
 
-type Mode = "title" | "settings" | "audio" | "graphics" | "records" | "bindings" | "garage" | "rankings" | "badges" | "controls" | "difficulty" | "radio" | "race" | "ending" | "results" | "name" | "map" | "credits";
+type Mode = "title" | "settings" | "audio" | "graphics" | "records" | "bindings" | "garage" | "rankings" | "badges" | "controls" | "mobile" | "difficulty" | "radio" | "race" | "ending" | "results" | "name" | "map" | "credits";
 
 /** The credits page's studio and prototype links, opened in a new tab. */
 const CREDIT_LINKS = [
@@ -201,6 +203,9 @@ class MainScene extends Phaser.Scene {
   /** The player's best score on each difficulty (shown on the title screen). */
   private bestScore = new Map<DiffId, number>();
   private ctlSel = 0;
+  private mobileSel = 0;
+  private mobileReturn: 'controls' | 'radio' | 'pause' = 'controls';
+  private mobileMenuOpen = false;
   private badgeFrom: Mode = "records";
   private exitPending = false;
   private bindingDevice: BindingDevice = "keyboard";
@@ -241,7 +246,11 @@ class MainScene extends Phaser.Scene {
 
   constructor() { super("main"); }
 
+  private viewport?: GameViewport;
+
   preload(): void {
+    this.viewport = new GameViewport(document.getElementById('game')!, () => this.scale.refresh());
+    this.events.once('shutdown', () => this.viewport?.destroy());
     // a loading screen from the very first frame: the window is never blank while the art loads
     this.screenTex = this.textures.createCanvas("screen", W, H)!;
     this.ctx2d = this.screenTex.getContext();
@@ -509,8 +518,10 @@ class MainScene extends Phaser.Scene {
     this.time2 += dt;
     this.modeT += dt;
     this.painter.time = this.time2;
+    this.input2.motionDriving = this.mode === 'race' && !!this.race && ['race','countdown'].includes(this.race.state);
     this.input2.poll();
     this.input2.tiltRect = null;
+    this.input2.motionActionRect = null;
     if (this.input2.tiltToggled) { this.input2.tiltToggled = false; this.audio.uiSelect(); }
     const taps = this.input2.takeTaps();
 
@@ -525,6 +536,7 @@ class MainScene extends Phaser.Scene {
       case "rankings": this.rankings(dt, taps); break;
       case "badges": this.badgeScreen(dt, taps); break;
       case "controls": this.controls(dt, taps); break;
+      case "mobile": this.mobileScreen(dt, taps); break;
       case "difficulty": this.difficulty(dt, taps); break;
       case "radio": this.radio(dt, taps); break;
       case "race": this.racing(dt, taps); break;
@@ -759,6 +771,7 @@ class MainScene extends Phaser.Scene {
     }
     this.renderContext=next;this.fb=next.logical;this.bank=bank;this.painter=painter;this.screenTex=texture;this.ctx2d=ctx;
     this.textures.remove(oldTexture.key);
+    this.viewport?.schedule();
   }
 
   private graphicsScreen(dt: number, taps: {x:number;y:number}[]): void {
@@ -1011,7 +1024,7 @@ class MainScene extends Phaser.Scene {
     const x0 = 40, w = W - 80;
     panel(fb, x0, 10, w, 146);
     big(fb, t("ctl.title"), W / 2, 16, 2, GRAD_SUN, "center", w - 8);
-    const n = CONTROL_PREFS.length;
+    const n = CONTROL_PREFS.length + 1;
     const btns: Rect[] = CONTROL_PREFS.map((_p, i) => ({ x: W / 2 - 70, y: 38 + i * 18, w: 140, h: 15 }));
     if (inp.hit("up") || inp.hit("left")) { this.ctlSel = (this.ctlSel + n - 1) % n; this.audio.uiMove(); }
     if (inp.hit("down") || inp.hit("right")) { this.ctlSel = (this.ctlSel + 1) % n; this.audio.uiMove(); }
@@ -1020,7 +1033,7 @@ class MainScene extends Phaser.Scene {
       button(fb, r, t(`ctl.${CONTROL_PREFS[i]}`), i === this.ctlSel);
       this.controlIcon(r.x + 4, r.y + 2, CONTROL_PREFS[i]);
     });
-    const p = CONTROL_PREFS[this.ctlSel];
+    const p = CONTROL_PREFS[this.ctlSel] ?? inp.pref;
     const lines = para(fb, t(`ctl.${p}_desc`), W / 2, 96, C.white, w - 14);
     if (p === "auto") {
       const dev = t(inp.autoTouch ? "ctl.touch" : "ctl.keyboard");
@@ -1028,13 +1041,68 @@ class MainScene extends Phaser.Scene {
     }
     const next: Rect = { x: W / 2 - 40, y: 160, w: 80, h: 15 };
     button(fb, next, t("menu.apply"), Math.floor(this.time2 * 3) % 2 === 0);
-    if (!inp.touchMode) para(fb, t("diff.hint"), W / 2, 146, C.grey, w - 8, true);
+    const mobile: Rect = {x:W/2-95,y:134,w:190,h:19};
+    button(fb,mobile,t('mobile.title'),this.ctlSel===CONTROL_PREFS.length);
+    if (this.tapped(taps,mobile)) { this.openMobile('controls'); return; }
     if (inp.hit("back")) { this.audio.uiSelect(); this.openSettings(1); return; }
     if (inp.hit("confirm") || this.tapped(taps, next)) {
+      if (this.ctlSel===CONTROL_PREFS.length) { this.openMobile('controls'); return; }
       inp.setPref(p);
       this.audio.uiSelect();
       this.openSettings(1);
     }
+  }
+
+  private openMobile(from: 'controls' | 'radio' | 'pause'): void {
+    this.mobileReturn = from;
+    this.mobileSel = 0;
+    this.input2.interruptMobile(false);
+    if (from === 'pause') this.mobileMenuOpen = true;
+    else this.setMode('mobile');
+  }
+
+  private mobileScreen(dt: number, taps: {x:number;y:number}[], overRace = false): void {
+    const inp = this.input2, fb = this.fb;
+    if (!overRace) { this.demo.update(dt,{steer:0,throttle:0,brake:0}); this.painter.render(this.demo); }
+    fb.rectA(0,0,W,H,C.ink,.75);
+    panel(fb,5,3,W-10,H-6);
+    big(fb,t('mobile.title'),W/2,9,2,GRAD_SUN,'center',W-24);
+    const settings = inp.mobile;
+    const size = [.6,.8,1].indexOf(settings.size), sensitivity = [30,24,18].indexOf(settings.sensitivity);
+    const labels = [
+      t('mobile.mode')+': '+t('mobile.'+settings.scheme),
+      t('mobile.size')+': '+t(['mobile.small','mobile.medium','mobile.large'][size]),
+      t('mobile.opacity')+': '+Math.round(settings.opacity*100)+'%',
+      t('mobile.sensitivity')+': '+t(['mobile.gentle','mobile.normal','mobile.direct'][sensitivity]),
+      t(!inp.tiltWanted ? 'mobile.choose_tilt' : inp.canCalibrateMotion ? 'mobile.calibrate' : 'mobile.enable'),
+      t('rank.back'),
+    ];
+    if (inp.hit('up')) this.mobileSel = (this.mobileSel+5)%6;
+    if (inp.hit('down')) this.mobileSel = (this.mobileSel+1)%6;
+    let action = -1, direction = 1;
+    const left = inp.hit('left'), right = inp.hit('right'), confirm = inp.hit('confirm');
+    if (left || right || confirm) { action = this.mobileSel; direction = left ? -1 : 1; }
+    labels.forEach((label,i) => {
+      const r = {x:15,y:i<4?30+i*20:i===4?132:155,w:W-30,h:18};
+      button(fb,r,label,this.mobileSel===i);
+      if (i===4 && inp.tiltWanted) inp.motionActionRect = r;
+      if (this.tapped(taps,r)) { this.mobileSel = i; if(i!==4) action=i; }
+    });
+    const cycle = <T,>(values: T[], current: T): T => values[(values.indexOf(current)+values.length+direction)%values.length];
+    if (action===0) inp.setMobile({scheme:cycle(MOBILE_SCHEMES,settings.scheme)});
+    else if (action===1) inp.setMobile({size:cycle([.6,.8,1] as (.6|.8|1)[],settings.size)});
+    else if (action===2) inp.setMobile({opacity:cycle([.2,.4,.6] as (.2|.4|.6)[],settings.opacity)});
+    else if (action===3) inp.setMobile({sensitivity:cycle([30,24,18] as (30|24|18)[],settings.sensitivity)});
+    else if (action===4 && inp.tiltWanted) inp.performMotionAction();
+    const status = inp.tiltWanted ? 'mobile.status.'+inp.motionStatus : 'mobile.buttons_hint';
+    para(fb,t(status),W/2,112,C.yellow,W-30,true);
+    if (action===5 || inp.hit('back')) {
+      inp.motionActionRect = null;
+      if(this.mobileReturn==='pause') this.mobileMenuOpen=false;
+      else if(this.mobileReturn==='radio') this.toRadio();
+      else this.setMode(this.mobileReturn);
+      this.audio.uiSelect();
+    } else if(action>=0) this.audio.uiMove();
   }
 
   /** Little pixel pictures on the controls buttons: a keyboard, a phone, or both for auto. */
@@ -1168,7 +1236,9 @@ class MainScene extends Phaser.Scene {
     fb.rectA(0, H - 12, W, 12, rgb(0x100820), 0.6);
     para(fb, inp.touchMode ? t("music.hint_tap") : t("music.hint"), W / 2, H - 9, C.white, W - 10, true);
 
-    const tiltBtn = this.tiltToggle(H - 46);
+    const tiltBtn: Rect = {x:W/2-75,y:H-46,w:150,h:15};
+    button(fb,tiltBtn,t('mobile.title'),false);
+    if(this.tapped(taps,tiltBtn)) { this.audio.stopSong(.2); this.audio.setStatic(false); this.openMobile('radio'); return; }
     // test hook: which songs are in memory and which one is on air
     if (RADIOTEST) (window as unknown as Record<string, unknown>).__radio = { station: this.station, ready, on: this.audio.currentSong, held: SONG_KEYS.filter((k) => this.audio.buffers.has(k)), loading: [...this.songLoading] };
     if (inp.hit("back") || inp.hit("confirm") || (this.tapped(taps, drive) && !(tiltBtn && this.tapped(taps, tiltBtn)))) {
@@ -1192,19 +1262,6 @@ class MainScene extends Phaser.Scene {
     const r = this.race;
     if (!r || !this.shouts.say(car, kind, r.playerX, force)) return false;
     return true;
-  }
-
-  /** Tilt-steering switch for phones/tablets; the tap itself is handled by the input layer. */
-  private tiltToggle(y: number): Rect | null {
-    const inp = this.input2;
-    if (!inp.touchMode || !inp.tiltSupported) return null;
-    const fb = this.fb;
-    const r: Rect = { x: W / 2 - 75, y, w: 150, h: 13 };
-    inp.tiltRect = r;
-    button(fb, r, inp.tiltWanted ? t("ctl.tilt_on") : t("ctl.tilt_off"), inp.tiltWanted);
-    const note = inp.tiltDenied ? t("ctl.tilt_blocked") : inp.tiltMode ? t("ctl.tilt_hint") : "";
-    if (note) para(fb, note, W / 2, y + 15, inp.tiltDenied ? C.pink : C.yellow, W - 10);
-    return r;
   }
 
   // -------------------------------------------------------------- race
@@ -1235,9 +1292,14 @@ class MainScene extends Phaser.Scene {
     this.nearRun = 0;
     this.nearPending = 0;
     this.paused = false;
+    this.mobileMenuOpen = false;
     this.lastBeep = 99;
     this.lastTick = 99;
     this.setMode("race");
+    if (this.input2.touchMode && this.input2.tiltWanted && !this.input2.resumeMobile()) {
+      this.paused = true;
+      this.openMobile('pause');
+    }
     this.audio.uiSelect();
     this.audio.startEngine();
     this.hud.push(t("msg.ready"), t(race.theme.nameKey), 2.4, GRAD_PINK, 30, 2);
@@ -1385,10 +1447,12 @@ class MainScene extends Phaser.Scene {
     const race = this.race!;
     const fb = this.fb;
     const pauseTap = inp.touchMode && this.tapped(taps, TOUCH.pause);
-    if (!this.paused && (inp.hit("pause") || pauseTap) && (race.state === "race" || race.state === "countdown")) {
+    const mobilePause = inp.consumeMobilePause?.() ?? false;
+    if (!this.paused && (mobilePause || inp.hit("pause") || pauseTap) && (race.state === "race" || race.state === "countdown")) {
       this.paused = true;
       this.pauseSel = 0;
       this.audio.uiMove();
+      inp.interruptMobile?.(false);
       inp.endFrame(); // a custom Pause key may also be a fixed menu key
       taps = [];
     }
@@ -1464,7 +1528,9 @@ class MainScene extends Phaser.Scene {
     // after a tumble the road fades out and back in while the couple climb back into the car
     const fade = race.fade;
     if (fade > 0) fb.rectA(0, 0, W, H, rgb(0x120a1c), fade);
-    this.hud.draw(fb, race, inp.touchMode && !this.paused, this.time2, inp.tiltMode);
+    this.hud.draw(fb, race, inp.touchMode && !this.paused, this.time2, inp.tiltMode, {
+      ...inp.mobile,scheme:inp.activeMobileScheme,throttle:inp.throttle,brake:inp.brake,
+    });
     drawForkPanel(fb, this.bank, race, this.time2);
     if (race.tumbleT >= 0) {
       // she talks from wherever she landed (and not at all while flying through the air)
@@ -1481,28 +1547,35 @@ class MainScene extends Phaser.Scene {
   private pauseMenu(taps: { x: number; y: number }[]): void {
     const inp = this.input2;
     const fb = this.fb;
+    if(this.mobileMenuOpen) { this.mobileScreen(0,taps,true); return; }
     fb.rectA(0, 0, W, H, rgb(0x0c0618), 0.55);
-    const hasTilt = inp.touchMode && inp.tiltSupported;
-    panel(fb, W / 2 - 80, 46, 160, hasTilt ? 102 : 82);
+    const hasMobile = inp.touchMode;
+    const count = hasMobile ? 3 : 2;
+    panel(fb, W / 2 - 80, 46, 160, hasMobile ? 104 : 82);
     big(fb, t("pause.title"), W / 2, 54, 2, GRAD_SUN);
     const b1: Rect = { x: W / 2 - 60, y: 80, w: 120, h: 15 };
     const b2: Rect = { x: W / 2 - 60, y: 100, w: 120, h: 15 };
-    if (inp.hit("up") || inp.hit("down")) { this.pauseSel ^= 1; this.audio.uiMove(); }
+    if (inp.hit('up')) { this.pauseSel=(this.pauseSel+count-1)%count; this.audio.uiMove(); }
+    if (inp.hit('down')) { this.pauseSel=(this.pauseSel+1)%count; this.audio.uiMove(); }
     button(fb, b1, t("pause.resume"), this.pauseSel === 0);
     button(fb, b2, t("pause.quit"), this.pauseSel === 1);
     let act = -1;
     if (inp.hit("confirm")) act = this.pauseSel;
     const resume = inp.hit("pause") || inp.hit("back");
     if (act < 0 && resume) act = 0;
-    if (hasTilt) {
-      const r: Rect = { x: W / 2 - 70, y: 120, w: 140, h: 13 };
-      inp.tiltRect = r;
-      button(fb, r, inp.tiltWanted ? t("ctl.tilt_on") : t("ctl.tilt_off"), inp.tiltWanted);
-      if (inp.tiltDenied) para(fb, t("ctl.tilt_blocked"), W / 2, 152, C.pink, W - 10);
+    if (hasMobile) {
+      const r: Rect = { x: W / 2 - 70, y: 120, w: 140, h: 18 };
+      button(fb,r,t('mobile.title'),this.pauseSel===2);
+      if(this.tapped(taps,r)) act=2;
+      if(inp.tiltWanted && !inp.tiltMode) para(fb,t('mobile.status.'+inp.motionStatus),W/2,153,C.yellow,W-10,true);
     }
     if (this.tapped(taps, b1)) act = 0;
     else if (this.tapped(taps, b2)) act = 1;
-    if (act === 0) { this.paused = false; this.audio.uiSelect(); }
+    if (act === 0) {
+      if(inp.resumeMobile && !inp.resumeMobile()) { this.openMobile('pause'); return; }
+      this.paused = false; this.audio.uiSelect();
+    }
+    else if(act===2) this.openMobile('pause');
     else if (act === 1) {
       this.paused = false;
       this.audio.uiSelect();
