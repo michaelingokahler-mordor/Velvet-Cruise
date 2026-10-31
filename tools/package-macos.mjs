@@ -4,6 +4,7 @@ import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { macNoticeFiles } from './macos-notices.mjs';
+import { releaseVersion, gameId, releaseInfo, itchManifest } from './release-config.mjs';
 
 const flag = key => { const index = process.argv.indexOf(key); return index < 0 ? '' : process.argv[index + 1]; };
 const game = path.resolve(flag('--game') || 'output/macos-release/desktop-game');
@@ -13,12 +14,14 @@ if (!['arm64', 'x64'].includes(arch)) throw Error('Choose arm64 or x64.');
 if (fs.existsSync(out) || out === game || out.startsWith(game + path.sep) || game.startsWith(out + path.sep)) throw Error('Choose a fresh output directory separate from the game payload.');
 const html = fs.readFileSync(path.join(game, 'index.html'), 'utf8');
 const metadata = JSON.parse(html.match(/<script[^>]*id="velvet-runtime"[^>]*>([\s\S]*?)<\/script>/)?.[1] || '{}');
-if (metadata.target !== 'desktop' || metadata.gameId !== 'game-20261009-93986676') throw Error('A full desktop game payload is required.');
+if (metadata.target !== 'desktop' || metadata.gameId !== gameId || metadata.version !== releaseVersion) throw Error('A current-version Full desktop game payload is required.');
 fs.mkdirSync(out, { recursive: true });
 const application = path.join(out, 'application'), payload = path.join(out, 'game');
 fs.cpSync(path.resolve('desktop'), application, { recursive: true });
-fs.writeFileSync(path.join(application, 'package.json'), JSON.stringify({ name: 'velvet-cruise-runtime', version: '0.1.0', type: 'module', main: 'main.mjs', private: true }, null, 2));
+fs.writeFileSync(path.join(application, 'package.json'), JSON.stringify({ name: 'velvet-cruise-runtime', version: releaseVersion, type: 'module', main: 'main.mjs', private: true }, null, 2));
 fs.cpSync(game, payload, { recursive: true });
+fs.writeFileSync(path.join(out, '.itch.toml'), itchManifest('macos'));
+fs.writeFileSync(path.join(out, 'RELEASE-INFO.json'), JSON.stringify(releaseInfo('macos', arch), null, 2) + '\n');
 if (process.argv.includes('--prepare-only')) {
   console.log(JSON.stringify({ application, payload, arch }));
 } else {
@@ -35,20 +38,20 @@ if (process.argv.includes('--prepare-only')) {
   const paths = await packager({ dir: application, name: 'Velvet Cruise', executableName: 'Velvet Cruise', platform: 'darwin', arch,
     electronVersion: '45.2.1', out: path.join(out, 'bundles'), overwrite: false, asar: false, prune: false,
     appBundleId: 'com.sabnockworks.velvetcruise', helperBundleId: 'com.sabnockworks.velvetcruise.helper',
-    appVersion: '0.1.0', buildVersion: '2026.10.31', appCategoryType: 'public.app-category.racing-games',
+    appVersion: releaseVersion, buildVersion: releaseVersion, appCategoryType: 'public.app-category.racing-games',
     icon, extraResource: [payload], darwinDarkModeSupport: true,
   });
   if (paths.length !== 1) throw Error('Expected one Mac application.');
   const app = path.join(paths[0], 'Velvet Cruise.app');
   execFileSync('/usr/bin/codesign', ['--force', '--deep', '--sign', '-', app], { stdio: 'inherit' });
   execFileSync('/usr/bin/codesign', ['--verify', '--deep', '--strict', '--verbose=2', app], { stdio: 'inherit' });
-  const zip = path.join(out, `Velvet-Cruise-macOS-${arch}-2026-10-31.zip`);
+  const zip = path.join(out, `Velvet-Cruise-macOS-${arch}-${releaseVersion}.zip`);
   execFileSync('/usr/bin/ditto', ['-c', '-k', '--sequesterRsrc', '--keepParent', app, zip]);
   const notices = macNoticeFiles(paths[0]);
   for (const notice of notices) fs.copyFileSync(notice, path.join(out, path.basename(notice)));
   // Notices are outside the signed .app, so app bytes and signatures stay intact.
-  execFileSync('/usr/bin/zip', ['-j', zip, ...notices], { stdio: 'inherit' });
-  const result = { app, archive: zip, arch, electronVersion: '45.2.1', gameId: metadata.gameId, bundleId: 'com.sabnockworks.velvetcruise', signing: 'ad-hoc', notarized: false, archiveSha256: createHash('sha256').update(fs.readFileSync(zip)).digest('hex'), bytes: fs.statSync(zip).size };
+  execFileSync('/usr/bin/zip', ['-j', zip, ...notices, path.join(out, '.itch.toml'), path.join(out, 'RELEASE-INFO.json')], { stdio: 'inherit' });
+  const result = { app, archive: zip, version: releaseVersion, arch, electronVersion: '45.2.1', gameId: metadata.gameId, bundleId: 'com.sabnockworks.velvetcruise', signing: 'ad-hoc', notarized: false, archiveSha256: createHash('sha256').update(fs.readFileSync(zip)).digest('hex'), bytes: fs.statSync(zip).size };
   fs.writeFileSync(path.join(out, 'release.json'), JSON.stringify(result, null, 2));
   console.log(JSON.stringify(result, null, 2));
 }

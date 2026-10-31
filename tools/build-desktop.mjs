@@ -2,6 +2,7 @@
 import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { resolve, relative } from 'node:path';
 import { createHash } from 'node:crypto';
+import { releaseVersion } from './release-config.mjs';
 const flag = key => { const i=process.argv.indexOf(key); return i<0 ? '' : process.argv[i+1]; };
 const explicit=process.argv[2] && !process.argv[2].startsWith('--');
 const built=resolve(flag('--source') || 'dist'), out=resolve(explicit ? process.argv[2] : 'output/independent-runtime/desktop-game-'+new Date().toISOString().replace(/[:.]/g,'-'));
@@ -11,10 +12,10 @@ if (demo !== /name="velvet-edition" content="demo-e"/.test(html)) throw new Erro
 mkdirSync(out,{recursive:true});
 for (const name of readdirSync(built)) cpSync(resolve(built,name),resolve(out,name),{recursive:true});
 const gameId='game-20261009-93986676'+(demo?'-demo-e':'');
-writeFileSync(resolve(out,'index.html'),html.replace('</head>',`<script type="application/json" id="velvet-runtime">${JSON.stringify({target:'desktop',gameId})}</script>\n</head>`));
+writeFileSync(resolve(out,'index.html'),html.replace('</head>',`<script type="application/json" id="velvet-runtime">${JSON.stringify({target:'desktop',gameId,version:releaseVersion})}</script>\n</head>`));
 const files={};
 const walk=dir=>{ for(const name of readdirSync(dir)){const file=resolve(dir,name); if(statSync(file).isDirectory())walk(file);else files[relative(out,file).replaceAll('\\','/')]=statSync(file).size;} };
 walk(out);
 const version=(explicit && process.argv[3] && !process.argv[3].startsWith('--') ? process.argv[3] : 'independent')+'-'+createHash('sha256').update(readFileSync(resolve(out,'index.html'))).digest('hex').slice(0,12);
-writeFileSync(resolve(out,'build_manifest.json'),JSON.stringify({build_version:version,game_name:gameId,edition:demo?'demo-e':'full',built_at:new Date().toISOString(),runtime:'desktop',files},null,2));
+writeFileSync(resolve(out,'build_manifest.json'),JSON.stringify({build_version:version,releaseVersion,game_name:gameId,edition:demo?'demo-e':'full',built_at:new Date().toISOString(),runtime:'desktop',files},null,2));
 console.log(JSON.stringify({output:out,version,files:Object.keys(files).length}));

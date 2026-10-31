@@ -1,0 +1,45 @@
+// A release must expose the same version to Windows, macOS and itch's launcher.
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import { spawnSync } from 'node:child_process';
+import { NtExecutable, NtExecutableResource, Resource } from 'resedit';
+
+fs.mkdirSync('output/itch-release', { recursive: true });
+const root = fs.mkdtempSync(path.resolve('output/itch-release/version-test-'));
+const source = path.join(root, 'source'); fs.mkdirSync(source);
+fs.writeFileSync(path.join(source, 'index.html'), '<html><head><meta name="velvet-edition" content="full"></head></html>');
+const run = (script, args) => {
+  const result = spawnSync(process.execPath, [script, ...args], { encoding: 'utf8' });
+  assert.equal(result.status, 0, result.stderr); return result;
+};
+const game = path.join(root, 'game');
+run('tools/build-desktop.mjs', [game, '--source', source]);
+const metadata = JSON.parse(fs.readFileSync(path.join(game, 'index.html'), 'utf8').match(/id="velvet-runtime">(.*?)<\/script>/)[1]);
+assert.equal(metadata.gameId, 'game-20261009-93986676');
+assert.equal(metadata.version, '1.0.0', 'Game metadata exposes the release version');
+assert.equal(JSON.parse(fs.readFileSync(path.join(game, 'build_manifest.json'))).releaseVersion, '1.0.0');
+const mac = path.join(root, 'mac');
+run('tools/package-macos.mjs', ['--game', game, '--out', mac, '--arch', 'arm64', '--prepare-only']);
+assert.equal(JSON.parse(fs.readFileSync(path.join(mac, 'application/package.json'))).version, '1.0.0');
+const template = path.join(root, 'template'); fs.mkdirSync(template);
+const executable = NtExecutable.createEmpty(false), resources = NtExecutableResource.from(executable);
+const oldVersion = Resource.VersionInfo.createEmpty(); oldVersion.setFileVersion('0.1.0'); oldVersion.setProductVersion('0.1.0');
+oldVersion.outputToResourceEntries(resources.entries); resources.outputResource(executable);
+const original = Buffer.from(executable.generate());
+fs.writeFileSync(path.join(template, 'Velvet Cruise.exe'), original);
+for (const name of ['debug.log', 'INSTALLATION-INFO.json', 'RELEASE-INFO.json']) fs.writeFileSync(path.join(template, name), 'old installation');
+const windows = path.join(root, 'windows');
+run('tools/package-desktop.mjs', ['--game', game, '--template', template, '--out', windows]);
+assert.deepEqual(fs.readFileSync(path.join(template, 'Velvet Cruise.exe')), original, 'Installed/template executable is preserved');
+const versions = Resource.VersionInfo.fromEntries(NtExecutableResource.from(NtExecutable.from(fs.readFileSync(path.join(windows, 'Velvet Cruise.exe')))).entries);
+assert.equal(versions[0].fixedInfo.fileVersionMS, 65536);
+assert.equal(versions[0].fixedInfo.productVersionMS, 65536);
+assert.equal(versions[0].fixedInfo.fileVersionLS, 0);
+assert.equal(JSON.parse(fs.readFileSync(path.join(windows, 'resources/app/package.json'))).version, '1.0.0');
+assert.equal(JSON.parse(fs.readFileSync(path.join(windows, 'RELEASE-INFO.json'))).version, '1.0.0');
+assert.equal(fs.existsSync(path.join(windows, 'debug.log')), false);
+assert.equal(fs.existsSync(path.join(windows, 'INSTALLATION-INFO.json')), false);
+assert.match(fs.readFileSync(path.join(windows, '.itch.toml'), 'utf8'), /path = "Velvet Cruise\.exe"/);
+assert.notEqual(spawnSync(process.execPath, ['tools/package-desktop.mjs', '--game', game, '--template', template, '--out', windows]).status, 0);
+console.log('PASS: shared release version, real PE resources, runtime metadata, launch action and template preservation');

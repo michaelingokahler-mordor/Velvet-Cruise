@@ -21,6 +21,9 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - name: Release version
+        id: release
+        run: node -e "require('fs').appendFileSync(process.env.GITHUB_OUTPUT, 'version='+require('./package.json').version+'\n')"
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
         with:
           node-version: '24'
@@ -30,12 +33,14 @@ jobs:
         run: |
           npm run check
           npm test
+          npm run qa:release
+          python3 tools/qa/check-itch-release.py
       - name: Build and package
         run: |
           npx vite build --mode desktop --outDir output/macos-release/dist
           node tools/build-desktop.mjs output/macos-release/desktop-game --source output/macos-release/dist
           node tools/package-macos.mjs --game output/macos-release/desktop-game --out output/macos-release/${{ matrix.arch }} --arch ${{ matrix.arch }}
-          python3 tools/qa/check-macos-archive.py output/macos-release/${{ matrix.arch }}/Velvet-Cruise-macOS-${{ matrix.arch }}-2026-10-31.zip --arch ${{ matrix.arch }} --report output/macos-release/${{ matrix.arch }}/archive-validation.json
+          python3 tools/qa/check-macos-archive.py output/macos-release/${{ matrix.arch }}/Velvet-Cruise-macOS-${{ matrix.arch }}-${{ steps.release.outputs.version }}.zip --arch ${{ matrix.arch }} --report output/macos-release/${{ matrix.arch }}/archive-validation.json
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: Mac-runtime-notices-${{ matrix.arch }}
@@ -47,11 +52,19 @@ jobs:
       - name: Extract exact delivery ZIP and verify
         run: |
           mkdir -p output/macos-release/extracted
-          ditto -x -k output/macos-release/${{ matrix.arch }}/Velvet-Cruise-macOS-${{ matrix.arch }}-2026-10-31.zip output/macos-release/extracted
+          ditto -x -k output/macos-release/${{ matrix.arch }}/Velvet-Cruise-macOS-${{ matrix.arch }}-${{ steps.release.outputs.version }}.zip output/macos-release/extracted
           codesign --verify --deep --strict --verbose=2 'output/macos-release/extracted/Velvet Cruise.app'
           node tools/qa/windows-rankings-native.mjs 'output/macos-release/extracted/Velvet Cruise.app'
           node tools/qa/macos-native-migration.mjs 'output/macos-release/extracted/Velvet Cruise.app'
           node tools/qa/check-independent-artifacts.mjs 'output/macos-release/extracted/Velvet Cruise.app'
+      - name: Validate itch launch action with Butler
+        run: |
+          mkdir -p output/itch-tools
+          curl --fail --location --retry 3 'https://broth.itch.zone/butler/darwin-universal/LATEST/archive/default' -o output/itch-tools/butler.zip
+          ditto -x -k output/itch-tools/butler.zip output/itch-tools
+          chmod +x output/itch-tools/butler
+          output/itch-tools/butler version
+          output/itch-tools/butler validate output/macos-release/extracted > output/macos-release/${{ matrix.arch }}/butler-validation.txt
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         if: always()
         with:
@@ -61,6 +74,8 @@ jobs:
           path: |
             output/macos-release/${{ matrix.arch }}/*.zip
             output/macos-release/${{ matrix.arch }}/release.json
+            output/macos-release/${{ matrix.arch }}/archive-validation.json
+            output/macos-release/${{ matrix.arch }}/butler-validation.txt
             output/macos-release/native-*/report.json
             output/macos-release/native-*/*.png
             output/macos-release/migration-*/report.json

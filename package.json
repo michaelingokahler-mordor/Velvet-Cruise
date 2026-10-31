@@ -1,5 +1,6 @@
 {
   "name": "game-20261009-93986676",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -28,7 +29,11 @@
     "build:desktop": "vite build --mode desktop && node tools/build-desktop.mjs",
     "build:demo": "vite build --mode demo --outDir output/web-demo-e/game",
     "qa:demo": "node tools/qa/check-demo-e.mjs",
-    "package:mac": "node tools/package-macos.mjs"
+    "package:mac": "node tools/package-macos.mjs",
+    "qa:release": "node tools/qa/check-release-version.mjs",
+    "itch:prepare": "python tools/prepare-itch-release.py",
+    "itch:plan": "node tools/itch-release.mjs",
+    "itch:push": "node tools/itch-release.mjs --push"
   },
   "dependencies": {
     "@dimforge/rapier2d-compat": "0.20.0",
@@ -42,6 +47,7 @@
     "@types/three": "0.185.4",
     "esbuild": "^0.28.2",
     "pngjs": "^7.0.0",
+    "resedit": "2.0.3",
     "typescript": "^5.9.2",
     "vite": "^7.1.5"
   }
