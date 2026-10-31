@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "checks": [
+    "direct URL and hostile hash show notice before game",
+    "mouse confirmation",
+    "reload shows notice",
+    "Enter confirms on release",
+    "Space confirmation",
+    "gamepad confirm on release",
+    "mouse plus held gamepad waits for release",
+    "simultaneous keyboard confirmation waits for all releases",
+    "touch confirmation",
+    "portrait, landscape and short viewport"
+  ],
+  "externalRequests": [],
+  "errors": []
+}

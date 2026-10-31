@@ -1,0 +1,33 @@
+{
+  "source": "michaelingokahler-mordor/Velvet-Cruise",
+  "edition": "demo-e",
+  "release": "2026-10-31-demo-e-rating-DR5aNprM",
+  "ruleset": "tour2",
+  "route": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "destination": "E",
+  "onlineRankings": false,
+  "statisticsEnabled": false,
+  "contentNotice": true,
+  "status": "published",
+  "entry": "releases/2026-10-31-demo-e-rating-DR5aNprM/_app/index-DR5aNprM.js",
+  "assetsBase": "releases/2026-10-31-demo-e-rating-DR5aNprM/",
+  "commit": "bcf1e5baa3f6ee2e04a696d425d3c4c710936afa",
+  "trackedSourceClean": true,
+  "publishedAt": "2026-10-31T18:27:08.694Z",
+  "liveAssets": [
+    {
+      "file": "_app/index-CuY-KxW-.css",
+      "sha256": "29e4f743f45a0a23cb976d0aa3230867e9e00930961a57cf70e74275180491f9"
+    },
+    {
+      "file": "_app/index-DR5aNprM.js",
+      "sha256": "ae28158989cd270429bc3cd6a0f983e3bf3565c35dab23495f05bf9d37dd52d1"
+    }
+  ]
+}

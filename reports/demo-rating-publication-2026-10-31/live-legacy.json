@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "redirected": [
+    "2026-10-25-b5fdd7a",
+    "2026-10-25-b89f627-menu",
+    "2026-10-27-89571ad-coast-drive",
+    "2026-10-28-e07bc15-statistics",
+    "2026-10-31-2f73c2f-independent-runtime",
+    "2026-10-31-f7dfdb5-mobile-controls",
+    "2026-10-31-b7c8eb9-touch-loupe"
+  ],
+  "checks": [
+    "all previous Full entry pages reach current Demo notice",
+    "no game starts before confirmation"
+  ]
+}

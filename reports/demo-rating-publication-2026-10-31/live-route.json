@@ -1,0 +1,33 @@
+{
+  "status": "PASS",
+  "checks": [
+    "demo-e browser metadata",
+    "hostile route hash ignored",
+    "coastal attract mode",
+    "result map and selection limited to five coastal stages",
+    "requested ending A remains ending E",
+    "Plus locked despite full-edition unlock",
+    "Full and old demo data preserved"
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "ending": {
+    "mode": "ending",
+    "background": "ending_bg"
+  },
+  "graphics": {
+    "mode": "classic",
+    "screen": "ending",
+    "busy": false,
+    "error": "locked",
+    "nativeSprites": 0,
+    "width": 320,
+    "height": 180,
+    "textureWidth": 320,
+    "textureHeight": 180,
+    "canvasWidth": 320,
+    "canvasHeight": 180,
+    "drawingWidth": 320,
+    "drawingHeight": 180
+  }
+}
