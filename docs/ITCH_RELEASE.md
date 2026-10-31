@@ -122,6 +122,14 @@ Automated native tests use disposable profiles and a loopback ranking service.
 They do not submit synthetic results to the production leaderboard.
 A local Butler patch test covers patch generation and application, but does not replace the store test.
 
+The native ranking check can also start with an older installed package.
+It uses copied game payloads, disposable player data and a loopback API.
+The second launch uses the updated package with the same test profile.
+
+```powershell
+node tools/qa/windows-rankings-native.mjs output/itch-1.0.0/windows --update-from "D:/Velvet Cruise/WinExe"
+```
+
 ## Publish a later bug fix
 
 1. Increase `package.json` to the next patch version, for example `1.0.1`.

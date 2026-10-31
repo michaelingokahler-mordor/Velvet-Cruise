@@ -101,8 +101,10 @@ def main():
                           ('macos-arm64', f'Velvet-Cruise-macOS-arm64-{version}.zip'),
                           ('macos-x64', f'Velvet-Cruise-macOS-x64-{version}.zip')]:
         archive = out / name
+        with archive.open('rb') as stream:
+            digest = hashlib.file_digest(stream, 'sha256').hexdigest()
         builds.append(dict(channel=channel, file=name, bytes=archive.stat().st_size,
-                           sha256=hashlib.file_digest(archive.open('rb'), 'sha256').hexdigest()))
+                           sha256=digest))
     manifest = dict(schema=1, game='Velvet Cruise', gameId=GAME_ID, version=version,
                     project='sabnockworks/velvet-cruise', builds=builds)
     (out / 'release.json').write_text(json.dumps(manifest, indent=2) + '\n', encoding='utf-8')
