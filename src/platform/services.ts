@@ -5,6 +5,7 @@ import boardsJson from '../../assets/ui/boards.json';
 import { DEMO_A, SAVE_PREFIX } from '../game/edition';
 import { initOnlineScores, onlineScoresConfigured, onlineScoresReachable, onlineTopScores, queueOnlineScore } from './online-scores';
 import { isDesktopBuild, isAutomationRun } from './runtime';
+import type { RankingEntry } from './ranking-contract';
 export { isDesktopBuild } from './runtime';
 
 type Params = Record<string, string | number>;
@@ -19,18 +20,18 @@ export async function initServices(): Promise<void> {
   ready = true;
   notify(readyFns);
   window.addEventListener?.('languagechange', () => notify(localeFns));
-  if (!DEMO_A && !isDesktopBuild() && !isAutomationRun()) await initOnlineScores(() => notify(readyFns)).catch(() => {});
+  if (!DEMO_A && !isAutomationRun()) await initOnlineScores(() => notify(readyFns)).catch(() => {});
 }
 export function onLocaleChange(fn: () => void): void { localeFns.push(fn); }
 export function t(id: string, params?: Params): string {
-  const text = id === 'rank.account' && onlineScoresConfigured() ? 'Online names use your saved driver name.' : SOURCE[id] ?? id;
+  const text = id === 'rank.offline' && DEMO_A ? 'Online rankings are not available in the demo. Local records stay on this device.' : SOURCE[id] ?? id;
   return params ? text.replace(/\{(\w+)\}/g, (match, key) => key in params ? String(params[key]) : match) : text;
 }
 export function locale(): string { try { return navigator.language || 'en'; } catch { return 'en'; } }
 export function fmtNum(value: number): string { try { return Math.round(value).toLocaleString(locale()); } catch { return String(Math.round(value)); } }
 /** Local records are always authoritative on this device, including offline play. */
 export function usesLocalServices(): boolean { return true; }
-export function servicesOnline(): boolean { return !DEMO_A && !isDesktopBuild() && onlineScoresReachable(); }
+export function servicesOnline(): boolean { return !DEMO_A && onlineScoresReachable(); }
 
 // Keep the established keys and ranking order for every existing edition.
 const LOCAL_BESTS = `${SAVE_PREFIX}.local-bests`, LOCAL_BADGES = `${SAVE_PREFIX}.local-badges`;
@@ -46,17 +47,17 @@ function localBadges(): LocalBadges {
   const saved = loadJson<LocalBadges>(LOCAL_BADGES, { earned: [], counts: {} });
   return { earned: Array.isArray(saved.earned) ? saved.earned.filter(id => typeof id === 'string') : [], counts: saved.counts && typeof saved.counts === 'object' ? saved.counts : {} };
 }
-export interface BoardEntry { rank: number; score: number; displayName: string; you?: boolean }
+export type BoardEntry = RankingEntry;
 export async function submitScore(board: string, score: number): Promise<{ improved: boolean; best: number }> {
   const rounded = Math.round(score), all = loadJson<Record<string, number>>(LOCAL_BESTS, {});
   const previous = typeof all[board] === 'number' ? all[board] : null;
   const improved = previous === null || (BOARD_ORDER[board] === 'asc' ? rounded < previous : rounded > previous);
   if (improved) { all[board] = rounded; saveJson(LOCAL_BESTS, all); }
-  if (!DEMO_A && !isDesktopBuild()) await queueOnlineScore(board, rounded);
+  if (!DEMO_A && !isAutomationRun()) void queueOnlineScore(board, rounded).catch(() => {});
   return { improved, best: improved ? rounded : previous! };
 }
 export async function topScores(board: string, limit = 8): Promise<BoardEntry[]> {
-  return !DEMO_A && !isDesktopBuild() && onlineScoresConfigured() ? onlineTopScores(board, limit) : [];
+  return !DEMO_A && onlineScoresConfigured() ? onlineTopScores(board, limit) : [];
 }
 export async function myBest(board: string): Promise<number | null> {
   const value = loadJson<Record<string, number>>(LOCAL_BESTS, {})[board];

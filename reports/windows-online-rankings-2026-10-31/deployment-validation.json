@@ -1,0 +1,52 @@
+{
+  "status": "PASS",
+  "activatedAt": "2026-10-31T16:38:57.667Z",
+  "workerVersion": "2c3f1054-9755-49c6-a95b-43ccad835252",
+  "databaseMigration": "0003_driver_tags.sql",
+  "liveApi": {
+    "status": "PASS",
+    "checkedAt": "2026-10-31T16:37:52.598Z",
+    "workerVersion": "2c3f1054-9755-49c6-a95b-43ccad835252",
+    "health": {
+      "ok": true,
+      "service": "velvet-cruise",
+      "version": 1
+    },
+    "nativePreflight": 204,
+    "sharedEntryCount": 2,
+    "publicTagsValid": true,
+    "webNativeBoardsEqual": true,
+    "nativeStatisticsBlocked": 403,
+    "outsideOriginBlocked": 403,
+    "privateReportProtected": 401,
+    "syntheticProfilesCreated": 0,
+    "syntheticScoresSubmitted": 0,
+    "statisticsEventsSubmitted": 0
+  },
+  "localProfile": {
+    "status": "PASS",
+    "expectedKeys": 15,
+    "actualKeys": 15,
+    "missingKeys": 0,
+    "changedExistingValues": 0,
+    "normalLaunch": true,
+    "normalClose": true,
+    "checkedAt": "2026-10-31T16:38:57.667Z"
+  },
+  "database": {
+    "status": "PASS",
+    "profilesBefore": 2,
+    "profilesAfter": 2,
+    "scoresBefore": 6,
+    "scoresAfter": 6,
+    "existingProfilesIdentical": true,
+    "existingScoresIdentical": true,
+    "statisticsIdentical": true,
+    "uniqueTags": 2,
+    "privateBackupRetained": true
+  },
+  "installedFilesVerified": 202,
+  "reviewedArchiveUnchanged": true,
+  "previousPackageRetained": true,
+  "webRepublished": false
+}

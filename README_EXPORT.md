@@ -8,7 +8,9 @@ Run npm ci, npm run dev, npm run check, npm test and npm run build:web as requir
 
 All editions save records, badges, settings and unlocks locally. The existing full and demo storage keys remain unchanged. Clearing browser storage removes local records.
 
-The normal self-hosted production page can also use the existing Cloudflare ranking service. It keeps local results before sending scores. Its persistent queue handles temporary network failures. Desktop and demo editions stay local. Development and automated runs cannot contact the production ranking endpoint.
+The normal self-hosted production page and full Windows edition can use the existing Cloudflare ranking service. They save local results and pending bests before networking. Pending results retry on startup, connectivity/focus return and a 15-second retry while work remains. Local arcade tables remain separate. Demo editions stay local. Development and automated runs cannot contact the production ranking endpoint.
+
+Online entries show a saved driver name and a unique public driver tag. Profiles need no email/password registration. Clearing the application profile loses its anonymous credentials. See reports/windows-online-rankings-2026-10-31/README.md for validation and activation status.
 
 ## Statistics
 

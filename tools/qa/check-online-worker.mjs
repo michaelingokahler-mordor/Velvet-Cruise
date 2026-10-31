@@ -11,7 +11,7 @@ let DB;
 if (existsSync('server/worker.ts')) {
   await build({ entryPoints: ['server/worker.ts'], outfile: 'output/online-tests/worker.mjs', bundle: true, platform: 'node', format: 'esm' });
   worker = (await import(pathToFileURL(resolve('output/online-tests/worker.mjs')))).default;
-  DB = testDatabase(readFileSync('server/migrations/0001_rankings.sql', 'utf8'));
+  DB = testDatabase(readFileSync('server/migrations/0001_rankings.sql', 'utf8') + readFileSync('server/migrations/0003_driver_tags.sql', 'utf8'));
 }
 const env = { DB, ALLOWED_ORIGINS: 'https://sabnockworks.com,http://127.0.0.1:4187' };
 const call = (path, body, profile, origin = 'https://sabnockworks.com', extra = {}) => worker.fetch(new Request('https://rankings.test' + path, {

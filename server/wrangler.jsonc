@@ -6,7 +6,7 @@
   "workers_dev": true,
   "vars": {
     "STATS_ALLOWED_ORIGIN": "https://sabnockworks.com",
-    "ALLOWED_ORIGINS": "https://sabnockworks.com,https://www.sabnockworks.com,http://127.0.0.1:4187,http://127.0.0.1:5173,http://127.0.0.1:4173"
+    "ALLOWED_ORIGINS": "https://sabnockworks.com,https://www.sabnockworks.com,http://127.0.0.1:4187,http://127.0.0.1:5173,http://127.0.0.1:4173,velvet-game://game-20261009-93986676"
   },
   "d1_databases": [{
     "binding": "DB",

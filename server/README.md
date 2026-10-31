@@ -1,5 +1,13 @@
 # Velvet Cruise API
 
+## Windows shared rankings — 2026-10-31
+
+Full Windows and web clients use the same ranking boards. The Windows client saves locally before submitting and retains pending bests across restarts. Desktop ranking access is independent of web statistics. The allowed native origin is `velvet-game://game-20261009-93986676`.
+
+Migration `0003_driver_tags.sql` adds a separate table of unique public identifiers. It preserves existing profiles, tokens and scores. Existing web clients ignore the added `driverTag` response field. Apply the migration before deploying the new Worker. An old Worker can keep creating profiles during deployment; the new Worker allocates any missing tags when those records are read.
+
+The reviewed Windows package and activation procedure are in `reports/windows-online-rankings-2026-10-31/README.md`. The user approved activation on 2026-10-31. Migration 0003 is applied, Worker version `2c3f1054-9755-49c6-a95b-43ccad835252` is live, and the Windows package is installed. The deployment report records verification and saved-data retention.
+
 The standalone game uses Worker `velvet-cruise-api` and D1 `velvet-cruise`. The API address is `https://velvet-cruise-api.emerald-hollows.workers.dev`. This service is separate from Emerald Hollows despite the account subdomain.
 
 The current candidate starts from game source `89571ad` (Coast Drive, Classic/Plus, current tour2 rules). It adds the existing online adapter from `a829312` and anonymous statistics. Build the current source directly. The historical baseline-preserving builder does not apply to this release.

@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { discoverProfiles, gameKey, mergeStorage, snapshotProfile } from './storage-migration.mjs';
 import { scheme, privileges, gameHandler } from './protocol.mjs';
 const here = path.dirname(fileURLToPath(import.meta.url));
+const automated = process.argv.some(arg => /^--remote-debugging-(port|pipe)(=|$)|^--headless(=|$)/.test(arg));
 const flag = key => { const index = process.argv.indexOf(key); return index < 0 ? '' : (process.argv[index + 1] || ''); };
 const readerFile = flag('--storage-reader');
 const reader = readerFile ? JSON.parse(fs.readFileSync(readerFile,'utf8')) : null;
@@ -50,7 +51,7 @@ app.whenReady().then(async () => {
   const origin = `${scheme}://${metadata.gameId}`;
   protocol.handle(scheme,gameHandler(game,origin));
   Menu.setApplicationMenu(null);
-  const window = new BrowserWindow({title:'Velvet Cruise',width:1280,height:720,minWidth:640,minHeight:360,show:false,fullscreen:true,autoHideMenuBar:true,webPreferences:{preload:path.join(here,'preload.cjs'),contextIsolation:true,sandbox:true,nodeIntegration:false,webSecurity:true}});
+  const window = new BrowserWindow({title:'Velvet Cruise',width:1280,height:720,minWidth:640,minHeight:360,show:false,fullscreen:true,autoHideMenuBar:true,webPreferences:{preload:path.join(here,'preload.cjs'),additionalArguments:automated?['--velvet-automation']:[],contextIsolation:true,sandbox:true,nodeIntegration:false,webSecurity:true}});
   const external = url => { try { if (['https:','http:'].includes(new URL(url).protocol)) void shell.openExternal(url); } catch {} };
   window.webContents.setWindowOpenHandler(({url}) => { external(url); return {action:'deny'}; });
   let initialize = async () => {};

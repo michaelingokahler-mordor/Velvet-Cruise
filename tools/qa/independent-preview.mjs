@@ -9,7 +9,7 @@ const root=path.resolve(process.argv[2]||'output/independent-runtime/web-v1');
 await fs.mkdir('output/independent-runtime/preview',{recursive:true});
 await build({entryPoints:['server/worker.ts'],outfile:'output/independent-runtime/preview/worker.mjs',bundle:true,platform:'node',format:'esm'});
 const worker=(await import(pathToFileURL(path.resolve('output/independent-runtime/preview/worker.mjs')))).default;
-const DB=testDatabase(await fs.readFile('server/migrations/0001_rankings.sql','utf8'));
+const DB=testDatabase(await fs.readFile('server/migrations/0001_rankings.sql','utf8')+await fs.readFile('server/migrations/0003_driver_tags.sql','utf8'));
 for(const[name,score]of[['LOCAL-A',24000],['LOCAL-B',12345]]){
  const id=crypto.randomUUID();await DB.prepare('INSERT INTO profiles(id,display_name,token_hash,created_at) VALUES(?,?,?,?)').bind(id,name,'fixture',Date.now()).run();
  await DB.prepare('INSERT INTO scores(profile_id,board,score,achieved_at) VALUES(?,?,?,?)').bind(id,'score-normal-tour2',score,Date.now()).run();

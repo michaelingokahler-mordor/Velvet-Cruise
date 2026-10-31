@@ -10,7 +10,7 @@ const failures=[], passed=[];
 async function test(name,fn){try{await fn();passed.push(name);}catch(e){failures.push({name,message:e.stack});}}
 await build({entryPoints:['server/worker.ts'],outfile:'output/statistics/tests/worker.mjs',bundle:true,platform:'node',format:'esm'});
 const worker=(await import(pathToFileURL(resolve('output/statistics/tests/worker.mjs')))).default;
-const schema=readFileSync('server/migrations/0001_rankings.sql','utf8')+(existsSync('server/migrations/0002_statistics.sql')?readFileSync('server/migrations/0002_statistics.sql','utf8'):'');
+const schema=readFileSync('server/migrations/0001_rankings.sql','utf8')+readFileSync('server/migrations/0003_driver_tags.sql','utf8')+(existsSync('server/migrations/0002_statistics.sql')?readFileSync('server/migrations/0002_statistics.sql','utf8'):'');
 const DB=testDatabase(schema);
 const env={DB,ALLOWED_ORIGINS:'https://sabnockworks.com,http://127.0.0.1:4187',STATS_ALLOWED_ORIGIN:'https://sabnockworks.com',STATS_REPORT_SECRET:'synthetic-test-key-0123456789abcdef'};
 const event=(type='game_loaded',time=Date.now())=>({id:crypto.randomUUID(),type,timestamp:time});

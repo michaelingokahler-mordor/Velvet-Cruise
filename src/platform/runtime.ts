@@ -8,6 +8,11 @@ export function isDesktopBuild(): boolean {
   } catch { return false; }
 }
 
+/** Native debug automation may not set navigator.webdriver. */
+export function isDesktopAutomation(): boolean {
+  return (window as unknown as { VelvetDesktop?: { automation?: boolean } }).VelvetDesktop?.automation === true;
+}
+
 /** Automated and debug runs never initialize player-facing remote services. */
 export function isAutomationRun(): boolean {
   try {

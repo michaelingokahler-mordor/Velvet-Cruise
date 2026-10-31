@@ -16,6 +16,18 @@ export interface Env {
 interface Player { id: string; display_name: string }
 const json = (body: unknown, status = 200): Response => Response.json(body, { status, headers: { 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' } });
 const fail = (status: number, error: string): never => { throw json({ error }, status); };
+async function driverTag(env: Env, id: string): Promise<string> {
+  const existing = await env.DB.prepare('SELECT tag FROM driver_tags WHERE profile_id=?').bind(id).first<{ tag: string }>();
+  if (existing) return existing.tag;
+  for (let attempt = 0; attempt < 8; attempt++) {
+    const tag = Array.from(crypto.getRandomValues(new Uint8Array(4)), b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
+    const created = await env.DB.prepare('INSERT INTO driver_tags(profile_id,tag) VALUES(?,?) ON CONFLICT DO NOTHING RETURNING tag').bind(id, tag).first<{ tag: string }>();
+    if (created) return created.tag;
+    const concurrent = await env.DB.prepare('SELECT tag FROM driver_tags WHERE profile_id=?').bind(id).first<{ tag: string }>();
+    if (concurrent) return concurrent.tag;
+  }
+  return fail(503, 'temporarily_unavailable');
+}
 const sha = async (value: string): Promise<string> => Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value))), b => b.toString(16).padStart(2, '0')).join('');
 const berlin = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Berlin', year: 'numeric', month: '2-digit', day: '2-digit' });
 export const berlinDay = (timestamp: number): string => berlin.format(new Date(timestamp));
@@ -114,7 +126,7 @@ async function handle(request: Request, env: Env): Promise<Response> {
     const id = crypto.randomUUID();
     const token = Array.from(crypto.getRandomValues(new Uint8Array(32)), b => b.toString(16).padStart(2, '0')).join('');
     await env.DB.prepare('INSERT INTO profiles(id,display_name,token_hash,created_at) VALUES(?,?,?,?)').bind(id, name, await sha(token), Date.now()).run();
-    return json({ id, token, displayName: name }, 201);
+    return json({ id, token, displayName: name, driverTag: await driverTag(env, id) }, 201);
   }
   if (request.method === 'POST' && path === '/profile') {
     const player = await identify(request, env), name = displayName(await body(request));
@@ -130,8 +142,9 @@ async function handle(request: Request, env: Env): Promise<Response> {
     if (!/^\d+$/.test(rawLimit) || Number(rawLimit) < 1 || Number(rawLimit) > 100) return fail(400, 'limit');
     const player = request.headers.has('Authorization') ? await identify(request, env) : null;
     const direction = board.order === 'asc' ? 'ASC' : 'DESC';
-    const { results } = await env.DB.prepare(`SELECT s.profile_id,s.score,p.display_name,RANK() OVER (ORDER BY s.score ${direction}) AS rank FROM scores s JOIN profiles p ON p.id=s.profile_id WHERE s.board=? ORDER BY s.score ${direction},s.achieved_at,s.profile_id LIMIT ?`).bind(board.board, Number(rawLimit)).all<{ profile_id: string; score: number; display_name: string; rank: number }>();
-    return json({ entries: results.map(e => ({ rank: e.rank, score: e.score, displayName: e.display_name, you: e.profile_id === player?.id })) });
+    const { results } = await env.DB.prepare(`SELECT s.profile_id,s.score,p.display_name,d.tag AS driver_tag,RANK() OVER (ORDER BY s.score ${direction}) AS rank FROM scores s JOIN profiles p ON p.id=s.profile_id LEFT JOIN driver_tags d ON d.profile_id=s.profile_id WHERE s.board=? ORDER BY s.score ${direction},s.achieved_at,s.profile_id LIMIT ?`).bind(board.board, Number(rawLimit)).all<{ profile_id: string; score: number; display_name: string; driver_tag: string | null; rank: number }>();
+    const tags = await Promise.all(results.map(e => e.driver_tag ?? driverTag(env, e.profile_id)));
+    return json({ entries: results.map((e, i) => ({ rank: e.rank, score: e.score, displayName: e.display_name, driverTag: tags[i], you: e.profile_id === player?.id })) });
   }
   if (request.method === 'POST') {
     const player = await identify(request, env), data = await body(request);

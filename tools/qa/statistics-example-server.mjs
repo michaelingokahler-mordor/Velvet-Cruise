@@ -9,7 +9,7 @@ mkdirSync('output/statistics/example',{recursive:true});
 await build({entryPoints:['server/worker.ts','server/stats-report.ts'],outdir:'output/statistics/example',bundle:true,platform:'node',format:'esm',outExtension:{'.js':'.mjs'}});
 const worker=(await import(pathToFileURL(resolve('output/statistics/example/worker.mjs')))).default;
 const {reportHtml}=await import(pathToFileURL(resolve('output/statistics/example/stats-report.mjs')));
-const DB=testDatabase(readFileSync('server/migrations/0001_rankings.sql','utf8')+readFileSync('server/migrations/0002_statistics.sql','utf8'));
+const DB=testDatabase(readFileSync('server/migrations/0001_rankings.sql','utf8')+readFileSync('server/migrations/0002_statistics.sql','utf8')+readFileSync('server/migrations/0003_driver_tags.sql','utf8'));
 for(const[day,loads,starts]of[['2026-10-22',52,89],['2026-10-23',64,112],['2026-10-24',81,146],['2026-10-25',104,191],['2026-10-26',72,125],['2026-10-27',93,164],['2026-10-28',41,68]])await DB.prepare('INSERT INTO statistics_daily(day,game_loaded,run_start) VALUES(?,?,?)').bind(day,loads,starts).run();
 const key='synthetic-example-key-only-0123456789';
 const env={DB,ALLOWED_ORIGINS:'',STATS_REPORT_SECRET:key};

@@ -1,7 +1,7 @@
-import { isDesktopBuild } from './runtime';
+import { isDesktopBuild, isAutomationRun, isDesktopAutomation } from './runtime';
 import { SAVE_PREFIX } from '../game/edition';
 import { rankingBoard, rankingName, validRankingScore, type RankingEntry, type RankingProfile } from './ranking-contract';
-import { statisticsAllowed } from './statistics';
+import { productionRankingsAllowed } from './ranking-access';
 
 const PROFILE_KEY = `${SAVE_PREFIX}.online-profile`;
 const PENDING_KEY = `${SAVE_PREFIX}.online-pending`;
@@ -11,6 +11,20 @@ let profile: RankingProfile | null | undefined;
 let profileRequest: Promise<RankingProfile> | null = null;
 let syncing: Promise<void> | null = null;
 let notify: () => void = () => {};
+let retryTimer: ReturnType<typeof setTimeout> | undefined;
+
+function scheduleRetry(): void {
+  const p = player();
+  const needed = enabled && (!reachable || Object.keys(pending()).length > 0 || (p && p.displayName !== currentName()));
+  if (!needed) { clearTimeout(retryTimer); retryTimer = undefined; return; }
+  if (retryTimer !== undefined) return;
+  retryTimer = setTimeout(async () => {
+    retryTimer = undefined;
+    await initOnlineScores(notify);
+  }, 15000);
+  // Browser timers are numeric; Node-based local verification must be able to exit.
+  (retryTimer as unknown as { unref?: () => void }).unref?.();
+}
 
 function read<T>(key: string, fallback: T): T {
   try {
@@ -95,13 +109,13 @@ async function ensureProfile(): Promise<RankingProfile> {
   try { return await active; } finally { profileRequest = null; }
 }
 
-/** Only called by the standalone web edition, never the desktop/demo exports. */
+/** Full web/native editions share the service; production access is checked separately. */
 export async function initOnlineScores(changed: () => void = () => {}): Promise<void> {
   enabled = true;
   notify = changed;
   if (!listening) {
     listening = true;
-    const reconnect = () => { void (base ? flushOnlineScores() : initOnlineScores(notify)); };
+    const reconnect = () => { void initOnlineScores(notify); };
     window.addEventListener('online', reconnect);
     window.addEventListener('focus', reconnect);
   }
@@ -110,16 +124,17 @@ export async function initOnlineScores(changed: () => void = () => {}): Promise<
     const url = new URL(config.apiBase);
     if ((url.protocol !== 'https:' && !(url.protocol === 'http:' && ['127.0.0.1', 'localhost'].includes(url.hostname))) || url.username || url.password || url.search || url.hash || url.pathname !== '/') return;
     // A preview or automated test can use fixtures, but never the live service.
-    if (url.origin === 'https://velvet-cruise-api.emerald-hollows.workers.dev' && !statisticsAllowed({
+    if (url.origin === 'https://velvet-cruise-api.emerald-hollows.workers.dev' && !productionRankingsAllowed({
       production: import.meta.env.PROD === true, href: location.href,
-      webdriver: navigator.webdriver === true, desktop: isDesktopBuild(), testHooks: false,
-    })) return;
+      automation: isAutomationRun() || isDesktopAutomation(), desktop: isDesktopBuild(), desktopEnabled: import.meta.env.VITE_DESKTOP_RANKINGS === 'true',
+    })) { enabled = false; return; }
     base = url.origin;
     const health = await request('/health');
     if (health.ok !== true || health.service !== 'velvet-cruise') throw new Error('Invalid ranking service');
     connection(true);
     await flushOnlineScores();
   } catch { connection(false); }
+  finally { scheduleRetry(); }
 }
 export function onlineScoresConfigured(): boolean { return enabled && !!base; }
 export function onlineScoresReachable(): boolean { return enabled && reachable; }
@@ -131,17 +146,19 @@ export async function queueOnlineScore(id: string, score: number): Promise<void>
   const queue = pending(), old = queue[id];
   if (old === undefined || (board.order === 'asc' ? score < old : score > old)) queue[id] = score;
   save(PENDING_KEY, queue);
+  scheduleRetry();
   await flushOnlineScores();
 }
 export async function flushOnlineScores(): Promise<void> {
   if (!enabled || !base) return;
   if (syncing) {
     await syncing;
-    // A reconnect/name change can arrive while the previous request is failing.
+    // A name or a stronger result can arrive while the earlier request is failing.
     if (Object.keys(pending()).length || (player() && player()!.displayName !== currentName())) return flushOnlineScores();
     return;
   }
   syncing = (async () => {
+    let uploaded = false;
     try {
       if (!Object.keys(pending()).length && !player()) return;
       await ensureProfile();
@@ -152,6 +169,7 @@ export async function flushOnlineScores(): Promise<void> {
           const result = await request(`/scores/${id}`, { score }, true);
           const board = rankingBoard(id)!;
           if (typeof result.improved !== 'boolean' || !validRankingScore(board, result.best) || (board.order === 'asc' ? result.best > score : result.best < score)) throw new Error('Invalid ranking acknowledgement');
+          uploaded = true;
           const queue = pending();
           if (queue[id] === score) { delete queue[id]; save(PENDING_KEY, queue); }
         }
@@ -159,6 +177,7 @@ export async function flushOnlineScores(): Promise<void> {
       // The name may have changed while score requests were in flight.
       await ensureProfile();
       connection(true);
+      if (uploaded) notify();
     } catch (error) {
       if (error instanceof ApiError && error.status === 401) {
         forgetRejectedProfile(error);
@@ -166,7 +185,7 @@ export async function flushOnlineScores(): Promise<void> {
       connection(false);
     }
   })();
-  try { await syncing; } finally { syncing = null; }
+  try { await syncing; } finally { syncing = null; scheduleRetry(); }
 }
 export async function onlineTopScores(id: string, limit: number): Promise<RankingEntry[]> {
   if (!base || !rankingBoard(id)) return [];

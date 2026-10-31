@@ -17,6 +17,7 @@ import { DEMO_A, SAVE_PREFIX } from "./game/edition";
 import { GameAudio, MusicJson } from "./audio/audio";
 import { AudioSettings, type AudioChannel } from './audio/settings';
 import { initServices, onServicesReady, servicesOnline, t, onLocaleChange, locale, submitScore, topScores, myBest, fmtNum, BoardEntry } from "./platform/services";
+import { rankingDisplayName } from './platform/ranking-contract';
 import { recordStatistic } from './platform/statistics';
 import { Input, TOUCH, inRect, Rect, CONTROL_PREFS, ControlPref, DRIVE_ACTIONS, bindingLabel, BindingDevice } from "./input";
 import { THEMES } from "./game/themes";
@@ -242,6 +243,8 @@ class MainScene extends Phaser.Scene {
   private rankSel = 0;
   private rankDiff = 1;
   private rankCache = new Map<string, BoardEntry[] | null>();
+  private rankRequestVersion = 0;
+  private resultTopRequest = 0;
   private rankFrom: Mode = "title";
 
   constructor() { super("main"); }
@@ -326,6 +329,7 @@ class MainScene extends Phaser.Scene {
     this.badges.onChange = () => this.syncGoalProgress();
     this.syncGoalProgress();
     onServicesReady(() => {
+      this.refreshRankingViews();
       for (const d of DIFFS) myBest(boardId("score", d.id)).then((b) => { if (b !== null) this.bestScore.set(d.id, Math.max(b, this.bestScore.get(d.id) ?? b)); });
       // a bot-driven test run must never earn the player a badge
       this.badges.enabled = !TEST_HOOKS;
@@ -1916,13 +1920,8 @@ class MainScene extends Phaser.Scene {
     }
     Promise.all(subs).finally(() => {
       this.rankCache.clear();
-      if (!servicesOnline()) {
-        // no online boards here (desktop / offline): show this computer's arcade top drivers instead
-        res.top = arcadeTable(diff).slice(0, 5).map((e, i) => ({ rank: i + 1, score: e.s, displayName: e.n }));
-        res.topLoaded = true;
-        return;
-      }
-      topScores(scoreBoard, 5).then((e) => { res.top = e; res.topLoaded = true; });
+      this.rankRequestVersion++;
+      this.refreshResultRankings();
     });
     const had = this.bestScore.get(diff);
     if (!testRun && (had === undefined || res.score > had)) this.bestScore.set(diff, res.score);
@@ -2008,7 +2007,7 @@ class MainScene extends Phaser.Scene {
       for (const e of res.top.slice(0, rows)) {
         const col = e.you ? C.yellow : C.white;
         drawText(fb, `${e.rank}`, x0 + 10, y, col, { outline: C.ink });
-        drawText(fb, fit(e.displayName || "???", 150), x0 + 24, y, col, { outline: C.ink });
+        drawText(fb, fit(rankingDisplayName(e) || "???", 150), x0 + 24, y, col, { outline: C.ink });
         drawText(fb, fmtNum(e.score), x0 + w - 8, y, col, { align: "right", outline: C.ink });
         y += 9;
       }
@@ -2427,9 +2426,31 @@ class MainScene extends Phaser.Scene {
   }
 
   // ---------------------------------------------------------- rankings
+  private refreshRankingViews(): void {
+    this.rankRequestVersion++;
+    this.rankCache.clear();
+    if (this.mode === 'rankings') this.fetchBoard();
+    if (['map', 'results', 'name'].includes(this.mode) && this.result.score > 0) this.refreshResultRankings();
+  }
+
+  private refreshResultRankings(): void {
+    const request = ++this.resultTopRequest;
+    const res = this.result;
+    if (!servicesOnline()) {
+      res.top = arcadeTable(res.diff).slice(0, 5).map((e, i) => ({ rank: i + 1, score: e.s, displayName: e.n }));
+      res.topLoaded = true;
+      return;
+    }
+    topScores(boardId('score', res.diff), 5).then(entries => {
+      if (request !== this.resultTopRequest) return;
+      res.top = entries; res.topLoaded = true;
+    });
+  }
+
   private openRankings(from: Mode): void {
     this.rankFrom = from;
     this.rankCache.clear();
+    this.rankRequestVersion++;
     this.rankDiff = DIFFS.indexOf(this.diff);
     this.setMode("rankings");
     this.fetchBoard();
@@ -2441,7 +2462,8 @@ class MainScene extends Phaser.Scene {
     const id = boardId(k, DIFFS[this.rankDiff].id);
     if (this.rankCache.has(id)) return;
     this.rankCache.set(id, null);
-    topScores(id, 7).then((e) => this.rankCache.set(id, e));
+    const version = this.rankRequestVersion;
+    topScores(id, 7).then((e) => { if (version === this.rankRequestVersion) this.rankCache.set(id, e); });
   }
 
   private rankings(dt: number, taps: { x: number; y: number }[]): void {
@@ -2512,12 +2534,12 @@ class MainScene extends Phaser.Scene {
           const col = e.you ? C.yellow : e.rank <= 3 ? C.white : C.grey;
           if (e.you) fb.rectA(x0 + 4, y - 2, w - 8, 11, rgb(0xff9a3c), 0.25);
           drawText(fb, `${e.rank}`, x0 + 18, y, e.rank === 1 ? C.yellow : col, { align: "right", outline: C.ink });
-          drawText(fb, fit(e.displayName || "???", 140), x0 + 26, y, col, { outline: C.ink });
+          drawText(fb, fit(rankingDisplayName(e) || "???", w - 42 - textWidth(kind === 'run' ? fmtTime(e.score / 1000) : fmtNum(e.score))), x0 + 26, y, col, { outline: C.ink });
           const v = kind === "run" ? fmtTime(e.score / 1000) : fmtNum(e.score);
           drawText(fb, v, x0 + w - 8, y, col, { align: "right", outline: C.ink });
           y += 11;
         }
-        // online boards can only show the name of the player's account
+        // Public driver tags distinguish equal names; local arcade rows retain entered names.
         drawText(fb, t("rank.account"), W / 2, 133, rgb(0x8a7aa8), { align: "center", outline: C.ink, maxW: w - 10 });
       }
     }

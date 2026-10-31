@@ -57,6 +57,7 @@ export default defineConfig(({ mode, command }) => ({
     __DEMO_A__: JSON.stringify(mode === "demo" || mode === "demo-desktop"),
     "import.meta.env.VITE_STATISTICS_PRODUCTION": JSON.stringify(command === "build" && mode === "standalone" && process.env.VELVET_PRODUCTION_STATISTICS === "1" ? "true" : "false"),
     "import.meta.env.VITE_DESKTOP_BUILD": JSON.stringify(mode === "desktop" || mode === "demo-desktop" ? "true" : "false"),
+    "import.meta.env.VITE_DESKTOP_RANKINGS": JSON.stringify(command === "build" && mode === "desktop" ? "true" : "false"),
   },
   build: { target: "es2022", sourcemap: false, assetsDir: "_app" },
 }));

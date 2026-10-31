@@ -515,7 +515,7 @@
   },
   {
    "id": "rank.board_run",
-   "text": "Fastest full run"
+   "text": "Online fastest full run"
   },
   {
    "id": "rank.board_stages",
@@ -531,7 +531,7 @@
   },
   {
    "id": "rank.account",
-   "text": "Online names come from your account."
+   "text": "Name + driver ID; best per driver."
   },
   {
    "id": "rank.device",
@@ -543,7 +543,7 @@
   },
   {
    "id": "rank.offline",
-   "text": "Online rankings aren't available here. Your arcade top 10 and stage bests are kept on this computer."
+   "text": "Offline. Local records stay available. New bests upload automatically when online."
   },
   {
    "id": "rank.loading",

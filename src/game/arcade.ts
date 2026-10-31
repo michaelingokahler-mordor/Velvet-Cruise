@@ -1,6 +1,6 @@
 // The arcade top 10: a classic "enter your name" high-score table for each
-// difficulty, kept on this device (the online rankings always show the
-// player's account name, which a game cannot change).
+// difficulty, kept on this device. Online rankings separately use the saved
+// driver profile and its public identifier.
 import type { DiffId } from "./difficulty";
 import {ARCADE_KEY} from './rules';
 import {SAVE_PREFIX} from './edition';

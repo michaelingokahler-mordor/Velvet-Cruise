@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "checks": [
+    "shared web/native ranking",
+    "nonblocking local persistence",
+    "durable best-only offline queue",
+    "automatic retry and online event",
+    "profile retention",
+    "separate local arcade names",
+    "production exclusions",
+    "no desktop counters"
+  ]
+}
