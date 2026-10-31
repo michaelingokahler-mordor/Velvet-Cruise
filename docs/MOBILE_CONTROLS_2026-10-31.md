@@ -101,3 +101,27 @@ Check direct landscape load and both rotation directions before any Classic/Plus
 Allow motion access, calibrate a comfortable position and try all three modes.
 Check the forward/back speed direction, combined steering, pause access and return from the background.
 The published web edition is available for this physical device acceptance test.
+
+## iPhone follow-up: long-press loupe
+
+The user reported improved landscape fitting and smooth weather stages on their iPhone after publication.
+The user did not provide a device model, iOS version or measured frame rate.
+This is user device feedback, separate from the automated results above.
+
+The remaining report concerns an occasional magnifier during firm or prolonged presses.
+The canvas already prevented pointer defaults and context menus, but did not disable selection or native touch gestures.
+The follow-up adds `user-select: none`, `-webkit-user-select: none` and `-webkit-touch-callout: none` to the game document.
+Non-passive canvas touch listeners cancel native defaults for touch start, move and end.
+Cancelable selection and drag events are also suppressed on the canvas.
+Pointer handling remains unchanged. Credits links remain outside these canvas listeners.
+
+WebKit documents a [tap-and-hold loupe case](https://bugs.webkit.org/show_bug.cgi?id=296492) that CSS alone does not suppress.
+An earlier [WebKit report](https://bugs.webkit.org/show_bug.cgi?id=231161#c2) describes cancellation of the touch-start default as a workaround.
+
+The regression failed before the correction because touch start was not canceled.
+The browser regression also failed because computed selection was `text` instead of `none`.
+All 17 mobile input scenarios, the complete test command and TypeScript checks now pass.
+Chromium and WebKit touch navigation and permission scenarios pass without JavaScript errors.
+An independent review found no concrete pointer, sensor-permission or credits-link regression.
+These checks establish CSS and event behavior. Suppression of the actual iPhone loupe still requires device confirmation.
+System accessibility zoom is outside the control of the game page.

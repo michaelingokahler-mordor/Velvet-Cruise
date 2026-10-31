@@ -171,6 +171,14 @@ export class Input {
     canvas.addEventListener("pointercancel", up);
     canvas.addEventListener("lostpointercapture", up);
     canvas.addEventListener("contextmenu", (e) => e.preventDefault());
+    // iOS can still show its loupe for tap-and-hold despite touch-action / user-select.
+    // Cancel native TouchEvent defaults while PointerEvents continue to drive the game.
+    const preventNativeTouch = (e: Event) => { if (e.cancelable) e.preventDefault(); };
+    for (const event of ['touchstart', 'touchmove', 'touchend']) {
+      canvas.addEventListener(event, preventNativeTouch, { passive: false });
+    }
+    canvas.addEventListener('selectstart', preventNativeTouch);
+    canvas.addEventListener('dragstart', preventNativeTouch);
   }
 
   /** Characters typed since the last call ("\b" = delete one). */

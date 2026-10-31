@@ -18,6 +18,11 @@ fs.mkdirSync(out,{recursive:true});
       await page.goto(base+'#graphicstest'+(mode==='plus'?'&graphics=plus':''),{waitUntil:'load',timeout:60000});
       await page.waitForFunction(()=>typeof __graphicsInfo==='function');
       await page.waitForFunction(mode=>__graphicsInfo().mode===mode,mode);
+      const guards=await page.evaluate(()=>{
+        const canvas=document.querySelector('canvas'),css=getComputedStyle(canvas);
+        return {selection:css.getPropertyValue('-webkit-user-select')||css.userSelect,canceled:['touchstart','touchmove','touchend','selectstart','dragstart'].map(type=>!canvas.dispatchEvent(new Event(type,{cancelable:true,bubbles:true})))};
+      });
+      assert.equal(guards.selection,'none');assert.deepEqual(guards.canceled,[true,true,true,true,true]);
       for(const size of [{width:390,height:844},{width:844,height:390},{width:667,height:375},{width:932,height:430}]) {
         await page.setViewportSize(size);await page.waitForTimeout(800);
         const m=await page.evaluate(()=>{const c=document.querySelector('canvas'),r=c.getBoundingClientRect(),v=visualViewport;return {canvas:[r.x,r.y,r.width,r.height],visible:[v.offsetLeft,v.offsetTop,v.width,v.height],native:[c.width,c.height]};});
