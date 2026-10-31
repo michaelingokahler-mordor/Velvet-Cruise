@@ -2333,7 +2333,7 @@ class MainScene extends Phaser.Scene {
     this.painter.render(this.demo);
     fb.rectA(0, 0, W, H, rgb(0x0c0618), 0.45);
     const x0 = 12, w = W - 24;
-    panel(fb, x0, 6, w, 152);
+    panel(fb, x0, 6, w, 155);
     big(fb, t("badge.title"), W / 2, 10, 2, GRAD_SUN, "center", w - 8);
     const PER = BADGE_TYPES.length;
     if (bd.state === "loading") drawText(fb, t("rank.loading"), W / 2, 27, C.grey, { align: "center", outline: C.ink });
@@ -2365,7 +2365,7 @@ class MainScene extends Phaser.Scene {
       this.badgeSel = rowStart[r2] + c2;
       this.audio.uiMove();
     }
-    const SP = Math.min(21, Math.floor((w - 12) / Math.max(...BADGE_ROWS))), PITCH = 17, TOP = 40;
+    const SP = Math.min(21, Math.floor((w - 12) / Math.max(...BADGE_ROWS))), PITCH = 18, TOP = 45;
     BADGES.forEach((def, i) => {
       const r = rowStart.findIndex((st, k) => i >= st && i < st + BADGE_ROWS[k]);
       const cx = Math.round(W / 2 + ((i - rowStart[r]) - (BADGE_ROWS[r] - 1) / 2) * SP), cy = TOP + r * PITCH;
@@ -2384,19 +2384,21 @@ class MainScene extends Phaser.Scene {
     // details of the chosen badge
     const def = BADGES[this.badgeSel];
     const earned = bd.has(def.id);
-    fb.rect(x0 + 10, 99, w - 20, 1, rgb(0x5a2a5a));
+    fb.rect(x0 + 10, 110, w - 20, 1, rgb(0x5a2a5a));
     const name = badgeName(def), tierTxt = def.tier === "goal" ? "" : ` (${tierName(def.tier)})`;
     const nw = textWidth(name) + textWidth(tierTxt);
     const nx = Math.round(W / 2 - Math.min(nw, w - 12) / 2);
-    drawText(fb, fit(name, w - 12 - textWidth(tierTxt)), nx, 103, earned ? C.yellow : C.white, { outline: C.ink });
-    drawText(fb, tierTxt, nx + Math.min(textWidth(name), w - 12 - textWidth(tierTxt)), 103, TIER_RIM[def.tier][1], { outline: C.ink });
-    para(fb, badgeDesc(def), W / 2, 114, C.grey, w - 16);
+    drawText(fb, fit(name, w - 12 - textWidth(tierTxt)), nx, 114, earned ? C.yellow : C.white, { outline: C.ink });
+    drawText(fb, tierTxt, nx + Math.min(textWidth(name), w - 12 - textWidth(tierTxt)), 114, TIER_RIM[def.tier][1], { outline: C.ink });
+    const descriptionLines = para(fb, badgeDesc(def), W / 2, 124, C.grey, w - 16);
+    // Only the all-goals badge needs an extra line for its destination letters.
+    let sy = 124 + descriptionLines * 9 + 1;
     if (def.base === 'all-goals' && def.tier !== 'goal') {
       const mask = bd.has(def.id) ? 31 : this.goalProgress.current.masks[def.tier];
-      GOAL_LETTERS.forEach((letter, i) => drawText(fb, letter, W / 2 + (i - 2) * 17, 125,
+      GOAL_LETTERS.forEach((letter, i) => drawText(fb, letter, W / 2 + (i - 2) * 17, sy,
         mask & (1 << i) ? C.green : C.grey, { align: 'center', outline: C.ink }));
+      sy += 9;
     }
-    const sy = 135;
     if (earned) {
       // pixel tick + "Earned"
       const txt = t("badge.got"), tw = textWidth(txt);
@@ -2420,7 +2422,7 @@ class MainScene extends Phaser.Scene {
 
     const back: Rect = { x: W / 2 - 40, y: 162, w: 80, h: 14 };
     button(fb, back, t("rank.back"), true);
-    if (!inp.touchMode) para(fb, t("badge.hint"), W / 2, 146, rgb(0x8a7aa8), w - 8, true);
+    if (!inp.touchMode) para(fb, t("badge.hint"), W / 2, 152, rgb(0x8a7aa8), w - 8, true);
     if (inp.hit("back") || inp.hit("confirm") || this.tapped(taps, back)) {
       this.audio.uiSelect();
       this.openRecords(1);
