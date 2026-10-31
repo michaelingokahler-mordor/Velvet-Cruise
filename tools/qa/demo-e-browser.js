@@ -1,10 +1,11 @@
 async (page) => {
+  const entry = new URL(page.url()); entry.search = ''; entry.hash = '';
   const report = { checks: [], errors: [], externalRequests: [] };
   const assert = (condition, message) => { if (!condition) throw Error(message); };
   const same = (actual, expected, message) => assert(JSON.stringify(actual) === JSON.stringify(expected), message + ': ' + JSON.stringify(actual));
   page.on('pageerror', error => report.errors.push(error.message));
   await page.context().route('**/*', route => {
-    if (new URL(route.request().url()).origin === 'http://127.0.0.1:4214') return route.continue();
+    if (new URL(route.request().url()).origin === entry.origin) return route.continue();
     report.externalRequests.push(route.request().url()); return route.abort();
   });
   await page.context().addInitScript(() => {
@@ -12,7 +13,8 @@ async (page) => {
     localStorage.setItem('sunset-coast-run.demo-a.name', 'OLD DEMO');
     localStorage.setItem('sunset-coast-run.goal-progress.v1', JSON.stringify({version: 1, masks: {easy:31, normal:31, hard:31}, plusUnlocked:true}));
   });
-  await page.goto('http://127.0.0.1:4214/?qa=demo-e&run=' + Date.now() + '#maptest&endtest&graphicstest&path=0,5,8,9,10');
+  await page.goto(entry.href + '?qa=demo-e&run=' + Date.now() + '#maptest&endtest&graphicstest&path=0,5,8,9,10');
+  await page.getByRole('button', {name:'Play the Demo', exact:true}).click();
   await page.waitForFunction(() => typeof window.__map === 'function' && typeof window.__ending === 'function');
   const cdp = await page.context().newCDPSession(page);
   const proto = await cdp.send('Runtime.evaluate', {expression:'Phaser.Scene.prototype'});

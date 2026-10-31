@@ -39,7 +39,7 @@ function standalone(demo = false) {
       return {
         html,
         tags: [
-          { tag: "meta", attrs: { name: "description", content: demo ? "Try Velvet Cruise in your browser. Drive the five coastal stages to Ending E in this free demo." : "Play Velvet Cruise, a pixel-art arcade driving game. Free to play while in development. Feedback appreciated." }, injectTo: "head" as const },
+          { tag: "meta", attrs: { name: "description", content: demo ? "Try Velvet Cruise in your browser. Drive the five coastal stages to Ending E in this free demo." : "Velvet Cruise, a pixel-art arcade driving game with fifteen stages and five finish lines. Full version for Windows and Mac coming soon." }, injectTo: "head" as const },
           { tag: "link", attrs: { rel: "canonical", href: "https://sabnockworks.com/games/more-projects/velvet-cruise/" }, injectTo: "head" as const },
         ],
       };

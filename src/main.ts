@@ -14,6 +14,8 @@ import { CourseMap } from "./game/coursemap";
 import { LinkLayer, LinkRect } from "./game/links";
 import { COLS, COAST_PATH, COLUMN_NODES, NEXT, NODE_COUNT, completePath, goalLetter, validPath } from "./game/routes";
 import { DEMO, SAVE_PREFIX } from "./game/edition";
+import { waitForDemoStart } from './demo-start';
+import { isDesktopBuild } from './platform/runtime';
 import { GameAudio, MusicJson } from "./audio/audio";
 import { AudioSettings, type AudioChannel } from './audio/settings';
 import { initServices, onServicesReady, servicesOnline, t, onLocaleChange, locale, submitScore, topScores, myBest, fmtNum, BoardEntry } from "./platform/services";
@@ -2555,6 +2557,7 @@ class MainScene extends Phaser.Scene {
 }
 
 async function boot(): Promise<void> {
+  if (DEMO && !isDesktopBuild()) await waitForDemoStart();
   // the play service connects in the background: the game draws its first frame without waiting for it
   void initServices();
   // let the page finish loading first: starting the renderer in the very first

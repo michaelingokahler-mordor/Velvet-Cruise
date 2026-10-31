@@ -8,6 +8,11 @@ Straßengeometrie, Streckenlänge und Zeitboni entsprechen der Küstenroute der 
 Die Demo verwendet Classic-Grafik. Plus-Grafik und gemeinsame Online-Ranglisten bleiben gesperrt.
 Lokale Rekorde sind verfügbar.
 
+Vor jedem neuen Aufruf erscheint der Hinweis zur Einstufung ab 6 Jahren.
+Der Button `Play the Demo` startet das Spiel nach Bestätigung.
+Maus, Touch, Enter, Leertaste und die übliche Gamepad-Bestätigung sind verfügbar.
+Bei weiteren Rennen in derselben Sitzung erscheint der Hinweis nicht erneut.
+
 ## Bauen und prüfen
 
 ```powershell
