@@ -8,7 +8,7 @@
     "build:web": "vite build --mode standalone",
     "preview": "vite preview",
     "check": "tsc --noEmit",
-    "test": "node tools/qa/check-independent-build-config.mjs && node tools/qa/check-independent-services.mjs && node tools/qa/check-statistics.mjs && node tools/qa/check-statistics-lifecycle.mjs && node tools/qa/check-statistics-isolation.mjs && node tools/qa/check-statistics-concurrency.mjs && node tools/qa/check-online-worker.mjs && node tools/qa/check-online-client.mjs && node tools/qa/check-desktop-rankings.mjs && node tools/qa/check-driver-tags.mjs && node tools/qa/check-ranking-refresh.mjs && node tools/qa/check-local-services.mjs && node tools/qa/check-menu-settings.mjs && node tools/qa/check-input-bindings.mjs && node tools/qa/check-mobile-controls.mjs && node tools/qa/check-independent-distribution.mjs && node tools/qa/independent-native-unit.mjs",
+    "test": "node tools/qa/check-independent-build-config.mjs && node tools/qa/check-independent-services.mjs && node tools/qa/check-statistics.mjs && node tools/qa/check-statistics-lifecycle.mjs && node tools/qa/check-statistics-isolation.mjs && node tools/qa/check-statistics-concurrency.mjs && node tools/qa/check-online-worker.mjs && node tools/qa/check-online-client.mjs && node tools/qa/check-desktop-rankings.mjs && node tools/qa/check-driver-tags.mjs && node tools/qa/check-ranking-refresh.mjs && node tools/qa/check-local-services.mjs && node tools/qa/check-menu-settings.mjs && node tools/qa/check-input-bindings.mjs && node tools/qa/check-mobile-controls.mjs && node tools/qa/check-independent-distribution.mjs && node tools/qa/independent-native-unit.mjs && node tools/qa/check-macos-package.mjs && node tools/qa/check-profile-snapshot.mjs",
     "qa:mobile": "node tools/qa/check-mobile-controls.mjs && node tools/qa/check-input-bindings.mjs",
     "qa:mobile:browser": "node tools/qa/mobile-browser.cjs",
     "qa:mobile:webkit": "node tools/qa/mobile-webkit.cjs",
@@ -27,7 +27,8 @@
     "qa:balance": "node tools/qa/route-balance.mjs && node tools/qa/check-handling.mjs && node tools/qa/check-input-bindings.mjs",
     "build:desktop": "vite build --mode desktop && node tools/build-desktop.mjs",
     "build:demo": "vite build --mode demo-desktop --outDir output/demo-a/dist && node tools/build-desktop.mjs --demo-a --source output/demo-a/dist",
-    "qa:demo": "node tools/qa/check-demo-a.mjs"
+    "qa:demo": "node tools/qa/check-demo-a.mjs",
+    "package:mac": "node tools/package-macos.mjs"
   },
   "dependencies": {
     "@dimforge/rapier2d-compat": "0.20.0",
@@ -37,6 +38,7 @@
     "three.quarks": "0.17.1"
   },
   "devDependencies": {
+    "@electron/packager": "20.3.0",
     "@types/three": "0.185.4",
     "esbuild": "^0.28.2",
     "pngjs": "^7.0.0",

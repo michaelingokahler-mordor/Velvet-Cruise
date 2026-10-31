@@ -1,0 +1,57 @@
+name: Mac release candidates
+on:
+  push:
+    branches: [codex/macos-release]
+    paths: ['src/**', 'desktop/**', 'assets/**', 'tools/**', 'public/**', 'package*.json', 'vite.config.ts', '.github/workflows/macos-release.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  mac:
+    name: macOS ${{ matrix.arch }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: arm64
+            runner: macos-15
+          - arch: x64
+            runner: macos-15-intel
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - name: Check and test
+        run: |
+          npm run check
+          npm test
+      - name: Build and package
+        run: |
+          npx vite build --mode desktop --outDir output/macos-release/dist
+          node tools/build-desktop.mjs output/macos-release/desktop-game --source output/macos-release/dist
+          node tools/package-macos.mjs --game output/macos-release/desktop-game --out output/macos-release/${{ matrix.arch }} --arch ${{ matrix.arch }}
+      - name: Extract exact delivery ZIP and verify
+        run: |
+          mkdir -p output/macos-release/extracted
+          ditto -x -k output/macos-release/${{ matrix.arch }}/Velvet-Cruise-macOS-${{ matrix.arch }}-2026-10-31.zip output/macos-release/extracted
+          codesign --verify --deep --strict --verbose=2 'output/macos-release/extracted/Velvet Cruise.app'
+          node tools/qa/windows-rankings-native.mjs 'output/macos-release/extracted/Velvet Cruise.app'
+          node tools/qa/macos-native-migration.mjs 'output/macos-release/extracted/Velvet Cruise.app'
+          node tools/qa/check-independent-artifacts.mjs 'output/macos-release/extracted/Velvet Cruise.app'
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        if: always()
+        with:
+          name: Velvet-Cruise-macOS-${{ matrix.arch }}
+          retention-days: 7
+          if-no-files-found: error
+          path: |
+            output/macos-release/${{ matrix.arch }}/*.zip
+            output/macos-release/${{ matrix.arch }}/release.json
+            output/macos-release/native-*/report.json
+            output/macos-release/native-*/*.png
+            output/macos-release/migration-*/report.json

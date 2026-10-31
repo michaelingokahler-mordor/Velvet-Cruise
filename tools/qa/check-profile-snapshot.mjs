@@ -1,0 +1,17 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import * as migration from '../../desktop/storage-migration.mjs';
+fs.mkdirSync('output/macos-release', { recursive: true });
+const root = fs.mkdtempSync(path.resolve('output/macos-release/snapshot-test-'));
+const source = path.join(root, 'source'), db = path.join(source, 'Local Storage/leveldb');
+fs.mkdirSync(db, { recursive: true }); fs.writeFileSync(path.join(db, 'LOCK'), ''); fs.writeFileSync(path.join(db, '000001.log'), 'original records');
+migration.snapshotWithIdleChecks(source, path.join(root, 'closed'), () => false);
+assert.equal(fs.readFileSync(path.join(root, 'closed/Local Storage/leveldb/000001.log'), 'utf8'), 'original records');
+assert.throws(() => migration.snapshotWithIdleChecks(source, path.join(root, 'active'), () => true), /active|unavailable/i);
+assert.equal(fs.existsSync(path.join(root, 'active')), false, 'An active source cannot start a copy');
+let checks = 0;
+assert.throws(() => migration.snapshotWithIdleChecks(source, path.join(root, 'changed'), () => { if (++checks === 2) fs.writeFileSync(path.join(db, '000001.log'), 'newer original records'); return false; }), /changed/i);
+assert.equal(fs.readFileSync(path.join(db, '000001.log'), 'utf8'), 'newer original records', 'A rejected snapshot never modifies the source');
+assert.throws(() => migration.snapshotWithIdleChecks(source, path.join(root, 'closed'), () => false), /exist|fresh/i, 'An existing snapshot cannot be overwritten');
+console.log('PASS: idle snapshots, active-source rejection, concurrent-change detection and original retention');

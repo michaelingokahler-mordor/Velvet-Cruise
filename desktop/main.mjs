@@ -50,7 +50,11 @@ app.whenReady().then(async () => {
   }
   const origin = `${scheme}://${metadata.gameId}`;
   protocol.handle(scheme,gameHandler(game,origin));
-  Menu.setApplicationMenu(null);
+  Menu.setApplicationMenu(process.platform === 'darwin' ? Menu.buildFromTemplate([
+    {label:'Velvet Cruise',submenu:[{role:'about'},{type:'separator'},{role:'quit'}]},
+    {label:'View',submenu:[{role:'togglefullscreen'}]},
+    {role:'windowMenu'},
+  ]) : null);
   const window = new BrowserWindow({title:'Velvet Cruise',width:1280,height:720,minWidth:640,minHeight:360,show:false,fullscreen:true,autoHideMenuBar:true,webPreferences:{preload:path.join(here,'preload.cjs'),additionalArguments:automated?['--velvet-automation']:[],contextIsolation:true,sandbox:true,nodeIntegration:false,webSecurity:true}});
   const external = url => { try { if (['https:','http:'].includes(new URL(url).protocol)) void shell.openExternal(url); } catch {} };
   window.webContents.setWindowOpenHandler(({url}) => { external(url); return {action:'deny'}; });

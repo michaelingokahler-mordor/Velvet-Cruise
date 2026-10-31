@@ -10,10 +10,13 @@ import { build } from 'esbuild';
 import { testDatabase } from './online-test-db.mjs';
 
 const candidate = path.resolve(process.argv[2] || 'output/windows-online-rankings/windows-candidate');
-const out = path.resolve('output/windows-online-rankings/native-' + Date.now());
+const mac = candidate.endsWith('.app');
+const resources = mac ? path.join(candidate, 'Contents/Resources') : path.join(candidate, 'resources');
+const executable = mac ? path.join(candidate, 'Contents/MacOS/Velvet Cruise') : path.join(candidate, 'Velvet Cruise.exe');
+const out = path.resolve((mac ? 'output/macos-release' : 'output/windows-online-rankings') + '/native-' + Date.now());
 fs.mkdirSync(out, { recursive: true });
 const game = path.join(out, 'game');
-fs.cpSync(path.join(candidate, 'resources/game'), game, { recursive: true });
+fs.cpSync(path.join(resources, 'game'), game, { recursive: true });
 await build({ entryPoints: ['server/worker.ts'], outfile: path.join(out, 'worker.mjs'), bundle: true, platform: 'node', format: 'esm' });
 const worker = (await import(pathToFileURL(path.join(out, 'worker.mjs')))).default;
 const DB = testDatabase(['0001_rankings.sql', '0002_statistics.sql', '0003_driver_tags.sql'].map(n => fs.readFileSync('server/migrations/' + n, 'utf8')).join('\n'));
@@ -37,7 +40,7 @@ const profile = path.join(out, 'profile');
 const previous = path.join(out, 'empty-legacy-root'); fs.mkdirSync(previous);
 async function launch() {
   const probe = net.createServer(); await new Promise(resolve => probe.listen(0, '127.0.0.1', resolve)); const port = probe.address().port; await new Promise(resolve => probe.close(resolve));
-  const child = spawn(path.join(candidate, 'Velvet Cruise.exe'), ['--game', game, '--user-data-dir', profile, '--legacy-profile-root', previous, '--remote-debugging-port=' + port], { windowsHide: true, stdio: ['ignore', 'ignore', 'pipe'] });
+  const child = spawn(executable, ['--game', game, '--user-data-dir', profile, '--legacy-profile-root', previous, '--remote-debugging-port=' + port], { windowsHide: true, stdio: ['ignore', 'ignore', 'pipe'] });
   let stderr = ''; child.stderr.on('data', bytes => { stderr += bytes; });
   let page;
   for (let i = 0; i < 200; i++) {

@@ -1,0 +1,28 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import { spawnSync } from 'node:child_process';
+
+fs.mkdirSync('output/macos-release', { recursive: true });
+const root = fs.mkdtempSync(path.resolve('output/macos-release/package-test-'));
+const game = path.join(root, 'game'); fs.mkdirSync(game);
+const html = '<html><head><script type="application/json" id="velvet-runtime">{"target":"desktop","gameId":"game-20261009-93986676"}</script></head></html>';
+fs.writeFileSync(path.join(game, 'index.html'), html);
+fs.writeFileSync(path.join(game, 'online.json'), '{"apiBase":"https://velvet-cruise-api.emerald-hollows.workers.dev"}');
+const out = path.join(root, 'prepared');
+const run = (...args) => spawnSync(process.execPath, ['tools/package-macos.mjs', '--game', game, '--out', out, '--arch', 'arm64', '--prepare-only', ...args], { encoding: 'utf8' });
+const first = run();
+assert.equal(first.status, 0, 'Mac packaging preparation must succeed: ' + first.stderr);
+assert.ok(fs.existsSync(path.join(out, 'application', 'main.mjs')));
+assert.ok(fs.existsSync(path.join(out, 'application', 'preload.cjs')));
+assert.equal(fs.readFileSync(path.join(out, 'game', 'index.html'), 'utf8'), html);
+assert.equal(fs.readFileSync(path.join(game, 'index.html'), 'utf8'), html, 'Packaging cannot modify source payload');
+const metadata = JSON.parse(fs.readFileSync(path.join(out, 'application', 'package.json')));
+assert.equal(metadata.main, 'main.mjs');
+assert.equal(fs.existsSync(path.join(out, 'application', 'node_modules')), false, 'No development dependencies ship in the app');
+assert.notEqual(run().status, 0, 'A previous candidate cannot be overwritten');
+fs.writeFileSync(path.join(game, 'index.html'), html.replace('"desktop"', '"web"'));
+const invalid = spawnSync(process.execPath, ['tools/package-macos.mjs', '--game', game, '--out', path.join(root, 'invalid'), '--prepare-only'], { encoding: 'utf8' });
+assert.notEqual(invalid.status, 0, 'Mac packaging rejects a non-desktop payload');
+assert.equal(fs.existsSync(path.join(root, 'invalid')), false);
+console.log('PASS: Mac bundle staging, full payload validation, source preservation and overwrite rejection');

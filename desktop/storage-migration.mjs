@@ -69,8 +69,31 @@ export function discoverProfiles({ roots, gameId, exclude }) {
   return found.sort((a,b)=>b.modified-a.modified || a.profile.localeCompare(b.profile));
 }
 
+/** Copy only a stable, idle source. The OS-specific reader supplies the busy check. */
+export function snapshotWithIdleChecks(source, target, isActive) {
+  const db = path.join(source, 'Local Storage', 'leveldb');
+  if (isActive()) throw new Error('Previous profile is active or unavailable.');
+  const destination = path.join(target, 'Local Storage', 'leveldb');
+  if (fs.existsSync(destination)) throw new Error('Choose a fresh snapshot destination.');
+  const fingerprint = () => fs.readdirSync(db).sort().filter(name => fs.statSync(path.join(db, name)).isFile()).map(name => [name, createHash('sha256').update(fs.readFileSync(path.join(db, name))).digest('hex')]);
+  const before = fingerprint();
+  fs.mkdirSync(destination, { recursive: true });
+  for (const [name] of before) if (name !== 'LOCK') fs.copyFileSync(path.join(db, name), path.join(destination, name), fs.constants.COPYFILE_EXCL);
+  fs.writeFileSync(path.join(destination, 'LOCK'), '', { flag: 'wx' });
+  if (isActive() || JSON.stringify(before) !== JSON.stringify(fingerprint())) throw new Error('Previous profile changed while being copied.');
+}
+
 export function snapshotProfile(source, target) {
   const db = path.join(source, 'Local Storage', 'leveldb');
+  if (process.platform === 'darwin') {
+    const lock = path.join(db, 'LOCK');
+    if (!fs.existsSync(lock)) throw new Error('Previous profile lock is unavailable.');
+    return snapshotWithIdleChecks(source, target, () => {
+      const check = spawnSync('/usr/sbin/lsof', ['-nP', '-t', '--', lock], { encoding: 'utf8', timeout: 10000 });
+      if (check.error || check.signal || ![0, 1].includes(check.status)) throw new Error('Previous profile activity cannot be checked.');
+      return check.status === 0;
+    });
+  }
   if(process.platform!=='win32')throw new Error('Exclusive profile snapshot is unavailable on this system.');
   // Chromium's byte-range lock does not prevent CopyFile. Hold an exclusive
   // read handle instead, across the entire copy, so a running source is
