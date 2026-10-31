@@ -76,7 +76,7 @@ The 23 October package is preserved in its original folder.
 ## Links and message
 
 - https://sabnockworks.com
-- Earlier playable web demo on Tesana: https://velvet-cruise-demo.tesana.com
+- Playable browser version: https://sabnockworks.com/games/more-projects/velvet-cruise/
 - The current game has advanced beyond that demo, with updated visuals and refined driving physics.
 - Both links and the demo distinction appear in the Shorts, outro, and upload descriptions.
 

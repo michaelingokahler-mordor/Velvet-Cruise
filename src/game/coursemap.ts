@@ -5,7 +5,7 @@ import type { DrawSurface } from "../core/draw-surface";
 import { W, H, Col, rgb, mix } from "../core/fb";
 import { SpriteBank } from "../core/assets";
 import { drawText } from "../core/font";
-import { t } from "../platform/tesana";
+import { t } from "../platform/services";
 import { THEMES } from "./themes";
 import { TIME_ICON, WEATHER_KEY, stageTimeOfDay, weatherIcon, roadFeatureKey } from './stage-info';
 import { COLUMN_NODES, NEXT, NODE_COUNT, GOAL_A_PATH, goalLetter } from "./routes";

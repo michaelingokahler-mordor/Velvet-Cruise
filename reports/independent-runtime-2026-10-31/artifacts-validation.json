@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "results": [
+    {
+      "root": "C:\\Users\\micha\\.codex\\worktrees\\velvet-statistics\\Code\\output\\independent-runtime\\web-final",
+      "files": 123,
+      "creditReferences": 3
+    },
+    {
+      "root": "C:\\Users\\micha\\.codex\\worktrees\\velvet-statistics\\Code\\output\\independent-runtime\\windows-final",
+      "files": 201,
+      "creditReferences": 3
+    }
+  ],
+  "problems": []
+}

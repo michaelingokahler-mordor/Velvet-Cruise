@@ -1,0 +1,20 @@
+// Reuse the unmodified Electron distribution; ship only our own application.
+import fs from 'node:fs';
+import path from 'node:path';
+const flag = key => { const i=process.argv.indexOf(key); return i<0 ? '' : process.argv[i+1]; };
+const template=path.resolve(flag('--template') || 'D:/Velvet Cruise/WinExe');
+const outputRoot=path.resolve('output/independent-runtime');
+const generated=fs.existsSync(outputRoot)?fs.readdirSync(outputRoot,{withFileTypes:true}).filter(entry=>entry.isDirectory()&&entry.name.startsWith('desktop-game')).map(entry=>path.join(outputRoot,entry.name)).filter(dir=>fs.existsSync(path.join(dir,'build_manifest.json'))).sort((a,b)=>fs.statSync(b).mtimeMs-fs.statSync(a).mtimeMs):[];
+const game=path.resolve(flag('--game') || generated[0] || 'output/independent-runtime/desktop-game');
+const out=path.resolve(flag('--out') || 'output/independent-runtime/windows-'+new Date().toISOString().replace(/[:.]/g,'-'));
+if (fs.existsSync(out) || out===template || out.startsWith(template+path.sep)) throw new Error('Use a fresh candidate output outside the installed package.');
+const metadata=JSON.parse(fs.readFileSync(path.join(game,'index.html'),'utf8').match(/<script[^>]*id="velvet-runtime"[^>]*>([\s\S]*?)<\/script>/)?.[1] || '{}');
+if (metadata.target!=='desktop') throw new Error('Assembled desktop game required.');
+fs.mkdirSync(out,{recursive:true});
+for(const name of fs.readdirSync(template)) if(name!=='resources') fs.cpSync(path.join(template,name),path.join(out,name),{recursive:true});
+const app=path.join(out,'resources','app');
+fs.mkdirSync(app,{recursive:true});
+fs.cpSync(path.resolve('desktop'),app,{recursive:true});
+fs.writeFileSync(path.join(app,'package.json'),JSON.stringify({name:'velvet-cruise-runtime',version:'1.0.0',type:'module',main:'main.mjs',private:true},null,2));
+fs.cpSync(game,path.join(out,'resources','game'),{recursive:true});
+console.log(JSON.stringify({output:out,gameId:metadata.gameId,runtime:'Electron',steamIntegration:false}));

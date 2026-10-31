@@ -50,7 +50,6 @@
     "from_model": true
   },
   "model": {
-    "model": "@preset/tesana-opus-5-5",
     "url": "http://127.0.0.1:8790/model/openrouter~claude-opus-5.5/v1/messages",
     "ok": true,
     "status": 200,

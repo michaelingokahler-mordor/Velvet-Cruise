@@ -2,7 +2,7 @@ import type { DrawSurface } from "../core/draw-surface";
 // Arcade HUD and menu drawing helpers (everything is pixel text in the framebuffer).
 import { W, H, Col, rgb } from "../core/fb";
 import { drawText, textWidth } from "../core/font";
-import { t, fmtNum } from "../platform/tesana";
+import { t, fmtNum } from "../platform/services";
 import { MAX_SPEED, STAGE_COUNT, SEG_LEN } from "./config";
 import type { Race } from "./race";
 import type { SpriteBank } from "../core/assets";

@@ -16,21 +16,14 @@ const boards = JSON.parse(readFileSync('assets/ui/boards.json')).boards;
 const achievements = JSON.parse(readFileSync('assets/ui/achievements.json')).achievements;
 
 for (const local of [false, true]) {
+  values.clear();
+  window.VelvetDesktop = local ? {embedded:true} : undefined;
   const outfile = resolve(output, `services-${local}.mjs`);
-  await build({ entryPoints: ['src/platform/tesana.ts'], outfile, bundle: true, platform: 'node', format: 'esm', define: { 'import.meta.env.VITE_LOCAL_SERVICES': JSON.stringify(String(local)) } });
+  await build({ entryPoints: ['src/platform/services.ts'], outfile, bundle: true, platform: 'node', format: 'esm', define: { 'import.meta.env.VITE_LOCAL_SERVICES': JSON.stringify(String(local)) } });
   const api = await import(pathToFileURL(outfile));
-  await api.initTesana();
+  await api.initServices();
   assert.equal(api.servicesOnline(), false);
-  assert.equal(api.usesLocalServices(), local);
-  if (!local) {
-    assert.equal(await api.submitScore(boards[0].board, 123), null);
-    assert.equal(await api.listBadges(), null);
-    assert.equal(values.size, 0, 'The normal web export must retain its existing behavior');
-    window.TesanaDesktop = {};
-    assert.equal(api.usesLocalServices(), true, 'Desktop local saves remain supported');
-    delete window.TesanaDesktop;
-    continue;
-  }
+  assert.equal(api.usesLocalServices(), true);
   for (const order of ['asc', 'desc']) {
     const { board } = boards.find(item => item.order === order);
     const better = order === 'asc' ? 80 : 120;

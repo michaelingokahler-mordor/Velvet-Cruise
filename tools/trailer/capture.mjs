@@ -26,7 +26,7 @@ function sourceSnapshot() {
 const sourceFiles = sourceSnapshot();
 const sourceDigest = createHash('sha256').update(JSON.stringify(sourceFiles)).digest('hex');
 writeFileSync(resolve(out,'qa/source-manifest.json'),JSON.stringify({created:captureDate,sha256:sourceDigest,files:sourceFiles,gitStatus:execFileSync('git',['status','--porcelain'],{encoding:'utf8'})},null,2));
-const entry = ['core/fb','core/materials','game/track','game/race','game/render','game/themes','game/routes','game/ui','game/passenger','platform/tesana']
+const entry = ['core/fb','core/materials','game/track','game/race','game/render','game/themes','game/routes','game/ui','game/passenger','platform/services']
   .map(p=>`export * from ${JSON.stringify(resolve(root,'src',p+'.ts'))};`).join('\n');
 const bundle=resolve(out,'qa/engine.cjs');
 await build({stdin:{contents:entry,resolveDir:root,loader:'ts'},bundle:true,platform:'node',format:'cjs',outfile:bundle});

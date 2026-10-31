@@ -8,7 +8,7 @@ The candidate adds **Ladevorgänge** and **Rennstarts** to the existing Velvet C
 
 The branch is `codex/velvet-statistics` in `C:/Users/micha/.codex/worktrees/velvet-statistics/Code`. Its game baseline is `89571ad307a6c1936426a60661be778f68ac57ae`.
 
-The port copies only online adapter, contract, configuration, server, documentation, and related tests from `a829312`. It applies the relevant Tesana adapter and arcade name-sync changes. It keeps the current game, Coast Drive audio, Classic/Plus graphics, `tour2` rules, and save keys.
+The port copies only online adapter, contract, configuration, server, documentation, and related tests from `a829312`. It applies the relevant Former platform adapter and arcade name-sync changes. It keeps the current game, Coast Drive audio, Classic/Plus graphics, `tour2` rules, and save keys.
 
 `game_loaded` fires at the end of the real scene `create()` lifecycle. The module counts it once per document. `run_start` uses the existing event inside `startRace()`. Every new attempt counts, including a retry after Game Over. Pause, resume, menus, difficulty selection, route choices, and blocked starts do not create a start event.
 

@@ -4,7 +4,7 @@ import type { DrawSurface } from "../core/draw-surface";
 // and hangs at the screen edge beside you once you have overtaken them.
 import { W, Col, rgb } from "../core/fb";
 import { drawText, textWidth } from "../core/font";
-import { t } from "../platform/tesana";
+import { t } from "../platform/services";
 import type { Car } from "./race";
 
 export type ShoutKind = "hit" | "pass";

@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "checks": [
+    "default local-first services",
+    "existing records/settings/profile preserved",
+    "score ordering",
+    "local badges and counters",
+    "reload persistence",
+    "no production requests"
+  ]
+}

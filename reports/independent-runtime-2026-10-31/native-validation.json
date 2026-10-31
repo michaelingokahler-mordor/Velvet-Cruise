@@ -1,0 +1,25 @@
+{
+  "passed": true,
+  "checks": [
+    "real Chromium origin migration",
+    "21 game storage families including rankings/badges/stage records",
+    "real compressed SST-only profile discovery",
+    "actual active Electron profile exclusion",
+    "newest-source priority after locked-source retry",
+    "older-source staging until all higher-priority reads succeed",
+    "failed import defers game startup",
+    "injected QuotaExceededError in real Chromium defers startup",
+    "explicit continuation after failed storage write",
+    "unrelated-key exclusion",
+    "native bridge",
+    "sandbox",
+    "native Exit",
+    "relaunch persistence",
+    "once-only markers",
+    "failed import retry",
+    "existing destination retention",
+    "original profile retained",
+    "actual full game executable startup/canvas/Exit"
+  ],
+  "root": "C:\\Users\\micha\\.codex\\worktrees\\velvet-statistics\\Code\\output\\independent-runtime\\native-qa-1793446487506"
+}

@@ -22,7 +22,7 @@ The example runs on loopback port 4194 and contains clearly marked synthetic tot
 
 ## Separate data contracts
 
-`0001_rankings.sql` defines profiles, scores, and ranking rate limits. The port preserves local storage keys, board ordering, `tour2` separation, offline score delivery, local badges, and existing Tesana behavior. The online profile is browser-local; clearing storage creates a new ranking identity. Historical local scores are not uploaded. Rankings validate score values but do not verify driving replays.
+`0001_rankings.sql` defines profiles, scores, and ranking rate limits. The game preserves local storage keys, board ordering, `tour2` separation, offline score delivery and local badges. The online profile is browser-local; clearing storage creates a new ranking identity. Historical local scores are not uploaded. Rankings validate score values but do not verify driving replays.
 
 `0002_statistics.sql` adds event deduplication and daily totals. No ranking tables are changed. The SQLite trigger counts an event in the same transaction as its insert; duplicate event UUIDs never increment the aggregate. Event IDs expire after 48 hours. Ingest accepts at most 24-hour-old events, so expired deduplication records cannot make a permitted retry count again. Cleanup happens on ingest; daily totals remain until an operator chooses to remove them.
 

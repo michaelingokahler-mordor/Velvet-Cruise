@@ -8,7 +8,7 @@
     "build:web": "vite build --mode standalone",
     "preview": "vite preview",
     "check": "tsc --noEmit",
-    "test": "node tools/qa/check-statistics.mjs && node tools/qa/check-statistics-lifecycle.mjs && node tools/qa/check-statistics-isolation.mjs && node tools/qa/check-statistics-concurrency.mjs && node tools/qa/check-online-worker.mjs && node tools/qa/check-online-client.mjs && node tools/qa/check-local-services.mjs && node tools/qa/check-menu-settings.mjs",
+    "test": "node tools/qa/check-independent-build-config.mjs && node tools/qa/check-independent-services.mjs && node tools/qa/check-statistics.mjs && node tools/qa/check-statistics-lifecycle.mjs && node tools/qa/check-statistics-isolation.mjs && node tools/qa/check-statistics-concurrency.mjs && node tools/qa/check-online-worker.mjs && node tools/qa/check-online-client.mjs && node tools/qa/check-local-services.mjs && node tools/qa/check-menu-settings.mjs && node tools/qa/check-independent-distribution.mjs && node tools/qa/independent-native-unit.mjs",
     "qa:statistics": "node tools/qa/check-statistics.mjs && node tools/qa/check-statistics-lifecycle.mjs && node tools/qa/check-statistics-isolation.mjs && node tools/qa/check-statistics-concurrency.mjs",
     "qa:road-effects": "node tools/qa/check-road-effects-all.mjs",
     "qa:local-services": "node tools/qa/check-local-services.mjs",
@@ -22,8 +22,8 @@
     "qa:depth": "node tools/qa/stage-refresh.mjs . output/stage-depth/after && node tools/qa/check-palm-cove-contract.mjs --renderer output/stage-depth/after/renderer.cjs && node tools/qa/check-stage-refresh.mjs output/stage-depth --graphics-only && node tools/qa/check-stage-depth.mjs --graphics-only",
     "qa:depth:legacy": "node tools/qa/check-stage-refresh.mjs output/stage-depth && node tools/qa/check-stage-depth.mjs",
     "qa:balance": "node tools/qa/route-balance.mjs && node tools/qa/check-handling.mjs && node tools/qa/check-input-bindings.mjs",
-    "build:desktop": "npm run build && node tools/build-desktop.mjs",
-    "build:demo": "vite build --mode demo --outDir output/demo-a/dist && node tools/build-desktop.mjs output/demo-a/desktop-game demo-a --source output/demo-a/dist --demo-a",
+    "build:desktop": "vite build --mode desktop && node tools/build-desktop.mjs",
+    "build:demo": "vite build --mode demo-desktop --outDir output/demo-a/dist && node tools/build-desktop.mjs --demo-a --source output/demo-a/dist",
     "qa:demo": "node tools/qa/check-demo-a.mjs"
   },
   "dependencies": {

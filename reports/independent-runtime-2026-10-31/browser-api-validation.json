@@ -1,0 +1,13 @@
+{
+  "calls": [
+    {
+      "path": "/health",
+      "method": "GET"
+    },
+    {
+      "path": "/scores/score-normal-tour2",
+      "method": "GET"
+    }
+  ],
+  "productionForwarding": false
+}

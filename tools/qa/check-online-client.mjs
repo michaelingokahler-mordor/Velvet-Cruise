@@ -31,16 +31,16 @@ globalThis.fetch = async (input, options = {}) => {
 };
 async function load(name, local = true, demo = false) {
   const outfile = resolve(`output/online-tests/${name}.mjs`);
-  await build({ stdin: { contents: "export * from './src/platform/tesana'; export * from './src/platform/online-scores'; export * from './src/game/arcade';", resolveDir: process.cwd(), loader: 'ts' }, outfile, bundle: true, platform: 'node', format: 'esm', define: { __DEMO_A__: String(demo), 'import.meta.env.VITE_LOCAL_SERVICES': JSON.stringify(String(local)) } });
+  await build({ stdin: { contents: "export * from './src/platform/services'; export * from './src/platform/online-scores'; export * from './src/game/arcade';", resolveDir: process.cwd(), loader: 'ts' }, outfile, bundle: true, platform: 'node', format: 'esm', define: { __DEMO_A__: String(demo), 'import.meta.env.VITE_LOCAL_SERVICES': JSON.stringify(String(local)) } });
   const api = await import(pathToFileURL(outfile));
-  await api.initTesana();
+  await api.initServices();
   return api;
 }
 // Bundle only the existing platform for the initial RED observation.
 const initialFile = resolve('output/online-tests/initial-client.mjs');
-await build({ entryPoints: ['src/platform/tesana.ts'], outfile: initialFile, bundle: true, platform: 'node', format: 'esm', define: { __DEMO_A__: 'false', 'import.meta.env.VITE_LOCAL_SERVICES': '"true"' } });
+await build({ entryPoints: ['src/platform/services.ts'], outfile: initialFile, bundle: true, platform: 'node', format: 'esm', define: { __DEMO_A__: 'false', 'import.meta.env.VITE_LOCAL_SERVICES': '"true"' } });
 const initial = await import(pathToFileURL(initialFile));
-await initial.initTesana();
+await initial.initServices();
 assert.equal(initial.servicesOnline(), true, 'A configured standalone website must use the Cloudflare ranking service');
 
 const alice = await load('alice');
@@ -99,15 +99,15 @@ assert.equal(tabB.servicesOnline(), true);
 assert.equal(JSON.parse(storage.get('sunset-coast-run.online-profile')), null);
 await tabA.submitScore('score-hard-tour2', 4400);
 assert.notEqual(JSON.parse(storage.get('sunset-coast-run.online-profile')).id, tabProfile.id);
-for (const kind of ['desktop', 'demo', 'tesana', 'test-hook']) {
+for (const kind of ['desktop', 'demo', 'test-hook']) {
   storage = new Map();
-  window.TesanaDesktop = kind === 'desktop' ? {} : undefined;
+  window.VelvetDesktop = kind === 'desktop' ? {embedded:true} : undefined;
   location.hash = kind === 'test-hook' ? '#autopilot' : '';
   const before = requests;
-  const api = await load(kind, kind !== 'tesana', kind === 'demo');
+  const api = await load(kind, true, kind === 'demo');
   await api.submitScore('score-normal-tour2', 7777);
   api.saveName('TEST');
   assert.equal(requests, before, `${kind} must not contact Cloudflare`);
 }
 DB.close();
-console.log('PASS: standalone online boards, two profiles, concurrent submissions, local-save preservation, offline queue/reload/retry, names, malformed responses and demo/desktop/Tesana/test isolation');
+console.log('PASS: standalone online boards, two profiles, concurrent submissions, local-save preservation, offline queue/reload/retry, names, malformed responses and demo/desktop/Former platform/test isolation');

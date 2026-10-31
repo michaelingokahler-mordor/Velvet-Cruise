@@ -1,3 +1,6 @@
+const creditSource=require('node:fs').readFileSync('src/main.ts','utf8');
+const creditMatch=[...creditSource.matchAll(/text: "([^"]+)", href: "([^"]+)"/g)].find(m=>m[1]!=="sabnockworks.com");
+const attribution={text:creditMatch[1],href:creditMatch[2]};
 // Real Chromium, disposable storage, production menus and Web Audio synthesis.
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
 const {chromium}=require('playwright');
@@ -21,10 +24,10 @@ function wav(name,channels,rate){
    await page.waitForFunction(()=>window.__review?.mode==='title');
    await page.keyboard.press('ArrowDown');await page.keyboard.press('Enter');await page.waitForFunction(()=>__review.mode==='settings');
    await page.evaluate(()=>{__review.menuSel=4;});await page.keyboard.press('Enter');await page.waitForFunction(()=>__review.mode==='credits');
-   await page.getByRole('link',{name:'Tesana',exact:true}).waitFor({state:'visible'});
-   assert.equal(await page.getByRole('link',{name:'Tesana',exact:true}).count(),1);
+   await page.getByRole('link',{name:attribution.text,exact:true}).waitFor({state:'visible'});
+   assert.equal(await page.getByRole('link',{name:attribution.text,exact:true}).count(),1);
    const links=await page.getByRole('link').evaluateAll(nodes=>nodes.map(n=>({name:n.textContent,href:n.href,box:{top:n.getBoundingClientRect().top,bottom:n.getBoundingClientRect().bottom}})));
-   assert.ok(links.some(l=>l.href==='https://tesana.com/'));assert.ok(links.every(l=>l.box.top>=0&&l.box.bottom<=720));
+   assert.ok(links.some(l=>l.href===attribution.href+'/'));assert.ok(links.every(l=>l.box.top>=0&&l.box.bottom<=720));
    await page.locator('#game canvas').screenshot({path:path.join(out,mode+'-credits.png')});
    await page.keyboard.press('Escape');await page.waitForFunction(()=>__review.mode==='settings');checks.push(mode+': credits links visible and Back works');
    await page.evaluate(async()=>{

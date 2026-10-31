@@ -1,3 +1,4 @@
+import { isDesktopBuild } from './runtime';
 import { SAVE_PREFIX } from '../game/edition';
 import { rankingBoard, rankingName, validRankingScore, type RankingEntry, type RankingProfile } from './ranking-contract';
 import { statisticsAllowed } from './statistics';
@@ -111,7 +112,7 @@ export async function initOnlineScores(changed: () => void = () => {}): Promise<
     // A preview or automated test can use fixtures, but never the live service.
     if (url.origin === 'https://velvet-cruise-api.emerald-hollows.workers.dev' && !statisticsAllowed({
       production: import.meta.env.PROD === true, href: location.href,
-      webdriver: navigator.webdriver === true, desktop: !!(window as any).TesanaDesktop, testHooks: false,
+      webdriver: navigator.webdriver === true, desktop: isDesktopBuild(), testHooks: false,
     })) return;
     base = url.origin;
     const health = await request('/health');

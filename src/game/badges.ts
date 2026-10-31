@@ -6,7 +6,7 @@ import type { DrawSurface } from "../core/draw-surface";
 // Every badge exists once per difficulty: Easy (bronze), Normal (silver), Hard (gold).
 import { W, Col, rgb, mix } from "../core/fb";
 import { drawText, textWidth } from "../core/font";
-import { t, track, listBadges, unlockBadge, badgeProgress } from "../platform/tesana";
+import { t, listBadges, unlockBadge, badgeProgress } from "../platform/services";
 import { fit } from "./ui";
 import { goalCount, type GoalProgress } from './goal-progress';
 
@@ -257,7 +257,6 @@ export class Badges {
     this.earned.add(id);
     this.onChange?.();
     this.toasts.push({ id, t: 0, dur: TOAST_DUR });
-    track.event("badge_earned", { name: id });
   }
 
   /** Advance the pop-up queue; `free` is false while something more important owns the screen. */

@@ -8,7 +8,7 @@ Stand: 26.10.2026. Lokal implementiert und technisch geprüft, nicht veröffentl
 - Unterbrochene Wellenkämme, bewegte Brandung und ein kleines Segelboot mit Kielwasser. Das Boot läuft durch die vorhandene Tiefensortierung; höchstens eines gleichzeitig. Der See bleibt ruhig, Binnenland erhält kein Boot.
 - Rot-weißer Windsack am rechten Rand, mit Pfeilen für Gegen-/Rückenwind. Sandpartikel entfernt, leichte Sandtrübung erhalten. Böen dauern 4–6 s mit unveränderter Spitze und bisherigen Pausen/Schwierigkeitsfaktoren.
 - Reifenquietschen zusätzlich nach mindestens 0,5 s starkem Einlenken ab etwa 103 km/h. Randstreifen: rhythmisches Rattern; Sand: körniges Scharren. Eintrittsgeräusche haben getrennte kurze Sperrzeiten.
-- Credits: Programming / OpenAI ChatGPT; Game Prototype / Tesana mit Link. Classic und Plus visuell geprüft, Back bedienbar.
+- Credits: Programming / OpenAI ChatGPT; Game Prototype / Former platform mit Link. Classic und Plus visuell geprüft, Back bedienbar.
 - Keine Änderungen an Speicherformaten, Highscores, Freischaltungen oder externen APIs.
 
 ## Prüfung

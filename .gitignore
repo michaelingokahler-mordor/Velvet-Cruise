@@ -29,12 +29,12 @@ _qa_probe/
 # OS junk
 .DS_Store
 Thumbs.db
-.tesana_dirty
+.*_dirty
 *.log
 
 # Build artifacts (added by engine migration)
 .canvas/
-.tesana/asset-jobs/
+**/asset-jobs/
 
 # Local build output and QA exports
 /dist/
@@ -44,7 +44,7 @@ Thumbs.db
 # Export metadata and local player storage
 /.engine_turns.json
 /.storefront_kit_status.json
-/.tesana_storage_state.json
+/.*_storage_state.json
 
 # Local credentials and environment overrides
 .env

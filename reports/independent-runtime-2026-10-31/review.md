@@ -1,0 +1,33 @@
+# Independent runtime review
+
+Reviewed against baseline `194950f` and the approved independent-runtime design and plan on 2026-10-31. This review covers the complete source change, with particular attention to storage migration, local service compatibility, production isolation, native capability boundaries and package ownership. No publication or installed-package replacement is authorized by this review.
+
+## Findings raised during review
+
+1. **Important: an active Chromium profile could be copied without a consistent snapshot.** The original `snapshotProfile` relied on copying `LOCK` to detect a running source. A real running Electron fixture demonstrated that the copy succeeds. The fix holds an exclusive read handle on the original `LOCK` for the entire database copy, opens Chromium only on the copied profile, and creates the snapshot's own empty lock file. Source paths are passed through environment variables to fixed PowerShell code. The source remains read-only.
+2. **Important: an unavailable newer profile could lose priority to an older backup.** The import loop initially continued to older candidates after a newer candidate failed. That filled destination keys and caused a later retry to preserve the stale imported values. The corrected loop stages reads before writing any imports and stops at the first failure unless the player explicitly chooses to continue. Failed imports show a retry/continue page before game startup and do not receive a completion marker. Destination write failures also return to this page; explicit continuation can skip a failed write.
+3. **Build workflow: fixed output directories prevented ordinary repeat builds.** The assembler originally rejected an existing directory while the default npm scripts reused fixed directories. Timestamped outputs now preserve the no-overwrite boundary and allow repeat builds. Both desktop and demo commands use this behavior, and the packager can select the latest emitted game manifest or an explicit game directory. Demo desktop builds also carry their own desktop build flag.
+4. **Removal completeness: the scanner omitted extensionless dotfiles.** The initial scan passed while `.gitignore` retained former-platform identifiers. The scanner now includes dotfiles; generic ignore patterns preserve the exclusion of private and historical material without retaining those identifiers.
+5. **Native discovery performance: long opaque values could stall the origin search.** A large-value native fixture exposed quadratic behavior in the original greedy regular expression. Discovery now locates the exact game-host substring first and validates the scheme by scanning backward. The bounded scan was re-read, together with the 512 KiB regression assertion requiring completion within two seconds.
+
+## Reviewed compatibility and safety properties
+
+- The game-owned service adapter retains existing local best-score, badge and counter keys, board ordering and edition prefixes. The SDK-only analytics calls are removed; the independent `run_start` statistic remains.
+- The production statistics allowlist, retry behavior and event contract are unchanged. Desktop, demo, automation and debug gating remain separate from native Exit capability. The web build does not acquire native Exit from build metadata alone.
+- Native data import is restricted to the established game-owned key prefix and never overwrites a destination value. The previous game identity selects the discovered origin; the reader registers that scheme dynamically and loads only its own inert page on a copied profile.
+- Discovery handles LevelDB prefix-compressed keys and Snappy-compressed table blocks, including profiles whose relevant data has moved out of WAL files. The parser is for origin/key discovery; Chromium reads the values.
+- The native bridge exposes only the intended capability. Renderer Node access is disabled; context isolation and sandboxing are enabled. External navigation is restricted to HTTP(S); the file handler resolves paths and rejects paths outside the packaged game.
+- Native startup is fullscreen, preserving the original behavior. Alt+Enter toggles fullscreen; Escape remains available to the game. The final source and candidate runtime files have matching SHA-256 hashes.
+- The packager excludes the former application resource archive and modules, retaining the Electron distribution and licenses. The installed Windows package is a read-only template.
+
+## Verification status
+
+No unresolved important source-review findings remain in the inspected change. The findings above were addressed and their final implementations re-read. The coordinator owns the complete frontend, browser and distribution checks; these were not redundantly rerun by the reviewer.
+
+The reviewer inspected the final passing native evidence in `output/independent-runtime/native-qa-1793446487506/summary.json` and the corresponding test assertions. It covers 21 game storage families, compressed SST-only discovery, an actual active Electron source, deferred startup and newest-source priority after retry, unrelated-key exclusion, sandboxed renderer capability, native Exit, relaunch persistence, completion markers, destination preservation, retained source profiles, and actual full-game executable startup with a canvas. Destination write failure and explicit continuation are tested with an injected `QuotaExceededError` in a QA-owned runtime copy; this is not evidence of a naturally occurring Chromium quota failure. The injection is absent from the released runtime. These are automated checks, not human gameplay acceptance.
+
+The final narrow recheck also covered the desktop/demo build mode definitions, package selection, the artifact scanner's identifier boundary for unrelated translated Chromium words, and unchanged full-substring source scanning. Source `desktop/main.mjs` and `desktop/storage-migration.mjs` exactly match their copies in `output/independent-runtime/windows-final/resources/app/`. The coordinator separately reports two consecutive successful builds for both desktop and demo, final artifact scans, and native UI checks. `git diff --check` reported no patch-whitespace errors during review.
+
+## Remaining acceptance boundary
+
+Automated fixtures cannot establish every player's damaged or unusual historical profile, nor substitute for human device/gameplay acceptance. The migration explicitly offers retry/continue when a discovered profile is unavailable and retains the source. Publication, production service writes and replacing the installed package remain outside this task until further user approval.

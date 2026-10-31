@@ -1,3 +1,4 @@
+import { isDesktopBuild } from './runtime';
 /** Anonymous, best-effort event counters. No storage, profile, or gameplay wait. */
 type EventType = 'game_loaded' | 'run_start';
 interface Gate { production: boolean; href: string; webdriver: boolean; desktop: boolean; testHooks: boolean }
@@ -59,11 +60,10 @@ const client = createStatisticsClient({
   enabled: () => {
     try {
       const w = window as unknown as Record<string, any>;
-      const meta = document.getElementById('tesana-meta');
       return statisticsAllowed({ production: import.meta.env.VITE_STATISTICS_PRODUCTION === 'true', href: location.href,
         webdriver: navigator.webdriver === true,
-        desktop: !!w.TesanaDesktop || w.__TESANA__?.rail === 'steam' || /"target"\s*:\s*"desktop"/.test(meta?.textContent ?? ''),
-        testHooks: !!w.__TESANA_TEST__ || !!w.__TESANA_READY__ || Object.keys(w).some(key => /^__(trackBench|graphicsInfo|ending|edge|fork|props|tunnels|map|name|tumble|spawn)/.test(key)),
+        desktop: isDesktopBuild(),
+        testHooks: !!w.__VELVET_TEST__ || Object.keys(w).some(key => /^__(trackBench|graphicsInfo|ending|edge|fork|props|tunnels|map|name|tumble|spawn)/.test(key)),
       });
     } catch { return false; }
   },

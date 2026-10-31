@@ -16,7 +16,7 @@ RUN npm.cmd run qa:balance
 
 ▲ [WARNING] "import.meta" is not available with the "cjs" output format and will be empty [empty-import-meta]
 
-    src/platform/tesana.ts:122:19:
+    src/platform/services.ts:122:19:
       122 │   return DEMO_A || import.meta.env.VITE_LOCAL_SERVICES === "true"...
           ╵                    ~~~~~~~~~~~
 
@@ -28,7 +28,7 @@ RUN npm.cmd run qa:balance
 {"status":"PASS","physics":"progressive; dry engine/brakes identical","records":"PASS"}
 ▲ [WARNING] "import.meta" is not available with the "cjs" output format and will be empty [empty-import-meta]
 
-    src/platform/tesana.ts:122:19:
+    src/platform/services.ts:122:19:
       122 │   return DEMO_A || import.meta.env.VITE_LOCAL_SERVICES === "true"...
           ╵                    ~~~~~~~~~~~
 
@@ -242,7 +242,7 @@ RUN npm.cmd run qa:demo
 
 ▲ [WARNING] "import.meta" is not available with the "cjs" output format and will be empty [empty-import-meta]
 
-    src/platform/tesana.ts:122:19:
+    src/platform/services.ts:122:19:
       122 │   return DEMO_A || import.meta.env.VITE_LOCAL_SERVICES === "true"...
           ╵                    ~~~~~~~~~~~
 
@@ -250,7 +250,7 @@ RUN npm.cmd run qa:demo
 
 ▲ [WARNING] "import.meta" is not available with the "cjs" output format and will be empty [empty-import-meta]
 
-    src/platform/tesana.ts:122:19:
+    src/platform/services.ts:122:19:
       122 │   return DEMO_A || import.meta.env.VITE_LOCAL_SERVICES === "true"...
           ╵                    ~~~~~~~~~~~
 

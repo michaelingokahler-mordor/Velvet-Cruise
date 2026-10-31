@@ -33,7 +33,7 @@ test('caption preserves its best-time display', () => {
 const source = ts.createSourceFile('main.ts', readFileSync('src/main.ts', 'utf8'), ts.ScriptTarget.Latest, true);
 const sceneClass = source.statements.find(n => ts.isClassDeclaration(n) && n.name?.text === 'MainScene');
 const method = sceneClass.members.find(n => n.name?.getText(source) === 'mapScreen');
-await build({ stdin: { contents: `import {W,H} from './src/core/fb'; import {C,para,fmtTime} from './src/game/ui'; import {t} from './src/platform/tesana'; export function run(scene){return (function(dt,taps) ${method.body.getText(source)}).call(scene,0,[]);}`, resolveDir: process.cwd(), loader: 'ts' }, bundle: true, platform: 'node', format: 'cjs', outfile: resolve(out, 'post-run.cjs'), define: { __DEMO_A__: 'false', 'import.meta.env.VITE_LOCAL_SERVICES': '"false"' } });
+await build({ stdin: { contents: `import {W,H} from './src/core/fb'; import {C,para,fmtTime} from './src/game/ui'; import {t} from './src/platform/services'; export function run(scene){return (function(dt,taps) ${method.body.getText(source)}).call(scene,0,[]);}`, resolveDir: process.cwd(), loader: 'ts' }, bundle: true, platform: 'node', format: 'cjs', outfile: resolve(out, 'post-run.cjs'), define: { __DEMO_A__: 'false', 'import.meta.env.VITE_LOCAL_SERVICES': '"false"' } });
 const { run } = createRequire(import.meta.url)(resolve(out, 'post-run.cjs'));
 test('blinking Continue leaves the post-run time and weather labels intact', () => {
   for (const touchMode of [false, true]) {

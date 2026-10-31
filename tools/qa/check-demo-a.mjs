@@ -5,7 +5,7 @@ import {mkdirSync, writeFileSync} from 'node:fs';
 import {resolve} from 'node:path';
 
 const out=resolve('output/demo-a');mkdirSync(out,{recursive:true});
-const modules=['core/fb','game/edition','game/routes','game/track','game/race','game/difficulty','game/coursemap','game/rules','game/arcade','platform/tesana'];
+const modules=['core/fb','game/edition','game/routes','game/track','game/race','game/difficulty','game/coursemap','game/rules','game/arcade','platform/services'];
 const contents=modules.map(p=>`export * from './src/${p}';`).join('\n');
 for(const demo of [false,true])await build({stdin:{contents,resolveDir:process.cwd(),loader:'ts'},bundle:true,platform:'node',format:'cjs',define:{__DEMO_A__:String(demo)},outfile:resolve(out,demo?'demo.cjs':'full.cjs')});
 globalThis.ImageData=class{constructor(w,h){this.width=w;this.height=h;this.data=new Uint8ClampedArray(w*h*4);}};

@@ -14,7 +14,7 @@ import { COLS, COAST_PATH, GOAL_A_PATH, COLUMN_NODES, NEXT, NODE_COUNT, complete
 import { DEMO_A, SAVE_PREFIX } from "./game/edition";
 import { GameAudio, MusicJson } from "./audio/audio";
 import { AudioSettings, type AudioChannel } from './audio/settings';
-import { initTesana, onTesanaReady, servicesOnline, t, onLocaleChange, locale, track as analytics, submitScore, topScores, myBest, fmtNum, BoardEntry, isTestSdk } from "./platform/tesana";
+import { initServices, onServicesReady, servicesOnline, t, onLocaleChange, locale, submitScore, topScores, myBest, fmtNum, BoardEntry } from "./platform/services";
 import { recordStatistic } from './platform/statistics';
 import { Input, TOUCH, inRect, Rect, CONTROL_PREFS, ControlPref, DRIVE_ACTIONS, bindingLabel, BindingDevice } from "./input";
 import { THEMES } from "./game/themes";
@@ -316,10 +316,10 @@ class MainScene extends Phaser.Scene {
     this.badges.goalProgress = () => this.goalProgress.current;
     this.badges.onChange = () => this.syncGoalProgress();
     this.syncGoalProgress();
-    onTesanaReady(() => {
+    onServicesReady(() => {
       for (const d of DIFFS) myBest(boardId("score", d.id)).then((b) => { if (b !== null) this.bestScore.set(d.id, Math.max(b, this.bestScore.get(d.id) ?? b)); });
       // a bot-driven test run must never earn the player a badge
-      this.badges.enabled = !TEST_HOOKS || isTestSdk();
+      this.badges.enabled = !TEST_HOOKS;
       this.syncGoalProgress();
       if (this.badges.state !== "ok") { this.badges.state = "idle"; this.badges.refresh(); }
     });
@@ -612,7 +612,7 @@ class MainScene extends Phaser.Scene {
   }
 
   private desktopExit(): { quit(): unknown } | null {
-    const bridge = (window as unknown as { TesanaDesktop?: { embedded?: boolean; quit?: () => unknown } }).TesanaDesktop;
+    const bridge = (window as unknown as { VelvetDesktop?: { embedded?: boolean; quit?: () => unknown } }).VelvetDesktop;
     return bridge?.embedded === true && typeof bridge.quit === "function" ? bridge as { quit(): unknown } : null;
   }
 
@@ -991,7 +991,6 @@ class MainScene extends Phaser.Scene {
     if (inp.hit("back") || choose) {
       this.demo.skin = this.car.skin;
       this.audio.uiSelect();
-      analytics.event("car_pick", { name: this.car.id });
       this.openSettings(0);
     }
   }
@@ -1032,7 +1031,6 @@ class MainScene extends Phaser.Scene {
     if (!inp.touchMode) para(fb, t("diff.hint"), W / 2, 146, C.grey, w - 8, true);
     if (inp.hit("back")) { this.audio.uiSelect(); this.openSettings(1); return; }
     if (inp.hit("confirm") || this.tapped(taps, next)) {
-      if (p !== inp.pref) analytics.event("controls_set", { name: p });
       inp.setPref(p);
       this.audio.uiSelect();
       this.openSettings(1);
@@ -1247,8 +1245,7 @@ class MainScene extends Phaser.Scene {
     if (TUMBLETEST) (window as unknown as Record<string, unknown>).__tumble = () => { this.race?.forceTumble(); return this.race?.tumbleT; };
     // test hook: window.__spawn(segs, x) puts a rival right ahead (to check the night lights)
     if (TUMBLETEST) (window as unknown as Record<string, unknown>).__spawn = (n: number, x: number) => this.race?.spawnAhead(n, x);
-    analytics.levelStart(race.theme.id, 0);
-    analytics.event("run_start", { name: race.diff.id, value: race.diff.score });
+    recordStatistic('run_start');
     race.events = {
       surface: (kind, speed) => { if (kind === 'strip') this.audio.stripKick(speed); else this.audio.dirtKick(speed); },
       gate: (g, r) => this.onGate(g, r),
@@ -1259,7 +1256,6 @@ class MainScene extends Phaser.Scene {
           this.audio.tumbleLaunch();
           this.tumbleCount++;
           this.lady.feel(-30);
-          analytics.event("tumble", { levelId: race.theme.id, levelIndex: race.stage, value: race.kmh });
         } else {
           this.lady.say("scared", true, hard || car ? "pass.scared1" : undefined);
           this.lady.feel(hard ? -22 : -15);
@@ -1303,7 +1299,6 @@ class MainScene extends Phaser.Scene {
         this.audio.jingle("gameover", () => this.audio.sadTune());
         this.audio.stopSong(1.2);
         const r = this.race!;
-        analytics.death(r.theme.id, Math.round(r.playerX * 100) / 100, r.playerSeg.i);
       },
       over: () => { this.time.delayedCall(1400, () => this.finishRun(false)); },
       goal: () => this.onGoal(),
@@ -1313,7 +1308,6 @@ class MainScene extends Phaser.Scene {
         const th = THEMES[node];
         if (th.weather === "rain" || th.weather === "sand" || th.weather === "fog" || th.weather === "snow") this.lady.say("scared", true, "pass.weather");
         else this.lady.say("love", true, "pass.newroad");
-        analytics.event("route_choice", { levelId: th.id, levelIndex: race.stage + 1, name: side < 0 ? "left" : "right" });
       },
       thunder: (delay, k) => this.audio.thunder(delay, k),
       tunnel: (enter) => {
@@ -1339,7 +1333,6 @@ class MainScene extends Phaser.Scene {
       this.lady.say("love", true);
       this.lady.feel(8);
       this.audio.jingle("checkpoint", () => this.audio.fanfare());
-      analytics.checkpoint(th.id, "midpoint");
     } else if (g.kind === "stage") {
       const time = r.stageTimes[r.stageTimes.length - 1] ?? 0;
       this.hud.push(t("msg.stageclear", { n: g.stage + 1 }), t("msg.stagetime", { t: fmtTime(time) }) + "   " + t("msg.extended", { n: r.bonusFor(g) }), 2.6, GRAD_SUN, 24, 2);
@@ -1351,9 +1344,7 @@ class MainScene extends Phaser.Scene {
       this.passTotal += pb;
       this.hud.push(t("msg.passbonus", { n: fmtNum(pb) }), undefined, 2.6, GRAD_PINK, 54, 1);
       this.badgeStage(g.stage);
-      analytics.levelComplete(th.id, Math.round(time * 1000));
       const next = THEMES[r.track.path[g.stage + 1]];
-      analytics.levelStart(next.id, g.stage + 1);
       this.time.delayedCall(3200, () => {
         if (this.mode === "race" && this.race === r && r.state === "race") this.hud.push(t(next.nameKey), t("hud.stage", { n: g.stage + 2 }), 2.2, GRAD_PINK, 28, 2);
       });
@@ -1385,7 +1376,6 @@ class MainScene extends Phaser.Scene {
     if (lv === 3) b.unlock(badgeId("coast-love", tier));
     if (remain <= 5) b.unlock(badgeId("photo-finish", tier));
     this.badgeGoal(r.track.path[STAGE_COUNT - 1] ?? -1);
-    analytics.levelComplete(r.theme.id, Math.round((r.stageTimes[STAGE_COUNT - 1] ?? 0) * 1000));
     // a few seconds of "GOAL!" on the road, then the celebration at the end of the coast
     this.time.delayedCall(3800, () => { if (this.race === r && this.mode === "race") this.startEnding(); });
   }
@@ -1519,7 +1509,6 @@ class MainScene extends Phaser.Scene {
       this.audio.stopEngine();
       this.audio.stopSong(0.5);
       const r = this.race!;
-      analytics.event("run_quit", { levelId: r.theme.id, levelIndex: r.stage, value: Math.round(r.score) });
       this.flushNear();
       this.race = null;
       this.newDemo();
@@ -1544,7 +1533,6 @@ class MainScene extends Phaser.Scene {
     this.nextRocket = 2.7;
     this.endStep = 0;
     this.lady.box = null;
-    analytics.event("ending_scene", { name: this.race?.diff.id ?? "normal", goal: goalLetter(node) || "E" });
   }
 
   /** The end of the coast road at sunset: the car rolls up to the barrier, the couple jump out
@@ -1830,17 +1818,15 @@ class MainScene extends Phaser.Scene {
     res.moodLevel = this.lady.level;
     res.diff = r.diff.id;
     this.flushNear();
-    analytics.event("passenger_mood", { name: this.lady.levelKey, value: Math.round(this.lady.mood) });
     res.newBest = new Set();
     res.top = [];
     res.topLoaded = false;
-    analytics.score(res.score);
     // first the course map with the route just driven, then the results
     this.openMap(true);
     if (!goal) this.audio.stopSong(1);
     // leaderboards (the run's own difficulty): only better results are kept, so submitting every run is fine
     const subs: Promise<void>[] = [];
-    const testRun = TEST_HOOKS && !isTestSdk(); // test hooks never post to the real boards
+    const testRun = TEST_HOOKS; // test hooks never post to the real boards
     const diff = r.diff.id, scoreBoard = boardId("score", diff);
     const sub = (board: string, v: number) => { if (!testRun) subs.push(submitScore(board, v).then((x) => { if (x?.improved) res.newBest.add(board); })); };
     sub(scoreBoard, res.score);
@@ -2062,7 +2048,6 @@ class MainScene extends Phaser.Scene {
     if (cleanName(this.nameBuf)) saveName(name);
     const e: ArcadeEntry = { n: name, s: res.score, c: this.car.id, d: Date.now() };
     this.nameAt = arcadeInsert(res.diff, e);
-    analytics.event("arcade_entry", { name: res.diff, value: this.nameAt + 1 });
     this.input2.textMode = false;
     this.namePhase = "table";
     this.modeT = 0;
@@ -2186,7 +2171,7 @@ class MainScene extends Phaser.Scene {
     const b = this.badges, tier = this.tier;
     b.unlock(badgeId("stage-clear", tier));
     // every stage cleared on this difficulty, over all runs and routes (kept on this device)
-    if (this.race && !(TEST_HOOKS && !isTestSdk())) {
+    if (this.race && !(TEST_HOOKS)) {
       const seen = this.stagesCleared(tier);
       seen.add(this.race.track.path[stage] ?? stage);
       this.saveStagesCleared(tier, seen);
@@ -2218,13 +2203,13 @@ class MainScene extends Phaser.Scene {
   private badgeGoal(node: number): void {
     const letter = goalLetter(node);
     if (!letter) return;
-    this.goalProgress.enabled = !TEST_HOOKS || isTestSdk();
+    this.goalProgress.enabled = !TEST_HOOKS;
     this.goalProgress.record(this.tier, letter as GoalLetter);
     this.syncGoalProgress();
     const b = this.badges, mine = `goal-${letter.toLowerCase()}`;
     b.unlock(mine);
     let seen = new Set<string>();
-    if (!(TEST_HOOKS && !isTestSdk())) {
+    if (!(TEST_HOOKS)) {
       try {
         const raw = JSON.parse(localStorage.getItem(GOALS_REACHED_KEY) || "[]");
         seen = new Set((Array.isArray(raw) ? raw : []).filter((x: unknown) => typeof x === "string" && GOAL_BASES.includes(x)));
@@ -2239,7 +2224,7 @@ class MainScene extends Phaser.Scene {
 
   /** Merge proven difficulty-specific finishes; old tier-less goal rewards stay separate. */
   private syncGoalProgress(): void {
-    this.goalProgress.enabled = !TEST_HOOKS || isTestSdk();
+    this.goalProgress.enabled = !TEST_HOOKS;
     const cleared = Object.fromEntries(TIERS.map(tier => [tier, [...this.stagesCleared(tier)]]));
     const completed = new Set(TIERS.filter(tier => this.badges.has(badgeId('all-goals', tier))));
     this.goalProgress.merge(cleared, completed);
@@ -2476,7 +2461,7 @@ class MainScene extends Phaser.Scene {
 
 async function boot(): Promise<void> {
   // the play service connects in the background: the game draws its first frame without waiting for it
-  void initTesana(2500);
+  void initServices();
   // let the page finish loading first: starting the renderer in the very first
   // moments of the page can lose its graphics context on some browsers
   if (document.readyState !== "complete") {

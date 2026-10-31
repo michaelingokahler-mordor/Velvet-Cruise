@@ -5,10 +5,10 @@ import { fileURLToPath } from "node:url";
 
 // Copies three's Draco / Basis decoders to public/decoders so
 // DRACOLoader.setDecoderPath("decoders/draco/") and KTX2Loader
-// .setTranscoderPath("decoders/basis/") resolve, matching the Tesana build.
+// .setTranscoderPath("decoders/basis/") resolve, included in the local build.
 function decoders() {
   return {
-    name: "tesana-decoders",
+    name: "velvet-decoders",
     buildStart() {
       const here = dirname(fileURLToPath(import.meta.url));
       const src = resolve(here, "node_modules/three/examples/jsm/libs");
@@ -37,7 +37,7 @@ function standalone() {
     name: "velvet-standalone",
     transformIndexHtml(html: string) {
       return {
-        html: html.replace(/<script\b[^>]*\bdata-tesana-bootstrap\b[^>]*>[\s\S]*?<\/script>\s*/g, ""),
+        html,
         tags: [
           { tag: "meta", attrs: { name: "description", content: "Play Velvet Cruise, a pixel-art arcade driving game. Free to play while in development. Feedback appreciated." }, injectTo: "head" as const },
           { tag: "link", attrs: { rel: "canonical", href: "https://sabnockworks.com/games/more-projects/velvet-cruise/" }, injectTo: "head" as const },
@@ -51,12 +51,12 @@ export default defineConfig(({ mode, command }) => ({
   base: "./",
   plugins: [decoders(), gameAssets(), ...(mode === "standalone" ? [standalone()] : []), {
     name: "velvet-edition",
-    transformIndexHtml: () => [{ tag: "meta", attrs: { name: "velvet-edition", content: mode === "demo" ? "demo-a" : "full" }, injectTo: "head" as const }],
+    transformIndexHtml: () => [{ tag: "meta", attrs: { name: "velvet-edition", content: (mode === "demo" || mode === "demo-desktop") ? "demo-a" : "full" }, injectTo: "head" as const }],
   }],
   define: {
-    __DEMO_A__: JSON.stringify(mode === "demo"),
+    __DEMO_A__: JSON.stringify(mode === "demo" || mode === "demo-desktop"),
     "import.meta.env.VITE_STATISTICS_PRODUCTION": JSON.stringify(command === "build" && mode === "standalone" && process.env.VELVET_PRODUCTION_STATISTICS === "1" ? "true" : "false"),
-    "import.meta.env.VITE_LOCAL_SERVICES": JSON.stringify(mode === "standalone" ? "true" : "false"),
+    "import.meta.env.VITE_DESKTOP_BUILD": JSON.stringify(mode === "desktop" || mode === "demo-desktop" ? "true" : "false"),
   },
   build: { target: "es2022", sourcemap: false, assetsDir: "_app" },
 }));

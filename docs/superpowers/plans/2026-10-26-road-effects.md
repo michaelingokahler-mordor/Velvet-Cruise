@@ -6,7 +6,7 @@ Approved specification: user's implementation request, 2026-10-26.
 - [x] Animated ocean waves/foam and at most one moving sailboat, calm lake, correct depth.
 - [x] Windsock replaces airborne sand; gusts 4–6 s with unchanged peak and intervals.
 - [x] Sustained steering squeal, distinct strip/sand entry sounds with cooldown.
-- [x] Programming: OpenAI ChatGPT; Game Prototype: Tesana; usable Classic credits layout.
+- [x] Programming: OpenAI ChatGPT; Game Prototype: Former platform; usable Classic credits layout.
 - [x] Regression tests, real-browser audio samples, visual review, performance comparison, fresh independent review.
 
 No storage/API migration, publication or iPhone acceptance. Existing software framebuffer and audio synthesis, no new runtime dependency.

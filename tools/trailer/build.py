@@ -50,8 +50,8 @@ def overlay(stage,index):
     center(d,'CURRENT DEVELOPMENT BUILD',1273,34,CREAM,True)
     center(d,'Updated visuals. Refined driving physics.',1326,32,CREAM)
     center(d,'sabnockworks.com',1442,44,CORAL,True)
-    center(d,'PLAY THE EARLIER WEB DEMO ON TESANA',1530,28,CYAN,True)
-    center(d,'velvet-cruise-demo.tesana.com',1583,36,CREAM,True)
+    center(d,'PLAY VELVET CRUISE ONLINE',1530,28,CYAN,True)
+    center(d,'sabnockworks.com',1583,36,CREAM,True)
     center(d,'The demo shows an older development build.',1643,28,CREAM)
     p=OUT/'qa'/f"overlay-{stage['id']}.png";im.save(p);return p
 
@@ -68,8 +68,8 @@ def card(kind,landscape=False):
         d.rectangle((0,0,w,h),fill=(5,11,24,192))
         center(d,'KEEP CRUISING',h*.17,84,CREAM,True,w)
         center(d,'sabnockworks.com',h*.31,62,CORAL,True,w)
-        center(d,'PLAY THE EARLIER WEB DEMO ON TESANA',h*.46,32,CYAN,True,w)
-        center(d,'velvet-cruise-demo.tesana.com',h*.53,44,CREAM,True,w)
+        center(d,'PLAY VELVET CRUISE ONLINE',h*.46,32,CYAN,True,w)
+        center(d,'sabnockworks.com',h*.53,44,CREAM,True,w)
         center(d,'The current game has evolved beyond the demo:',h*.65,32,CREAM,False,w)
         center(d,'updated visuals and refined driving physics.',h*.70,32,CREAM,False,w)
         center(d,'AI cinematic outro',h*.89,25,CREAM,False,w)
@@ -102,7 +102,7 @@ def shorts(stages):
         ff('-i',OUT/'raw'/f'{s["id"]}.mkv','-loop','1','-i',op,'-stream_loop','-1','-i',music,'-filter_complex',vf,'-map','[out]','-map','2:a','-af',f'volume=0.68,afade=t=in:d=0.25,afade=t=out:st={dur-.5}:d=0.5','-t',dur,*ENC,body)
         dest=OUT/'shorts'/f'{i:02d}-{s["id"]}-Short.mp4';join([intro,body,outro],dest)
         body.unlink()
-        desc=f"{s['name']} — a complete stage drive from the current Velvet Cruise development build.\n\nMore from Sabnock Works: https://sabnockworks.com\nPlay the earlier web demo on Tesana: https://velvet-cruise-demo.tesana.com\n\nThe current game is further along than the web demo, with updated graphics and refined driving physics.\n\nRecorded from the current game engine using its automated driver, at normal speed. Original game soundtrack. AI-generated cinematic intro/outro; driving footage uses the actual game renderer.\n\n#VelvetCruise #ArcadeRacing #IndieGame #Shorts"
+        desc=f"{s['name']} — a complete stage drive from the current Velvet Cruise development build.\n\nMore from Sabnock Works: https://sabnockworks.com\nPlay the browser version: https://sabnockworks.com/games/more-projects/velvet-cruise/\n\nThe current game is further along than the web demo, with updated graphics and refined driving physics.\n\nRecorded from the current game engine using its automated driver, at normal speed. Original game soundtrack. AI-generated cinematic intro/outro; driving footage uses the actual game renderer.\n\n#VelvetCruise #ArcadeRacing #IndieGame #Shorts"
         title=f"Velvet Cruise | {s['name']} — Full Stage Drive #Shorts"
         (OUT/'shorts'/f'{i:02d}-{s["id"]}-upload.txt').write_text(title+'\n\n'+desc+'\n',encoding='utf8')
         upload.append({'file':dest.name,'title':title,'description':desc,'durationExpected':dur+INTRO_SECONDS+OUTRO_SECONDS})
@@ -123,7 +123,7 @@ def showcase(stages):
     ff('-i',silent,'-stream_loop','-1','-i',ROOT/'assets/audio/music_coastline.mp3','-map','0:v','-map','1:a','-c:v','copy','-af',f'volume=0.68,afade=t=in:d=0.25,afade=t=out:st={SHOWCASE_SECONDS-2}:d=2','-c:a','aac','-b:a','192k','-ar','48000','-ac','2','-t',SHOWCASE_SECONDS,'-movflags','+faststart',dest)
     silent.unlink()
     for p in (OUT/'landscape').glob('part-*.mp4'):p.unlink()
-    (OUT/'landscape/upload.txt').write_text('Velvet Cruise | All 15 Stages — Current Development Gameplay\n\nFifteen stages, five destinations. A look at the current Velvet Cruise build.\n\nhttps://sabnockworks.com\nPlay the earlier web demo on Tesana: https://velvet-cruise-demo.tesana.com\n\nThe current game has progressed beyond the web demo, with updated visuals and refined driving physics.\n\nActual current-engine gameplay with an automated driver at normal speed; original game soundtrack. AI cinematic opening and closing. Stage excerpts are 5 seconds each.\n',encoding='utf8')
+    (OUT/'landscape/upload.txt').write_text('Velvet Cruise | All 15 Stages — Current Development Gameplay\n\nFifteen stages, five destinations. A look at the current Velvet Cruise build.\n\nhttps://sabnockworks.com\nPlay the browser version: https://sabnockworks.com/games/more-projects/velvet-cruise/\n\nThe current game has progressed beyond the web demo, with updated visuals and refined driving physics.\n\nActual current-engine gameplay with an automated driver at normal speed; original game soundtrack. AI cinematic opening and closing. Stage excerpts are 5 seconds each.\n',encoding='utf8')
 
 def main():
     stages=sorted(json.loads((OUT/'capture.json').read_text())['stages'],key=lambda s:s['node'])

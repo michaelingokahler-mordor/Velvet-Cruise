@@ -1,76 +1,29 @@
-# game-20261009-93986676
+# Velvet Cruise
 
-Exported from Tesana on 2026-10-22 (game id `game-20261009-93986676`).
+The game uses TypeScript, Phaser and its own pixel renderer. All editions load their scripts, artwork and audio from their package.
 
-This is a complete, standalone TypeScript web game — plain Three.js /
-Phaser / Rapier code, with `package.json`, `vite.config.ts` and `tsconfig.json`
-in this zip pinned to the same library versions the game was built with.
+## Development and web builds
 
-It is also wired to Tesana's play service so your saves and shop keep working.
+Run npm ci, npm run dev, npm run check, npm test and npm run build:web as required. The web build writes dist/. Serve this folder with a static web server. Keep the full asset directory with the JavaScript entry.
 
-## What's inside
+All editions save records, badges, settings and unlocks locally. The existing full and demo storage keys remain unchanged. Clearing browser storage removes local records.
 
-- `index.html` — the page that boots the game.
-- `src/` — the game's TypeScript source (`src/main.ts` is the entry).
-- `assets/` — every model, texture, sprite, sound and font the game uses.
+The normal self-hosted production page can also use the existing Cloudflare ranking service. It keeps local results before sending scores. Its persistent queue handles temporary network failures. Desktop and demo editions stay local. Development and automated runs cannot contact the production ranking endpoint.
 
-## Run it locally
+## Statistics
 
-```bash
-npm install
-npm run dev        # http://localhost:5173
-npm run build      # static site in dist/
-```
+Only an explicitly enabled standalone production build counts loads and starts. Set VELVET_PRODUCTION_STATISTICS=1 when building the approved web release. Development, debug runs, automated browsers, demo and desktop builds do not send production counters.
 
-The build output is plain HTML/JS/assets — drop the `dist/` folder on any
-static host (itch.io, GitHub Pages, Cloudflare Pages, S3). If the game
-loads Draco-compressed models it expects the decoder files under
-`public/decoders/` (copied by `npm run build` via the Vite config).
+The private report and its access key are independent of the game package. Never copy the report secret into source or public assets.
 
-## Tesana services
+## Windows builds
 
-This export is wired to Tesana's play service, so the game's cloud saves,
-leaderboards, achievements and shop keep working when you run it yourself.
-`index.html` loads the play SDK and sets `window.__TESANA__` to this game's id
-(`game-20261009-93986676`); the game code is unchanged and already awaits the SDK.
+Build the game with --mode desktop, then run the desktop assembler and native packager. The owned runtime source lives in desktop/. Its bridge exposes native Exit and fullscreen behavior. It does not load a third-party game service or SDK.
 
-- Saves follow whoever is signed in on that device; with nobody signed in the
-  game gets a guest identity and still plays.
-- Nothing here is secret. The SDK mints its own per-player credential at
-  runtime, so there is no key to rotate or leak.
-- The SDK is loaded from a pinned URL, so a fix we publish does not silently
-  change this copy. Nothing breaks if you are offline — every call resolves.
+The runtime has a stable game origin and a game-specific profile. Its upgrade importer copies existing game data from a discovered previous profile without replacing newer destination values. It retains the original profile. Test imports with isolated profiles before distributing an upgrade.
 
-Offline is a supported state, not an error: with no network the game plays.
+Use fresh output folders. Do not overwrite an installed package or publish a candidate without approval. See docs/superpowers/specs/2026-10-31-independent-runtime-design.md and the matching verification report for the current candidate.
 
-## Self-hosted web edition
+## Credits
 
-Run `npm ci`, then `npm run build:web`. Serve `dist/` from a static web server.
-This build uses relative asset paths and includes all game assets.
-It does not load the Tesana SDK or contact player services.
-Personal bests, arcade scores, preferences, and badges stay in browser storage.
-Clearing site data removes these local records. Shared online rankings are unavailable.
-
-Run `npm run check` and `npm run qa:local-services` before exporting this edition.
-The regular `npm run build` command keeps the Tesana export behavior.
-
-The Sabnock Works website stores this edition at
-`games/more-projects/velvet-cruise/`. Its `tools/update-velvet-cruise.mjs` script
-builds and copies this checkout. See the website README for the full procedure.
-
-To capture current website images, install Playwright in your tooling environment
-and make it available to Node. Start the website's local HTTP server, then run:
-
-```bash
-node tools/art/capture-web.cjs http://127.0.0.1:8080/games/more-projects/velvet-cruise/ ../sabnockworks/assets/media
-```
-
-The script uses `/usr/bin/chromium`, or the executable at `CHROMIUM_PATH`.
-It captures the title, garage, course map, and all fifteen stages at 1280 × 720.
-It checks stage identities, asset responses, and JavaScript errors.
-Capture records are saved under `output/website-capture/`.
-
-## Not included
-
-- Tesana's session history, snapshots, internal metadata, and the
-  Studio-only loading/watermark shell that Tesana injects at publish time.
+The in-game Credits attribution remains part of the game.

@@ -4,7 +4,7 @@ import type { DrawSurface } from "../core/draw-surface";
 // something.
 import { W, Col, rgb } from "../core/fb";
 import { drawText, textWidth } from "../core/font";
-import { t } from "../platform/tesana";
+import { t } from "../platform/services";
 
 export type Mood = "love" | "scared" | "hurry" | "sad";
 

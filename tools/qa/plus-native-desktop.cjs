@@ -4,11 +4,11 @@ const {chromium}=require('playwright');
 const out=path.resolve('output/plus/native-desktop');fs.mkdirSync(out,{recursive:true});
 (async()=>{
  const browser=await chromium.connectOverCDP(process.argv[2]||'http://127.0.0.1:9336');
- const page=browser.contexts()[0].pages().find(p=>p.url().startsWith('tesana-game://game-20261009-93986676/'));
+ const page=browser.contexts()[0].pages().find(p=>p.url().startsWith('velvet-game://game-20261009-93986676/'));
  assert.ok(page,'Expected the isolated full-edition native window');
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
  try{
-  await page.goto('tesana-game://game-20261009-93986676/#graphicstest&graphics=plus&autopilot&endtest&tumbletest&stage=1&at=600',{waitUntil:'load'});
+  await page.goto('velvet-game://game-20261009-93986676/#graphicstest&graphics=plus&autopilot&endtest&tumbletest&stage=1&at=600',{waitUntil:'load'});
   // A hash-only navigation retains the existing document and its boot flags.
   await page.reload({waitUntil:'load'});
   await page.waitForFunction(()=>window.__graphicsInfo?.().mode==='plus',{timeout:30000});
