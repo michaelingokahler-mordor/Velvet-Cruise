@@ -39,7 +39,7 @@ for (const local of [false, true]) {
   const progress = await api.badgeProgress(counted.stat, counted.target);
   assert.ok(progress.unlocked.includes(counted.id));
   // A fresh module must read the browser's saved state rather than rely on module memory.
-  const restored = await import(pathToFileURL(resolve(output, 'services-true.mjs')) + '?reload');
+  const restored = await import(pathToFileURL(outfile) + '?reload');
   assert.ok((await restored.listBadges()).find(item => item.id === badge.id).unlocked);
   assert.ok((await restored.listBadges()).find(item => item.id === counted.id).unlocked);
   assert.deepEqual(await restored.topScores(boards[0].board), [], 'No remote ranking is fabricated');
