@@ -48,3 +48,28 @@ Do not delete browser storage or newer progress.
 No physical iPhone test occurred.
 WebKit on Windows does not establish iOS acceptance.
 The user can now test the published edition in Safari and Chrome on the affected iPhone.
+
+## Follow-up publication: long-press loupe
+
+The user's next device test reported smooth weather stages and improved landscape fitting.
+It also reported an occasional loupe during firm or prolonged touches.
+
+- Game implementation: `b7c8eb9f4c7b91e283abe437dfd33b6e9ed3a3ec`.
+- Website publication: `46b66299f406d76ad4d0551dfb60dbe2370284ca`.
+- Active release: `2026-10-31-b7c8eb9-touch-loupe`.
+- GitHub Pages workflow: https://github.com/michaelingokahler-mordor/sabnockworks/actions/runs/41214659534
+
+The follow-up disables selection and touch callouts in the game document.
+Canvas listeners cancel native touch, selection and drag defaults while retaining pointer controls.
+All 17 mobile unit scenarios, the complete test suite, TypeScript and the production web build passed.
+Candidate Chromium and WebKit scenarios passed, including touch navigation, multitouch and sensor permission.
+An independent review found no concrete regression.
+
+GitHub Pages reported `built` for the new website commit.
+All 126 live files match the candidate manifest. The API health check passed.
+Live WebKit checks passed both graphics modes, selection prevention, touch cancellation and sensor permission.
+The preceding mobile release remains available. No backend or Windows update occurred.
+See [the follow-up validation](touch-loupe-validation.json).
+
+The native iPhone loupe itself remains subject to user confirmation.
+Desktop WebKit cannot reproduce or establish acceptance of the iOS system interface.

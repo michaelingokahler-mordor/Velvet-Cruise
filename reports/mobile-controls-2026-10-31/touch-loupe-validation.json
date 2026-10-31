@@ -1,0 +1,36 @@
+{
+  "status": "PASS",
+  "checkedAt": "2026-10-31T15:25:02.195Z",
+  "gameCommit": "b7c8eb9f4c7b91e283abe437dfd33b6e9ed3a3ec",
+  "websiteCommit": "46b66299f406d76ad4d0551dfb60dbe2370284ca",
+  "release": "2026-10-31-b7c8eb9-touch-loupe",
+  "previousReleaseRetained": true,
+  "verifiedFiles": 126,
+  "entrySha256": "334a3ac0790c3ce73c0b6a838508a69b60bb43a0d7fe4c3f9028f18f7c9a240e",
+  "statisticsEnabled": true,
+  "workerDeploymentChanged": false,
+  "databaseMigrationApplied": false,
+  "productionTestEventsSent": 0,
+  "health": {
+    "ok": true,
+    "service": "velvet-cruise",
+    "version": 1
+  },
+  "pages": {
+    "status": "built",
+    "workflowRun": 41214659534,
+    "conclusion": "success"
+  },
+  "webkitLive": {
+    "tests": [
+      "classic: four viewport transitions, touch settings, denied gesture-bound permission, saved preference and no reload prompt",
+      "plus: four viewport transitions, touch settings, denied gesture-bound permission, saved preference and no reload prompt"
+    ],
+    "viewportCases": 8,
+    "selectionAndTouchDefaultAssertions": true,
+    "javascriptErrors": 0
+  },
+  "mobileUnitCases": 17,
+  "physicalIphoneLoupeConfirmation": false,
+  "userFeedback": "User reports better landscape fitting and smooth weather stages on their iPhone. Device model, iOS version and measured FPS not provided."
+}
