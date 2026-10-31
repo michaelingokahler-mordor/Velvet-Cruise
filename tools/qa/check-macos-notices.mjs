@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import { macNoticeFiles } from '../macos-notices.mjs';
+fs.mkdirSync('output/macos-release', { recursive: true });
+const root = fs.mkdtempSync(path.resolve('output/macos-release/notices-'));
+assert.throws(() => macNoticeFiles(root), /license|notice/i, 'A release cannot omit its runtime notices');
+fs.writeFileSync(path.join(root, 'LICENSE'), 'Electron license');
+assert.throws(() => macNoticeFiles(root), /license|notice/i, 'Chromium notices are also required');
+fs.writeFileSync(path.join(root, 'LICENSES.chromium.html'), '<html>Chromium third-party notices</html>');
+assert.deepEqual(macNoticeFiles(root).map(p => path.basename(p)), ['LICENSE', 'LICENSES.chromium.html']);
+fs.writeFileSync(path.join(root, 'LICENSE'), '');
+assert.throws(() => macNoticeFiles(root), /empty|license|notice/i, 'Empty notice files cannot satisfy release validation');
+console.log('PASS: Mac runtime notices are complete and nonempty');

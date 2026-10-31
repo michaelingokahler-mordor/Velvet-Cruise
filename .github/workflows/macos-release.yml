@@ -35,6 +35,15 @@ jobs:
           npx vite build --mode desktop --outDir output/macos-release/dist
           node tools/build-desktop.mjs output/macos-release/desktop-game --source output/macos-release/dist
           node tools/package-macos.mjs --game output/macos-release/desktop-game --out output/macos-release/${{ matrix.arch }} --arch ${{ matrix.arch }}
+          python3 tools/qa/check-macos-archive.py output/macos-release/${{ matrix.arch }}/Velvet-Cruise-macOS-${{ matrix.arch }}-2026-10-31.zip --arch ${{ matrix.arch }} --report output/macos-release/${{ matrix.arch }}/archive-validation.json
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: Mac-runtime-notices-${{ matrix.arch }}
+          retention-days: 7
+          if-no-files-found: error
+          path: |
+            output/macos-release/${{ matrix.arch }}/LICENSE
+            output/macos-release/${{ matrix.arch }}/LICENSES.chromium.html
       - name: Extract exact delivery ZIP and verify
         run: |
           mkdir -p output/macos-release/extracted

@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
+import { macNoticeFiles } from './macos-notices.mjs';
 
 const flag = key => { const index = process.argv.indexOf(key); return index < 0 ? '' : process.argv[index + 1]; };
 const game = path.resolve(flag('--game') || 'output/macos-release/desktop-game');
@@ -43,6 +44,10 @@ if (process.argv.includes('--prepare-only')) {
   execFileSync('/usr/bin/codesign', ['--verify', '--deep', '--strict', '--verbose=2', app], { stdio: 'inherit' });
   const zip = path.join(out, `Velvet-Cruise-macOS-${arch}-2026-10-31.zip`);
   execFileSync('/usr/bin/ditto', ['-c', '-k', '--sequesterRsrc', '--keepParent', app, zip]);
+  const notices = macNoticeFiles(paths[0]);
+  for (const notice of notices) fs.copyFileSync(notice, path.join(out, path.basename(notice)));
+  // Notices are outside the signed .app, so app bytes and signatures stay intact.
+  execFileSync('/usr/bin/zip', ['-j', zip, ...notices], { stdio: 'inherit' });
   const result = { app, archive: zip, arch, electronVersion: '45.2.1', gameId: metadata.gameId, bundleId: 'com.sabnockworks.velvetcruise', signing: 'ad-hoc', notarized: false, archiveSha256: createHash('sha256').update(fs.readFileSync(zip)).digest('hex'), bytes: fs.statSync(zip).size };
   fs.writeFileSync(path.join(out, 'release.json'), JSON.stringify(result, null, 2));
   console.log(JSON.stringify(result, null, 2));
