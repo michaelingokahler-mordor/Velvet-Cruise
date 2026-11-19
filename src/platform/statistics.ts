@@ -1,4 +1,5 @@
 import { isDesktopBuild } from './runtime';
+declare const __DEMO__: boolean;
 /** Anonymous, best-effort event counters. No storage, profile, or gameplay wait. */
 type EventType = 'game_loaded' | 'run_start';
 interface Gate { production: boolean; href: string; webdriver: boolean; desktop: boolean; testHooks: boolean }
@@ -55,17 +56,40 @@ export function createStatisticsClient(options: Options): { record(type: EventTy
     } catch { /* Statistics must never interrupt the game. */ }
   } };
 }
+function allowsBrowserStatistics(production: boolean): boolean {
+  try {
+    const w = window as unknown as Record<string, unknown>;
+    return statisticsAllowed({
+      production,
+      href: location.href,
+      webdriver: navigator.webdriver === true,
+      desktop: isDesktopBuild(),
+      testHooks: !!w.__VELVET_TEST__ || Object.keys(w).some(key => /^__(trackBench|graphicsInfo|ending|edge|fork|props|tunnels|map|name|tumble|spawn)/.test(key)),
+    });
+  } catch { return false; }
+}
+
 const client = createStatisticsClient({
   endpoint: 'https://velvet-cruise-api.emerald-hollows.workers.dev/stats/events',
-  enabled: () => {
-    try {
-      const w = window as unknown as Record<string, any>;
-      return statisticsAllowed({ production: import.meta.env.VITE_STATISTICS_PRODUCTION === 'true', href: location.href,
-        webdriver: navigator.webdriver === true,
-        desktop: isDesktopBuild(),
-        testHooks: !!w.__VELVET_TEST__ || Object.keys(w).some(key => /^__(trackBench|graphicsInfo|ending|edge|fork|props|tunnels|map|name|tumble|spawn)/.test(key)),
-      });
-    } catch { return false; }
-  },
+  enabled: () => allowsBrowserStatistics(import.meta.env.VITE_STATISTICS_PRODUCTION === 'true'),
 });
-export const recordStatistic = (type: EventType): void => client.record(type);
+
+interface SharedStatistics {
+  recordGameStatistic(game: 'velvet-cruise', type: EventType): void;
+}
+
+let sharedStatistics: Promise<SharedStatistics | undefined> | undefined;
+
+export function recordStatistic(type: EventType): void {
+  if (typeof __DEMO__ === 'undefined' || !__DEMO__) {
+    client.record(type);
+    return;
+  }
+  if (!allowsBrowserStatistics(import.meta.env.VITE_SHARED_GAME_STATISTICS === 'true')) return;
+  const modulePath = '/assets/game-statistics.mjs';
+  sharedStatistics ??= import(/* @vite-ignore */ modulePath).catch(() => {
+    sharedStatistics = undefined;
+    return undefined;
+  });
+  void sharedStatistics.then(module => module?.recordGameStatistic('velvet-cruise', type)).catch(() => {});
+}

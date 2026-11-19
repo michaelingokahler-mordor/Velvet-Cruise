@@ -17,6 +17,7 @@ try{
   assert.equal(config.define.__DEMO__,String(demo),mode+' edition');
   assert.equal(config.define['import.meta.env.VITE_DESKTOP_BUILD'],JSON.stringify(String(desktop)),mode+' native identity');
   assert.equal(config.define['import.meta.env.VITE_STATISTICS_PRODUCTION'],JSON.stringify(String(statistics)),command+' '+mode+' statistics');
+  assert.equal(config.define['import.meta.env.VITE_SHARED_GAME_STATISTICS'],JSON.stringify(String(command==='build'&&mode==='demo')),command+' '+mode+' shared statistics');
  }
 }finally{if(previous===undefined)delete process.env.VELVET_PRODUCTION_STATISTICS;else process.env.VELVET_PRODUCTION_STATISTICS=previous;}
 console.log('PASS: seven build/dev/web/demo/native configuration combinations');
